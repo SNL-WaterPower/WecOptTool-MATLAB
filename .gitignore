@@ -1,0 +1,30 @@
+*.aux
+*.fls
+*.lof
+*.log
+*.out
+*.synctex.gz
+*.synctex
+*.blg
+*.lot
+*.bbl
+*.fdb_latexmk
+Thumbs.db
+*.DS_Store
+*.dvi
+*.tiw
+*.toc
+*.dmp
+*.bak
+*.tps
+*.tcp
+*.asv
+*.m~
+*.spl
+
+# NEMOH
+RM3_Nemoh_Runs/
+ID.dat
+
+# Tests
+test_results/

@@ -1,0 +1,20 @@
+WEC-Sim (Wave Energy Converter SIMulator)
+Copyright 2014 the National Renewable Energy Laboratory and Sandia Corporation
+
+Sandia and NREL Developers:
+Yi-Hsiang Yu (National Renewable Energy Laboratory)
+Kelley Ruehl (Sandia National Laboratories)
+Michael Lawson (National Renewable Energy Laboratory)
+Carlos Michelen (Sandia National Laboratories)
+Jennifer Van Rij (National Renewable Energy Laboratory)
+Nathan Tom (National Renewable Energy Laboratory)
+
+See list of external contributors on the WEC-Sim webite.
+
+Several libraries developed by external parties are used by WEC-Sim. License information for these libraries is as follows:
+source/functions/import_stl_fast/import_stl_fast.m - see license in import_stl_fast.m 
+
+March 2020 (Sandia National Labs)
+---------------------------------
+    + Read_NEMOH.m and Normalize.m packaged within WecOptTool
+    + Minor modification was made to Read_NEMOH.m to access package namespace
