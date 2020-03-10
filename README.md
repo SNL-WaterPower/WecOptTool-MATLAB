@@ -49,31 +49,22 @@ $ make
 ```
 
 Executables will be created a new directory called 'bin', which must then be 
-added to the system PATH using MATLAB:
+installed into WecOptTool using the `installNemoh.m` MATLAB script:
 
 ```
->> path1 = getenv('PATH');
->> path1 = [path1 ':/path/to/NEMOH/bin'];
->> setenv('PATH', path1); 
->> !echo $PATH
+>> installNemoh('/path/to/NEMOH/bin');
 ```
 
 For Windows, executables are already provided in the 'Release' directory of
-the NEMOH source code. These are added to the system PATH using MATLAB as
-follows:
+the NEMOH source code. These are installed into WecOptTool using the 
+`installNemoh.m` MATLAB script as follows:
 
 ```
->> path1 = getenv('PATH');
->> path1 = [path1 ';/path/to/NEMOH/Release'];
->> setenv('PATH', path1); 
->> !echo %PATH%
+>> installNemoh('/path/to/NEMOH/Release');
 ```
-
-Note the use of a colon to separate directories in the linux path, while a
-semicolon is used for the Windows path.
 
 You can verify that the dependencies have been installed correctly by
-running the dependencyCheck.m script provided in this repository. Successful
+running the `dependencyCheck.m` script provided in this repository. Successful
 output may look like this:
 
 ```
