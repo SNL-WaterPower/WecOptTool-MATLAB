@@ -1,4 +1,4 @@
-function runTests()
+function results = runTests()
 %RUNTESTS
 
     import matlab.unittest.TestRunner;
@@ -11,12 +11,19 @@ function runTests()
     
     % Build the runner
     runner = TestRunner.withTextOutput;
+    
+    % Add HTML plugin
     htmlFolder = 'test_results';
     plugin = TestReportPlugin.producingHTML(htmlFolder);
-
-    % Add plugin and run
     runner.addPlugin(plugin);
-    runner.run(suite);
+
+    % Add PDF
+    pdfFile = 'test_results.pdf';
+    plugin = TestReportPlugin.producingPDF(pdfFile);
+    runner.addPlugin(plugin);
+
+    % Run the tests
+    results = runner.run(suite);
 
 end
 
