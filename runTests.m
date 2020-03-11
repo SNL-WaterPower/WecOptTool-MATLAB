@@ -12,13 +12,16 @@ function results = runTests()
     % Build the runner
     runner = TestRunner.withTextOutput;
     
+    p = mfilename('fullpath');
+    [filepath, ~, ~] = fileparts(p);
+    
     % Add HTML plugin
-    htmlFolder = 'test_results';
+    htmlFolder = [filepath filesep 'test_results'];
     plugin = TestReportPlugin.producingHTML(htmlFolder);
     runner.addPlugin(plugin);
 
     % Add PDF
-    pdfFile = 'test_results.pdf';
+    pdfFile = [filepath filesep 'test_results.pdf'];
     plugin = TestReportPlugin.producingPDF(pdfFile);
     runner.addPlugin(plugin);
 
