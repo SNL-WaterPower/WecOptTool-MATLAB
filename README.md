@@ -32,7 +32,9 @@ in the `example_data` folder, to use if WAFO is not installed.
 
 ## Installing WecOptTool and NEMOH
 
-To add WecOptTool to your startup.m file using the MATLAB command prompt:
+After downloading the WecOptTool source code to a path of your choosing 
+(`/path/to/WecOptTool`), add the WecOptTool toolbox to your MATLAB path using 
+the MATLAB command prompt:
 
 ```
 >> addpath(genpath('/path/to/WecOptTool/toolbox'));
@@ -49,23 +51,34 @@ $ make
 ```
 
 Executables will be created a new directory called 'bin', which must then be 
-installed into WecOptTool using the `installNemoh.m` MATLAB script:
+installed into WecOptTool using the `installNemoh.m` MATLAB script, run from 
+the WecOptTool root directory:
 
 ```
+>> cd /path/to/WecOptTool
 >> installNemoh('/path/to/NEMOH/bin');
 ```
 
 For Windows, executables are already provided in the 'Release' directory of
 the NEMOH source code. These are installed into WecOptTool using the 
-`installNemoh.m` MATLAB script as follows:
+`installNemoh.m` MATLAB script, run from the WecOptTool root directory, as 
+follows:
 
 ```
+>> cd /path/to/WecOptTool
 >> installNemoh('/path/to/NEMOH/Release');
 ```
 
 You can verify that the dependencies have been installed correctly by
-running the `dependencyCheck.m` script provided in this repository. Successful
-output may look like this:
+running the `dependencyCheck.m` script provided in the root directory of
+the WecOptTool source code. The script is called as follows:
+
+```
+>> cd /path/to/WecOptTool
+>> dependencyCheck
+```
+
+and successful output may look like this:
 
 ```
 WecOptTool dependency checker
@@ -91,16 +104,30 @@ See the example.m file.
 A number of files are generated to handle inputs and outputs for the NEMOH
 hydrodynamic solver. These files are stored within the users home directory. 
 The exact path where the files are located can be found using the dataTool 
-script, from the MATLAB command window, as follows:
+script, found in the root directory of the WecOptTool source code, from the 
+MATLAB command window, as follows:
 
 ```
->>> dataTool path
+>> cd /path/to/WecOptTool
+>> dataTool path
 ```
 
 For convenience, the script can also remove all files generated for NEMOH:
 
 ```
->>> dataTool clean
+>> cd /path/to/WecOptTool
+>> dataTool clean
+```
+
+## Tests
+
+A test suite is available to verify that the code is operational. A script 
+is provided in in the root directory of the WecOptTool source code and is run 
+from the MATLAB command window, as follows:
+
+```
+>> cd /path/to/WecOptTool
+>> runTests;
 ```
 
 ## RoadMap
