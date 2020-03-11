@@ -1,15 +1,14 @@
 %% Create an RM3 study object
 study = WecOptTool.RM3Study();
 
-%% Create Bretschnider spectra from WAFO
+%% Create Bretschnider spectrum from WAFO
 %S = bretschneider([],[8,10],0);
 
 % Set uniform random sample [0, 2pi] for 'phasing'
 %S.ph = rand(length(S.w),1)* 2 * pi;
 
-%% Alternatively load an example spectra from a file
-example_data = load(['example_data' filesep 'spectra.mat']);
-S = example_data.S;
+%% Alternatively load an example spectrum
+S = WecOptLib.tests.data.exampleSpectrum();
 
 %% Add spectra to study
 study.addSpectra(S);
