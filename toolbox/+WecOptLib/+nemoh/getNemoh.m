@@ -91,16 +91,6 @@ else
     nemoh_postProc_command = [nemohPath filesep 'postProc'];
 end
 
-% Checking that NEMOH path has been added/ exists, throws an error if it does not.
-syspath = getenv('PATH'); % getting system path
-
-% turning path into list
-if ispc % Windows check
-    sepSysPath = strsplit(syspath,';');
-else    % Mac or Linux
-    sepSysPath = strsplit(syspath,':'); 
-end
-
 if iscell(r)
     nBody = length(r);
 else
@@ -108,7 +98,6 @@ else
     r = mat2cell(r,1,length(r));
     z = mat2cell(z,1,length(z));
 end
-
 
 p = inputParser;
 validScalarPosNum = @(x) isnumeric(x) && isscalar(x) && (x > 0);
