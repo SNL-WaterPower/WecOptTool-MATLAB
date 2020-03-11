@@ -10,7 +10,7 @@ function testDependencyCheck(testCase)
     % Get this directories path
     s = what('WecOptLib');
     parts = strsplit(s.path, filesep);
-    dirCell = join(parts(1:5), filesep);
+    dirCell = join(parts(1:end-2), filesep);
     cd(dirCell{1});
     verifyWarningFree(testCase, @dependencyCheck);
     
@@ -21,7 +21,7 @@ function testDataToolPath(testCase)
     % Get this directories path
     s = what('WecOptLib');
     parts = strsplit(s.path, filesep);
-    dirCell = join(parts(1:5), filesep);
+    dirCell = join(parts(1:end-2), filesep);
     cd(dirCell{1});
     verifyWarningFree(testCase, @() dataTool('path'));
     
@@ -32,7 +32,7 @@ function testExample(testCase)
     % Get this directories path
     s = what('WecOptLib');
     parts = strsplit(s.path, filesep);
-    dirCell = join(parts(1:5), filesep);
+    dirCell = join(parts(1:end-2), filesep);
     cd(dirCell{1});
     verifyWarningFree(testCase, @example);
     
