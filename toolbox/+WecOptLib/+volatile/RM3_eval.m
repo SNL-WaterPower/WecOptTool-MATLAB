@@ -39,10 +39,14 @@ function pow_ss = RM3_eval(S, hydro, controlType, maxVals)
 if strcmp(controlType, 'PS') && length(maxVals) == 2
     delta_Zmax = maxVals(1);
     delta_Fmax = maxVals(2);
+    RM3.delta_Zmax = delta_Zmax;
+    RM3.delta_Fmax = delta_Fmax;
 elseif strcmp(controlType, 'PS')
     warning('Using arbitrary position and PTO constraints (Zmax=10, Fmax=1e9)')
     delta_Zmax = 10;
     delta_Fmax = 1e9;
+    RM3.delta_Zmax = delta_Zmax;
+    RM3.delta_Fmax = delta_Fmax;
 end
 
 
@@ -93,8 +97,6 @@ eta_fd = eta_fd(:);
 RM3.w = w;
 RM3.dw = dw;
 % Only for PS
-RM3.delta_Zmax = delta_Zmax;
-RM3.delta_Fmax = delta_Fmax;
 RM3.wave_amp = wave_amp;
 RM3.ph = ph;
 
