@@ -15,7 +15,7 @@ tests = functiontests(localfunctions);
 end
 
 function testVerify_CC(testCase)
-S = bretschneider([],[8,10],0);
+S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
 WECpow = WecOptLib.volatile.RM3_getPow(S,'CC','scalar',1);
@@ -24,7 +24,7 @@ verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end
 
 function testVerify_damping(testCase)
-S = bretschneider([],[8,10],0);
+S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
 WECpow = WecOptLib.volatile.RM3_getPow(S,'P','scalar',1);
@@ -33,7 +33,7 @@ verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end
 
 function testVerify_PS(testCase)
-S = bretschneider([],[8,10],0);
+S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
 delta_Zmax = 10;
@@ -52,7 +52,7 @@ end
 
 function test_existingRunFiles(testCase)
 tol = 5 * eps;
-S = bretschneider([],[8,10],0);
+S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
 [madepow,etc] = WecOptLib.volatile.RM3_getPow(S,'CC','parametric',[10,15,3,42]);
@@ -62,7 +62,7 @@ verifyEqual(testCase, madepow, existpow, 'RelTol', tol);
 end
 
 function test_runParametric(testCase)
-S = bretschneider([],[8,10],0);
+S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
 WECpow = WecOptLib.volatile.RM3_getPow(S,'CC','parametric',[10,15,3,42]);

@@ -47,6 +47,7 @@ end
 % Throwing error message if Nemoh could not be found.
 nemohExistFlag = WecOptLib.nemoh.isNemohInPath(rundir);
 
+
 if(~ nemohExistFlag)
     errMsg = ['Error: Unable to locate Nemoh binaries. It is ',     ...
               'possible that the Nemoh path has not been added ',   ...
@@ -63,6 +64,7 @@ WOTDataPath = WecOptLib.utils.getUserPath();
 configPath = [WOTDataPath filesep 'config.json'];
 config = jsondecode(fileread(configPath));
 nemohPath = fullfile(config.nemohPath);
+
 
 if ispc
     nemoh_mesh_command = [nemohPath filesep 'mesh'];
