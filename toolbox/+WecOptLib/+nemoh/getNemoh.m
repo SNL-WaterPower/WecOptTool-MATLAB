@@ -4,21 +4,6 @@ function [hydro] = getNemoh(r,z,freq,rundir,varargin)
 % Builds axisymmetric NEMOH mesh, runs NEMOH and returns results (heave
 % only). Parts borrowed from the the Matlab runner that comes with NEMOH.
 %
-% This tool requires:
-%
-% 1. download NEMOH
-%
-% 2. make sure the NEMOH binaries are in your path; this was harder than I
-% thought it would be(in Mac OSX, the system PATH is not maintained within
-% MATLAB). I added the following to my startup.m script:
-%
-% 	path1 = getenv('PATH');
-%   path1 = [path1 ':/Users/rcoe/NEMOH/bin'];
-% 	setenv('PATH', path1); !echo $PATH
-%
-% 3. download/clone my fork of WEC-Sim (https://github.com/ryancoe/WEC-Sim)
-% and make sure its in your path (this is used for parsing the Nemoh output
-%
 % Input
 %       r       radius points array
 %       z       vertical points array
@@ -166,7 +151,7 @@ cd(startdir)
 % Ex = (squeeze(hydro.ex_re(3,1,:)) + 1i * squeeze(hydro.ex_im(3,1,:)))*rho*g;
 % C = hydro.C(3,3)*rho*g;
 
-
+end
 
     function [status,msg] = nemohCall(command)
         if verb
@@ -453,4 +438,4 @@ cd(startdir)
                 fullfile(rundir,'mesh',sprintf('mesh_%i.fig',bodyNum-1)));
         end
     end
-end
+
