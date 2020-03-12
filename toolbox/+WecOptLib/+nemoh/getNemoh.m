@@ -4,21 +4,6 @@ function [hydro] = getNemoh(r,z,freq,rundir,varargin)
 % Builds axisymmetric NEMOH mesh, runs NEMOH and returns results (heave
 % only). Parts borrowed from the the Matlab runner that comes with NEMOH.
 %
-% This tool requires:
-%
-% 1. download NEMOH
-%
-% 2. make sure the NEMOH binaries are in your path; this was harder than I
-% thought it would be(in Mac OSX, the system PATH is not maintained within
-% MATLAB). I added the following to my startup.m script:
-%
-% 	path1 = getenv('PATH');
-%   path1 = [path1 ':/Users/rcoe/NEMOH/bin'];
-% 	setenv('PATH', path1); !echo $PATH
-%
-% 3. download/clone my fork of WEC-Sim (https://github.com/ryancoe/WEC-Sim)
-% and make sure its in your path (this is used for parsing the Nemoh output
-%
 % Input
 %       r       radius points array
 %       z       vertical points array
@@ -55,26 +40,40 @@ function [hydro] = getNemoh(r,z,freq,rundir,varargin)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 startdir = pwd;
 
-if ispc
-    nemoh_mesh_command = 'mesh';
-    nemoh_preProc_command = 'preProcessor';
-    nemoh_run_command = 'solver';
-    nemoh_postProc_command = 'postProcessor';
-else
-    nemoh_mesh_command = 'mesh';
-    nemoh_preProc_command = 'preProc';
-    nemoh_run_command = 'solver';
-    nemoh_postProc_command = 'postProc';
+if exist(rundir,'dir') ~= 7
+    mkdir(rundir)
 end
 
-% Checking that NEMOH path has been added/ exists, throws an error if it does not.
-syspath = getenv('PATH'); % getting system path
+% Throwing error message if Nemoh could not be found.
+nemohExistFlag = WecOptLib.nemoh.isNemohInPath(rundir);
 
-% turning path into list
-if ispc % Windows check
-    sepSysPath = strsplit(syspath,';');
-else    % Mac or Linux
-    sepSysPath = strsplit(syspath,':'); 
+if(~ nemohExistFlag)
+    errMsg = ['Error: Unable to locate Nemoh binaries. It is ',     ...
+              'possible that the Nemoh path has not been added ',   ...
+              'to WecOptTool. Make sure that the file path is ',    ...
+              'spelled correctly and has been added to WecOptTool ',...
+              'using the InstallNemoh.m script'];
+    error(errMsg);
+end
+
+cd(rundir)
+rundir = '.';
+
+WOTDataPath = WecOptLib.utils.getUserPath();
+configPath = [WOTDataPath filesep 'config.json'];
+config = jsondecode(fileread(configPath));
+nemohPath = fullfile(config.nemohPath);
+
+if ispc
+    nemoh_mesh_command = [nemohPath filesep 'mesh'];
+    nemoh_preProc_command = [nemohPath filesep 'preProcessor'];
+    nemoh_run_command = [nemohPath filesep 'solver'];
+    nemoh_postProc_command = [nemohPath filesep 'postProcessor'];
+else
+    nemoh_mesh_command = [nemohPath filesep 'mesh'];
+    nemoh_preProc_command = [nemohPath filesep 'preProc'];
+    nemoh_run_command = [nemohPath filesep 'solver'];
+    nemoh_postProc_command = [nemohPath filesep 'postProc'];
 end
 
 if iscell(r)
@@ -83,23 +82,6 @@ else
     nBody = 1;
     r = mat2cell(r,1,length(r));
     z = mat2cell(z,1,length(z));
-end
-
-if exist(rundir,'dir') ~= 7
-    mkdir(rundir)
-end
-
-cd(rundir)
-rundir = '.';
-
-% Throwing error message if Nemoh could not be found.
-nemohExistFlag = WecOptLib.nemoh.isNemohInPath(rundir);
-if(~ nemohExistFlag)
-    errMsg = ['Error: Unable to locate Nemoh binaries. It is possible that the ', ...
-        'Nemoh path has not been added. Make sure that the ', ...
-        'file path is spelled correctly and that the path is in your system ', ...
-        'path.  See comments at top of getNemoh.m for details'];
-    error(errMsg);
 end
 
 p = inputParser;
