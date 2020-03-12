@@ -50,30 +50,19 @@ elseif strcmp(controlType, 'PS')
 end
 
 
-
-ind_sp = find(S.S > 0.01*max(S.S));
-
-if length(ind_sp) == 1
-    start_ind = ind_sp;
-    end_ind = ind_sp;
-    w_skip = 1;
-    w = S.w(start_ind:w_skip:end_ind);
-    w = w(:);
-    dw = w;
-else
-    start_ind = min(ind_sp);
-    end_ind = max(ind_sp);
-    w_skip = 1;
-    w = S.w(start_ind:w_skip:end_ind);
-    w = w(:);
-    dw = mean(diff(S.w))*w_skip;
+% Ignore tails of the spectra; return indicies of the vals>1% of max
+iSpec = find(S.S > 0.01*max(S.S));
+% Return row vector of all w between first/last indicies
+iStart = min(iSpec);
+iEnd   = max(iSpec);
+iSkip     = 1;
+w = S.w(iStart:iSkip:iEnd)';
+% Calculate w step-size
+if length(iSpec) == 1
+    dw = w;    
+else    
+    dw = mean(diff(S.w))*iSkip;   
 end
-
-% [~, start_ind] = min(abs(hydro.w - S.w(find(S.S > 0.01*max(S.S), 1, 'first'))));
-% [~, end_ind] = min(abs(hydro.w - S.w(find(S.S > 0.01*max(S.S), 1, 'last'))));
-
-
-% w = hydro.w(start_ind:w_skip:end_ind);
 
 
 S_interp = interp1(S.w(:), S.S, w,'linear',0);
@@ -82,18 +71,7 @@ ph = rand(length(S_interp), 1);
 eta_fd = wave_amp .* exp(1i*ph);
 eta_fd = eta_fd(:);
 
-% w = hydro.w(1:w_skip:w_max);
-% w = w(:);
-% dw = mean(diff(w));
-%
-% S_interp = interp1(S.w(:), S.S, w,'linear',0);
-% wave_amp = sqrt(2 * dw * S_interp);
-% start_ind = find(S_interp > 0.01, 1);
-% ph = rand(length(S_interp), 1);
-% eta_fd = wave_amp .* exp(1i*ph);
-% eta_fd = eta_fd(start_ind:end);
-
-
+% Save the frequency
 RM3.w = w;
 RM3.dw = dw;
 % Only for PS
