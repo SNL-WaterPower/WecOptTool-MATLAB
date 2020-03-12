@@ -151,7 +151,7 @@ cd(startdir)
 % Ex = (squeeze(hydro.ex_re(3,1,:)) + 1i * squeeze(hydro.ex_im(3,1,:)))*rho*g;
 % C = hydro.C(3,3)*rho*g;
 
-
+end
 
     function [status,msg] = nemohCall(command)
         if verb
@@ -438,4 +438,4 @@ cd(startdir)
                 fullfile(rundir,'mesh',sprintf('mesh_%i.fig',bodyNum-1)));
         end
     end
-end
+
