@@ -1,13 +1,16 @@
-function [pow, etc] = RM3_getPow(S,                 ...
+function [pow, etc] = RM3_getPow(SS,                ...
                                  controlType,       ...
                                  geomMode,          ...
                                  geomParams,        ...
                                  controlParams)
-% pow = RM3_getPow(S, controlType, geomMode, ...)
+% pow = RM3_getPow( S, controlType, geomMode, ...)
+% pow = RM3_getPow(SS, controlType, geomMode, ...)
 %
-% Top-level evaluation function for RM3 device.
+% Takes a specta S or a series of sea-states in a struct.
+% Iterates over sea-states and calcualtes power.
 %
 % Inputs
+%      SS               Struct of Spectra (S)
 %       S               wave spectra structure, with fields:
 %           S.S         spectral energy distribution [m^2 s/rad]
 %           S.w         frequency [rad/s]
@@ -58,38 +61,66 @@ function [pow, etc] = RM3_getPow(S,                 ...
 % [pow, etc] = RM3_getPow(S, 'PS', 'parametric', [r1,r2,d1,d2], deltaZmax, deltaFmax);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% check inputs
-if ~isfield(S,'mu')
-    for ind_ss = 1:length(S)
-        S(ind_ss).mu = 1;
-    end
-    if length(S) > 1
-        warning('No weighting field mu in wave spectra structure S, setting to 1')
-    end
-end
-
 % WEC-Sim hydro structure for RM3
 [hydro,rundir] = WecOptLib.volatile.RM3_getNemoh(geomMode, geomParams);
 
-% find WEC performance
+% If PS control must set max Z and F values
 maxVals = [];
-
+%TODO: This must error if maxvals are not passed for PS
 if strcmp(controlType, 'PS')
     if nargin == 5
         maxVals = controlParams;
     end
 end
 
-% Iterate over Sea-States
-for ind_ss = 1:length(S) % TODO - consider parfor?
-    pow_ss(ind_ss) = WecOptLib.volatile.RM3_eval(S(ind_ss), hydro, controlType, maxVals);
+% If Spectra (S) passed put S into sea state struct (SS) length 1 
+if isfield(SS,'w') && isfield(SS,'S')
+    % Create empty SS
+    singleSea = struct();
+    % Store the single sea-state in the temp struct
+    singleSea.S1 = SS;
+    % Reassaign SS to be SS of signle sea-state (Is there a better way?)
+    SS = singleSea;
 end
 
-% assemble output
-mus = [S(:).mu];
-pow = dot(pow_ss(:), mus(:)) / sum([S(:).mu]);
+% Get the name of all passes SS
+seaStateNames = fieldnames(SS);
+% Number of Sea-states
+NSS = length(seaStateNames);
+% Initial arrays to hold mu, powSS
+mus=zeros(NSS,1);
+powSSs=zeros(NSS,1);
 
-etc.pow = pow_ss;
+% Iterate over Sea-States
+for iSS = 1:NSS % TODO - consider parfor?
+    % Get Sea-State
+    S = SS.(seaStateNames{iSS});
+    % Check sea-state weight
+    % TODO: Should check if weights across sea states equal 1?
+    if ~isfield(S,'mu')
+        warn = ['No weighting field mu in wave spectra structure S, '...
+                'setting to 1'];
+        warning(warn);
+        S.mu = 1;          
+    end        
+    
+    % Calculate specra power
+    powSS = WecOptLib.volatile.RM3_eval( S,  ...
+                                         hydro,       ...
+                                         controlType, ...
+                                         maxVals);
+    % Save Power to S
+    SS.(seaStateNames{iSS}).powSS = powSS;
+    % Save weights/ power to arrays
+    mus(iSS) = S.mu;
+    powSSs   = powSS;
+end
+
+% Calculate power across sea-states 
+pow = dot(powSSs(:), mus(:)) / sum([mus]);
+
+etc.mus  = mus;
+etc.pow = powSSs;
 etc.hydro = hydro;
 etc.rundir = rundir;
 
