@@ -9,16 +9,16 @@ function [pow_ss] = complexConjugate(RM3)
 
     F0 = (RM3.E3.*(Z9+Zc) - RM3.E9.*(Z3+Zc))./Z0;
     Pabs = abs(F0).^2 ./ (8* real(Zi));
-    Ur = F0 ./ (2 * real(Zi));
-    Sr = -1i * Ur ./ RM3.w;
-    Fl = conj(Zi) .* Ur;
-
-    tkp = linspace(0, 2*pi/(mean(diff(RM3.w))), 4*(length(RM3.w)));
-
-    exp_mat = exp(1i * RM3.w * tkp);
-    srt = real(Sr .' * exp_mat);
-    urt = real(Ur .' * exp_mat);
-    Flt = real(Fl .' * exp_mat);
+%     Ur = F0 ./ (2 * real(Zi));
+%     Sr = -1i * Ur ./ RM3.w;
+%     Fl = conj(Zi) .* Ur;
+% 
+%     tkp = linspace(0, 2*pi/(mean(diff(RM3.w))), 4*(length(RM3.w)));
+% 
+%     exp_mat = exp(1i * RM3.w * tkp);
+%     srt = real(Sr .' * exp_mat);
+%     urt = real(Ur .' * exp_mat);
+%     Flt = real(Fl .' * exp_mat);
 
     pow_ss = -1 * sum(Pabs);
 end
