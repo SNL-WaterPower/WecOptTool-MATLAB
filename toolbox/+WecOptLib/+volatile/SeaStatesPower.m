@@ -1,4 +1,4 @@
-function [pow, etc] = SeaStatePower(SS,                ...
+function [pow, etc] = SeaStatesPower(SS,                ...
                                  controlType,       ...
                                  geomMode,          ...
                                  geomParams,        ...
@@ -76,6 +76,10 @@ end
 
 % If Spectra (S) passed put S into sea state struct (SS) length 1 
 if isfield(SS,'w') && isfield(SS,'S')
+    % if no weight for single sea state set weight gi tto 1
+    if ~isfield(SS,'mu')
+        SS.mu = 1;          
+    end  
     % Create empty SS
     singleSea = struct();
     % Store the single sea-state in the temp struct
