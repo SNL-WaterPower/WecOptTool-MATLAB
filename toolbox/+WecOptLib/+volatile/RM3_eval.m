@@ -57,7 +57,7 @@ else
 end
 
 % Get column vector S at same indicies as w (Removed interpolation). 
-s = S.S(iStart:iSkip:iEnd)';
+s = S.S(iStart:iSkip:iEnd);
 % TODO: is interp needed? %s = interp1(S.w(:), S.S, w,'linear',0);
 % Calculate wave amplitude
 waveAmp = sqrt(2 * dw * s);
@@ -107,8 +107,8 @@ RM3.Bf = max(RM3.B33) * 0.1;
 RM3.D3 = 0;
 RM3.D9 = 0;
 
-RM3.E3 = RM3.H3 .* eta_fd;
-RM3.E9 = RM3.H9 .* eta_fd;
+RM3.E3 = RM3.H3 .* eta_fd';
+RM3.E9 = RM3.H9 .* eta_fd';
 
 switch controlType
     case 'CC'
