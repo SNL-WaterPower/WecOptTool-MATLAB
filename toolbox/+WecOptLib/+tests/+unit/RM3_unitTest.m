@@ -18,7 +18,7 @@ function testVerify_CC(testCase)
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
-WECpow = WecOptLib.volatile.RM3_getPow(S,'CC','scalar',1);
+WECpow = WecOptLib.volatile.SeaStatesPower(S,'CC','scalar',1);
 expSol = -3.772016088262561e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end
@@ -27,10 +27,21 @@ function testVerify_damping(testCase)
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
-WECpow = WecOptLib.volatile.RM3_getPow(S,'P','scalar',1);
+WECpow = WecOptLib.volatile.SeaStatesPower(S,'P','scalar',1);
 expSol = -1.349990052717686e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end
+
+% function testVerify_SeaStates(testCase)
+% % Load Sea States
+% SS = load('Y:\WecOptTool\toolbox\+WecOptLib\+tests\+data\sea-states.mat');
+% 
+% %S.ph = rand(length(S.w),1)* 2 * pi;
+% %[S.w, S.S] = subSampleFreqs(S);
+% WECpow = WecOptLib.volatile.SeaStatePower(S,'P','scalar',1);
+% expSol = -1.349990052717686e+06;
+% verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
+% end
 
 function testVerify_PS(testCase)
 S = WecOptLib.tests.data.exampleSpectrum();
@@ -38,7 +49,7 @@ S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
 delta_Zmax = 10;
 delta_Fmax = 1e9;
-WECpow = WecOptLib.volatile.RM3_getPow(S,'PS','scalar',1,[delta_Zmax,delta_Fmax]);
+WECpow = WecOptLib.volatile.SeaStatesPower(S,'PS','scalar',1,[delta_Zmax,delta_Fmax]);
 expSol = -3.772016088252104e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end
@@ -55,9 +66,9 @@ tol = 5 * eps;
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
-[madepow,etc] = WecOptLib.volatile.RM3_getPow(S,'CC','parametric',[10,15,3,42]);
+[madepow,etc] = WecOptLib.volatile.SeaStatesPower(S,'CC','parametric',[10,15,3,42]);
 madeFile = etc.rundir;
-[existpow,~] = WecOptLib.volatile.RM3_getPow(S,'CC','existing', madeFile);
+[existpow,~] = WecOptLib.volatile.SeaStatesPower(S,'CC','existing', madeFile);
 verifyEqual(testCase, madepow, existpow, 'RelTol', tol);
 end
 
@@ -65,7 +76,7 @@ function test_runParametric(testCase)
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = subSampleFreqs(S);
-WECpow = WecOptLib.volatile.RM3_getPow(S,'CC','parametric',[10,15,3,42]);
+WECpow = WecOptLib.volatile.SeaStatesPower(S,'CC','parametric',[10,15,3,42]);
 expSol = -4.415667556078834e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end

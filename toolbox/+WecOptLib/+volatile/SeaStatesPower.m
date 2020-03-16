@@ -1,10 +1,10 @@
-function [pow, etc] = RM3_getPow(SS,                ...
+function [pow, etc] = SeaStatePower(SS,                ...
                                  controlType,       ...
                                  geomMode,          ...
                                  geomParams,        ...
                                  controlParams)
-% pow = RM3_getPow( S, controlType, geomMode, ...)
-% pow = RM3_getPow(SS, controlType, geomMode, ...)
+% pow = SeaStatePower( S, controlType, geomMode, ...)
+% pow = SeaStatePower(SS, controlType, geomMode, ...)
 %
 % Takes a specta S or a series of sea-states in a struct.
 % Iterates over sea-states and calcualtes power.
@@ -43,7 +43,7 @@ function [pow, etc] = RM3_getPow(SS,                ...
 % 1) Using scalar input with CC control and scaling factor 1:
 %
 % S = bretschneider([],[8,10],0);
-% [pow, etc] = RM3_getPow(S, 'CC', 'scalar', 1);
+% [pow, etc] = SeaStatePower(S, 'CC', 'scalar', 1);
 %
 %
 % 2) Using 'PS' control with optional deltaZmax and deltaFmax specified
@@ -58,7 +58,7 @@ function [pow, etc] = RM3_getPow(SS,                ...
 % deltaZmax = 15;
 % deltaFmax = 1e7;
 %
-% [pow, etc] = RM3_getPow(S, 'PS', 'parametric', [r1,r2,d1,d2], deltaZmax, deltaFmax);
+% [pow, etc] = RM3_SeaStatePower(S, 'PS', 'parametric', [r1,r2,d1,d2], deltaZmax, deltaFmax);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % WEC-Sim hydro structure for RM3
