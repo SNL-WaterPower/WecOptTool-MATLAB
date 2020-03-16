@@ -30,10 +30,7 @@ function [pow, etc] = SeaStatePower(SS,                ...
 %       controlParams   if using the 'PS' control type, optional arguments for
 %                       deltaZmax and deltaFmax
 %                           Note: to use the optional arguments, both must
-%                           be provided, otherwise the program will use
-%                           default values of
-%                               deltaZmax = 10
-%                               deltaFmax = 1e9
+%                           be provided
 % Outputs
 %       pow             power weighted by weighting factors
 %       etc             structure with two items, containing pow and the
@@ -65,12 +62,16 @@ function [pow, etc] = SeaStatePower(SS,                ...
 [hydro,rundir] = WecOptLib.volatile.RM3_getNemoh(geomMode, geomParams);
 
 % If PS control must set max Z and F values
-maxVals = [];
-%TODO: This must error if maxvals are not passed for PS
-if strcmp(controlType, 'PS')
-    if nargin == 5
+if strcmp(controlType, 'PS') 
+    if length(controlParams) == 2
         maxVals = controlParams;
+    else
+        msg = ['ControlParams must be specified and of form '...
+               '[delta_Zmax,delta_Fmax]'];
+        error(msg)
     end
+else
+    maxVals = [];
 end
 
 % If Spectra (S) passed put S into sea state struct (SS) length 1 

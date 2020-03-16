@@ -24,10 +24,7 @@ function pow_ss = RM3_eval(S, hydro, controlType, maxVals)
 %       controlParams   if using the 'PS' control type, optional arguments 
 %                       for deltaZmax and deltaFmax
 %                           Note: to use the optional arguments, both must
-%                           be provided, otherwise the program will use
-%                           default values of
-%                               deltaZmax = 10
-%                               deltaFmax = 1e9
+%                           be provided
 % Outputs
 %       pow_ss           power weighted by weighting factors
 %
@@ -36,15 +33,11 @@ function pow_ss = RM3_eval(S, hydro, controlType, maxVals)
 %  WecOptLib.volatile.RM3_eval(S, hydro, controlType, maxVals);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Set max values for PS control
 if strcmp(controlType, 'PS') && length(maxVals) == 2
     delta_Zmax = maxVals(1);
     delta_Fmax = maxVals(2);
-    RM3.delta_Zmax = delta_Zmax;
-    RM3.delta_Fmax = delta_Fmax;
-elseif strcmp(controlType, 'PS')
-    warning('Using arbitrary position and PTO constraints (Zmax=10, Fmax=1e9)')
-    delta_Zmax = 10;
-    delta_Fmax = 1e9;
     RM3.delta_Zmax = delta_Zmax;
     RM3.delta_Fmax = delta_Fmax;
 end
