@@ -20,10 +20,10 @@
         
         Pabs = 0.5*B_opt *(abs(F0 ./ (Zi + B_opt)).^2);
         
-        exp_mat = exp(1i * RM3.w * tkp);
-        srt = real(Sr .' * exp_mat);
-        urt = real(Ur .' * exp_mat);
-        Flt = real(Fl .' * exp_mat);
+%         exp_mat = exp(1i * RM3.w * tkp);
+%         srt = real(Sr .' * exp_mat);
+%         urt = real(Ur .' * exp_mat);
+%         Flt = real(Fl .' * exp_mat);
         
         pow_ss=-1 * sum(Pabs);
     end
