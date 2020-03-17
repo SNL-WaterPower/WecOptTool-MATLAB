@@ -76,7 +76,7 @@ end
 
 % If Spectra (S) passed put S into sea state struct (SS) length 1 
 if isfield(SS,'w') && isfield(SS,'S')
-    % if no weight for single sea state set weight gi tto 1
+    % if no weight for single sea state set weight to 1
     if ~isfield(SS,'mu')
         SS.mu = 1;          
     end  
@@ -100,6 +100,7 @@ powSSs=zeros(NSS,1);
 for iSS = 1:NSS % TODO - consider parfor?
     % Get Sea-State
     S = SS.(seaStateNames{iSS});
+    % TODO: IMPORTANT! Ensure spectra is of WAFO format (e.g. size Nx1)!
     % Check sea-state weight
     % TODO: Should check if weights across sea states equal 1?
     if ~isfield(S,'mu')
@@ -114,11 +115,11 @@ for iSS = 1:NSS % TODO - consider parfor?
                                          hydro,       ...
                                          controlType, ...
                                          maxVals);
-    % Save Power to S
+    % Save Power to S (would need to return SS, to be useful)
     SS.(seaStateNames{iSS}).powSS = powSS;
     % Save weights/ power to arrays
     mus(iSS) = S.mu;
-    powSSs   = powSS;
+    powSSs(iSS)   = powSS;
 end
 
 % Calculate power across sea-states 
