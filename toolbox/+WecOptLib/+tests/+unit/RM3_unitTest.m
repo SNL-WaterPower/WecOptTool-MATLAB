@@ -17,7 +17,6 @@ end
 function testVerify_CC(testCase)
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
-8
 WECpow = WecOptLib.volatile.SeaStatesPower(S,'CC','scalar',1);
 expSol = -3.772016088262561e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
