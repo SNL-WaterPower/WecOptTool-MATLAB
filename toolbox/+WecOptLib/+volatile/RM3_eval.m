@@ -48,7 +48,7 @@ iSpec = find(S.S > 0.01*max(S.S));
 iStart = min(iSpec);
 iEnd   = max(iSpec);
 iSkip  = 1;
-w = S.w(iStart:iSkip:iEnd)';
+w = S.w(iStart:iSkip:iEnd);
 % Calculate w step-size
 if length(iSpec) == 1
     dw = wStep;    
@@ -107,8 +107,8 @@ RM3.Bf = max(RM3.B33) * 0.1;
 RM3.D3 = 0;
 RM3.D9 = 0;
 
-RM3.E3 = RM3.H3 .* eta_fd';
-RM3.E9 = RM3.H9 .* eta_fd';
+RM3.E3 = RM3.H3 .* eta_fd;
+RM3.E9 = RM3.H9 .* eta_fd;
 
 switch controlType
     case 'CC'
