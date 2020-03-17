@@ -17,7 +17,7 @@ end
 function testVerify_CC(testCase)
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
-[S.w, S.S] = subSampleFreqs(S);
+8
 WECpow = WecOptLib.volatile.SeaStatesPower(S,'CC','scalar',1);
 expSol = -3.772016088262561e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
@@ -96,8 +96,7 @@ if(nargin < 2)
 end
 ind_sp = find(S.S > 0.01 * max(S.S),1,'last');
 
-new_w = linspace(S.w(1), S.w(ind_sp) * 3, npoints);
-new_S = interp1(S.w, S.S, new_w);
+new_w = linspace(S.w(1), S.w(ind_sp) * 3, npoints)';
+new_S = interp1(S.w, S.S, new_w,'linear',0);
 
-new_S(isnan(new_S)) = 0;
 end
