@@ -1,5 +1,5 @@
-function pow_ss = RM3_eval(S, hydro, controlType, maxVals)
-% pow_ss = RM3_eval(S, hydro, controlType, geomMode, maxVals)
+function pow_ss = buildRM3(S, hydro, controlType, maxVals)
+% pow_ss = buildRM3(S, hydro, controlType, geomMode, maxVals)
 %
 % Returns one Sea-state power given spectra, BEM response, geomMode,
 %    and the max vals
@@ -30,7 +30,7 @@ function pow_ss = RM3_eval(S, hydro, controlType, maxVals)
 %
 % Examples:
 % 1) Using scalar input with CC control and scaling factor 1:
-%  WecOptLib.volatile.RM3_eval(S, hydro, controlType, maxVals);
+%  WecOptLib.volatile.buildRM3(S, hydro, controlType, maxVals);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
