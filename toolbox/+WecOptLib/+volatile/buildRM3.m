@@ -1,4 +1,4 @@
-function pow_ss = buildRM3(S, hydro, controlType, maxVals)
+function RM3 = buildRM3(S, hydro, controlType, maxVals)
 % pow_ss = buildRM3(S, hydro, controlType, geomMode, maxVals)
 %
 % Returns one Sea-state power given spectra, BEM response, geomMode,
@@ -109,16 +109,5 @@ RM3.D9 = 0;
 
 RM3.E3 = RM3.H3 .* eta_fd;
 RM3.E9 = RM3.H9 .* eta_fd;
-
-switch controlType
-    case 'CC'
-        [pow_ss] = WecOptLib.volatile.complexConjugate(RM3);
-        
-    case 'P'
-        [pow_ss] = WecOptLib.volatile.damping(RM3);
-        
-    case 'PS'
-        [pow_ss] = WecOptLib.volatile.ps(RM3);
-end
 
 end
