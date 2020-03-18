@@ -2,8 +2,11 @@ classdef (Abstract) DeviceModelTemplate
     
     methods (Abstract)
         
-        [hydro, rundir] = getNemoh(obj, geomMode, geomParams)
-        forces = getForces(obj, S, hydro, controlType, maxVals)
+        [hydro, rundir] = getHydrodynamics(obj, geomMode, geomParams)
+        motion = getMotion(obj, S, hydro, controlType, maxVals)
+        powSS = complexConjugate(obj, motion);
+        powSS = damping(obj, motion);
+        powSS = pseudoSpectral(obj, motion);
     
     end
         
@@ -15,7 +18,7 @@ classdef (Abstract) DeviceModelTemplate
                                        geomMode,        ...
                                        geomParams,      ...
                                        controlParams)
-        % pow, etc = DeviceModelTemplate.getPower(SS, controlType, geomMode, ...)
+        % pow, etc = DeviceModelTemplate.getPower(SS, controlType, ...)
         %
         % Takes a specta S or a series of sea-states in a struct.
         % Iterates over sea-states and calcualtes power.
@@ -31,46 +34,25 @@ classdef (Abstract) DeviceModelTemplate
         %                           CC: complex conjugate (no constraints)
         %                           PS: pseudo-spectral (with constraints)
         %                           P: proportional damping
-        %       geomMode        choose mode for geometry definition; geometry
-        %                       inputs are passed in as string-value pairs, see
-        %                       RM3_getNemoh documentation for more info.
+        %       geomMode        choose mode for geometry definition;
+        %                       geometry inputs are passed in as 
+        %                       string-value pairs, see RM3_getNemoh
+        %                       documentation for more info.
         %                           scalar: single scaling factor lambda
         %                           parametric: [r1, r2, d1, d2] parameters
         %                           existing: pass existing NEMOH rundir
         %       geomParams      contains parameters for the geometric mode
-        %       controlParams   if using the 'PS' control type, optional arguments for
-        %                       deltaZmax and deltaFmax
-        %                           Note: to use the optional arguments, both must
-        %                           be provided
+        %       controlParams   if using the 'PS' control type, optional
+        %                       arguments for deltaZmax and deltaFmax
+        %                           Note: to use the optional arguments,
+        %                           both must be provided
         % Outputs
         %       pow             power weighted by weighting factors
-        %       etc             structure with two items, containing pow and the
-        %                       hydro struct from Nemoh
-        %
-        % Examples:
-        % 1) Using scalar input with CC control and scaling factor 1:
-        %
-        % S = bretschneider([],[8,10],0);
-        % [pow, etc] = SeaStatePower(S, 'CC', 'scalar', 1);
-        %
-        %
-        % 2) Using 'PS' control with optional deltaZmax and deltaFmax specified
-        %
-        % S = bretschneider([],[8,10],0);
-        %
-        % r1 = 10;       % radius of float
-        % r2 = 15;       % radius of sink
-        % d1 = 2;        % float depth
-        % d2 = 42;       % sink depth
-        %
-        % deltaZmax = 15;
-        % deltaFmax = 1e7;
-        %
-        % [pow, etc] = RM3_SeaStatePower(S, 'PS', 'parametric', [r1,r2,d1,d2], deltaZmax, deltaFmax);
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %       etc             structure with two items, containing pow 
+        %                       and the hydro struct from Nemoh
 
         % WEC-Sim hydro structure for RM3
-        [hydro,rundir] = obj.getNemoh(geomMode, geomParams);
+        [hydro,rundir] = obj.getHydrodynamics(geomMode, geomParams);
 
         % If PS control must set max Z and F values
         if strcmp(controlType, 'PS') 
@@ -95,7 +77,8 @@ classdef (Abstract) DeviceModelTemplate
             singleSea = struct();
             % Store the single sea-state in the temp struct
             singleSea.S1 = SS;
-            % Reassaign SS to be SS of signle sea-state (Is there a better way?)
+            % Reassaign SS to be SS of signle sea-state (Is there a better 
+            % way?)
             SS = singleSea;
         end
 
@@ -111,29 +94,33 @@ classdef (Abstract) DeviceModelTemplate
         for iSS = 1:NSS % TODO - consider parfor?
             % Get Sea-State
             S = SS.(seaStateNames{iSS});
-            % TODO: IMPORTANT! Ensure spectra is of WAFO format (e.g. size Nx1)!
+            % TODO: IMPORTANT! Ensure spectra is of WAFO format (e.g. size 
+            % Nx1)!
             % Check sea-state weight
             % TODO: Should check if weights across sea states equal 1?
             if ~isfield(S,'mu')
-                warn = ['No weighting field mu in wave spectra structure S, '...
-                        'setting to 1'];
+                warn = ['No weighting field mu in wave spectra '    ...
+                        'structure S, setting to 1'];
                 warning(warn);
                 S.mu = 1;          
             end        
 
             % Calculate spectra power
-            forces = obj.getForces(S, hydro, controlType, maxVals);
+            motion = obj.getMotion(S,           ...
+                                   hydro,       ...
+                                   controlType, ...
+                                   maxVals);
             
             % TODO: These may need to be templated also
             switch controlType
                 case 'CC'
-                    powSS = WecOptLib.volatile.complexConjugate(forces);
+                    powSS = obj.complexConjugate(motion);
 
                 case 'P'
-                    powSS = WecOptLib.volatile.damping(forces);
+                    powSS = obj.damping(motion);
 
                 case 'PS'
-                    powSS = WecOptLib.volatile.ps(forces);
+                    powSS = obj.pseudoSpectral(motion);
             end                                  
                                              
                                              

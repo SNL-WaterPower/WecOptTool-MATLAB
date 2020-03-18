@@ -1,5 +1,5 @@
-function [hydro,rundir] = RM3_getNemoh(mode,varargin)
-% function [hydro] = RM3_getNemoh(mode,...)
+function [hydro,rundir] = getHydrodynamics(obj, mode, varargin)
+% function [hydro] = getHydrodynamics(mode,...)
 %
 % Returns WEC-Sim hydro structure for RM3.
 %

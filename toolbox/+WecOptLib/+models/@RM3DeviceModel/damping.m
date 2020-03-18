@@ -1,4 +1,4 @@
-    function [pow_ss] = damping(RM3)
+    function [pow_ss] = damping(obj, RM3)
         Z3 = RM3.B33 + RM3.D3 + RM3.Bf + 1i*(RM3.w.*(RM3.mass1 + RM3.A33) - RM3.K3./RM3.w);
         Z9 = RM3.B99 + RM3.D9 + RM3.Bf + 1i*(RM3.w.*(RM3.mass2 + RM3.A99) - RM3.K9./RM3.w);
         Zc = RM3.B39 + 1i * RM3.w .* RM3.A39;

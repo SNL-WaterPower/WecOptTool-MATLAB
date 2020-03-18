@@ -1,4 +1,4 @@
-function [pow_ss] = ps(RM3)
+function [pow_ss] = pseudoSpectral(obj, RM3)
     % Number of frequency - half the number of fourier coefficients
     Nf = length(RM3.w);
     % Collocation points uniformly distributed btween 0 and T
