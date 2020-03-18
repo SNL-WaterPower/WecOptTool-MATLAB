@@ -108,7 +108,7 @@ function [pow_ss] = pseudoSpectral(obj, RM3)
     for ind_ph = 1: n_ph
 
         ph = ph_mat(:, ind_ph);
-        eta_fd = RM3.wave_amp .* exp(1i*RM3.ph);
+        eta_fd = RM3.wave_amp .* exp(1i*ph);
         %             eta_fd = eta_fd(start:end);
 
         fef3 = zeros(2*Nf,1);
@@ -136,6 +136,16 @@ function [pow_ss] = pseudoSpectral(obj, RM3)
         [y, fval, exitflag, output] = fmincon(@pow_calc, X0 , A_ineq, B_ineq, Aeq, Beq,...
             [], [], [], qp_options); % constrained optimiztion
 
+        % y is a vector of x1hat, x2hat, & uhat. Calculate energy using 
+        %    Equation 6.11 of Bacelli 2014
+        x1hat = y(1:end/3);
+        x2hat = y(end/3+1:2*end/3);
+        uhat = y(2*end/3+1:end);
+        J = -T/2*(x1hat - x2hat).*uhat;
+        % Add the sin and cos components to get power as function of W      
+        P = J(1:2:end) + J(2:2:end);  %    See Parseval's Theorem
+        plot(W,P)
+        
         velT = Phip'*y(1:2*end/3);
         posT = (Phip' / Dphi)*y(1:2*end/3);
         relPosT = posT(1:end/2)- posT(end/2+1:end); % relative position (check constraint satisfaction)
