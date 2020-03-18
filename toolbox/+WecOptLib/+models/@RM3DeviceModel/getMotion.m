@@ -1,5 +1,5 @@
-function RM3 = buildRM3(S, hydro, controlType, maxVals)
-% pow_ss = buildRM3(S, hydro, controlType, geomMode, maxVals)
+function RM3 = getMotion(obj, S, hydro, controlType, maxVals)
+% pow_ss = getMotion(S, hydro, controlType, geomMode, maxVals)
 %
 % Returns one Sea-state power given spectra, BEM response, geomMode,
 %    and the max vals

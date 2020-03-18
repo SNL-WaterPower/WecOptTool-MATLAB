@@ -1,4 +1,4 @@
-function tests = RM3_unitTest()
+function tests = RM3DeviceModelTest()
 % tests = RM3_unitTest()
 %
 % Performs a series of unit tests to verify that the code is (still)
@@ -17,7 +17,7 @@ end
 function testVerify_CC(testCase)
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
-RM3Device = WecOptLib.volatile.RM3DeviceModel();
+RM3Device = WecOptLib.model.RM3DeviceModel();
 WECpow = RM3Device.getPower(S,'CC','scalar',1);
 expSol = -3.772016088262561e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
@@ -27,7 +27,7 @@ function testVerify_damping(testCase)
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = WecOptLib.volatile.subSampleFreqs(S);
-RM3Device = WecOptLib.volatile.RM3DeviceModel();
+RM3Device = WecOptLib.model.RM3DeviceModel();
 WECpow = RM3Device.getPower(S,'P','scalar',1);
 expSol = -1.349990052717686e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
@@ -39,7 +39,8 @@ end
 % 
 % %S.ph = rand(length(S.w),1)* 2 * pi;
 % %[S.w, S.S] = WecOptLib.volatile.subSampleFreqs(S);
-% WECpow = WecOptLib.volatile.SeaStatePower(S,'P','scalar',1);
+% RM3Device = WecOptLib.model.RM3DeviceModel();
+% WECpow = RM3Device.getPower(S,'P','scalar',1);
 % expSol = -1.349990052717686e+06;
 % verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 % end
@@ -50,14 +51,15 @@ S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = WecOptLib.volatile.subSampleFreqs(S);
 delta_Zmax = 10;
 delta_Fmax = 1e9;
-RM3Device = WecOptLib.volatile.RM3DeviceModel();
+RM3Device = WecOptLib.model.RM3DeviceModel();
 WECpow = RM3Device.getPower(S,'PS','scalar',1,[delta_Zmax,delta_Fmax]);
 expSol = -3.772016088252104e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end
 
 function test_RM3_mass(testCase)
-hydro = WecOptLib.volatile.RM3_getNemoh('scalar',{1});
+RM3Device = WecOptLib.model.RM3DeviceModel();
+hydro = RM3Device.getHydrodynamics('scalar',{1});
 mass = sum(hydro.Vo * hydro.rho);
 expSol = 1.652838125000000e6;
 verifyEqual(testCase, mass, expSol, 'RelTol', 0.001)
@@ -68,7 +70,7 @@ tol = 5 * eps;
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = WecOptLib.volatile.subSampleFreqs(S);
-RM3Device = WecOptLib.volatile.RM3DeviceModel();
+RM3Device = WecOptLib.model.RM3DeviceModel();
 [madepow,etc] = RM3Device.getPower(S,'CC','parametric',[10,15,3,42]);
 madeFile = etc.rundir;
 [existpow,~] = RM3Device.getPower(S,'CC','existing', madeFile);
@@ -79,7 +81,7 @@ function test_runParametric(testCase)
 S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = WecOptLib.volatile.subSampleFreqs(S);
-RM3Device = WecOptLib.volatile.RM3DeviceModel();
+RM3Device = WecOptLib.model.RM3DeviceModel();
 WECpow = RM3Device.getPower(S,'CC','parametric',[10,15,3,42]);
 expSol = -4.415667556078834e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
