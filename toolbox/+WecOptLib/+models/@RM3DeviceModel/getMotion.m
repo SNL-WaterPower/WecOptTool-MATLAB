@@ -1,5 +1,5 @@
 function RM3 = getMotion(obj, S, hydro, controlType, maxVals)
-% pow_ss = getMotion(S, hydro, controlType, geomMode, maxVals)
+% RM3 = getMotion(S, hydro, controlType, geomMode, maxVals)
 %
 % Returns one Sea-state power given spectra, BEM response, geomMode,
 %    and the max vals
@@ -26,11 +26,11 @@ function RM3 = getMotion(obj, S, hydro, controlType, maxVals)
 %                           Note: to use the optional arguments, both must
 %                           be provided
 % Outputs
-%       pow_ss           power weighted by weighting factors
+%       RM3           struct of components defining device motion
 %
 % Examples:
 % 1) Using scalar input with CC control and scaling factor 1:
-%  WecOptLib.volatile.buildRM3(S, hydro, controlType, maxVals);
+% motion = obj.getMotion(S,, hydro, controlType, maxVals);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
