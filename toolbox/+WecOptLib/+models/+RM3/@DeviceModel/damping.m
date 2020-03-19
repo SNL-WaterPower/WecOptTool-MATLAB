@@ -1,6 +1,6 @@
 function [powPerFreq, freqs] = damping(obj, RM3)
     % DAMPING Damping control
-    %   Returns total power and power per frequency
+    %   Returns power per frequency and frequency bins
     
     freqs = RM3.w;
     
