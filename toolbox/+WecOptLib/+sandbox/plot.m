@@ -20,10 +20,12 @@ function plot
     
     motion = getPSCoefficients(motion);
     ph = 5.3208;
-    [~, P] = getPSPhasePower(motion, ph);
+    [Pt_ph, P] = getPSPhasePower(motion, ph);
     
     figure
     plot(motion.W, P)
+    
+    assert(WecOptLib.utils.isClose(sum(P), abs(Pt_ph)))
     
 end
     
