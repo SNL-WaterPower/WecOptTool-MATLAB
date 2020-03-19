@@ -1,5 +1,7 @@
 function [Pt_ph, P] = getPSPhasePower(motion, ph)
-    %PSPHASE
+    %Calculates power using the pseudospectral method given a phase and
+    % a descrption of the body movement. Returns total phase power and 
+    % power per frequency 
     
     function P = pow_calc(X)
         P = X' * motion.H_mat * X;
