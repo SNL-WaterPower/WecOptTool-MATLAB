@@ -43,3 +43,6 @@ WecOptTool.run(study, options);
 
 %% Print the results
 WecOptTool.result(study);
+
+%% Plot the results
+WecOptTool.plot(study)
