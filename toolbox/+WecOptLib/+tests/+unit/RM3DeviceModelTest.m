@@ -19,7 +19,7 @@ S = WecOptLib.tests.data.exampleSpectrum();
 S.ph = rand(length(S.w),1)* 2 * pi;
 RM3Device = WecOptLib.models.RM3.DeviceModel();
 WECpow = RM3Device.getPower(S,'CC','scalar',1);
-expSol = -3.772016088262561e+06;
+expSol = 3.772016088262561e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end
 
@@ -29,7 +29,7 @@ S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = WecOptLib.utils.subSampleFreqs(S);
 RM3Device = WecOptLib.models.RM3.DeviceModel();
 WECpow = RM3Device.getPower(S,'P','scalar',1);
-expSol = -1.349990052717686e+06;
+expSol = 1.349990052717686e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end
 
@@ -53,7 +53,7 @@ delta_Zmax = 10;
 delta_Fmax = 1e9;
 RM3Device = WecOptLib.models.RM3.DeviceModel();
 WECpow = RM3Device.getPower(S,'PS','scalar',1,[delta_Zmax,delta_Fmax]);
-expSol = -3.772016088252104e+06;
+expSol = 3.772016088252104e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end
 
@@ -83,6 +83,6 @@ S.ph = rand(length(S.w),1)* 2 * pi;
 [S.w, S.S] = WecOptLib.utils.subSampleFreqs(S);
 RM3Device = WecOptLib.models.RM3.DeviceModel();
 WECpow = RM3Device.getPower(S,'CC','parametric',[10,15,3,42]);
-expSol = -4.415667556078834e+06;
+expSol = 4.415667556078834e+06;
 verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
 end

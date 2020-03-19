@@ -86,9 +86,11 @@ classdef (Abstract) DeviceModelTemplate
         seaStateNames = fieldnames(SS);
         % Number of Sea-states
         NSS = length(seaStateNames);
-        % Initial arrays to hold mu, powSS
-        mus=zeros(NSS,1);
-        powSSs=zeros(NSS,1);
+        % Initial arrays to hold mu, powSS, powPerFreq, freqs
+        mus = zeros(NSS, 1);
+        powSSs = zeros(NSS, 1);
+        powPerFreqs = cell(NSS);
+        freqs = cell(NSS);
 
         % Iterate over Sea-States
         for iSS = 1:NSS % TODO - consider parfor?
@@ -114,21 +116,23 @@ classdef (Abstract) DeviceModelTemplate
             % TODO: These may need to be templated also
             switch controlType
                 case 'CC'
-                    powSS = obj.complexConjugate(motion);
+                    [powPerFreq, freq] = obj.complexConjugate(motion);
 
                 case 'P'
-                    powSS = obj.damping(motion);
+                    [powPerFreq, freq] = obj.damping(motion);
 
                 case 'PS'
-                    powSS = obj.pseudoSpectral(motion);
+                    [powPerFreq, freq] = obj.pseudoSpectral(motion);
             end                                  
-                                             
-                                             
+            
             % Save Power to S (would need to return SS, to be useful)
+            powSS = sum(powPerFreq);
             SS.(seaStateNames{iSS}).powSS = powSS;
             % Save weights/ power to arrays
             mus(iSS) = S.mu;
-            powSSs(iSS)   = powSS;
+            powSSs(iSS) = powSS;
+            powPerFreqs{iSS} = powPerFreq;
+            freqs{iSS} = freq;
         
         end
 
@@ -137,6 +141,8 @@ classdef (Abstract) DeviceModelTemplate
 
         etc.mus  = mus;
         etc.pow = powSSs;
+        etc.powPerFreq = powPerFreqs;
+        etc.freq = freqs;
         etc.hydro = hydro;
         etc.rundir = rundir;
 

@@ -1,4 +1,4 @@
-function [Pt_ph, P] = getPSPhasePower(motion, ph)
+function [pow, powPerFreq] = getPSPhasePower(motion, ph)
     %Calculates power using the pseudospectral method given a phase and
     % a descrption of the body movement. Returns total phase power and 
     % power per frequency 
@@ -24,7 +24,7 @@ function [Pt_ph, P] = getPSPhasePower(motion, ph)
     Beq = [fef3; fef9] / motion.m_scale;
     
     % constrained optimiztion
-    qp_options = optimoptions('fmincon',                         ...
+    qp_options = optimoptions('fmincon',                        ...
                               'Algorithm', 'sqp',               ...
                               'Display', 'off',                 ...
                               'MaxIterations', 1e3,             ...
@@ -44,7 +44,7 @@ function [Pt_ph, P] = getPSPhasePower(motion, ph)
                            qp_options); 
     
     % y is a vector of x1hat, x2hat, & uhat. Calculate energy using
-    %    Equation 6.11 of Bacelli 2014
+    % Equation 6.11 of Bacelli 2014
     uEnd = numel(y);
     x1End = uEnd / 3;
     x2Start = x1End + 1;
@@ -57,8 +57,8 @@ function [Pt_ph, P] = getPSPhasePower(motion, ph)
     
     Pvec = -1 / 2 * (x1hat - x2hat) .* uhat;
     % Add the sin and cos components to get power as function of W
-    P = Pvec(1:2:end) + Pvec(2:2:end);
-    P = P * motion.m_scale;
+    powPerFreq = Pvec(1:2:end) + Pvec(2:2:end);
+    powPerFreq = powPerFreq * motion.m_scale;
     
     velT = motion.Phip' * [x1hat;x2hat];
     body1End = numel(velT) / 2;
@@ -66,18 +66,18 @@ function [Pt_ph, P] = getPSPhasePower(motion, ph)
     velTBody1 = velT(1:body1End);
     velTBody2 = velT(Body2Start:end);
     
-    % posT = (Phip' / Dphi)*y(1:2*end/3);
-    
+    % posT = (motion.Phip' / motion.Dphi) * [x1hat;x2hat];
     % relative position (check constraint satisfaction)
-    % relPosT = posT(1:end/2)- posT(end/2+1:end); 
     
+    % relPosT = posT(1:end/2)- posT(end/2+1:end);
     % relative velocity (check constraint satisfaction)
     % relVelT = velT(1:end/2)- velT(end/2+1:end);
     
+    % Alternative power calculation
     uT = motion.m_scale * motion.Phip1' * uhat;
-    Pt = (velTBody1 - velTBody2) .* uT;
-    
-    Pt_ph = trapz(motion.tkp, Pt) / (motion.tkp(end) - motion.tkp(1));
+    Pt = (velTBody2 - velTBody1) .* uT;
+    pow = trapz(motion.tkp, Pt) / (motion.tkp(end) - motion.tkp(1));
+    assert(WecOptLib.utils.isClose(pow, sum(powPerFreq)))
     
 end
 
