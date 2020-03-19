@@ -106,7 +106,7 @@ function motion = getPSCoefficients(motion)
     motion.B_ineq = B_ineq;
     motion.Phip = Phip;
     motion.Phip1 = Phip1;
-    motion.DPhi = Dphi;
+    motion.Dphi = Dphi;
     motion.m_scale = m_scale;
     
 end
