@@ -1,21 +1,23 @@
-function [powSS, Pabs] = complexConjugate(obj, RM3)
-    % Returns total power and power per frequency
+function [powPerFreq, freqs] = complexConjugate(obj, RM3)
+    % COMPLEXCONJUGATE Complex conjugate control
+    %   Returns total power and power per frequency
 
+    freqs = RM3.w;
+    
     % Calculate Impedance
-    Z3 = RM3.B33 + RM3.D3 + RM3.Bf + 1i*(RM3.w.*(RM3.mass1 + RM3.A33) - RM3.K3./RM3.w);
-    Z9 = RM3.B99 + RM3.D9 + RM3.Bf + 1i*(RM3.w.*(RM3.mass2 + RM3.A99) - RM3.K9./RM3.w);
+    Z3 = RM3.B33 + RM3.D3 + RM3.Bf + 1i * ( ...
+                freqs .* (RM3.mass1 + RM3.A33) - RM3.K3 ./ freqs);
+    Z9 = RM3.B99 + RM3.D9 + RM3.Bf + 1i * ( ...
+                freqs .* (RM3.mass2 + RM3.A99) - RM3.K9 ./ freqs);
     Zc = RM3.B39 + 1i * RM3.w .* RM3.A39;
 
     Z0 = Z3 + Z9 + 2*Zc;
     Zi = (Z3.*Z9 - Zc.^2) ./ Z0;
 
-    F0 = (RM3.E3.*(Z9+Zc) - RM3.E9.*(Z3+Zc))./Z0;
+    F0 = (RM3.E3.*(Z9+Zc) - RM3.E9 .* (Z3 + Zc)) ./ Z0;
     
     % Power per frequency
-    Pabs = abs(F0).^2 ./ (8* real(Zi));
-    
-    % Sea-state Power Total
-    powSS = -1 * sum(Pabs);
+    powPerFreq = abs(F0) .^ 2 ./ (8 * real(Zi));
     
     %TODO: Determine if this code is useful going forward
 %     Ur = F0 ./ (2 * real(Zi));
