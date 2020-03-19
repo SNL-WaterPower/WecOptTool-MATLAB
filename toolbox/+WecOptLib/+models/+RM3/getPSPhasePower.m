@@ -53,9 +53,10 @@ function [Pt_ph, P] = getPSPhasePower(motion, ph)
     x2hat = y(x2Start:x2End);
     uhat = y(uStart:end);
     
-    J = -motion.T / 2 * (x1hat - x2hat) .* uhat;
+    Pvec = -1 / 2 * (x1hat - x2hat) .* uhat;
     % Add the sin and cos components to get power as function of W
-    P = J(1:2:end) + J(2:2:end);  %    See Parseval's Theorem
+    P = Pvec(1:2:end) + Pvec(2:2:end);
+    P = P * motion.m_scale;
     
     velT = motion.Phip' * [x1hat;x2hat];
     body1End = numel(velT) / 2;
