@@ -1,6 +1,6 @@
 function [powPerFreq, freq] = pseudoSpectral(obj, motion)
     % PSEUDOSPECTRAL Pseudo spectral control
-    %   Returns total power and power per frequency
+    %   Returns power per frequency and frequency bins
     
     import WecOptLib.models.RM3.*
     
