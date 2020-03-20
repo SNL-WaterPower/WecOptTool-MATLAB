@@ -1,5 +1,5 @@
 
-n RM3 = getMotion(obj, S, hydro, controlType, maxVals)
+function RM3 = getMotion(obj, S, hydro, controlType, maxVals)
 % RM3 = getMotion(S, hydro, controlType, geomMode, maxVals)
 %
 % Returns one Sea-state power given spectra, BEM response, geomMode,
@@ -33,7 +33,7 @@ n RM3 = getMotion(obj, S, hydro, controlType, maxVals)
 %    Falnes, J., Ocean Waves and Oscillating Systems, 
 %      Cambridge University Press, 2002
 %    Falnes, J.,“Wave-energy conversion through relative motion between two 
-%      single-mode % oscillating bodies,” Journal of Offshore Mechanics 
+%      single-mode % oscillating bodies,�? Journal of Offshore Mechanics 
 %      and Arctic Engineering, vol. 121, no. 1, pp. 32–38, 1999. 
 % Examples:
 % 1) Using scalar input with CC control and scaling factor 1:
