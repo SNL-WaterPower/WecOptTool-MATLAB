@@ -176,51 +176,38 @@ controversial.
 
 ### Implementation
 
-#### General refactor of source code
+#### Updating code architecture
 
 * Description:
-    The source code is currently poorly organised. Generally, examples should 
-    be split from source and embedded functions should be separated to allow 
-    for unit testing and reuse. The directory structure should have 'src', 
-    'examples', and 'vendor' directories once finished. 
-* Status: proposed
-* Link: https://github.com/SNL-WaterPower/WecOptTool/issues/37
-* Last updated: 2020-02-24
+    The source code was organised into packages and a user interface was added 
+    as a top level package under the name WecOptTool. Implementation was moved 
+    to a top level package called WecOptLib. It is likely that the contents 
+    of these packages will evolve as the project reaches maturity.
+* Status: active
+* Link: https://github.com/SNL-WaterPower/WecOptTool/issues/5
+* Last updated: 2020-03-11
 
-#### Removing external dependencies
-
-* Description:
-    The code currently has 4 external dependencies, which should be packaged
-    inside the repository as "vendor" code to lessen the burden on the user. 
-    This should also remove risk of version conflicts occurring. 
-* Status: proposed
-* Link: https://github.com/SNL-WaterPower/WecOptTool/issues/38
-* Last updated: 2020-02-27
-
-#### Package based architecture
+#### Reducing external dependencies
 
 * Description:
-    To allow configurable cases that can be built in scripts the toolbox should 
-    adopt a package style architecture. Function are then accessed via 
-    "package.function" syntax which provides a nice way of organising functions 
-    by purpose. See 
-    https://uk.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html 
-    for more details. 
-* Status: proposed
-* Link:
-* Last updated: 2020-02-27
+    The required dependencies has been reduced to NEMOH only. WAFO is now an
+    optional, if highly useful, dependency.
+* Status: complete
+* Link: https://github.com/SNL-WaterPower/WecOptTool/issues/33
+* Last updated: 2020-03-11
 
-#### NEMOH files to temporary folder
+#### NEMOH files to User folder
 
 * Description:
-    NEMOH files should not be stored within the source code, as it adds 
-    unnecessary clutter. These files should be stored in a temporary folder
-    instead. See: https://uk.mathworks.com/help/matlab/ref/tempdir.html
-* Status: proposed
-* Link:
-* Last updated: 2020-02-27
+    NEHOH files are now placed into a user-centric folder
+    (AppData\Roaming\WecOptTool on Windows and .wecopttool on linux). A tool
+    named dataTool is available to recover the path to the NEMOH files or
+    to delete all files generated bt NEMOH.
+* Status: complete
+* Link: https://github.com/SNL-WaterPower/WecOptTool/issues/5
+* Last updated: 2020-03-11
 
-#### Control Parallel Pool Size
+#### Control parallel pool size
 
 * Description:
     Currently the fmincon optimiser will use whatever resources are available
@@ -232,30 +219,28 @@ controversial.
 
 ### Testing
 
-#### Add unit tests
+#### Expand unit test coverage
 
 * Description:
-    A unit testing framework is a great way of verifying the logic within the 
-    code and of aiding change management. MATLAB has an inbuilt unit testing
-    framework that we should utilise. Building tests and refactoring code so
-    it can be tested has a positive impact on the quality and accessibility
-    of the code.
-* Status: proposed
+    A function to run all tests currently available has been added called 
+    runTests.m. Tests are stored in the WecOptLib.tests package. Coverage of
+    the unit tests should be measured and the aim should be to cover the
+    entire source base.
+* Status: active
 * Link:
-* Last updated: 2020-02-24
+* Last updated: 2020-03-11
 
 ### Documentation
 
 #### Create a single unified README
 
 * Description:
-    There are READMEs in the subdirectories of the WEC tool, which should be
-    either deleted or incorporated into the README in the root directory. If 
-    the information is useful then it should be easily accessible, if it's 
-    not then it should be deleted.
-* Status: proposed
+    The repository now contains a single README that contains this RoadMap
+    and is being updated alongside other changes in preparation for the 
+    first public release of the code.
+* Status: active
 * Link:
-* Last updated: 2020-02-24
+* Last updated: 2020-03-11
 
 #### Docs for MATLAB documentation system
 
@@ -273,14 +258,11 @@ controversial.
 
 #### Reducing the repository size
 
-* Description:
-    The repository currently requires 900MB of storage, which makes cloning
-    very slow. Most of this data are PDF documents found in the refs directory.
-    The repository should be deleted and then recreated using only the source
-    code, to remove these files and their history.
-* Status: active
-* Link: https://github.com/SNL-WaterPower/WecOptTool/issues/36
-* Last updated: 2020-02-24
+* Description: The original repository was reset to focus on hosting of the
+    source code.
+* Status: complete
+* Link: https://github.com/SNL-WaterPower/WecOptTool/issues/43
+* Last updated: 2020-03-11
 
 #### Add installation / uninstallation scripts
 
