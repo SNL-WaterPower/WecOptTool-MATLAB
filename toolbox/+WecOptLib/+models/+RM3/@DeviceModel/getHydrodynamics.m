@@ -34,7 +34,7 @@ switch mode
         % Get data file path
         p = mfilename('fullpath');
         [filepath, ~, ~] = fileparts(p);
-        dataPath = [filepath filesep 'RM3_BEM.mat'];
+        dataPath = [filepath filesep '..' filesep 'RM3_BEM.mat'];
         
         load(dataPath, 'hydro');
         rundir = '.';
