@@ -1,3 +1,6 @@
+%% Suppress warnings
+warning('off', 'WaveSpectra:NoWeighting')
+
 %% Create an RM3 study object
 study = WecOptTool.RM3Study();
 
@@ -7,8 +10,11 @@ study = WecOptTool.RM3Study();
 % Set uniform random sample [0, 2pi] for 'phasing'
 %S.ph = rand(length(S.w),1)* 2 * pi;
 
-%% Alternatively load an example spectrum
-S = WecOptLib.tests.data.exampleSpectrum();
+%% Alternatively load a single example spectrum
+% S = WecOptLib.tests.data.exampleSpectrum();
+
+%% Or load an example with multiple sea-states (8 differing spectra)
+S = WecOptLib.tests.data.example8Spectra();
 
 %% Add spectra to study
 study.addSpectra(S);
@@ -46,3 +52,6 @@ WecOptTool.result(study);
 
 %% Plot the results
 WecOptTool.plot(study)
+
+%% Re-enable warnings
+warning('on', 'WaveSpectra:NoWeighting')

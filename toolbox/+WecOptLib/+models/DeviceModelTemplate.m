@@ -103,7 +103,7 @@ classdef (Abstract) DeviceModelTemplate
             if ~isfield(S,'mu')
                 warn = ['No weighting field mu in wave spectra '    ...
                         'structure S, setting to 1'];
-                warning(warn);
+                warning('WaveSpectra:NoWeighting', warn);
                 S.mu = 1;          
             end        
 
