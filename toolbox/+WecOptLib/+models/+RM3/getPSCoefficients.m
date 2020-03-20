@@ -1,6 +1,6 @@
 function motion = getPSCoefficients(motion)
     %PSCOEFFICIENTS
-    
+    % Bacelli 2014: Background Chapter 4.1, 4.2; RM3 in section 6.1
     % Number of frequency - half the number of fourier coefficients
     Nf = length(motion.w);
     % Collocation points uniformly distributed btween 0 and T
