@@ -91,22 +91,48 @@ classdef (Abstract) DeviceModelTemplate
         powSSs = zeros(NSS, 1);
         powPerFreqs = cell(NSS);
         freqs = cell(NSS);
+        n_mu = 0;
+        
+        % Check sea-state weights
+        for iSS = 1:NSS
+            
+            S = SS.(seaStateNames{iSS});
+            
+            if isfield(S, 'mu')
+                n_mu = n_mu + 1;    
+            end
+            
+        end
+        
+        if NSS == 1
+            
+            % Single sea-state requires no weighting
+            SS.(seaStateNames{1}).mu = 1;  
+            
+        elseif n_mu == 0
+            
+            % Equalise weightings for multi-sea-states if not given
+            for iSS = 1:NSS
+                SS.(seaStateNames{iSS}).mu = 1;     
+            end            
+            
+            warn = ['Provided wave spectra have no weightings ' ...
+                    '(field mu). Equal weighting presumed.'];
+            warning('WaveSpectra:NoWeighting', warn);
+            
+        elseif n_mu ~= NSS
+            
+            % Don't allow partial weightings
+            msg = ['Weighting field mu must be set for all spectra '    ...
+                   'or for none of them.'];
+            error(msg)
+            
+        end
 
         % Iterate over Sea-States
         for iSS = 1:NSS % TODO - consider parfor?
             % Get Sea-State
             S = SS.(seaStateNames{iSS});
-            % TODO: IMPORTANT! Ensure spectra is of WAFO format (e.g. size 
-            % Nx1)!
-            % Check sea-state weight
-            % TODO: Should check if weights across sea states equal 1?
-            if ~isfield(S,'mu')
-                warn = ['No weighting field mu in wave spectra '    ...
-                        'structure S, setting to 1'];
-                warning('WaveSpectra:NoWeighting', warn);
-                S.mu = 1;          
-            end        
-
             % Calculate spectra power
             motion = obj.getMotion(S,           ...
                                    hydro,       ...
