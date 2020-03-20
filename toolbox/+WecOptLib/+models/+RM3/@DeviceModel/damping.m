@@ -1,37 +1,21 @@
 function [powPerFreq, freqs] = damping(obj, RM3)
     % DAMPING Damping control
     %   Returns power per frequency and frequency bins
-    
+    %
+    % References:
+    %    Falnes, J., Ocean Waves and Oscillating Systems, 
+    %      Cambridge University Press, 2002
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+ 
+    % Frequencies
     freqs = RM3.w;
-    
-    % Calculate Impedance
-    Z3 = RM3.B33 + RM3.D3 + RM3.Bf + 1i * ( ...
-                freqs .* (RM3.mass1 + RM3.A33) - RM3.K3 ./ freqs);
-    Z9 = RM3.B99 + RM3.D9 + RM3.Bf + 1i * ( ...
-                freqs .* (RM3.mass2 + RM3.A99) - RM3.K9 ./ freqs);
-    Zc = RM3.B39 + 1i * freqs .* RM3.A39;
 
-    Z0 = Z3 + Z9 + 2*Zc;
-    Zi = (Z3.*Z9 - Zc.^2) ./ Z0;  %Zi = matched Impedance?
-
-    F0 = (RM3.E3.*(Z9+Zc) - RM3.E9.*(Z3+Zc))./Z0;
-
-    % Optimize linear damping B over Impedance? 
-    P_max = @(b) -0.5*b*sum(abs(F0./(Zi+b)).^2);
-    B_opt = fminsearch(P_max, max(real(Zi)));
+    % Max Power for a given Damping Coeffcient [Falnes 2002 (p.51-52)]
+    P_max = @(b) -0.5*b*sum(abs(RM3.F0./(RM3.Zi+b)).^2);
+    % Optimize the linear damping coeffcient(B)
+    B_opt = fminsearch(P_max, max(real(RM3.Zi)));
     
     % Power per frequency at optimial damping?
-    powPerFreq = 0.5*B_opt *(abs(F0 ./ (Zi + B_opt)).^2);
-    
-    
-    %TODO: Determine if this code is useful going forward
-%     Ur = F0 ./ (2 * real(Zi));
-%     Sr = -1i * Ur ./ RM3.w;
-%     Fl = conj(Zi) .* Ur;
-%         
-%     tkp = linspace(0, 2*pi/(mean(diff(RM3.w))), 4*(length(RM3.w)));
-%     exp_mat = exp(1i * RM3.w * tkp);
-%     srt = real(Sr .' * exp_mat);
-%     urt = real(Ur .' * exp_mat);
-%     Flt = real(Fl .' * exp_mat);
+    powPerFreq = 0.5*B_opt *(abs(RM3.F0 ./ (RM3.Zi + B_opt)).^2);
+        
 end
