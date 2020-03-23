@@ -76,14 +76,14 @@ gfortran or the intel fortran compiler):
 	```
 
 
-4. **(optional) Run functionality tests:** A test suite is available to verify that the code is operational. A script is provided in in the root directory of the WecOptTool source code and is run from the MATLAB command window, as follows:
+4. **(optional) Run functionality tests:** A test suite is available to verify that the code is operational. A script is provided in the root directory of the WecOptTool source code and is run from the MATLAB command window, as follows:
 
 	```matlab
 	>> cd /path/to/WecOptTool
 	>> runTests;
 	```
 
-5. **Begin use:** See the [`example.m`](https://github.com/ryancoe/WecOptTool/blob/master/example.m) file.
+5. **Begin use:** See the [`example.m`](https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m) file.
 
 
 ## NEMOH Files
