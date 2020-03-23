@@ -2,6 +2,7 @@
 
 The WEC Design Optimization Toolbox (WecOptTool) allows users to perform wave energy converter (WEC) device design optimization studies with constrained optimal control.
 
+## Dependencies
 Dependency | Website | Required?
 ---------- | ------- | ---------
 MATLAB Optimization Toolbox | https://www.mathworks.com/products/optimization.html | yes
@@ -22,6 +23,7 @@ the MATLAB command prompt (alternatively the "Set Path" tool can be used to add 
 
 	```matlab
 	>> addpath(genpath('/path/to/WecOptTool/toolbox'));
+	>> savepath;
 	```
 
 2. **Set up Nemoh:**         
@@ -108,12 +110,12 @@ For convenience, the script can also remove all files generated for NEMOH:
 
 ### Introduction
 
-This roadmap is for organising and prioritising the development and deployment
+This roadmap is for organizing and prioritizing the development and deployment
 of this code and for improving the development team's working practices.
 
-It is organised into 6 main sections, explained as follows:
+It is organized into 6 main sections, explained as follows:
 
-1. Organisation <- relating to the development team
+1. Organization <- relating to the development team
 2. Features <- planning or code related to the business logic
 3. Implementation <- planning or code not related to the business logic
 4. Testing <- for both integration and unit tests
@@ -153,7 +155,7 @@ controversial.
 #### Updating code architecture
 
 * Description:
-    The source code was organised into packages and a user interface was added 
+    The source code was organized into packages and a user interface was added 
     as a top level package under the name WecOptTool. Implementation was moved 
     to a top level package called WecOptLib. It is likely that the contents 
     of these packages will evolve as the project reaches maturity.
