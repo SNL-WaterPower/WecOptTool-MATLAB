@@ -20,6 +20,10 @@
 
 classdef (Abstract) DeviceModelTemplate
     
+    properties
+        nemohDir
+    end
+    
     methods (Abstract)
         
         [hydro, rundir] = getHydrodynamics(obj,         ...
@@ -34,6 +38,10 @@ classdef (Abstract) DeviceModelTemplate
     end
         
     methods
+        
+        function obj = DeviceModelTemplate(nemohDir)
+            obj.nemohDir = nemohDir;
+        end
                 
         function [pow, etc] = getPower(obj,             ...
                                        SS,              ...

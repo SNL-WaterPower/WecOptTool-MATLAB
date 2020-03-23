@@ -110,7 +110,7 @@ switch mode
             w = w(2:end);
         end
         
-        [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2);
+        [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2,obj.nemohDir);
         
     case 'existing'
         
@@ -132,7 +132,7 @@ end
 
 end
 
-function [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2)
+function [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2,rundirectory)
 
 % Store NEMOH output in fixed user-centric location
 nemohPath = WecOptLib.utils.getSrcRootPath();
@@ -149,7 +149,7 @@ if WecOptLib.utils.hasParallelToolbox()
     
 end
 
-rundir = fullfile(subdirectory,...
+rundir = fullfile(rundirectory,...
     [datestr(now,'yymmdd_HHMMssFFF'),'_',num2str(procid)]);
 
 %% Float

@@ -45,5 +45,3 @@ function testNoExtraFigures(testCase)
 
 end
 
-
-

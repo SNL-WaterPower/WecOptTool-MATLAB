@@ -38,7 +38,7 @@ function run(study, optimOptions)
     end
 
     %% Create the objective function
-    RM3Device = WecOptLib.models.RM3.DeviceModel();
+    RM3Device = WecOptLib.models.RM3.DeviceModel(study.nemohDir);
     
     function pow = obj(x)
         warning('off', 'WaveSpectra:NoWeighting')
