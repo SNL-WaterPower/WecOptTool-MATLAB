@@ -51,7 +51,7 @@ WecOptTool.run(study, options);
 WecOptTool.result(study);
 
 %% Plot the results
-WecOptTool.plot(study)
+WecOptTool.plot(study);
 
 %% Re-enable warnings
 warning('on', 'WaveSpectra:NoWeighting')
