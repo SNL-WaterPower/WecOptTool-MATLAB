@@ -67,4 +67,3 @@ classdef PlotsTest < matlab.unittest.TestCase
     end
     
 end
-    

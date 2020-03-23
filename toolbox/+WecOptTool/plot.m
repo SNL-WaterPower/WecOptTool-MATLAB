@@ -11,6 +11,6 @@ function plot(study)
                                   study.controlParams);
 
     % Power vs Frequency Plot
-    WecOptLib.plots.powerPerFreq(study.spectra, etc)
+    WecOptLib.plots.powerPerFreq(study.spectra, etc);
     
 end
