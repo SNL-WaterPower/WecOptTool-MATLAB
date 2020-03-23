@@ -11,8 +11,7 @@ function testRemovesDir(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_cleanNemohTest'];
     WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
     % running cleanNemoh to immediately remove created files

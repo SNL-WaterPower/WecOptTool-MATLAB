@@ -64,7 +64,7 @@ switch mode
         r2 = varargin{1}(2);
         d1 = varargin{1}(3);
         d2 = varargin{1}(4);
-        [hydro,rundir] = RM3_parametric(r1,r2,d1,d2);
+        [hydro,rundir] = RM3_parametric(r1,r2,d1,d2,obj.nemohDir);
     case 'existing'
         rundir = varargin{1};
         hydro = struct();
@@ -80,13 +80,9 @@ end
 
 end
 
-function [hydro,rundir] = RM3_parametric(r1,r2,d1,d2)
+function [hydro,rundir] = RM3_parametric(r1,r2,d1,d2,rundirectory)
 
 w = linspace(0.2,2,10); % TODO: set this based on wave spectrum
-
-%% Store NEMOH output in fixed user-centric location
-WOTDataPath = WecOptLib.utils.getUserPath();
-subdirectory = [WOTDataPath filesep 'RM3_Nemoh_Runs'];
 
 worker = getCurrentWorker;
 procid=0;
@@ -95,7 +91,7 @@ if(~isa(worker, 'double'))
     procid=worker.ProcessId;
 end
 
-rundir = fullfile(subdirectory,...
+rundir = fullfile(rundirectory,...
     [datestr(now,'yymmdd_HHMMssFFF'),'_',num2str(procid)]);
 
 %% Float
