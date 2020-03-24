@@ -148,7 +148,7 @@ subject to change as the code approaches maturity.
 
 ## Contributing
 
-Contributions to WecOptLib are welcome. The project follows a [trunk based 
+Contributions to the toolbox are welcome. The project follows a [trunk based 
 development](https://trunkbaseddevelopment.com/) paradigm and updates to the 
 code should be made through [pull requests](
 https://help.github.com/en/github/collaborating-with-issues-and-pull-requests).
