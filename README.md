@@ -161,9 +161,8 @@ prior to submitting the pull request.
 A code maintainer will review your pull request at the earliest possible
 opportunity. For large pull requests, it would be advisable to open a related 
 issue to discuss the purpose of your updates. The developers also would be 
-grateful if the *"Allow edits from maintainers"* is checked when making a 
-pull request, as this will allow us to finalise your contributions more 
-rapidly.
+grateful if *"Allow edits from maintainers"* is checked when making a pull 
+request, as this will allow us to finalise your contributions more rapidly.
 
 ## RoadMap
 
