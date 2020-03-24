@@ -85,8 +85,8 @@ function [hydro,rundir] = RM3_parametric(r1,r2,d1,d2)
 w = linspace(0.2,2,10); % TODO: set this based on wave spectrum
 
 %% Store NEMOH output in fixed user-centric location
-WOTDataPath = WecOptLib.utils.getUserPath();
-subdirectory = [WOTDataPath filesep 'RM3_Nemoh_Runs'];
+nemohPath = WecOptLib.utils.getSrcRootPath();
+subdirectory = fullfile(nemohPath, '~nemoh_runs');
 
 worker = getCurrentWorker;
 procid=0;

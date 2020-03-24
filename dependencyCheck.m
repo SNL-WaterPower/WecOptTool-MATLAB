@@ -41,16 +41,13 @@ end
 
 %% Nemoh
 
-% NEMOH output stored in fixed user-centric location
-if ispc
-    appDataPath = getenv('APPDATA');
-    WOTDataPath = [appDataPath filesep 'WecOptTool'];
-else
-    appDataPath = getenv('HOME');
-    WOTDataPath = [appDataPath filesep '.wecopttool'];
+nemohTestPath = fullfile(tempdir, "WecOptTool_dependencyCheck");
+
+if ~exist(nemohTestPath, 'dir')
+    mkdir(nemohTestPath)
 end
 
-nemohExistFlag = WecOptLib.nemoh.isNemohInPath(WOTDataPath);
+nemohExistFlag = WecOptLib.nemoh.isNemohInPath(nemohTestPath);
 
 if nemohExistFlag
     fprintf('NEMOH:                         Found\n');
@@ -107,3 +104,6 @@ fprintf('\n')
 if ~allfoundflag
     warning("Mandatory dependencies are missing!")
 end
+
+%% Cleanup
+WecOptLib.utils.rmdirRetry(nemohTestPath);

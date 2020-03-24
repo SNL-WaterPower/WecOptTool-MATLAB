@@ -23,8 +23,7 @@ Thumbs.db
 *.spl
 
 # NEMOH
-RM3_Nemoh_Runs/
-ID.dat
+~nemoh_runs/
 
 # Tests
 test_results/

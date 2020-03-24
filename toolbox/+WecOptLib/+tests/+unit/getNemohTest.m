@@ -26,13 +26,15 @@ function testCylinderM(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testCylinderM'];
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
     mAct = hydro.Vo * hydro.rho;
     mExp = 1602.74022500000;
     verifyEqual(testCase, mAct, mExp, 'RelTol', tol)
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
+    
 end
 
 function testCylinderA(testCase)
@@ -41,8 +43,7 @@ function testCylinderA(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testCylinderA'];
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
     AAct = squeeze(hydro.A(3,3,:))*hydro.rho;
@@ -60,6 +61,9 @@ function testCylinderA(testCase)
             2.496468000000000e+03];
   
     verifyEqual(testCase, AAct, AExp, 'RelTol', tol)
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
+    
 end
 
 function testCylinderAinf(testCase)
@@ -67,14 +71,16 @@ function testCylinderAinf(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testCylinderAinf'];
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
 
     AinfAct = hydro.Ainf(3,3)*hydro.rho;
     AinfExp = 2.496468000000000e+03;
     
     verifyEqual(testCase, AinfAct, AinfExp, 'RelTol', tol)
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
+    
 end
 
 function testCylinderB(testCase)
@@ -83,8 +89,7 @@ function testCylinderB(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testCylinderB'];
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
     BAct = squeeze(hydro.B(3,3,:)).*w'*hydro.rho;
@@ -99,6 +104,9 @@ function testCylinderB(testCase)
             298.097900000000;...
             387.615300000000];
     verifyEqual(testCase, BAct, BExp, 'RelTol', tol);
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
+    
 end
 
 function testCylinderEx(testCase)
@@ -107,11 +115,11 @@ function testCylinderEx(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testCylinderEx'];
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
-    ExAct = (squeeze(hydro.ex_re(3,1,:)) + 1i * squeeze(hydro.ex_im(3,1,:)))*hydro.rho*hydro.g;
+    ExAct = (squeeze(hydro.ex_re(3,1,:)) + ...
+                1i * squeeze(hydro.ex_im(3,1,:))) * hydro.rho * hydro.g;
     ExExp = [31405.2399999587 + 0.0509254181638977i;...
              31283.0899895515 + 0.808531169306684i;...
              31078.8897373919 + 4.04019042295150i;...
@@ -125,6 +133,8 @@ function testCylinderEx(testCase)
          
      verifyEqual(testCase, ExAct, ExExp, 'RelTol', tol);
      
+     WecOptLib.nemoh.cleanNemoh(rundir);
+     
 end
 
 function testCylinderC(testCase)
@@ -133,17 +143,16 @@ function testCylinderC(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testCylinderC'];
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
 
     CAct = hydro.C(3,3)*hydro.rho*hydro.g;
     CExp = 3.144575000000000e+04;
     verifyEqual(testCase, CAct, CExp, 'RelTol', tol);
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
+    
 end
-
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -168,8 +177,7 @@ function testSphererM(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testSphererM'];
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -199,6 +207,9 @@ function testSphererM(testCase)
     mExp = 2.133340700000000e+03;
    
     verifyEqual(testCase, mAct, mExp, 'RelTol', tol)
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
+    
 end
 
 function testSphereA(testCase)
@@ -206,8 +217,7 @@ function testSphereA(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testSphereA'];
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -246,6 +256,9 @@ function testSphereA(testCase)
             1.866094000000000e+03];
   
     verifyEqual(testCase, AAct, AExp, 'RelTol', tol)
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
+    
 end
 
 function testSphereAinf(testCase)
@@ -253,8 +266,7 @@ function testSphereAinf(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testSphereAinf'];
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -284,6 +296,9 @@ function testSphereAinf(testCase)
     AinfExp = 1.866094000000000e+03;
     
     verifyEqual(testCase, AinfAct, AinfExp, 'RelTol', tol)
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
+    
 end
 
 function testSphereB(testCase)
@@ -291,8 +306,7 @@ function testSphereB(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testSphereB'];
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -331,6 +345,9 @@ function testSphereB(testCase)
             3.969600000000000e+02];
         
     verifyEqual(testCase, BAct, BExp, 'RelTol', tol);
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
+    
 end
 
 function testSphereEx(testCase)
@@ -338,8 +355,7 @@ function testSphereEx(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testSphereEx'];
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -364,7 +380,8 @@ function testSphereEx(testCase)
     end
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
-    ExAct = (squeeze(hydro.ex_re(3,1,:)) + 1i * squeeze(hydro.ex_im(3,1,:)))*hydro.rho*hydro.g;
+    ExAct = (squeeze(hydro.ex_re(3,1,:)) + ...
+                1i * squeeze(hydro.ex_im(3,1,:))) * hydro.rho * hydro.g;
     ExExp = [3.135264999995731e+04 + 5.174237563772652e-02i;...
              3.123397998919338e+04 + 8.216251484554422e-01i;...
              3.103439972829488e+04 + 4.106630071455531e+00i;...
@@ -378,6 +395,8 @@ function testSphereEx(testCase)
          
      verifyEqual(testCase, ExAct, ExExp, 'RelTol', tol)
      
+     WecOptLib.nemoh.cleanNemoh(rundir);
+     
 end
 
 function testSphereC(testCase)
@@ -385,8 +404,7 @@ function testSphereC(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    rundir = [WOTDataPath filesep 'RM3_Nemoh_Runs' filesep 'Test'];
+    rundir = [tempdir filesep 'WecOptTool_testSphereC'];
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -415,4 +433,6 @@ function testSphereC(testCase)
     CExp = 3.139205000000000e+04;
     
     verifyEqual(testCase, CAct, CExp, 'RelTol', tol)
+    
+    WecOptLib.nemoh.cleanNemoh(rundir);
 end

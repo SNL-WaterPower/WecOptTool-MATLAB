@@ -1,11 +1,11 @@
 function tests = RM3DeviceModelTest()
-% tests = RM3_unitTest()
+% RM3DeviceModelTest
 %
 % Performs a series of unit tests to verify that the code is (still)
 % working correctly.
 %
 % Call as
-%           results = runtests('RM3_unitTest')
+%           results = runtests('RM3DeviceModelTest')
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
