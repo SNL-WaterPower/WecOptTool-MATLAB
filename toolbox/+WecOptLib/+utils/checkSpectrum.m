@@ -38,8 +38,9 @@ end
 function [] = checkFields(S, idx)
 fns = {'S','w'};
 msg = 'Spectrum #%i in array does not contain required S.S and S.w fields';
+ID = 'WecOptTool:invalidSpectrum:missingFields';
 try
-    assert(all(isfield(S,fns)),msg,idx)
+    assert(all(isfield(S,fns)),ID,msg,idx)
 catch ME
     throw(ME)
 end
@@ -47,8 +48,9 @@ end
 
 function [] = checkLengths(S, idx)
 msg = 'Spectrum #%i in array S.S and S.w fields are not same length';
+ID = 'WecOptTool:invalidSpectrum:mismatchedLengths';
 try
-    assert(length(S.S) == length(S.w),msg, idx)
+    assert(length(S.S) == length(S.w),ID,msg, idx)
 catch ME
     throw(ME)
 end
@@ -56,8 +58,9 @@ end
 
 function [] = checkCol(S, idx)
 msg = 'Spectrum #%i in array S.S and S.w fields are not column vectors';
+ID = 'WecOptTool:invalidSpectrum:notColumnVectors';
 try
-    assert(iscolumn(S.S) && iscolumn(S.w),msg, idx)
+    assert(iscolumn(S.S) && iscolumn(S.w),ID,msg, idx)
 catch ME
     throw(ME)
 end
