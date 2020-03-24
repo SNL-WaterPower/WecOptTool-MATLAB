@@ -155,8 +155,20 @@ https://help.github.com/en/github/collaborating-with-issues-and-pull-requests).
 
 Contributions to the MATLAB source code should be submitted against the 
 `master` branch, whilst contributions to the documentation are made against the 
-`gh-pages` branch. Please spell-check any contributions to the documentation,
-prior to submitting the pull request.
+`gh-pages` branch.
+
+When submitting to the MATLAB source code please run the test suite first:
+
+```matlab
+>> cd /path/to/WecOptTool
+>> runTests;
+```
+
+When the test suite has finished please add the generated `test_results.pdf` 
+file, showing that all tests have passed, to the pull request description.
+
+For contributions to the documentation, please please run a spell-check prior 
+to submitting a pull request.
 
 A code maintainer will review your pull request at the earliest possible
 opportunity. For large pull requests, it would be advisable to open a related 
