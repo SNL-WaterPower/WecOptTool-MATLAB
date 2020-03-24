@@ -119,6 +119,52 @@ For convenience, the script can also remove all files generated for NEMOH:
 >> dataTool clean
 ```
 
+## Code Architecture
+
+The WecOptTool toolbox is divided into two main packages as follows:
+
+1. **WecOptTool** provides the user interface to the toolbox. The main 
+   components are: 
+     * The `RM3Study` object, used for setting up a simulation.
+     * The geometric and controller classes, as found in the `WecOptTool.geom` 
+       and `WecOptTool.control` sub-packages, which are combined with a study 
+       object to define the type of simulation desired.
+     * Top level functions to control execution and examine results of the 
+       simulation such as `WecOptTool.run` and `WecOptTool.result`.
+2. **WecOptLib** contains most of the business logic for implementing the 
+   studies created using the WecOptTool package. The sub-packages found 
+   here are divided by purpose, for instance:
+     * The `WecOptLib.nemoh` package contains functions related to 
+       manipulating NEMOH.
+     * The `WecOptLib.models` contain the logic relating to the modelled wave 
+       device (currently only RM3).
+   
+   Note, any interfaces provided by WecOptLib are highly volatile and will
+   change often. It is anticipated that only "super users" will use the 
+   functions in WecOptLib directly.
+
+The code architecture, for both the WecOptTool and WecOptLib packages, is 
+subject to change as the code approaches maturity.
+
+## Contributing
+
+Contributions to WecOptLib are welcome. The project follows a [trunk based 
+development](https://trunkbaseddevelopment.com/) paradigm and updates to the 
+code should be made through [pull requests](
+https://help.github.com/en/github/collaborating-with-issues-and-pull-requests).
+
+Contributions to the MATLAB source code should be submitted against the 
+`master` branch, whilst contributions to the documentation are made against the 
+`gh-pages` branch. Please spell-check any contributions to the documentation,
+prior to submitting the pull request.
+
+A code maintainer will review your pull request at the earliest possible
+opportunity. For large pull requests, it would be advisable to open a related 
+issue to discuss the purpose of your updates. The developers also would be 
+grateful if the *"Allow edits from maintainers"* is checked when making a 
+pull request, as this will allow us to finalise your contributions more 
+rapidly.
+
 ## RoadMap
 
 ### Introduction
