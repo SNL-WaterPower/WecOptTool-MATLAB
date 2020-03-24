@@ -1,90 +1,103 @@
 # WecOptTool
 
-The WEC Design Optimization Toolbox (WecOptTool) allows users to perform wave energy converter (WEC) device design optimization studies with constrained optimal control.
+The WEC Design Optimization Toolbox (WecOptTool) allows users to perform wave 
+energy converter (WEC) device design optimization studies with constrained 
+optimal control. 
 
 ## Dependencies
-Dependency | Website | Required?
----------- | ------- | ---------
-MATLAB Optimization Toolbox | https://www.mathworks.com/products/optimization.html | yes
-Nemoh | https://github.com/LHEEA/Nemoh | yes
-WAFO<sup>1</sup> | https://github.com/wafo-project/wafo | no
-MATLAB Parallel Computing Toolbox | https://www.mathworks.com/products/parallel-computing.html | no
 
-<sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to match the output
-of the WAFO toolbox. These spectra can also be produced 'by hand' and an example spectra is stored
-in the `example_data` folder, to use if WAFO is not installed._
+Dependency                          | Website                                                         | Required?
+----------------------------------- | --------------------------------------------------------------- | ---------
+MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
+Nemoh                               | https://github.com/LHEEA/Nemoh                                  | yes
+WAFO<sup>1</sup>                    | https://github.com/wafo-project/wafo                            | no
+MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | no
+
+<sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to 
+match the output of the WAFO toolbox. These spectra can also be produced 'by 
+hand' and an example spectra is stored in the `example_data` folder, to use if 
+WAFO is not installed._ 
 
 ## Getting started
 
-<!-- ## Installing WecOptTool and NEMOH -->
+1. **Add WecOptTool to your MATLAB path**: After downloading the WecOptTool 
+source code to a path of your choosing (`/path/to/WecOptTool`), add the 
+WecOptTool toolbox to your MATLAB path using the MATLAB command prompt 
+(alternatively the "Set Path" tool can be used to add the toolbox): 
 
-1. **Add WecOptTool to your MATLAB path**: After downloading the WecOptTool source code to a path of your choosing (`/path/to/WecOptTool`), add the WecOptTool toolbox to your MATLAB path using 
-the MATLAB command prompt (alternatively the "Set Path" tool can be used to add the toolbox):
+    ```matlab
+    >> addpath(genpath('/path/to/WecOptTool/toolbox'));
+    >> savepath;
+    ```
 
-	```matlab
-	>> addpath(genpath('/path/to/WecOptTool/toolbox'));
-	>> savepath;
-	```
+2. **Set up Nemoh:**
 
-2. **Set up Nemoh:**         
+    a. ***Windows:*** Executables are provided in the 'Release' directory of 
+    the NEMOH source code. These are installed into WecOptTool using the 
+    `installNemoh.m` MATLAB script, run from the WecOptTool root directory, 
+    as follows: 
+    
+    ```matlab
+    >> cd /path/to/WecOptTool
+    >> installNemoh('/path/to/NEMOH/Release');
+    ```
+    
+    b. ***Linux:*** To set up NEMOH for linux, first, compile the executables 
+    (you will need gfortran or the intel fortran compiler):
+    
+    ```
+    $ cd /path/to/NEMOH
+    $ make
+    ```
+    
+    Executables will be created a new directory called 'bin', which must 
+    then be installed into WecOptTool using the `installNemoh.m` MATLAB 
+    script, run from the WecOptTool root directory: 
+    
+    ```matlab
+    >> cd /path/to/WecOptTool
+    >> installNemoh('/path/to/NEMOH/bin');
+    ```
 
-    a.  ***Windows:*** Executables are provided in the 'Release' directory of the NEMOH source code. These are installed into WecOptTool using the `installNemoh.m` MATLAB script, run from the WecOptTool root directory, as follows:
+3. **Verify dependencies installation:** You can verify that the dependencies 
+have been installed correctly by running the `dependencyCheck.m` script 
+provided in the root directory of the WecOptTool source code. The script is 
+called as follows: 
 
-	```matlab
-	>> cd /path/to/WecOptTool
-	>> installNemoh('/path/to/NEMOH/Release');
-	```
+    ```
+    >> cd /path/to/WecOptTool
+    >> dependencyCheck
+    ```
+    
+    and successful output may look like this:
+    
+    ```
+    WecOptTool dependency checker
+    -------------------------------
+    
+    Required
+    --------
+    Optimization Toolbox:       Found
+    NEMOH:                      Found
+    
+    Optional
+    --------
+    Parallel Computing Toolbox: Not found
+    WAFO:                       Found
+    ```
 
-    b. ***Linux:*** To set up NEMOH for linux, first, compile the executables (you will need
-gfortran or the intel fortran compiler):
+4. **(optional) Run functionality tests:** A test suite is available to verify 
+that the code is operational. A script is provided in the root directory of the 
+WecOptTool source code and is run from the MATLAB command window, as follows: 
 
-	```
-	$ cd /path/to/NEMOH
-	$ make
-	```
+    ```matlab
+    >> cd /path/to/WecOptTool
+    >> runTests;
+    ```
 
-	Executables will be created a new directory called 'bin', which must then be installed into WecOptTool using the `installNemoh.m` MATLAB script, run from the WecOptTool root directory:
-
-	```matlab
-	>> cd /path/to/WecOptTool
-	>> installNemoh('/path/to/NEMOH/bin');
-	```
-
-
-3. **Verify dependencies installation:** You can verify that the dependencies have been installed correctly by running the `dependencyCheck.m` script provided in the root directory of the WecOptTool source code. The script is called as follows:
-
-	```
-	>> cd /path/to/WecOptTool
-	>> dependencyCheck
-	```
-
-	and successful output may look like this:
-
-	```
-	WecOptTool dependency checker
-	-------------------------------
-
-	Required
-	--------
-	Optimization Toolbox:       Found
-	NEMOH:                      Found
-
-	Optional
-	--------
-	Parallel Computing Toolbox: Not found
-	WAFO:                       Found
-	```
-
-
-4. **(optional) Run functionality tests:** A test suite is available to verify that the code is operational. A script is provided in the root directory of the WecOptTool source code and is run from the MATLAB command window, as follows:
-
-	```matlab
-	>> cd /path/to/WecOptTool
-	>> runTests;
-	```
-
-5. **Begin use:** See the [`example.m`](https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m) file.
-
+5. **Begin use:** See the
+[`example.m`](https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m) 
+file.
 
 ## NEMOH Files
 
