@@ -1,6 +1,9 @@
 # sphinx build folder
 _build
 
+# internal copy of master branch
+git_src/
+
 # Compiled source #
 ###################
 *.com
