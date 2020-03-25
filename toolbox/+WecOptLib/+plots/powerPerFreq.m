@@ -1,24 +1,26 @@
 function powerPerFreq(spectra, etc)
     %PLOTPOWER
     
-    multi_state = false;
     
-    if ~isfield(spectra,'w') && ~isfield(spectra,'S')
-        seaStateNames = fieldnames(spectra);
-        multi_state = true;
-    end
+    % Number of Sea-States
+    NSS = length(spectra);
+    
+    multiSeaState = false;
+    if NSS>1
+        multiSeaState = true;
+    end    
     
     figure
     
-    if multi_state
+    if multiSeaState
     
         hold on
 
         for i = 1 : length(etc.powPerFreq)
-
+            
             powPerFreq = etc.powPerFreq{i};
             freq = etc.freq{i};
-            plot(freq, powPerFreq,'DisplayName',seaStateNames{i})
+            plot(freq, powPerFreq,'DisplayName',int2str(i))
 
         end
 
