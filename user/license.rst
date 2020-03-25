@@ -2,7 +2,7 @@
 License
 *******
 
-MHKiT is copyrighted through Sandia National Laboratories. The software is 
+WecOptTool is copyrighted through Sandia National Laboratories. The software is 
 distributed under the GNU General Public License v3.0.
     
 .. code-block:: none
