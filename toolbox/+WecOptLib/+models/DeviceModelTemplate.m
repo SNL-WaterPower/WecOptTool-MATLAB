@@ -20,35 +20,34 @@ classdef (Abstract) DeviceModelTemplate
                                        controlParams)
         % pow, etc = DeviceModelTemplate.getPower(SS, controlType, ...)
         %
-        % Takes a specta S or a series of sea-states in a struct.
-        % Iterates over sea-states and calcualtes power.
+        % Takes a specta S struct or a series of sea-states in a struct 
+        % array. getPower will iterate over sea-states and calcualte power.
         %
         % Inputs
-        %      SS               Struct of Spectra (S)
-        %       S               wave spectra structure, with fields:
-        %           S.S         spectral energy distribution [m^2 s/rad]
-        %           S.w         frequency [rad/s]
-        %           S.ph        phasing
-        %           S.mu        weighting factor
-        %       controlType     choose control type for PTO:
-        %                           CC: complex conjugate (no constraints)
-        %                           PS: pseudo-spectral (with constraints)
-        %                           P: proportional damping
-        %       geomMode        choose mode for geometry definition;
+        %     SS           Struct or struct array of spectra(S) w/ fields:
+        %         SS.S         spectral energy distribution [m^2 s/rad]
+        %         SS.w         frequency [rad/s]
+        %         SS.ph        phasing
+        %         SS.mu        weighting factor
+        %     controlType     choose control type for PTO:
+        %                     CC: complex conjugate (no constraints)
+        %                     PS: pseudo-spectral (with constraints)
+        %                      P: proportional damping
+        %     geomMode     choose mode for geometry definition;
         %                       geometry inputs are passed in as 
         %                       string-value pairs, see RM3_getNemoh
         %                       documentation for more info.
         %                           scalar: single scaling factor lambda
         %                           parametric: [r1, r2, d1, d2] parameters
         %                           existing: pass existing NEMOH rundir
-        %       geomParams      contains parameters for the geometric mode
-        %       controlParams   if using the 'PS' control type, optional
+        %     geomParams      contains parameters for the geometric mode
+        %     controlParams   if using the 'PS' control type, optional
         %                       arguments for deltaZmax and deltaFmax
         %                           Note: to use the optional arguments,
         %                           both must be provided
         % Outputs
-        %       pow             power weighted by weighting factors
-        %       etc             structure with two items, containing pow 
+        %     pow             power weighted by weighting factors
+        %     etc             structure with two items, containing pow 
         %                       and the hydro struct from Nemoh
 
         % WEC-Sim hydro structure for RM3
@@ -67,26 +66,10 @@ classdef (Abstract) DeviceModelTemplate
             maxVals = [];
         end
 
-        % If Spectra (S) passed put S into sea state struct (SS) length 1 
-        if isfield(SS,'w') && isfield(SS,'S')
-            % if no weight for single sea state set weight to 1
-            if ~isfield(SS,'mu')
-                SS.mu = 1;          
-            end  
-            % Create empty SS
-            singleSea = struct();
-            % Store the single sea-state in the temp struct
-            singleSea.S1 = SS;
-            % Reassaign SS to be SS of signle sea-state (Is there a better 
-            % way?)
-            SS = singleSea;
-        end
-
-        % Get the name of all passes SS
-        seaStateNames = fieldnames(SS);
-        % Number of Sea-states
-        NSS = length(seaStateNames);
-        % Initial arrays to hold mu, powSS, powPerFreq, freqs
+        % Get the number of sea-states passed
+        NSS = length(SS);
+                                       
+        % Initialize arrays to hold mu, powSS, powPerFreq, freqs
         mus = zeros(NSS, 1);
         powSSs = zeros(NSS, 1);
         powPerFreqs = cell(NSS);
@@ -96,7 +79,7 @@ classdef (Abstract) DeviceModelTemplate
         % Check sea-state weights
         for iSS = 1:NSS
             
-            S = SS.(seaStateNames{iSS});
+            S = SS(iSS);
             
             if isfield(S, 'mu')
                 n_mu = n_mu + 1;    
@@ -107,13 +90,13 @@ classdef (Abstract) DeviceModelTemplate
         if NSS == 1
             
             % Single sea-state requires no weighting
-            SS.(seaStateNames{1}).mu = 1;  
+            SS(1).mu = 1;  
             
         elseif n_mu == 0
             
             % Equalise weightings for multi-sea-states if not given
             for iSS = 1:NSS
-                SS.(seaStateNames{iSS}).mu = 1;     
+                SS(iSS).mu = 1;     
             end            
             
             warn = ['Provided wave spectra have no weightings ' ...
@@ -132,7 +115,7 @@ classdef (Abstract) DeviceModelTemplate
         % Iterate over Sea-States
         for iSS = 1:NSS % TODO - consider parfor?
             % Get Sea-State
-            S = SS.(seaStateNames{iSS});
+            S = SS(iSS);
             % Calculate spectra power
             motion = obj.getMotion(S,           ...
                                    hydro,       ...
@@ -153,7 +136,7 @@ classdef (Abstract) DeviceModelTemplate
             
             % Save Power to S (would need to return SS, to be useful)
             powSS = sum(powPerFreq);
-            SS.(seaStateNames{iSS}).powSS = powSS;
+            SS(iSS).powSS = powSS;
             % Save weights/ power to arrays
             mus(iSS) = S.mu;
             powSSs(iSS) = powSS;

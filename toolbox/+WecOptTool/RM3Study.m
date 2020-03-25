@@ -29,6 +29,7 @@ classdef RM3Study < handle
         end
         
         function obj = addSpectra(obj, spectra)
+            WecOptLib.utils.checkSpectrum(spectra)
             obj.spectra = spectra;
         end
         
