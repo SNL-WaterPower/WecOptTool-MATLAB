@@ -19,6 +19,7 @@ in the root directory of the WecOptTool source code.
 
 Create an RM3Study Object
 =========================
+
 The :mat:class:`~+WecOptTool.RM3Study` class allows the user to configure a
 simulation to their specifications. Once instantiated, an RM3Study object can 
 be modified using other classes (as described below), and once prepared is
@@ -32,11 +33,11 @@ passed to the main functions of the toolbox.
 
 Define a Sea-State
 ==================
+
 WecOptTool can simulate single or multiple spectra sea states, where weightings
 can be provided to indicate the relative likelihood of each spectra. The 
 following lines from |example.m|_ provide means of using the WAFO_ matlab 
 toolbox or preset spectra from WecOptTool.
-
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
@@ -74,11 +75,16 @@ The desired spectrum or spectra can then be added to the study object
 
 Add a controller to the study
 =============================
+
 WecOptTool allows for three types of controllers:
 
- - **ProportionalDamping:** Resistive damping (i.e., a proportional feedback on velocity)
- - **ComplexConjugate: ** Optimal power absorption
- - **PseudoSpectral: ** Constrained optimal power absorption
+ - **ProportionalDamping:** Resistive damping (i.e., a proportional feedback on 
+   velocity)
+ - **ComplexConjugate:** Optimal power absorption
+ - **PseudoSpectral:** Constrained optimal power absorption
+
+The controllers are defined as classes in the :mat:mod:`~+WecOptTool.+control` 
+sub-package.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
@@ -88,6 +94,7 @@ WecOptTool allows for three types of controllers:
 
 Define design variables
 =======================
+
 The initial values, lower bounds, and upper bounds of the design variables can 
 be set as follows. For the RM3 study shown in |example.m|_, the design 
 variables are the radius of the surface float, r1, the radius of the heave 
@@ -109,8 +116,12 @@ employed.
     :linenos:
     :lineno-start: 34
 
+The options for design variables are defined as classes in the 
+:mat:mod:`~+WecOptTool.+geom` sub-package.
+
 Set optimization solver and options
 ===================================
+
 MATLAB's ``fmincon`` optimization solver is used in |example.m|_.
 
 .. literalinclude:: /git_src/example.m
@@ -121,7 +132,10 @@ MATLAB's ``fmincon`` optimization solver is used in |example.m|_.
 
 Run the study and view results
 ==============================
-The study can be run and reviewed as follows:
+
+The study can be :mat:func:`~+WecOptTool.run` and reviewed 
+(with :mat:func:`~+WecOptTool.result` and :mat:func:`~+WecOptTool.plot`) as 
+follows:
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
