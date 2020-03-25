@@ -19,6 +19,10 @@ in the root directory of the WecOptTool source code.
 
 Create an RM3Study Object
 =========================
+The :mat:class:`~+WecOptTool.RM3Study` class allows the user to configure a
+simulation to their specifications. Once instantiated, an RM3Study object can 
+be modified using other classes (as described below), and once prepared is
+passed to the main functions of the toolbox.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
@@ -26,13 +30,13 @@ Create an RM3Study Object
     :linenos:
     :lineno-start: 4
 
-The :mat:class:`~+WecOptTool.RM3Study` class allows the user to configure a
-simulation to their specifications. Once instantiated, an RM3Study object can 
-be modified using other classes (as described below), and once prepared is
-passed to the main functions of the toolbox.
-
 Define a Sea-State
 ==================
+WecOptTool can simulate single or multiple spectra sea states, where weightings
+can be provided to indicate the relative likelihood of each spectra. The 
+following lines from |example.m|_ provide means of using the WAFO_ matlab 
+toolbox or preset spectra from WecOptTool.
+
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
@@ -40,26 +44,90 @@ Define a Sea-State
     :linenos:
     :lineno-start: 7
 
-WecOptTool can simulate single or multiple spectra sea states, where weightings
-can be provided to indicate the relative likelihood of each spectra. Spectra
-are formatted following the convention of the WAFO_ matlab toolbox:
+Spectra are formatted following the convention of the WAFO_ matlab toolbox, but 
+can be generated in via any means (e.g., from buoy measurements) as long as the 
+structure includes the ``S.S``, ``S.w``, and ``S.phi`` fields.
 
 .. code:: matlab
 
     S = 
 
-      1×11 struct array with fields:
+      struct with fields:
 
-        S
-        w
-        tr
-        h
-        type
-        phi
-        norm
-        note
-        date
+           S: [257×1 double]
+           w: [257×1 double]
+          tr: []
+           h: Inf
+        type: 'freq'
+         phi: 0
+        norm: 0
+        note: 'Bretschneider, Hm0 = 4, Tp = 5'
+        date: '25-Mar-2020 13:08:28'
 
+The desired spectrum or spectra can then be added to the study object
+
+.. literalinclude:: /git_src/example.m
+    :language: matlab
+    :lines: 19-21
+    :linenos:
+    :lineno-start: 19
+
+Add a controller to the study
+=============================
+WecOptTool allows for three types of controllers:
+
+ - **ProportionalDamping:** Resistive damping (i.e., a proportional feedback on velocity)
+ - **ComplexConjugate: ** Optimal power absorption
+ - **PseudoSpectral: ** Constrained optimal power absorption
+
+.. literalinclude:: /git_src/example.m
+    :language: matlab
+    :lines: 22-25
+    :linenos:
+    :lineno-start: 22
+
+Define design variables
+=======================
+The initial values, lower bounds, and upper bounds of the design variables can 
+be set as follows. For the RM3 study shown in |example.m|_, the design 
+variables are the radius of the surface float, r1, the radius of the heave 
+plate, r2, the draft of the surface float, d1, and the depth of the heave 
+plate, d2, such that ``x = [r1, r2, d1, d2]``.
+
+.. literalinclude:: /git_src/example.m
+    :language: matlab
+    :lines: 26-33
+    :linenos:
+    :lineno-start: 26
+
+Alternatively, a simpler study with a single scalar design variable can be 
+employed.
+
+.. literalinclude:: /git_src/example.m
+    :language: matlab
+    :lines: 34-41
+    :linenos:
+    :lineno-start: 34
+
+Set optimization solver and options
+===================================
+MATLAB's ``fmincon`` optimization solver is used in |example.m|_.
+
+.. literalinclude:: /git_src/example.m
+    :language: matlab
+    :lines: 42-46
+    :linenos:
+    :lineno-start: 42
+
+Run the study and view results
+==============================
+The study can be run and reviewed as follows:
+
+.. literalinclude:: /git_src/example.m
+    :language: matlab
+    :lines: 47-55
+    :linenos:
+    :lineno-start: 47
 
 .. |example.m| replace:: ``example.m``
 .. _example.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m
