@@ -6,5 +6,6 @@ Contents
    :numbered:
    :caption: User Guide
 
+   user/install
    user/api
    user/license
