@@ -49,12 +49,12 @@ classdef PlotsTest < matlab.unittest.TestCase
             
             % Fake some inputs
             spectra = WecOptLib.tests.data.example8Spectra();
-            spectrumNames = fieldnames(spectra);
+            NSS=length(spectra);
             etc.freq = {};
             etc.powPerFreq = {};
             
-            for i = 1 : length(spectra)
-                spectrum = spectra.(spectrumNames{i});
+            for i = 1:NSS
+                spectrum = spectra(i);
                 etc.freq{i} = spectrum.w;
                 etc.powPerFreq{i} = spectrum.S;
             end
