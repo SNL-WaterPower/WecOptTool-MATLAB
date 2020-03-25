@@ -73,7 +73,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'WecOptTool'
-copyright = u'2020-{} The WecOptTool Developers'.format(now.year)
+#copyright = u'2020-{} The WecOptTool Developers'.format(now.year)
+copyright = u'2020 The WecOptTool Developers'.format(now.year)
 author = u'unknown'
 
 # The version info for the project you're documenting, acts as replacement for

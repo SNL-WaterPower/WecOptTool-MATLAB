@@ -6,5 +6,5 @@ Contents
    :numbered:
    :caption: User Guide
 
-   user/intro
    user/api
+   user/license
