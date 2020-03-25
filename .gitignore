@@ -39,3 +39,12 @@ Thumbs.db
 # Editor backup files #
 #######################
 *~
+
+# NEMOH #
+#########
+~nemoh_runs/
+
+# Tests #
+#########
+test_results/
+test_results.pdf
