@@ -7,5 +7,6 @@ Contents
    :caption: User Guide
 
    user/install
+   user/example
    user/api
    user/license

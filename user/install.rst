@@ -132,11 +132,6 @@ Setup
       >> cd /path/to/WecOptTool
       >> runTests;
 
-5. **Begin use:** See the |example.m|_ file.
-
-.. |example.m| replace:: ``example.m``
-.. _example.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m
-
 .. rubric:: Footnotes
 
 .. [#f1] WecOptTool requires an input wave spectra which is formatted to
