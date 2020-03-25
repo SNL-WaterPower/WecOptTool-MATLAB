@@ -34,6 +34,7 @@ now = datetime.datetime.now()
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
+    'sphinxcontrib.matlab',
     'sphinx.ext.napoleon'
 ]
 
@@ -51,6 +52,10 @@ napoleon_use_admonition_for_references = False
 napoleon_use_ivar = False
 napoleon_use_param = True
 napoleon_use_rtype = True
+
+# sphinxcontrib.matlab settings
+matlab_src_dir = os.path.abspath("git_src/toolbox")
+matlab_keep_package_prefix = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

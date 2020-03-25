@@ -7,3 +7,4 @@ Contents
    :caption: User Guide
 
    user/intro
+   user/api
