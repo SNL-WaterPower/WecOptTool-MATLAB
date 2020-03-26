@@ -84,7 +84,24 @@ structure includes the ``S.S``, ``S.w``, and ``S.phi`` fields.
         note: 'Bretschneider, Hm0 = 4, Tp = 5'
         date: '25-Mar-2020 13:08:28'
 
-The desired spectrum or spectra can then be added to the study object
+In the active code above from |example.m|_, there are eight spectra loaded into 
+a |struct array|_. These can be plotted using standard MATLAB commands.
+
+.. code:: matlab
+
+    figure
+    hold on
+    grid on
+    arrayfun(@(x) plot(x.w,x.S,'DisplayName',x.note), S)
+    legend()
+    xlim([0,3])
+    xlabel('Freq. [rad/s]')
+    ylabel('Spect. density [m^2 rad/s]')
+
+.. image:: /_static/example_spectra.svg
+   :alt: Eight spectra consider in example.m
+
+The desired spectrum or spectra can then be added to the study object.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
@@ -181,3 +198,5 @@ follows:
 .. _WAFO: http://www.maths.lth.se/matstat/wafo/
 .. _RM3: https://energy.sandia.gov/programs/renewable-energy/water-power/technology-development/reference-model-project-rmp/
 .. _Nemoh: https://github.com/LHEEA/Nemoh
+.. |struct array| replace:: ``struct array``
+.. _struct array: https://www.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html
