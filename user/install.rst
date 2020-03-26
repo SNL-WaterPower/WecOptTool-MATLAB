@@ -5,27 +5,27 @@ Installation
 Source Code
 ===========
 
-The stable release versions or the latest development versions of the WecOptTool
-source code are available for download.
+The WecOptTool source code is downloaded from the `WecOptTool Github repository 
+<https://github.com/SNL-WaterPower/WecOptTool>`_. Stable or development versions
+are available.
 
-Stable
-------
+Stable Version
+--------------
 
-The latest stable version of the WecOptTool source code can be downloaded
-from the `Releases <https://github.com/SNL-WaterPower/WecOptTool/releases/>`_ 
-section of the WecOptTool `Github repository 
-<https://github.com/SNL-WaterPower/WecOptTool>`_.
+The latest stable version of WecOptTool can be downloaded from the `Releases 
+<https://github.com/SNL-WaterPower/WecOptTool/releases/>`_  section of the 
+Github repository.
 
-Development
------------
+Development Version
+-------------------
 
-The latest development version of the WecOptTool source code is available to
-clone or download directly from the WecOptTool `Github repository 
-<https://github.com/SNL-WaterPower/WecOptTool>`_.
+To get the latest development version of WecOptTool, clone or download directly 
+from the WecOptTool Github repository using the '`Clone or download 
+<https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository>`_'
+button.
 
 Note that, although the developers endeavour to ensure that the development
-code is not broken, bugs or unexpected behaviour may occur, so please beware.
-
+version is not broken, bugs or unexpected behaviour may occur, so please beware.
 
 Dependencies
 ============
@@ -107,7 +107,7 @@ Setup
 
    and successful output may look like this:
 
-   .. code:: matlab
+   .. code::
 
       WecOptTool dependency checker
       -------------------------------
@@ -139,5 +139,5 @@ Setup
          produced 'by hand' and an example spectra is stored in the 
          ``example_data`` folder, to use if WAFO is not installed.
 
-.. [#f2] Optimisations can be conducted significantly more efficiently by
+.. [#f2] Optimizations can be conducted significantly more efficiently by
          utilising parallel computation.
