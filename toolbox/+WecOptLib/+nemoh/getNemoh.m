@@ -60,20 +60,20 @@ cd(rundir)
 rundir = '.';
 
 WOTDataPath = WecOptLib.utils.getUserPath();
-configPath = [WOTDataPath filesep 'config.json'];
+configPath = fullfile(WOTDataPath, 'config.json');
 config = jsondecode(fileread(configPath));
 nemohPath = fullfile(config.nemohPath);
 
 if ispc
-    nemoh_mesh_command = [nemohPath filesep 'mesh'];
-    nemoh_preProc_command = [nemohPath filesep 'preProcessor'];
-    nemoh_run_command = [nemohPath filesep 'solver'];
-    nemoh_postProc_command = [nemohPath filesep 'postProcessor'];
+    nemoh_mesh_command = fullfile(nemohPath, 'mesh');
+    nemoh_preProc_command = fullfile(nemohPath, 'preProcessor');
+    nemoh_run_command = fullfile(nemohPath, 'solver');
+    nemoh_postProc_command = fullfile(nemohPath, 'postProcessor');
 else
-    nemoh_mesh_command = [nemohPath filesep 'mesh'];
-    nemoh_preProc_command = [nemohPath filesep 'preProc'];
-    nemoh_run_command = [nemohPath filesep 'solver'];
-    nemoh_postProc_command = [nemohPath filesep 'postProc'];
+    nemoh_mesh_command = fullfile(nemohPath, 'mesh');
+    nemoh_preProc_command = fullfile(nemohPath, 'preProc');
+    nemoh_run_command = fullfile(nemohPath, 'solver');
+    nemoh_postProc_command = fullfile(nemohPath, 'postProc');
 end
 
 if iscell(r)
