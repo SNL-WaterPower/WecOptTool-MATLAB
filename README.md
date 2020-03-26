@@ -4,6 +4,27 @@ The WEC Design Optimization Toolbox (WecOptTool) allows users to perform wave
 energy converter (WEC) device design optimization studies with constrained 
 optimal control. 
 
+## Source Code
+
+Stable release versions or the latest development version of the WecOptTool 
+are available for download.
+
+Note that, although the developers endeavour to ensure that the development
+version is not broken, bugs or unexpected behaviour may occur, so please beware.
+
+### Stable Version
+
+The latest stable version of the WecOptTool source code can be downloaded
+from the [Releases](https://github.com/SNL-WaterPower/WecOptTool/releases/)
+section of this repository.
+
+### Development Version
+
+For the latest development version of the WecOptTool source code, clone or 
+download this repository, using the [Clone or download](
+https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
+button.
+
 ## Dependencies
 
 Dependency                          | Website                                                         | Required?
