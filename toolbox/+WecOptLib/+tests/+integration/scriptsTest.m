@@ -4,7 +4,6 @@ end
 
 function testDependencyCheck(testCase)
     
-    % Get this directories path
     srcRootPath = WecOptLib.utils.getSrcRootPath();
     cd(srcRootPath);
     verifyWarningFree(testCase, @dependencyCheck);
