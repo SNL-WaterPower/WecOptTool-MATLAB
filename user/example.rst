@@ -3,7 +3,8 @@ Example
 *******
 
 This section explains and expands upon the |example.m|_ example file provided
-in the root directory of the WecOptTool source code. 
+in the root directory of the WecOptTool source code. This example considers the 
+DOE Reference Model 3 (RM3_) device.
 
 .. raw:: html
 
@@ -154,3 +155,4 @@ follows:
 .. |example.m| replace:: ``example.m``
 .. _example.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m
 .. _WAFO: http://www.maths.lth.se/matstat/wafo/
+.. _RM3: https://energy.sandia.gov/programs/renewable-energy/water-power/technology-development/reference-model-project-rmp/
