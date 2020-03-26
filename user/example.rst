@@ -18,6 +18,24 @@ DOE Reference Model 3 (RM3_) device.
 
    </details></br>
 
+The general concept of WecOptTool is illustrated in the diagram below. In the 
+upper left-hand corner, an optimization algorithm controls the selection of a 
+set of design variables. In this diagram, some geometric design variables, 
+:math:`a^2`r_1, r_2, d_1, d_2`, are considered along with constraints on the power 
+take-off (PTO) max force, :math:`F_{max}`, and max stroke :math:`\Delta x_{max}`
+and an operational constraint, :math:`H_{s,max}`. The device defined by these 
+design variables is passed to the grey *evaluation* block. Here, Nemoh_ is used 
+to compute the linear wave-body interaction properties using the boundary 
+element method (BEM). Next, using these properties and some set of sea states, 
+one of three controllers (``ProportionalDamping``, ``ComplexConjugat``, ``PseudoSpectral``) 
+are used to compute the resulting dynamics. From on these dynamics and some 
+model for cost (e.g., based on the size dimensions and the capabilities of the 
+PTO) can be combine to produce an objective function, which is returned to the 
+optimization solver.
+
+.. image:: /_static/WecOptTool_algorithmDiagram.svg
+   :alt: Conceptual illustration of WecOptTool functionality
+
 Create an RM3Study Object
 =========================
 
@@ -162,3 +180,4 @@ follows:
 .. _example.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m
 .. _WAFO: http://www.maths.lth.se/matstat/wafo/
 .. _RM3: https://energy.sandia.gov/programs/renewable-energy/water-power/technology-development/reference-model-project-rmp/
+.. _Nemoh: https://github.com/LHEEA/Nemoh
