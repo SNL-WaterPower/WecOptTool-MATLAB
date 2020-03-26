@@ -110,7 +110,8 @@ bounding the design variables, we must provide an initial guess, ``x0``.
     :lineno-start: 26
 
 Alternatively, a simpler study with a single scalar design variable can be 
-employed.
+employed. In this case, instead of scaling various dimensions of the device 
+individually, the entire device is scaled based on a single design variable. 
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
