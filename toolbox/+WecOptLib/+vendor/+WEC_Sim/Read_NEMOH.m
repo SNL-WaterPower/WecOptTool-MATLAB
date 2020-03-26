@@ -33,7 +33,6 @@ if b==1
 elseif b>1  F = b+1;
 end
 
-p = waitbar(0,'Reading NEMOH output file...');  % Progress bar
 
 hydro(F).code = 'NEMOH';
 tmp = strsplit(filedir,{' ','\','/'});
@@ -83,7 +82,6 @@ for n = 1:N
         hydro(F).beta = linspace(tmp{2},tmp{3},tmp{1});  % Wave headings
     end
 end
-waitbar(1/8);
 
 %% Hydrostatics file(s)
 for m = 1:hydro(F).Nb
@@ -110,7 +108,6 @@ for m = 1:hydro(F).Nb
     tmp = textscan(raw{4},'%s %s %f');
     hydro(F).Vo(m) = tmp{3};  % Displacement volume
 end
-waitbar(2/8);
 
 %% KH file(s)
 for m = 1:hydro(F).Nb
@@ -133,7 +130,6 @@ for m = 1:hydro(F).Nb
         hydro(F).C(i,:,m) = tmp{1,1}(1:6);  % Linear restoring stiffness
     end
 end
-waitbar(3/8);
 
 %% Radiation Coefficient file
 fileID = fopen(fullfile(filedir,'Results','RadiationCoefficients.tec'));
@@ -155,7 +151,6 @@ for n = 1:N
         end
     end
 end
-waitbar(4/8);
 
 
 
@@ -181,7 +176,6 @@ for n = 1:N
 end
 hydro(F).ex_re = hydro(F).ex_ma.*cos(hydro(F).ex_ph);  % Real part of exciting force
 hydro(F).ex_im = hydro(F).ex_ma.*sin(hydro(F).ex_ph);  % Imaginary part of exciting force
-waitbar(5/8);
 
 %% Diffraction Force file (scattering)
 hydro(F).sc_ma = NaN(size(hydro(F).ex_ma));
@@ -211,7 +205,6 @@ if exist(fullfile(filedir,'Results','DiffractionForce.tec'),'file')==2
     hydro(F).sc_re = hydro(F).sc_ma.*cos(hydro(F).sc_ph);  % Real part of diffraction force
     hydro(F).sc_im = hydro(F).sc_ma.*sin(hydro(F).sc_ph);  % Imaginary part of diffraction force
 end
-waitbar(6/8);
 
 %% Froude-Krylov force file
 hydro(F).fk_ma = NaN(size(hydro(F).ex_ma));
@@ -241,7 +234,6 @@ if exist(fullfile(filedir,'Results','FKForce.tec'),'file')==2
     hydro(F).fk_re = hydro(F).fk_ma.*cos(hydro(F).fk_ph);  % Real part of Froude-Krylov force
     hydro(F).fk_im = hydro(F).fk_ma.*sin(hydro(F).fk_ph);  % Imaginary part of Froude-Krylov force
 end
-waitbar(7/8);
 
 
 %================= READING KOCHIN FILES ===================%
@@ -367,10 +359,8 @@ if exist(fullfile(filedir,'Results','Kochin.    1.dat'),'file')==2
     hydro(F).md_mc(3,1,:) = Fdrift_y./hydro(F).rho./9.81;
 end
 
-waitbar(8/8);
 
 hydro = Normalize(hydro);  % Normalize the data according the WAMIT convention
 
-close(p);
 end
 
