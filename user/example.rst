@@ -80,9 +80,9 @@ Add a controller to the study
 WecOptTool allows for three types of controllers:
 
  - **ProportionalDamping:** Resistive damping (i.e., a proportional feedback on 
-   velocity) (see, e.g., [1]_)
- - **ComplexConjugate:** Optimal power absorption (see, e.g., [1]_)
- - **PseudoSpectral:** Constrained optimal power absorption [2]_
+   velocity) (see, e.g., [Falnes]_)
+ - **ComplexConjugate:** Optimal power absorption (see, e.g., [Falnes]_)
+ - **PseudoSpectral:** Constrained optimal power absorption [Bacelli]_
 
 The controllers are defined as classes in the :mat:mod:`~+WecOptTool.+control` 
 sub-package.
@@ -150,12 +150,12 @@ follows:
     :linenos:
     :lineno-start: 47
 
-.. [1] Falnes, Johannes. Ocean waves and oscillating systems: linear 
+.. [Falnes] Falnes, Johannes. Ocean waves and oscillating systems: linear 
          interactions including wave-energy extraction. Cambridge University 
          Press, 2002.
 
-.. [2] Bacelli, Giorgio, and John V. Ringwood. "Numerical optimal control of 
-       wave energy converters." IEEE Transactions on Sustainable Energy 6.2 
+.. [Bacelli] Bacelli, Giorgio, and John V. Ringwood. "Numerical optimal control 
+       of wave energy converters." IEEE Transactions on Sustainable Energy 6.2 
        (2014): 294-302.
 
 .. |example.m| replace:: ``example.m``
