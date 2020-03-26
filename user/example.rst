@@ -103,6 +103,10 @@ heave plate, ``r2``, the draft of the surface float, ``d1``, and the depth of
 the heave plate, ``d2``, such that ``x = [r1, r2, d1, d2]``. In addition to 
 bounding the design variables, we must provide an initial guess, ``x0``.
 
+.. image:: /_static/example_rm3Parametric.svg
+   :width: 400pt
+   :alt: RM3 device parametric dimensions
+
 .. literalinclude:: /git_src/example.m
     :language: matlab
     :lines: 26-33
