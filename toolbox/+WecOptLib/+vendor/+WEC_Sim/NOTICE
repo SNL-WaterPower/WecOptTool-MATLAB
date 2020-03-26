@@ -18,3 +18,4 @@ March 2020 (Sandia National Labs)
 ---------------------------------
     + Read_NEMOH.m and Normalize.m packaged within WecOptTool
     + Minor modification was made to Read_NEMOH.m to access package namespace
+    + Remove waitbar call in Read_NEMOH.m
