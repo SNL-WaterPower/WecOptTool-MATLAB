@@ -12,7 +12,7 @@ Create the Sphinx environment
 > conda create -n _sphinx pip sphinx sphinx_rtd_theme colorama future
 > activate _sphinx
 (_sphinx) > pip install sphinxcontrib-matlabdomain
-(_sphinx) > conda deactivate _sphinx
+(_sphinx) > conda deactivate
 >
 ```
 
