@@ -1,90 +1,124 @@
 # WecOptTool
 
-The WEC Design Optimization Toolbox (WecOptTool) allows users to perform wave energy converter (WEC) device design optimization studies with constrained optimal control.
+The WEC Design Optimization Toolbox (WecOptTool) allows users to perform wave 
+energy converter (WEC) device design optimization studies with constrained 
+optimal control. 
+
+## Source Code
+
+Stable release versions or the latest development version of WecOptTool are 
+available for download.
+
+Note that, although the developers endeavour to ensure that the development
+version is not broken, bugs or unexpected behaviour may occur, so please beware.
+
+### Stable Version
+
+The latest stable version of WecOptTool can be downloaded from the [Releases](
+https://github.com/SNL-WaterPower/WecOptTool/releases/) section of this 
+repository.
+
+### Development Version
+
+For the latest development version of WecOptTool, clone or  download this 
+repository, using the [Clone or download](
+https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
+button.
 
 ## Dependencies
-Dependency | Website | Required?
----------- | ------- | ---------
-MATLAB Optimization Toolbox | https://www.mathworks.com/products/optimization.html | yes
-Nemoh | https://github.com/LHEEA/Nemoh | yes
-WAFO<sup>1</sup> | https://github.com/wafo-project/wafo | no
-MATLAB Parallel Computing Toolbox | https://www.mathworks.com/products/parallel-computing.html | no
 
-<sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to match the output
-of the WAFO toolbox. These spectra can also be produced 'by hand' and an example spectra is stored
-in the `example_data` folder, to use if WAFO is not installed._
+Dependency                          | Website                                                         | Required?
+----------------------------------- | --------------------------------------------------------------- | ---------
+MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
+Nemoh                               | https://github.com/LHEEA/Nemoh                                  | yes
+WAFO<sup>1</sup>                    | https://github.com/wafo-project/wafo                            | no
+MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | no
+
+<sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to 
+match the output of the WAFO toolbox. These spectra can also be produced 'by 
+hand' and an example spectra is stored in the `example_data` folder, to use if 
+WAFO is not installed._ 
 
 ## Getting started
 
-<!-- ## Installing WecOptTool and NEMOH -->
+1. **Add WecOptTool to your MATLAB path**: After downloading the WecOptTool 
+source code to a path of your choosing (`/path/to/WecOptTool`), add the 
+WecOptTool toolbox to your MATLAB path using the MATLAB command prompt 
+(alternatively the "Set Path" tool can be used to add the toolbox): 
 
-1. **Add WecOptTool to your MATLAB path**: After downloading the WecOptTool source code to a path of your choosing (`/path/to/WecOptTool`), add the WecOptTool toolbox to your MATLAB path using 
-the MATLAB command prompt (alternatively the "Set Path" tool can be used to add the toolbox):
+    ```matlab
+    >> addpath(genpath('/path/to/WecOptTool/toolbox'));
+    >> savepath;
+    ```
 
-	```matlab
-	>> addpath(genpath('/path/to/WecOptTool/toolbox'));
-	>> savepath;
-	```
+2. **Set up Nemoh:**
 
-2. **Set up Nemoh:**         
+    a. ***Windows:*** Executables are provided in the 'Release' directory of 
+    the NEMOH source code. These are installed into WecOptTool using the 
+    `installNemoh.m` MATLAB script, run from the WecOptTool root directory, 
+    as follows: 
+    
+    ```matlab
+    >> cd /path/to/WecOptTool
+    >> installNemoh('/path/to/NEMOH/Release');
+    ```
+    
+    b. ***Linux:*** To set up NEMOH for linux, first, compile the executables 
+    (you will need gfortran or the intel fortran compiler):
+    
+    ```
+    $ cd /path/to/NEMOH
+    $ make
+    ```
+    
+    Executables will be created a new directory called 'bin', which must 
+    then be installed into WecOptTool using the `installNemoh.m` MATLAB 
+    script, run from the WecOptTool root directory: 
+    
+    ```matlab
+    >> cd /path/to/WecOptTool
+    >> installNemoh('/path/to/NEMOH/bin');
+    ```
 
-    a.  ***Windows:*** Executables are provided in the 'Release' directory of the NEMOH source code. These are installed into WecOptTool using the `installNemoh.m` MATLAB script, run from the WecOptTool root directory, as follows:
+3. **Verify dependencies installation:** You can verify that the dependencies 
+have been installed correctly by running the `dependencyCheck.m` script 
+provided in the root directory of the WecOptTool source code. The script is 
+called as follows: 
 
-	```matlab
-	>> cd /path/to/WecOptTool
-	>> installNemoh('/path/to/NEMOH/Release');
-	```
+    ```
+    >> cd /path/to/WecOptTool
+    >> dependencyCheck
+    ```
+    
+    and successful output may look like this:
+    
+    ```
+    WecOptTool dependency checker
+    -------------------------------
+    
+    Required
+    --------
+    Optimization Toolbox:       Found
+    NEMOH:                      Found
+    
+    Optional
+    --------
+    Parallel Computing Toolbox: Not found
+    WAFO:                       Found
+    ```
 
-    b. ***Linux:*** To set up NEMOH for linux, first, compile the executables (you will need
-gfortran or the intel fortran compiler):
+4. **(optional) Run functionality tests:** A test suite is available to verify 
+that the code is operational. A script is provided in the root directory of the 
+WecOptTool source code and is run from the MATLAB command window, as follows: 
 
-	```
-	$ cd /path/to/NEMOH
-	$ make
-	```
+    ```matlab
+    >> cd /path/to/WecOptTool
+    >> runTests;
+    ```
 
-	Executables will be created a new directory called 'bin', which must then be installed into WecOptTool using the `installNemoh.m` MATLAB script, run from the WecOptTool root directory:
-
-	```matlab
-	>> cd /path/to/WecOptTool
-	>> installNemoh('/path/to/NEMOH/bin');
-	```
-
-
-3. **Verify dependencies installation:** You can verify that the dependencies have been installed correctly by running the `dependencyCheck.m` script provided in the root directory of the WecOptTool source code. The script is called as follows:
-
-	```
-	>> cd /path/to/WecOptTool
-	>> dependencyCheck
-	```
-
-	and successful output may look like this:
-
-	```
-	WecOptTool dependency checker
-	-------------------------------
-
-	Required
-	--------
-	Optimization Toolbox:       Found
-	NEMOH:                      Found
-
-	Optional
-	--------
-	Parallel Computing Toolbox: Not found
-	WAFO:                       Found
-	```
-
-
-4. **(optional) Run functionality tests:** A test suite is available to verify that the code is operational. A script is provided in the root directory of the WecOptTool source code and is run from the MATLAB command window, as follows:
-
-	```matlab
-	>> cd /path/to/WecOptTool
-	>> runTests;
-	```
-
-5. **Begin use:** See the [`example.m`](https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m) file.
-
+5. **Begin use:** See the
+[`example.m`](https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m) 
+file.
 
 ## NEMOH Files
 
@@ -105,6 +139,63 @@ For convenience, the script can also remove all files generated for NEMOH:
 >> cd /path/to/WecOptTool
 >> dataTool clean
 ```
+
+## Code Architecture
+
+The WecOptTool toolbox is divided into two main packages as follows:
+
+1. **WecOptTool** provides the user interface to the toolbox. The main 
+   components are: 
+     * The `RM3Study` object, used for setting up a simulation.
+     * The geometric and controller classes, as found in the `WecOptTool.geom` 
+       and `WecOptTool.control` sub-packages, which are combined with a study 
+       object to define the type of simulation desired.
+     * Top level functions to control execution and examine results of the 
+       simulation such as `WecOptTool.run` and `WecOptTool.result`.
+2. **WecOptLib** contains most of the business logic for implementing the 
+   studies created using the WecOptTool package. The sub-packages found 
+   here are divided by purpose, for instance:
+     * The `WecOptLib.nemoh` package contains functions related to 
+       manipulating NEMOH.
+     * The `WecOptLib.models` contain the logic relating to the modelled wave 
+       device (currently only RM3).
+   
+   Note, any interfaces provided by WecOptLib are highly volatile and will
+   change often. It is anticipated that only "super users" will use the 
+   functions in WecOptLib directly.
+
+The code architecture, for both the WecOptTool and WecOptLib packages, is 
+subject to change as the code approaches maturity.
+
+## Contributing
+
+Contributions to the toolbox are welcome. The project follows a [trunk based 
+development](https://trunkbaseddevelopment.com/) paradigm and updates to the 
+code should be made through [pull requests](
+https://help.github.com/en/github/collaborating-with-issues-and-pull-requests).
+
+Contributions to the MATLAB source code should be submitted against the 
+`master` branch, whilst contributions to the documentation are made against the 
+`gh-pages` branch.
+
+When submitting to the MATLAB source code please run the test suite first:
+
+```matlab
+>> cd /path/to/WecOptTool
+>> runTests;
+```
+
+When the test suite has finished please add the generated `test_results.pdf` 
+file, showing that all tests have passed, to the pull request description.
+
+For contributions to the documentation, please please run a spell-check prior 
+to submitting a pull request.
+
+A code maintainer will review your pull request at the earliest possible
+opportunity. For large pull requests, it would be advisable to open a related 
+issue to discuss the purpose of your updates. The developers also would be 
+grateful if *"Allow edits from maintainers"* is checked when making a pull 
+request, as this will allow us to finalise your contributions more rapidly.
 
 ## RoadMap
 
