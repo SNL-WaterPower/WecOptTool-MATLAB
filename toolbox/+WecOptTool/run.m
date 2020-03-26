@@ -47,6 +47,10 @@ function run(study, optimOptions)
                                          options);
     toc
     
-    study.out = {sol,fval,exitflag,output};
+    study.out = struct;
+    study.out.sol = sol;
+    study.out.fval = fval;
+    study.out.exitflag = exitflag;
+    study.out.output = output;
     
 end
