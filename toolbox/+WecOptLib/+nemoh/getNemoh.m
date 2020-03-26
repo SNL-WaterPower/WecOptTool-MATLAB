@@ -318,7 +318,7 @@ cd(startdir)
         status=fclose(fid);
         
         % Raffinement automatique du maillage et calculs hydrostatiques
-        [status,msg] = system([nemoh_mesh_command, ' >',rundir,filesep,'mesh',filesep,'mesh.log']);
+        [status,msg] = system([nemoh_mesh_command, ' >',fullfile(rundir,'mesh','mesh.log')]);
         if status
             error(msg)
         else
