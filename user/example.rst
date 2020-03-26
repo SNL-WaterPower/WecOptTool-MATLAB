@@ -96,11 +96,12 @@ sub-package.
 Define design variables
 =======================
 
-The initial values, lower bounds, and upper bounds of the design variables can 
-be set as follows. For the RM3 study shown in |example.m|_, the design 
-variables are the radius of the surface float, r1, the radius of the heave 
-plate, r2, the draft of the surface float, d1, and the depth of the heave 
-plate, d2, such that ``x = [r1, r2, d1, d2]``.
+The initial values, lower bounds ``lb``, and upper bounds ``ub`` of the design 
+variables can be set as follows. For the RM3 study shown in |example.m|_, the 
+design variables are the radius of the surface float, ``r1``, the radius of the 
+heave plate, ``r2``, the draft of the surface float, ``d1``, and the depth of 
+the heave plate, ``d2``, such that ``x = [r1, r2, d1, d2]``. In addition to 
+bounding the design variables, we must provide an initial guess, ``x0``.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
