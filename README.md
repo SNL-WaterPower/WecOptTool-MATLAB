@@ -165,16 +165,70 @@ The WecOptTool toolbox is divided into two main packages as follows:
 The code architecture, for both the WecOptTool and WecOptLib packages, is 
 subject to change as the code approaches maturity.
 
+## Documentation
+
+The documentation source code is found in the `docs` folder. HTML is published
+in the `gh-pages` branch.
+
+### Compile Instructions
+
+#### Setup Sphinx (One Time Only)
+
+Install [Anaconda Python](https://www.anaconda.com/distribution/)
+
+Create the Sphinx environment
+
+```
+> conda create -n _sphinx pip "sphinx=1.8.5" sphinx_rtd_theme colorama future
+> activate _sphinx
+(_sphinx) > pip install sphinxcontrib-matlabdomain
+(_sphinx) > conda deactivate
+>
+```
+
+#### Build Locally
+
+Docs can be built locally for inspection prior to publishing. Thy are built in 
+the `docs/_build` directory.
+
+##### Windows
+
+This uses the instructions in `make_www_local.bat`.
+
+```
+> cd path/to/WecOptTool/docs
+> make_www_local
+```
+
+##### OSX / Linux
+
+This uses the instructions in `makefile`.
+
+```bash
+> cd path/to/WecOptTool/docs
+> make html
+```
+
+### Docstring Formatting
+
+Docstring formatting should be [Google style] for auto documentation with 
+[sphinx.ext.napoleon]. See the docstrings in the WecOptTool package for 
+examples.
+
+[Google style]: https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html#example-google)
+[sphinx.ext.napoleon]: https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html
+
+### License
+
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 ## Contributing
 
 Contributions to the toolbox are welcome. The project follows a [trunk based 
 development](https://trunkbaseddevelopment.com/) paradigm and updates to the 
 code should be made through [pull requests](
 https://help.github.com/en/github/collaborating-with-issues-and-pull-requests).
-
-Contributions to the MATLAB source code should be submitted against the 
-`master` branch, whilst contributions to the documentation are made against the 
-`gh-pages` branch.
+Contributions should be submitted against the `master` branch.
 
 When submitting to the MATLAB source code please run the test suite first:
 
