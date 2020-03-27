@@ -23,7 +23,7 @@ function run(study, optimOptions)
     %     study (:mat:class:`+WecOptTool.RM3Study`):
     %         configured RM3Study object
     %     optimOptions (optional):
-    %         options to fmincon, created with `optimoptions`
+    %         options to fmincon, created with ``optimoptions``
     
     disp("Running study...")
     disp("")

@@ -23,9 +23,9 @@ classdef PseudoSpectral < WecOptTool.control.AbsControl
     % `Bacelli2014`_ for technical details.
     %
     % Args:
-    %     deltaZmax (float, optional):
+    %     deltaZmax (double, optional):
     %         maximum relative oscillation amplitude [m]
-    %     deltaFmax (float, optional): maximum PTO force [N]
+    %     deltaFmax (double, optional): maximum PTO force [N]
     %
     % Note:
     %     deltaZmax and deltaFmax must be provided together.
