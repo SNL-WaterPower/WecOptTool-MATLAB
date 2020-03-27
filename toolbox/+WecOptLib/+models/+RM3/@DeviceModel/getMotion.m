@@ -1,4 +1,21 @@
 
+% Copyright 2020 Sandia National Labs
+%
+% This file is part of WecOptTool.
+% 
+%     WecOptTool is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     WecOptTool is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+
 function RM3 = getMotion(obj, S, hydro, controlType, maxVals)
 % RM3 = getMotion(S, hydro, controlType, geomMode, maxVals)
 %
@@ -9,20 +26,15 @@ function RM3 = getMotion(obj, S, hydro, controlType, maxVals)
 %       S               wave spectra structure, with fields:
 %           S.S         spectral energy distribution [m^2 s/rad]
 %           S.w         frequency [rad/s]
-%           S.ph        phasing
+%           S.ph        phasing (unused)
 %           S.mu        weighting factor
 %       hydro           hydro struct from Nemoh
 %       controlType     choose control type for PTO:
 %                           CC: complex conjugate (no constraints)
 %                           PS: pseudo-spectral (with constraints)
 %                           P: proportional damping
-%       geomMode        choose mode for geometry definition; geometry
-%                       inputs are passed in as string-value pairs, see
-%                       RM3_getNemoh documentation for more info.
-%                           scalar: single scaling factor lambda
-%                           parametric: [r1, r2, d1, d2] parameters
 %                           existing: pass existing NEMOH rundir
-%       controlParams   if using the 'PS' control type, optional arguments 
+%       maxVals         if using the 'PS' control type, optional arguments 
 %                       for deltaZmax and deltaFmax
 %                           Note: to use the optional arguments, both must
 %                           be provided

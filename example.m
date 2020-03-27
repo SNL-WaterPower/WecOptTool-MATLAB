@@ -1,3 +1,21 @@
+
+% Copyright 2020 Sandia National Labs
+%
+% This file is part of WecOptTool.
+% 
+%     WecOptTool is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     WecOptTool is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+
 %% Suppress warnings
 warning('off', 'WaveSpectra:NoWeighting')
 
@@ -6,9 +24,6 @@ study = WecOptTool.RM3Study();
 
 %% Create Bretschnider spectrum from WAFO
 %S = bretschneider([],[8,10],0);
-
-% Set uniform random sample [0, 2pi] for 'phasing'
-%S.ph = rand(length(S.w),1)* 2 * pi;
 
 %% Alternatively load a single example spectrum
 % S = WecOptLib.tests.data.exampleSpectrum();
