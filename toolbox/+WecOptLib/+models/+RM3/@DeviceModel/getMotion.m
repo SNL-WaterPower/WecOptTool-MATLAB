@@ -26,20 +26,15 @@ function RM3 = getMotion(obj, S, hydro, controlType, maxVals)
 %       S               wave spectra structure, with fields:
 %           S.S         spectral energy distribution [m^2 s/rad]
 %           S.w         frequency [rad/s]
-%           S.ph        phasing
+%           S.ph        phasing (unused)
 %           S.mu        weighting factor
 %       hydro           hydro struct from Nemoh
 %       controlType     choose control type for PTO:
 %                           CC: complex conjugate (no constraints)
 %                           PS: pseudo-spectral (with constraints)
 %                           P: proportional damping
-%       geomMode        choose mode for geometry definition; geometry
-%                       inputs are passed in as string-value pairs, see
-%                       RM3_getNemoh documentation for more info.
-%                           scalar: single scaling factor lambda
-%                           parametric: [r1, r2, d1, d2] parameters
 %                           existing: pass existing NEMOH rundir
-%       controlParams   if using the 'PS' control type, optional arguments 
+%       maxVals         if using the 'PS' control type, optional arguments 
 %                       for deltaZmax and deltaFmax
 %                           Note: to use the optional arguments, both must
 %                           be provided

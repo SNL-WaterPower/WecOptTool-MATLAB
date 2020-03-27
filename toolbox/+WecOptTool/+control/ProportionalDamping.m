@@ -17,8 +17,18 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef ProportionalDamping < WecOptTool.control.AbsControl
+    % Provides proportional damping control
+    %
+    % Resistive damping (i.e., a proportional feedback on velocity). See 
+    % `Falnes2002`_ for technical details.
+    % 
+    % .. _Falnes2002:
+    %     https://www.cambridge.org/core/books/ocean-waves-and-\
+    %     oscillating-systems/8A3366809DE5C1F916FF87F36C55C459
+    
     properties
         controlType = 'P'
         controlParams
     end
+    
 end

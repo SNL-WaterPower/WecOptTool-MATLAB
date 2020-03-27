@@ -17,6 +17,21 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef PseudoSpectral < WecOptTool.control.AbsControl
+    % Provides psuedo spectra control
+    %
+    % Seeks optimal power absorption subject to constraints. See 
+    % `Bacelli2014`_ for technical details.
+    %
+    % Args:
+    %     deltaZmax (float, optional):
+    %         maximum relative oscillation amplitude [m]
+    %     deltaFmax (float, optional): maximum PTO force [N]
+    %
+    % Note:
+    %     deltaZmax and deltaFmax must be provided together.
+    % 
+    % .. _Bacelli2014:
+    %     https://ieeexplore.ieee.org/abstract/document/6987295
     
     properties
         controlType = 'PS'
