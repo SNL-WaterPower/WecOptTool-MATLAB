@@ -17,7 +17,6 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef RM3Study < handle
-
     % Interface for preparing a simulation based on the RM3 device
     % 
     % Attributes:
@@ -25,13 +24,13 @@ classdef RM3Study < handle
     
     properties
         
-        spectra         % Should be private to user, but public to run
-        controlType     %   "
-        geomMode        %   "
-        controlParams   %   "
-        geomLowerBound  %   "
-        geomUpperBound  %   "
-        geomX0          % Should be private to user, but public to run
+        spectra
+        controlType
+        geomMode
+        controlParams
+        geomLowerBound
+        geomUpperBound
+        geomX0
         out
         
     end
@@ -39,7 +38,6 @@ classdef RM3Study < handle
     methods
         
         function obj = addControl(obj, controlObj)
-            
             % Add a controller type to the simulation
             % 
             % Args:
@@ -52,7 +50,6 @@ classdef RM3Study < handle
         end
         
         function obj = addGeometry(obj, geomObj)
-            
             % Add a design variable type to the simulation
             % 
             % Args:
@@ -66,7 +63,6 @@ classdef RM3Study < handle
         end
         
         function obj = addSpectra(obj, spectra)
-            
             % Add a spectra to the simulation
             %
             % A single spectrum or weighted multi-spectra sea-states can
@@ -74,13 +70,13 @@ classdef RM3Study < handle
             % 
             % Args:
             %     spectra (struct):
-            %          spectrum structure (can be arrary) in the style of 
-            %          WAFO with the fields:
-            %              S.w: column vector of frequencies in [rad/s]
-            %              S.S: column vector of spectral density in 
-            %                   [m^2 rad/ s]
-            %              S.mu (optional): weighting for spectrum in
-            %                               multi-spectra sea-states
+            %         spectrum structure (can be arrary) in WAFO with the
+            %         fields:
+            %
+            %           - S.w: column vector of frequencies in [rad/s]
+            %           - S.S: column vector of spectral density in [m^2 rad/ s]
+            %           - S.mu (optional): weighting for spectrum in 
+            %             multi-spectra sea-states
 
             WecOptLib.utils.checkSpectrum(spectra)
             obj.spectra = spectra;
