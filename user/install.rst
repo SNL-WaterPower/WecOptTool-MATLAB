@@ -54,7 +54,17 @@ WecOptTool.
 Setup
 =====
 
-1. **Add WecOptTool to your MATLAB path**: After downloading the
+#. **(optional) Remove existing WecOptTool installation**: If you have a 
+   previous version of WecOptTool installed (at path ``/path/to/WecOptTool``), 
+   it should be removed to avoid conflicts. This can be achieved using the 
+   MATLAB command prompt (alternatively the "Set Path" tool can be used to 
+   remove the toolbox): 
+
+   .. code:: matlab
+
+    >> rmpath('/path/to/WecOptTool/toolbox');
+
+#. **Add WecOptTool to your MATLAB path**: After downloading the
    WecOptTool source code to a path of your choosing
    (``/path/to/WecOptTool``), add the WecOptTool toolbox to your MATLAB
    path using the MATLAB command prompt (alternatively the “Set Path”
@@ -62,10 +72,10 @@ Setup
 
    .. code:: matlab
 
-      >> addpath(genpath('/path/to/WecOptTool/toolbox'));
+      >> addpath('/path/to/WecOptTool/toolbox');
       >> savepath;
 
-2. **Prepare Nemoh:**
+#. **Prepare Nemoh:**
 
    a. **Windows:** Executables are provided in the ‘Release’ directory
       of the NEMOH source code. These are installed into WecOptTool
@@ -95,7 +105,7 @@ Setup
       >> cd /path/to/WecOptTool
       >> installNemoh('/path/to/NEMOH/bin');
 
-3. **Verify dependencies installation:** You can verify that the
+#. **Verify dependencies installation:** You can verify that the
    dependencies have been installed correctly by running the
    ``dependencyCheck.m`` script provided in the root directory of the
    WecOptTool source code. The script is called as follows:
@@ -122,7 +132,7 @@ Setup
       Parallel Computing Toolbox: Not found
       WAFO:                       Found
 
-4. **(optional) Run functionality tests:** A test suite is available to
+#. **(optional) Run functionality tests:** A test suite is available to
    verify that the code is operational. A script is provided in the root 
    directory of the WecOptTool source code and is run from the MATLAB command 
    window, as follows:
