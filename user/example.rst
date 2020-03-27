@@ -46,9 +46,9 @@ passed to the main functions of the toolbox.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
-    :lines: 4-5 
+    :lines: 22-23 
     :linenos:
-    :lineno-start: 4
+    :lineno-start: 22
 
 Define a Sea-State
 ==================
@@ -60,9 +60,9 @@ toolbox or preset spectra from WecOptTool.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
-    :lines: 7-17 
+    :lines: 25-32 
     :linenos:
-    :lineno-start: 7
+    :lineno-start: 25
 
 Spectra are formatted following the convention of the WAFO_ matlab toolbox, but 
 can be generated in via any means (e.g., from buoy measurements) as long as the 
@@ -105,9 +105,9 @@ The desired spectrum or spectra can then be added to the study object.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
-    :lines: 19-21
+    :lines: 34-35
     :linenos:
-    :lineno-start: 19
+    :lineno-start: 34
 
 Add a controller to the study
 =============================
@@ -124,9 +124,9 @@ sub-package.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
-    :lines: 22-25
+    :lines: 37-39
     :linenos:
-    :lineno-start: 22
+    :lineno-start: 37
 
 Define design variables
 =======================
@@ -144,9 +144,9 @@ bounding the design variables, we must provide an initial guess, ``x0``.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
-    :lines: 26-33
+    :lines: 41-47
     :linenos:
-    :lineno-start: 26
+    :lineno-start: 41
 
 Alternatively, a simpler study with a single scalar design variable can be 
 employed. In this case, instead of scaling various dimensions of the device 
@@ -154,9 +154,9 @@ individually, the entire device is scaled based on a single design variable.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
-    :lines: 34-41
+    :lines: 49-55
     :linenos:
-    :lineno-start: 34
+    :lineno-start: 49
 
 The options for design variables are defined as classes in the 
 :mat:mod:`~+WecOptTool.+geom` sub-package.
@@ -168,9 +168,9 @@ MATLAB's ``fmincon`` optimization solver is used in |example.m|_.
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
-    :lines: 42-46
+    :lines: 57-60
     :linenos:
-    :lineno-start: 42
+    :lineno-start: 57
 
 Run the study and view results
 ==============================
@@ -181,9 +181,9 @@ follows:
 
 .. literalinclude:: /git_src/example.m
     :language: matlab
-    :lines: 47-55
+    :lines: 62-69
     :linenos:
-    :lineno-start: 47
+    :lineno-start: 62
 
 .. [Falnes] Falnes, Johannes. Ocean waves and oscillating systems: linear 
          interactions including wave-energy extraction. Cambridge University 
