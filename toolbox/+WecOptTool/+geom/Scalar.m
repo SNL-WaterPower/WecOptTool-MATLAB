@@ -19,7 +19,7 @@
 classdef Scalar < WecOptTool.geom.AbsGeom
     % Vary device geometry by a global scalar value.
     %
-    % The entire RM3 device model is scaled based on a scaling of the
+    % The entire RM3 device model is scaled using a multiple of the
     % base RM3 device dimensions.
     %
     % Args:
