@@ -17,6 +17,21 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef Parametric < WecOptTool.geom.AbsGeom
+    % Vary device geometry parametrically.
+    %
+    % For the RM3 study the design variables are
+    %
+    %     * ``r1``: the radius of the surface float
+    %     * ``r2``: the radius of the heave plate
+    %     * ``d1``: the draft of the surface float
+    %     * ``d2``: the depth of the heave plate,
+    %
+    % The resulting design array is given as ``x = [r1, r2, d1, d2]``.
+    %
+    % Args:
+    %     x0 (double[4]): optimisation initial guess
+    %     upperBound (double[4]): optimisation upper bound
+    %     lowerBound (double[4]): optimisation lower bound
     
     properties
         geomMode = 'parametric'

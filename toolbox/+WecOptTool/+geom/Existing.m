@@ -17,6 +17,11 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef Existing < WecOptTool.geom.AbsGeom
+    % Use an existing geometry for control optimisation
+    %
+    % Args:
+    %     nemohRunDirectory (str):
+    %         path to the directory containing the NEMOH results files
     
     properties
         geomMode = 'existing'

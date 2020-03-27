@@ -17,6 +17,15 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef Scalar < WecOptTool.geom.AbsGeom
+    % Vary device geometry by a global scalar value.
+    %
+    % The entire RM3 device model is scaled based on a scaling of the
+    % base RM3 device dimensions.
+    %
+    % Args:
+    %     x0 (double): optimisation initial guess
+    %     upperBound (double): optimisation upper bound
+    %     lowerBound (double): optimisation lower bound
     
     properties
         geomMode = 'scalar'
