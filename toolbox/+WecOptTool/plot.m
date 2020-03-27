@@ -17,7 +17,10 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 function plot(study)
-    % PLOT Plots frequency vs. power for optimized study geometry
+    % Plots frequency vs. power for optimized study
+    % 
+    % Args:
+    %     study (WecOptTool.RM3Study): executed RM3Study object
     
     disp("Generating plot...")
     

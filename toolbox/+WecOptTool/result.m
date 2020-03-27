@@ -17,9 +17,10 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 function result(study)
-    
-    % In the future, this code could be embedded in the geometry
-    % classes themselves
+    % Displays the results from the optimized study
+    % 
+    % Args:
+    %     study (WecOptTool.RM3Study): executed RM3Study object
     
     disp('Optimal solution is:')
     
