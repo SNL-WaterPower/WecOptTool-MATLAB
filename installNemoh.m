@@ -9,7 +9,7 @@ function installNemoh(nemohPath)
     end
     
     % Check if the config file exists and read
-    configPath = fullfile()WOTDataPath,'config.json');
+    configPath = fullfile(WOTDataPath,'config.json');
     
     if exist(configPath, 'file')
         config = jsondecode(fileread(configPath));
