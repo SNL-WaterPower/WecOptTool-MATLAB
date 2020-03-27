@@ -17,17 +17,21 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef RM3Study < handle
-    %RM3STUDY
+
+    % Interface for preparing a simulation based on the RM3 device
+    % 
+    % Attributes:
+    %     out (struct): Output of the simulation
     
     properties
         
-        spectra
-        controlType
-        geomMode
-        controlParams
-        geomLowerBound
-        geomUpperBound
-        geomX0
+        spectra         % Should be private to user, but public to run
+        controlType     %   "
+        geomMode        %   "
+        controlParams   %   "
+        geomLowerBound  %   "
+        geomUpperBound  %   "
+        geomX0          % Should be private to user, but public to run
         out
         
     end
@@ -35,11 +39,26 @@ classdef RM3Study < handle
     methods
         
         function obj = addControl(obj, controlObj)
+            
+            % Add a controller type to the simulation
+            % 
+            % Args:
+            %     controlObj (WecOptTool.control.AbsControl):
+            %          Controller specification object
+            
             obj.controlType = controlObj.controlType;
             obj.controlParams = controlObj.controlParams;
+            
         end
         
         function obj = addGeometry(obj, geomObj)
+            
+            % Add a design variable type to the simulation
+            % 
+            % Args:
+            %     geomObj (WecOptTool.control.AbsGeom):
+            %          Design variable geometry specification object
+            
             obj.geomMode = geomObj.geomMode;
             obj.geomLowerBound = geomObj.geomLowerBound;
             obj.geomUpperBound = geomObj.geomUpperBound;
@@ -47,8 +66,25 @@ classdef RM3Study < handle
         end
         
         function obj = addSpectra(obj, spectra)
+            
+            % Add a spectra to the simulation
+            %
+            % A single spectrum or weighted multi-spectra sea-states can
+            % be simulated.
+            % 
+            % Args:
+            %     spectra (struct):
+            %          spectrum structure (can be arrary) in the style of 
+            %          WAFO with the fields:
+            %              S.w: column vector of frequencies in [rad/s]
+            %              S.S: column vector of spectral density in 
+            %                   [m^2 rad/ s]
+            %              S.mu (optional): weighting for spectrum in
+            %                               multi-spectra sea-states
+
             WecOptLib.utils.checkSpectrum(spectra)
             obj.spectra = spectra;
+            
         end
         
         
