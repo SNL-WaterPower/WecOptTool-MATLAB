@@ -17,13 +17,12 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef RM3Study < handle
-    % Interface for preparing a simulation based on the RM3 device
-    % 
-    % Attributes:
-    %     out (struct): Output of the simulation
+    % Interface for preparing, executing and inspecting a simulation based on 
+    % the RM3 device
     
     properties
         
+        % Needs to be private to the user but public to run
         spectra
         controlType
         geomMode
