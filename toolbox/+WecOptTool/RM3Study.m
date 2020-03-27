@@ -68,7 +68,7 @@ classdef RM3Study < handle
             % be simulated.
             % 
             % Args:
-            %     spectra (struct):
+            %     spectra (:obj:`struct`):
             %         spectrum structure (can be arrary) in WAFO with the
             %         fields:
             %

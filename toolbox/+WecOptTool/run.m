@@ -20,8 +20,10 @@ function run(study, optimOptions)
     % Run a simulation with optional optimiser options
     % 
     % Args:
-    %     study (WecOptTool.RM3Study):configured RM3Study object
-    %     optimOptions: options to fmincon, created with `optimoptions`
+    %     study (:mat:class:`+WecOptTool.RM3Study`):
+    %         configured RM3Study object
+    %     optimOptions (optional):
+    %         options to fmincon, created with `optimoptions`
     
     disp("Running study...")
     disp("")

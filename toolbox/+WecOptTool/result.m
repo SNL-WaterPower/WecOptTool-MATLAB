@@ -20,7 +20,8 @@ function result(study)
     % Displays the results from the optimized study
     % 
     % Args:
-    %     study (WecOptTool.RM3Study): executed RM3Study object
+    %     study (:mat:class:`+WecOptTool.RM3Study`):
+    %         executed RM3Study object
     
     disp('Optimal solution is:')
     

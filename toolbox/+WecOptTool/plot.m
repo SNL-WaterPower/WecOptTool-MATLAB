@@ -20,7 +20,8 @@ function plot(study)
     % Plots frequency vs. power for optimized study
     % 
     % Args:
-    %     study (WecOptTool.RM3Study): executed RM3Study object
+    %     study (:mat:class:`+WecOptTool.RM3Study`):
+    %         executed RM3Study object
     
     disp("Generating plot...")
     
