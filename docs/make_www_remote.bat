@@ -5,19 +5,18 @@ REM the _sphinx conda environment
 
 SET LOCALDOC=_build
 SET TEMPDOC=%TEMP%\\WecOptTool_sphinx_build
+SET REMOTEBRANCH=test_me
 
 IF EXIST "%LOCALDOC%/" RMDIR /Q /S %LOCALDOC%
 CALL activate _sphinx
 sphinx-build -b html . %LOCALDOC%
 CALL conda deactivate
 
-FOR /F %%I IN ('git rev-parse --abbrev-ref HEAD') DO SET BRANCH=%%I
-
 IF EXIST "%TEMPDOC%/" RMDIR /Q /S %TEMPDOC%
 xcopy /E /F /I /Q /S %LOCALDOC% %TEMPDOC%
 
 IF EXIST "gh-pages/" RMDIR /Q /S gh-pages
-git worktree add gh-pages test_me
+git worktree add gh-pages %REMOTEBRANCH%
 FOR /F "delims=" %%i IN ('DIR /B gh-pages') DO (
     RMDIR "gh-pages\\%%i" /S/Q || DEL "gh-pages\\%%i" /S/Q
 )
@@ -25,7 +24,7 @@ FOR /F "delims=" %%i IN ('DIR /B gh-pages') DO (
 CD gh-pages
 xcopy /E /F /I /Q /S %TEMPDOC% .
 COPY /Y NUL .nojekyll
-ECHO "# WecOptTool Documenation" > README.md
+ECHO # WecOptTool Documentation > README.md
 git add --all
 git commit -m "Publishing updated documentation..."
 git push origin
