@@ -25,9 +25,6 @@ study = WecOptTool.RM3Study();
 %% Create Bretschnider spectrum from WAFO
 %S = bretschneider([],[8,10],0);
 
-% Set uniform random sample [0, 2pi] for 'phasing'
-%S.ph = rand(length(S.w),1)* 2 * pi;
-
 %% Alternatively load a single example spectrum
 % S = WecOptLib.tests.data.exampleSpectrum();
 
