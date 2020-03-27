@@ -17,8 +17,8 @@
 %     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef RM3Study < handle
-    % Interface for preparing, executing and inspecting a simulation based on 
-    % the RM3 device
+    % Interface for preparing, executing and inspecting a simulation based 
+    % on the RM3 device
     
     properties
         
@@ -73,7 +73,8 @@ classdef RM3Study < handle
             %         fields:
             %
             %           - S.w: column vector of frequencies in [rad/s]
-            %           - S.S: column vector of spectral density in [m^2 rad/ s]
+            %           - S.S: column vector of spectral density in 
+            %             [m^2 rad/ s]
             %           - S.mu (optional): weighting for spectrum in 
             %             multi-spectra sea-states
 
@@ -81,7 +82,6 @@ classdef RM3Study < handle
             obj.spectra = spectra;
             
         end
-        
         
     end
     
