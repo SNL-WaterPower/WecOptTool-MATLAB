@@ -1,33 +1,76 @@
 @ECHO OFF
+setlocal ENABLEDELAYEDEXPANSION
 
+REM make_www_remote <REMOTE> <BRANCH=gh-pages>
+REM     Example: make_www_remote origin
+REM     Example: make_www_remote public test-gh-pages
 REM Assumes git is installed and that sphinx, sphinx_rtd_theme are installed in 
-REM the _sphinx conda environment
+REM the _sphinx conda environment. The remote branch must already exist.
+
+IF "%~1"=="" (
+    GOTO signature
+) ELSE (
+    SET REMOTE=%~1
+)
+
+IF "%~2"=="" (
+    SET BRANCH=gh-pages
+) ELSE (
+    SET BRANCH=%~2
+)
 
 SET LOCALDOC=_build
-SET TEMPDOC=%TEMP%\\WecOptTool_sphinx_build
-SET REMOTEBRANCH=test_me
+SET WORKTREE=_remote
 
 IF EXIST "%LOCALDOC%/" RMDIR /Q /S %LOCALDOC%
 CALL activate _sphinx
-sphinx-build -b html . %LOCALDOC%
+sphinx-build -W -b html . %LOCALDOC%
+IF !ERRORLEVEL! GTR 0 GOTO sphinxerror
 CALL conda deactivate
 
-IF EXIST "%TEMPDOC%/" RMDIR /Q /S %TEMPDOC%
-xcopy /E /F /I /Q /S %LOCALDOC% %TEMPDOC%
+IF EXIST "%WORKTREE%/" RMDIR /Q /S %WORKTREE%
+git worktree add --track -B %BRANCH% %WORKTREE% %REMOTE%/%BRANCH%
+IF !ERRORLEVEL! GTR 0 GOTO brancherror
 
-IF EXIST "gh-pages/" RMDIR /Q /S gh-pages
-git worktree add gh-pages %REMOTEBRANCH%
-FOR /F "delims=" %%i IN ('DIR /B gh-pages') DO (
-    RMDIR "gh-pages\\%%i" /S/Q || DEL "gh-pages\\%%i" /S/Q
+git --work-tree=_remote pull
+FOR /F "delims=" %%i IN ('DIR /B %WORKTREE%') DO (
+    RMDIR "%WORKTREE%\\%%i" /S/Q 2> NUL || DEL "%WORKTREE%\\%%i" /S/Q
 )
+xcopy /E /F /I /Q /S %LOCALDOC% %WORKTREE%
 
-CD gh-pages
-xcopy /E /F /I /Q /S %TEMPDOC% .
+CD %WORKTREE%
 COPY /Y NUL .nojekyll
 ECHO # WecOptTool Documentation > README.md
+ECHO. >> README.md
 git add --all
 git commit -m "Publishing updated documentation..."
-git push origin
+git push %REMOTE%
 CD ..
 
-git worktree remove -f gh-pages
+RMDIR /Q /S %LOCALDOC%
+git worktree remove -f %WORKTREE%
+GOTO exit
+
+:sphinxerror
+CALL conda deactivate
+ECHO.
+ECHO ERROR: Sphinx docs failed to build
+ECHO Consider running make_www_local.bat to debug
+GOTO exit
+
+:brancherror
+ECHO.
+ECHO git worktree add --track -B %BRANCH% %WORKTREE% %REMOTE%/%BRANCH%
+ECHO.
+ECHO ERROR: Unable to create worktree
+ECHO Does the remote branch %REMOTE%/%BRANCH% exist^?
+ECHO Is %BRANCH% already checked out^?
+GOTO exit
+
+:signature
+ECHO make_www_remote ^<REMOTE^> ^<BRANCH=gh-pages^>
+ECHO     Example: make_www_remote origin
+ECHO     Example: make_www_remote public test-gh-pages
+GOTO exit
+
+:exit
