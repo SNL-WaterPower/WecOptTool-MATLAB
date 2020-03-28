@@ -32,7 +32,7 @@ IF EXIST "%WORKTREE%/" RMDIR /Q /S %WORKTREE%
 git worktree add --track -B %BRANCH% %WORKTREE% %REMOTE%/%BRANCH%
 IF !ERRORLEVEL! GTR 0 GOTO brancherror
 
-git --work-tree=_remote pull
+git --work-tree=%WORKTREE% pull
 FOR /F "delims=" %%i IN ('DIR /B %WORKTREE%') DO (
     RMDIR "%WORKTREE%\\%%i" /S/Q 2> NUL || DEL "%WORKTREE%\\%%i" /S/Q
 )
