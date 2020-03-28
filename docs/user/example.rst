@@ -21,7 +21,7 @@ DOE Reference Model 3 (RM3_) device.
 The general concept of WecOptTool is illustrated in the diagram below. In the 
 upper left-hand corner, an optimization algorithm controls the selection of a 
 set of design variables. In this diagram, some geometric design variables, 
-:math:`a^2`r_1, r_2, d_1, d_2`, are considered along with constraints on the power 
+:math:`r_1, r_2, d_1, d_2`, are considered along with constraints on the power 
 take-off (PTO) max force, :math:`F_{max}`, and max stroke :math:`\Delta x_{max}`
 and an operational constraint, :math:`H_{s,max}`. The device defined by these 
 design variables is passed to the grey *evaluation* block. Here, Nemoh_ is used 
@@ -115,9 +115,35 @@ Add a controller to the study
 WecOptTool allows for three types of controllers:
 
  - **ProportionalDamping:** Resistive damping (i.e., a proportional feedback on 
-   velocity) (see, e.g., [Falnes]_)
- - **ComplexConjugate:** Optimal power absorption (see, e.g., [Falnes]_)
- - **PseudoSpectral:** Constrained optimal power absorption [Bacelli]_
+   velocity) (see, e.g., [Falnes]_). Here, the power take-off (PTO) force is set 
+   as
+
+   .. math::
+     F_u(\omega) = -B_{PTO}(\omega)u(\omega)
+
+   where :math:`B_{PTO}` is a constant chosen to maximize absorbed power and 
+   :math:`u(\omega)` is the velocity.
+ - **ComplexConjugate:** Optimal power absorption through impedance matching 
+   (see, e.g., [Falnes]_). The intrinsic impedance is given by 
+
+   .. math::
+    Z_i(\omega) = B(\omega) + i \left( \omega{}(m + A(\omega)) - \frac{K_{HS}}{\omega}\right) ,
+
+   where :math:`\omega` is the radial frequency, :math:`B(\omega)` is the 
+   radiation damping, :math:`m` is the rigid body mass, :math:`A(\omega)` is the
+   added mass, and :math:`K_{HS}` is the hydrostatic stiffness. Optimal power 
+   transfer occurs when the PTO force, :math:`F_u` is set such
+   that
+
+   .. math::
+    F_u(\omega) = -Z_i^*(\omega)u(\omega) ,
+
+   where :math:`u(\omega)` is the velocity.
+
+ - **PseudoSpectral:** Constrained optimal power absorption [Bacelli]_. This 
+   control tracks the above described ComplexConjugate when constraints, such as
+   limited PTO force or limited PTO stroke, are inactive. The dynamics are 
+   solved efficiently via a |pseudo spectral method|_.
 
 The controllers are defined as classes in the :mat:mod:`~+WecOptTool.+control` 
 sub-package.
@@ -200,3 +226,5 @@ follows:
 .. _Nemoh: https://github.com/LHEEA/Nemoh
 .. |struct array| replace:: ``struct array``
 .. _struct array: https://www.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html
+.. |pseudo spectral method| replace:: pseudo spectral method
+.. _pseudo spectral method: https://en.wikipedia.org/wiki/Pseudo-spectral_method#Motivation_with_a_concrete_example
