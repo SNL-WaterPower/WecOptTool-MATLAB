@@ -209,6 +209,20 @@ This uses the instructions in `makefile`.
 > make html
 ```
 
+#### Publish Remotely
+
+Docs can be built and published to a remote branch. For windows:
+
+```
+> cd path/to/WecOptTool/docs
+> make_www_remote <REMOTE> <BRANCH>
+```
+
+\<REMOTE\> refers to the git remote which will be pushed to and \<BRANCH\> 
+refers to the target branch on the remote. If \<BRANCH\> is not given it will 
+default to "gh-pages". Note, this command will add a new commit to the remote, 
+so use with care.
+
 ### Docstring Formatting
 
 Docstring formatting should be [Google style] for auto documentation with 
