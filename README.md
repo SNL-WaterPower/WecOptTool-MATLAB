@@ -17,7 +17,7 @@ MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/paralle
 The oldest compatible version of MATLAB currently tested is **MATLAB 2018b 
 (Optimization Toolbox Version 8.2)**. Please help the development team by
 reporting compatibility with older versions [HERE](
-(https://github.com/SNL-WaterPower/WecOptTool/issues/91).
+https://github.com/SNL-WaterPower/WecOptTool/issues/91).
 
 <sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to 
 match the output of the WAFO toolbox. These spectra can also be produced 'by 
@@ -144,9 +144,9 @@ file.
 
 Uninstall a previous version of WecOptTool using the MATLAB command prompt: 
 
-    ```matlab
-    >> rmpath(genpath('/path/to/WecOptTool/toolbox'));
-    ```
+```matlab
+>> rmpath(genpath('/path/to/WecOptTool/toolbox'));
+```
 
 Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
 
