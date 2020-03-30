@@ -93,7 +93,7 @@ Install
       >> addpath(genpath('/path/to/WecOptTool/toolbox'));
       >> savepath;
    
-   Alternatively the “Set Path” grapical tool can be used to add the toolbox.
+   Alternatively the "Set Path" graphical tool can be used to add the toolbox.
    |br| |br|
 
 #. **Prepare Nemoh**: Follow the OS dependent instructions for setting up
