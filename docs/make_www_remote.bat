@@ -49,14 +49,14 @@ CD ..
 
 RMDIR /Q /S %LOCALDOC%
 git worktree remove -f %WORKTREE%
-GOTO exit
+GOTO :EOF
 
 :sphinxerror
 CALL conda deactivate
 ECHO.
 ECHO ERROR: Sphinx docs failed to build
 ECHO Consider running make_www_local.bat to debug
-GOTO exit
+GOTO :EOF
 
 :brancherror
 ECHO.
@@ -65,12 +65,10 @@ ECHO.
 ECHO ERROR: Unable to create worktree
 ECHO Does the remote branch %REMOTE%/%BRANCH% exist^?
 ECHO Is %BRANCH% already checked out^?
-GOTO exit
+GOTO :EOF
 
 :signature
 ECHO make_www_remote ^<REMOTE^> ^<BRANCH=gh-pages^>
 ECHO     Example: make_www_remote origin
 ECHO     Example: make_www_remote public test-gh-pages
-GOTO exit
-
-:exit
+GOTO :EOF
