@@ -1,5 +1,7 @@
 
-% Copyright 2020 Sandia National Labs
+% Copyright Ecole Centrale de Nantes 2014
+% Modifications copyright 2017 Markel Penalba
+% Modifications copyright 2020 Sandia National Labs
 %
 % This file is part of WecOptTool.
 % 
