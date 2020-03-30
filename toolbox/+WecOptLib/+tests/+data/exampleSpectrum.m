@@ -14,7 +14,7 @@
 %     GNU General Public License for more details.
 % 
 %     You should have received a copy of the GNU General Public License
-%     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+%     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
 function S = exampleSpectrum
 %EXAMPLESPECTRUM Example Bretschneider spectrum with Hm0=8 and Tp=10
