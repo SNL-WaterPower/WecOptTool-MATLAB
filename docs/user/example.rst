@@ -122,7 +122,8 @@ WecOptTool allows for three types of controllers:
      F_u(\omega) = -B_{PTO}(\omega)u(\omega)
 
    where :math:`B_{PTO}` is a constant chosen to maximize absorbed power and 
-   :math:`u(\omega)` is the velocity.
+   :math:`u(\omega)` is the velocity. |br| |br|
+   
  - **ComplexConjugate:** Optimal power absorption through impedance matching 
    (see, e.g., [Falnes]_). The intrinsic impedance is given by 
 
@@ -139,6 +140,7 @@ WecOptTool allows for three types of controllers:
     F_u(\omega) = -Z_i^*(\omega)u(\omega) ,
 
    where :math:`u(\omega)` is the velocity.
+   where :math:`u(\omega)` is the velocity. |br| |br|
 
  - **PseudoSpectral:** Constrained optimal power absorption [Bacelli]_. This 
    control tracks the above described ComplexConjugate when constraints, such as
@@ -228,3 +230,7 @@ follows:
 .. _struct array: https://www.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html
 .. |pseudo spectral method| replace:: pseudo spectral method
 .. _pseudo spectral method: https://en.wikipedia.org/wiki/Pseudo-spectral_method#Motivation_with_a_concrete_example
+
+.. |br| raw:: html
+
+   <br />
