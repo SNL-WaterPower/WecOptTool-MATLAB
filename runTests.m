@@ -34,12 +34,12 @@ function results = runTests()
     [filepath, ~, ~] = fileparts(p);
     
     % Add HTML plugin
-    htmlFolder = [filepath filesep 'test_results'];
+    htmlFolder = fullfile(filepath,'test_results');
     plugin = TestReportPlugin.producingHTML(htmlFolder);
     runner.addPlugin(plugin);
 
     % Add PDF
-    pdfFile = [filepath filesep 'test_results.pdf'];
+    pdfFile = fullfile(filepath,'test_results.pdf');
     plugin = TestReportPlugin.producingPDF(pdfFile);
     runner.addPlugin(plugin);
 

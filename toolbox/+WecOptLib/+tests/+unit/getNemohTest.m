@@ -41,7 +41,7 @@ function testCylinderM(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = [tempdir filesep 'WecOptTool_testCylinderM'];
+    rundir = fullfile(tempdir, 'WecOptTool_testCylinderM');
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
     mAct = hydro.Vo * hydro.rho;
@@ -58,7 +58,7 @@ function testCylinderA(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = [tempdir filesep 'WecOptTool_testCylinderA'];
+    rundir = fullfile(tempdir, 'WecOptTool_testCylinderA');
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
     AAct = squeeze(hydro.A(3,3,:))*hydro.rho;
@@ -86,7 +86,7 @@ function testCylinderAinf(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = [tempdir filesep 'WecOptTool_testCylinderAinf'];
+    rundir = fullfile(tempdir, 'WecOptTool_testCylinderAinf');
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
 
     AinfAct = hydro.Ainf(3,3)*hydro.rho;
@@ -104,7 +104,7 @@ function testCylinderB(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = [tempdir filesep 'WecOptTool_testCylinderB'];
+    rundir = fullfile(tempdir, 'WecOptTool_testCylinderB');
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
     BAct = squeeze(hydro.B(3,3,:)).*w'*hydro.rho;
@@ -130,7 +130,7 @@ function testCylinderEx(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = [tempdir filesep 'WecOptTool_testCylinderEx'];
+    rundir = fullfile(tempdir, 'WecOptTool_testCylinderEx');
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
     ExAct = (squeeze(hydro.ex_re(3,1,:)) + ...
@@ -158,7 +158,7 @@ function testCylinderC(testCase)
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = [tempdir filesep 'WecOptTool_testCylinderC'];
+    rundir = fullfile(tempdir, 'WecOptTool_testCylinderC');
     [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
 
     CAct = hydro.C(3,3)*hydro.rho*hydro.g;
@@ -192,7 +192,7 @@ function testSphererM(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    rundir = [tempdir filesep 'WecOptTool_testSphererM'];
+    rundir = fullfile(tempdir, 'WecOptTool_testSphererM');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -232,7 +232,7 @@ function testSphereA(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    rundir = [tempdir filesep 'WecOptTool_testSphereA'];
+    rundir = fullfile(tempdir, 'WecOptTool_testSphereA');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -281,7 +281,7 @@ function testSphereAinf(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    rundir = [tempdir filesep 'WecOptTool_testSphereAinf'];
+    rundir = fullfile(tempdir, 'WecOptTool_testSphereAinf');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -321,7 +321,7 @@ function testSphereB(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    rundir = [tempdir filesep 'WecOptTool_testSphereB'];
+    rundir = fullfile(tempdir, 'WecOptTool_testSphereB');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -370,7 +370,7 @@ function testSphereEx(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    rundir = [tempdir filesep 'WecOptTool_testSphereEx'];
+    rundir = fullfile(tempdir, 'WecOptTool_testSphereEx');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -419,7 +419,7 @@ function testSphereC(testCase)
     n = 40;
     
     w = linspace(0.1,1,10);
-    rundir = [tempdir filesep 'WecOptTool_testSphereC'];
+    rundir = fullfile(tempdir, 'WecOptTool_testSphereC');
     
     % using n points, preallocating space for speed.
     z = 1:n;

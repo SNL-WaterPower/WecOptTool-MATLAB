@@ -105,7 +105,7 @@ end
 %% WAFO
 
 wafoFunction = 'bretschneider';
-wafoPath = ['wafo' filesep 'spec' filesep 'bretschneider.m'];
+wafoPath = fullfile('wafo', 'spec','bretschneider.m');
 
 wafoCheck = lower(which(wafoFunction));
 

@@ -33,7 +33,7 @@ function inpath = isNemohInPath(rundir)
         return
     end
     
-    configPath = [WOTDataPath filesep 'config.json'];
+    configPath = fullfile(WOTDataPath, 'config.json');
     
     if ~exist(configPath, 'file')
         inpath = 0;
@@ -57,7 +57,7 @@ function inpath = isNemohInPath(rundir)
         
         for exe = windows_exes
             
-            exePath = strcat(nemohPath, filesep, exe);
+            exePath = fullfile(nemohPath, exe);
             [status, result] = system(exePath);
             
             if ~(status == 0 || contains(result, 'ID.dat'))
@@ -71,7 +71,7 @@ function inpath = isNemohInPath(rundir)
         
         for exe = unix_exes
             
-            exePath = strcat(nemohPath, filesep, exe);
+            exePath = fullfile(nemohPath, exe);
             [status, result] = system(exePath);
             
             if ~(status == 0 || contains(result, 'ID.dat'))

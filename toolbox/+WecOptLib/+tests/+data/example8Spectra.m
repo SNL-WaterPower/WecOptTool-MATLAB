@@ -21,7 +21,7 @@ function SS = example8Spectra
 %                Nbins, and range
     p = mfilename('fullpath');
     [filepath, ~, ~] = fileparts(p);
-    dataPath = [filepath filesep '8spectra.mat'];
+    dataPath = fullfile(filepath, '8spectra.mat');
     example_data = load(dataPath);
     SS = example_data.SS;
 end
