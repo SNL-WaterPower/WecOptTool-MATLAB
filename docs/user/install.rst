@@ -1,48 +1,26 @@
-************
-Installation
-************
+*****
+Setup
+*****
 
-Source Code
-===========
-
-The WecOptTool source code is downloaded from the `WecOptTool Github repository 
-<https://github.com/SNL-WaterPower/WecOptTool>`_. Stable or development versions
-are available.
-
-Stable Version
---------------
-
-The latest stable version of WecOptTool can be downloaded from the `Releases 
-<https://github.com/SNL-WaterPower/WecOptTool/releases/>`_  section of the 
-Github repository.
-
-Development Version
--------------------
-
-To get the latest development version of WecOptTool, clone or download directly 
-from the WecOptTool Github repository using the '`Clone or download 
-<https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository>`_'
-button.
-
-Note that, although the developers endeavour to ensure that the development
-version is not broken, bugs or unexpected behaviour may occur, so please beware.
-
-Dependencies
+Requirements
 ============
 
 The following table displays the required and optional dependencies for
 WecOptTool.
 
 .. table::
-    :widths: 40, 50, 10
+    :widths: 35, 55, 10
 
     +----------------------+------------------------------------------------------------+-----------+
     | Dependency           | Website                                                    | Required? |
     +======================+============================================================+===========+
+    | MATLAB               | https://www.mathworks.com/products/matlab.html             | yes       |
+    |                      |                                                            | (>=2018b) |
+    +----------------------+------------------------------------------------------------+-----------+
     | MATLAB Optimization  | https://www.mathworks.com/products/optimization.html       | yes       |
     | Toolbox              |                                                            |           |
     +----------------------+------------------------------------------------------------+-----------+
-    | Nemoh                | https://github.com/LHEEA/Nemoh                             | yes       |
+    | NEMOH                | https://github.com/LHEEA/Nemoh                             | yes       |
     +----------------------+------------------------------------------------------------+-----------+
     | WAFO [#f1]_          | https://github.com/wafo-project/wafo                       | no        |
     +----------------------+------------------------------------------------------------+-----------+
@@ -51,45 +29,99 @@ WecOptTool.
     | Toolbox [#f2]_       |                                                            |           |
     +----------------------+------------------------------------------------------------+-----------+
 
-Setup
-=====
+The oldest compatible version of MATLAB currently tested is **MATLAB 2018b 
+(Optimization Toolbox Version 8.2)**. Please help the development team by
+reporting compatibility with older versions `HERE
+<https://github.com/SNL-WaterPower/WecOptTool/issues/91>`__.
 
-#. **(optional) Remove existing WecOptTool installation**: If you have a 
-   previous version of WecOptTool installed (at path ``/path/to/WecOptTool``), 
-   it should be removed to avoid conflicts. This can be achieved using the 
-   MATLAB command prompt (alternatively the "Set Path" tool can be used to 
-   remove the toolbox): 
+.. _user-setup-download:
+
+Download
+========
+
+.. raw:: html
+
+   <details><summary><a>Get the stable version</a></summary></br>
+
+The latest stable version of WecOptTool can be downloaded by clicking `HERE
+<https://github.com/SNL-WaterPower/WecOptTool/archive/v0.1.0.zip>`__.
+
+Details of this and previous stable releases can be found in the `Releases 
+<https://github.com/SNL-WaterPower/WecOptTool/releases/>`__  section of the 
+Github repository.
+
+.. raw:: html
+
+   </details></br>
+
+.. raw:: html
+
+   <details><summary><a>Get the development version</a></summary></br>
+
+To get the latest development version of WecOptTool, clone or download the 
+WecOptTool Github repository using the '`Clone or download 
+<https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository>`__'
+button.
+
+Note that, although the developers endeavour to ensure that the development
+version is not broken, bugs or unexpected behaviour may occur, so please beware.
+
+Please see the "Contributing" section of the source code's `README.md`_ file 
+for details on how to contribute to the code development.
+
+.. raw:: html
+
+   </details></br>
+
+Install
+=======
+
+.. note::
+    Unexpected behaviour may occur if multiple versions of the toolbox are 
+    installed. Please following the :ref:`user-setup-uninstall` instructions
+    to uninstall any previous versions of WecOptTool first.
+
+#. **Download the WecOptTool software**: See the 
+   :ref:`user-setup-download` section. If required, unzip the archive to a path 
+   of your choosing (i.e. ``/path/to/WecOptTool``). |br| |br|
+
+#. **Add WecOptTool to your MATLAB path**: Add the WecOptTool toolbox to your 
+   MATLAB path using the MATLAB command prompt:
 
    .. code:: matlab
 
-    >> rmpath('/path/to/WecOptTool/toolbox');
-
-#. **Add WecOptTool to your MATLAB path**: After downloading the
-   WecOptTool source code to a path of your choosing
-   (``/path/to/WecOptTool``), add the WecOptTool toolbox to your MATLAB
-   path using the MATLAB command prompt (alternatively the “Set Path”
-   tool can be used to add the toolbox):
-
-   .. code:: matlab
-
-      >> addpath('/path/to/WecOptTool/toolbox');
+      >> addpath(genpath('/path/to/WecOptTool/toolbox'));
       >> savepath;
+   
+   Alternatively the “Set Path” grapical tool can be used to add the toolbox.
+   |br| |br|
 
-#. **Prepare Nemoh:**
+#. **Prepare Nemoh**: Follow the OS dependent instructions for setting up
+   NEMOH:
 
-   a. **Windows:** Executables are provided in the ‘Release’ directory
-      of the NEMOH source code. These are installed into WecOptTool
-      using the ``installNemoh.m`` MATLAB script, run from the
-      WecOptTool root directory, as follows:
+   .. raw:: html
+
+       <details><summary><a>Windows</a></summary></br>
+
+   Executables are provided in the ‘Release’ directory of the NEMOH source 
+   code. These are installed into WecOptTool using the ``installNemoh.m`` 
+   MATLAB script, run from the WecOptTool root directory, as follows:
 
    .. code:: matlab
 
       >> cd /path/to/WecOptTool
       >> installNemoh('/path/to/NEMOH/Release');
 
-   b. **Linux:** To set up NEMOH for linux, first, compile the
-      executables (you will need gfortran or the intel fortran
-      compiler):
+   .. raw:: html
+
+       </details></br>
+
+   .. raw:: html
+
+       <details><summary><a>Linux</a></summary></br>
+
+   To set up NEMOH for linux, first, compile the executables (you will need 
+   gfortran or the intel fortran compiler):
 
    ::
 
@@ -104,6 +136,10 @@ Setup
 
       >> cd /path/to/WecOptTool
       >> installNemoh('/path/to/NEMOH/bin');
+
+   .. raw:: html
+
+       </details></br>
 
 #. **Verify dependencies installation:** You can verify that the
    dependencies have been installed correctly by running the
@@ -136,11 +172,35 @@ Setup
    verify that the code is operational. A script is provided in the root 
    directory of the WecOptTool source code and is run from the MATLAB command 
    window, as follows:
-
+   
    .. code:: matlab
 
       >> cd /path/to/WecOptTool
       >> runTests;
+   
+   There should be no *Failed* or *Incomplete* tests at the end of the run.
+   For example:
+   
+   .. code::
+   
+       Totals:
+          27 Passed, 0 Failed, 0 Incomplete.
+          209.4266 seconds testing time.
+
+.. _user-setup-uninstall:
+
+Uninstall
+=========
+
+Uninstall a previous version of WecOptTool using the MATLAB command prompt: 
+
+   .. code:: matlab
+
+    >> rmpath(genpath('/path/to/WecOptTool/toolbox'));
+
+Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
+
+.. _README.md: https://github.com/SNL-WaterPower/WecOptTool/blob/master/README.md
 
 .. rubric:: Footnotes
 
@@ -151,3 +211,7 @@ Setup
 
 .. [#f2] Optimizations can be conducted significantly more efficiently by
          utilising parallel computation.
+
+.. |br| raw:: html
+
+   <br />

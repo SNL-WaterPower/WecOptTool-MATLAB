@@ -2,9 +2,9 @@
 WecOptTool
 ##########
 
-The WEC Design Optimization Toolbox (WecOptTool) allows users to perform wave 
-energy converter (WEC) device design optimization studies with constrained 
-optimal control.
+The WEC Design Optimization MATLAB Toolbox (WecOptTool) allows users to perform 
+wave  energy converter (WEC) device design optimization studies with 
+constrained optimal control.
 
 In particular, this toolbox offers **simultaneous optimization of WEC geometry 
 and power take-off (PTO) control**, using the `RM3 point absorber`_ as a case 
