@@ -15,15 +15,15 @@ Various configuration options are currently available for RM3:
 
 * **Geometric design**
 
-    * Scalar multiplier optimisation
-    * 4-parameter (radius and depth of float and reaction plate) optimisation
+    * Scalar multiplier optimization
+    * 4-parameter (radius and depth of float and reaction plate) optimization
     * Existing geometry
 
 * **PTO control**
 
     * Proportional damping
     * Complex conjugate
-    * Constrained pseudo spectral control optimisation
+    * Constrained pseudo spectral control optimization
 
 See the :ref:`user-example` section for further details.
 
