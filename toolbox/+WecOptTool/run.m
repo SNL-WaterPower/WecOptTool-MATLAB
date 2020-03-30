@@ -16,7 +16,8 @@ function run(study, optimOptions)
     end
     
     if strcmp(study.geomMode, 'existing')
-        study.out = obj(study.geomX0);
+        study.out.sol = study.geomX0;
+        study.out.fval = obj(study.geomX0);
         return
     end
     
