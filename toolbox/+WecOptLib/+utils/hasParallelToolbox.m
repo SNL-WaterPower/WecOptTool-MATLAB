@@ -3,17 +3,10 @@ function result = hasParallelToolbox()
 
     parallelToolboxLicense = license('test', "Distrib_Computing_Toolbox");
 
-    installedProducts = ver;
-    installedNames = {installedProducts(:).Name};
-    parallelToolboxInstalled = false;
-    
-    for name = installedNames
-        if contains(name, "Parallel Computing Toolbox")
-            parallelToolboxInstalled = true;
-            break
-        end
-    end
-    
+    addons = matlab.addons.installedAddons();
+    iParallelToolbox = find(addons.Name == "Parallel Computing Toolbox");
+    parallelToolboxInstalled = addons.Enabled(iParallelToolbox);
+       
     result = parallelToolboxLicense && parallelToolboxInstalled;
     
 end
