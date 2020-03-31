@@ -23,6 +23,7 @@ function inpath = isNemohInPath(rundir)
 
     if ~exist(rundir, 'dir')
         inpath = 0;
+        cd(startdir);
         return
     end
 
@@ -30,6 +31,7 @@ function inpath = isNemohInPath(rundir)
     
     if ~exist(WOTDataPath, 'dir')
         inpath = 0;
+        cd(startdir);
         return
     end
     
@@ -37,6 +39,7 @@ function inpath = isNemohInPath(rundir)
     
     if ~exist(configPath, 'file')
         inpath = 0;
+        cd(startdir);
         return
     end
     
@@ -44,6 +47,7 @@ function inpath = isNemohInPath(rundir)
     
     if ~isfield(config,'nemohPath')
         inpath = 0;
+        cd(startdir);
         return
     end
     
@@ -62,6 +66,7 @@ function inpath = isNemohInPath(rundir)
             
             if ~(status == 0 || contains(result, 'ID.dat'))
                 inpath = 0;
+                cd(startdir);
                 return
             end
             
@@ -76,6 +81,7 @@ function inpath = isNemohInPath(rundir)
             
             if ~(status == 0 || contains(result, 'ID.dat'))
                 inpath = 0;
+                cd(startdir);
                 return
             end
         
