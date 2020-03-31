@@ -8,15 +8,15 @@ optimal control.
 
 Dependency                          | Website                                                         | Required?
 ----------------------------------- | --------------------------------------------------------------- | ---------
-MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes (>=2018b)
+MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes (>=2018a)
 MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
 Nemoh                               | https://github.com/LHEEA/Nemoh                                  | yes
 WAFO<sup>1</sup>                    | https://github.com/wafo-project/wafo                            | no
 MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | no
 
-The oldest compatible version of MATLAB currently tested is **MATLAB 2018b 
-(Optimization Toolbox Version 8.2)**. Please help the development team by
-reporting compatibility with older versions [HERE](
+The oldest compatible version of MATLAB currently tested is **MATLAB 2018a 
+(9.4.0.949201)**. Please help the development team by reporting compatibility 
+with older versions [HERE](
 https://github.com/SNL-WaterPower/WecOptTool/issues/91).
 
 <sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to 
