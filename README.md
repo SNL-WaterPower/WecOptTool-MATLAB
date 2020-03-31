@@ -252,10 +252,6 @@ examples.
 [Google style]: https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html#example-google)
 [sphinx.ext.napoleon]: https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html
 
-### License
-
-[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
-
 ## Contributing
 
 Contributions to the toolbox are welcome. The project follows a [trunk based 
