@@ -19,28 +19,15 @@
 function installNemoh(nemohPath)
 %INSTALLNEMOH Add Nemoh executables path to WecOptTool
     
-    % Check if the user data directory exists and make if necessary
-    WOTDataPath = WecOptLib.utils.getUserPath();
-    
-    if ~exist(WOTDataPath, 'dir')
-       mkdir(WOTDataPath)
+    % Check if the a current path is set
+    try
+        oldNemohPath = WecOptLib.utils.readConfig('nemohPath');
+    catch
+        oldNemohPath = "";
     end
     
-    % Check if the config file exists and read
-    configPath = fullfile(WOTDataPath,'config.json');
-    
-    if exist(configPath, 'file')
-        config = jsondecode(fileread(configPath));
-        config.nemohPath = nemohPath;
-    else
-        config = struct('nemohPath', nemohPath);
-    end
-    
-    % Convert to JSON text and save
-    jsonConfig = jsonencode(config);
-    fid = fopen(configPath, 'w');
-    fprintf(fid, '%s', jsonConfig);
-    fclose(fid);
+    % Update the config file
+    WecOptLib.utils.writeConfig('nemohPath', nemohPath)
     
     % Check installation
     nemohTestPath = fullfile(tempdir, "nemoh_installCheck");
@@ -52,11 +39,18 @@ function installNemoh(nemohPath)
     nemohExistFlag = WecOptLib.nemoh.isNemohInPath(nemohTestPath);
 
     if nemohExistFlag
+        
         fprintf('Successfully Installed Nemoh\n');
+        
     else
+        
         msg = ['Nemoh not found. Please check the specified path ' ...
                'and try again. \n'];
         fprintf(msg);
+        
+        % Revert back to the old config
+        WecOptLib.utils.writeConfig('nemohPath', oldNemohPath)
+        
     end
 
 end

@@ -20,38 +20,15 @@ function inpath = isNemohInPath(rundir)
     
     startdir = pwd;
     inpath = 1;
-
-    if ~exist(rundir, 'dir')
-        inpath = 0;
-        cd(startdir);
-        return
-    end
-
-    WOTDataPath = WecOptLib.utils.getUserPath();
     
-    if ~exist(WOTDataPath, 'dir')
+    try
+         nemohPath = WecOptLib.utils.readConfig('nemohPath');
+    catch
         inpath = 0;
         cd(startdir);
         return
     end
     
-    configPath = fullfile(WOTDataPath, 'config.json');
-    
-    if ~exist(configPath, 'file')
-        inpath = 0;
-        cd(startdir);
-        return
-    end
-    
-    config = jsondecode(fileread(configPath));
-    
-    if ~isfield(config,'nemohPath')
-        inpath = 0;
-        cd(startdir);
-        return
-    end
-    
-    nemohPath = fullfile(config.nemohPath);
     cd(rundir);
     
     windows_exes = ["Mesh", "postProcessor", "preProcessor", "Solver"];
