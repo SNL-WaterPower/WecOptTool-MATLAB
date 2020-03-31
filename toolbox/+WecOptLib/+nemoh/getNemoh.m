@@ -1,5 +1,9 @@
 
-% Copyright 2020 Sandia National Labs
+% Copyright Ecole Centrale de Nantes 2014
+% Modifications copyright 2017 Markel Penalba
+% Modifications copyright 2020 National Technology & Engineering Solutions 
+% of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with 
+% NTESS, the U.S. Government retains certain rights in this software.
 %
 % This file is part of WecOptTool.
 % 
@@ -14,7 +18,7 @@
 %     GNU General Public License for more details.
 % 
 %     You should have received a copy of the GNU General Public License
-%     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+%     along with WecOptTool. If not, see <https://www.gnu.org/licenses/>.
 
 function [hydro] = getNemoh(r,z,freq,rundir,varargin)
 % [hydro] = getNemoh(r,z,freq,rundir)
@@ -55,6 +59,8 @@ function [hydro] = getNemoh(r,z,freq,rundir,varargin)
 % modelling wave energy converters: A comparative study with WAMIT."
 % Proceedings of the 12th European Wave and Tidal Energy Conference
 % (EWTEC2017), Cork, Ireland. 2017.
+%
+% Originally licensed under the Apache License, Version 2.0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 startdir = pwd;
 
@@ -254,8 +260,7 @@ cd(startdir)
         %
         % Warning : z(i) must be greater than z(i+1)
         %
-        % Copyright Ecole Centrale de Nantes 2014
-        % Licensed under the Apache License, Version 2.0
+        % Originally licensed under the Apache License, Version 2.0
         % Written by A. Babarit, LHEEA Lab.
         %
         n = length(r);

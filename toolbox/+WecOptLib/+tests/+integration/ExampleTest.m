@@ -1,5 +1,7 @@
 
-% Copyright 2020 Sandia National Labs
+% Copyright 2020 National Technology & Engineering Solutions of Sandia, 
+% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
+% U.S. Government retains certain rights in this software.
 %
 % This file is part of WecOptTool.
 % 
@@ -14,7 +16,7 @@
 %     GNU General Public License for more details.
 % 
 %     You should have received a copy of the GNU General Public License
-%     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+%     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
 classdef ExampleTest < matlab.unittest.TestCase
     
