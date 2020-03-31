@@ -85,6 +85,7 @@ fprintf('--------\n');
 
 % First check for license
 parallelToolboxLicense = license('test', "Distrib_Computing_Toolbox");
+parallelToolboxInstalled = false;
 
 % Second check if installed
 for name = installedNames

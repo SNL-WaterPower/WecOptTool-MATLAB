@@ -105,12 +105,16 @@ w = linspace(0.2,2,10); % TODO: set this based on wave spectrum
 %% Store NEMOH output in fixed user-centric location
 nemohPath = WecOptLib.utils.getSrcRootPath();
 subdirectory = fullfile(nemohPath, '~nemoh_runs');
+procid = 0;
 
-worker = getCurrentWorker;
-procid=0;
+if WecOptLib.utils.hasParallelToolbox()
+    
+    worker = getCurrentWorker;
 
-if(~isa(worker, 'double'))
-    procid=worker.ProcessId;
+    if(~isa(worker, 'double'))
+        procid=worker.ProcessId;
+    end
+    
 end
 
 rundir = fullfile(subdirectory,...
