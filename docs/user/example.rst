@@ -226,7 +226,7 @@ follows:
 .. |example.m| replace:: ``example.m``
 .. _example.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m
 .. _WAFO: http://www.maths.lth.se/matstat/wafo/
-.. _RM3: https://energy.sandia.gov/programs/renewable-energy/water-power/technology-development/reference-model-project-rmp/
+.. _RM3: https://tethys-engineering.pnnl.gov/signature-projects/rm3-wave-point-absorber
 .. _Nemoh: https://github.com/LHEEA/Nemoh
 .. |struct array| replace:: ``struct array``
 .. _struct array: https://www.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html
