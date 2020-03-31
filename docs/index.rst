@@ -3,29 +3,17 @@ WecOptTool
 ##########
 
 The WEC Design Optimization MATLAB Toolbox (WecOptTool) allows users to perform 
-wave  energy converter (WEC) device design optimization studies with 
-constrained optimal control.
+wave  energy converter (WEC) device design optimization studies while including
+different control strategies. In particular, this tool's key feature is the 
+usage of a pseudo spectral solution method capable of dealing with both 
+constraints and nonlinear dynamics. This allows for the optimzation study to 
+find the best possible power capture performance within the system constraints 
+(e.g., maximum power take-off force).
 
-In particular, this toolbox offers **simultaneous optimization of WEC geometry 
-and power take-off (PTO) control**, using the `RM3 point absorber`_ as a case 
-study. The ultimate goal of this project is to offer a **generalised framework 
-for combined geometry and power take-off control co-optimization**.
-
-Various configuration options are currently available for RM3:
-
-* **Geometric design**
-
-    * Scalar multiplier optimization
-    * 4-parameter (radius and depth of float and reaction plate) optimization
-    * Existing geometry
-
-* **PTO control**
-
-    * Proportional damping
-    * Complex conjugate
-    * Constrained pseudo spectral control optimization
-
-See the :ref:`user-example` section for further details.
+The initial release of WecOptTool allows the user to perform design optimization
+studies on the `RM3 point absorber`_ (see the :ref:`user-example` section for 
+further details). Subsequent releases will provide a generalized framework 
+allowing users to consider arbitrary devices of their choosing.
 
 Delevopers
 ==========
