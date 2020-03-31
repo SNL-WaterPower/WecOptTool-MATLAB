@@ -41,6 +41,23 @@ function installNemoh(nemohPath)
     fid = fopen(configPath, 'w');
     fprintf(fid, '%s', jsonConfig);
     fclose(fid);
+    
+    % Check installation
+    nemohTestPath = fullfile(tempdir, "nemoh_installCheck");
+
+    if ~exist(nemohTestPath, 'dir')
+        mkdir(nemohTestPath)
+    end
+
+    nemohExistFlag = WecOptLib.nemoh.isNemohInPath(nemohTestPath);
+
+    if nemohExistFlag
+        fprintf('Successfully Installed Nemoh\n');
+    else
+        msg = ['Nemoh not found. Please check the specified path ' ...
+               'and try again. \n'];
+        fprintf(msg);
+    end
 
 end
 
