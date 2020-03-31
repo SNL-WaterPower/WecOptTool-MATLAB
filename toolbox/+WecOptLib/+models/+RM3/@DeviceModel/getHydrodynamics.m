@@ -107,7 +107,7 @@ nemohPath = WecOptLib.utils.getSrcRootPath();
 subdirectory = fullfile(nemohPath, '~nemoh_runs');
 procid = 0;
 
-if all(WecOptLib.utils.hasParallelToolbox())
+if WecOptLib.utils.hasParallelToolbox()
     
     worker = getCurrentWorker;
 
@@ -149,4 +149,5 @@ z = {zf, zs};
 
 [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
 hydro.rundir = rundir;
+
 end

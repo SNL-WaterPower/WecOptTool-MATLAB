@@ -54,7 +54,7 @@ classdef ExampleTest < matlab.unittest.TestCase
             srcRootPath = WecOptLib.utils.getSrcRootPath();
             cd(srcRootPath);
             
-            if all(WecOptLib.utils.hasParallelToolbox())
+            if WecOptLib.utils.hasParallelToolbox()
                 verifyWarningFree(testCase, @example);
             else
                 verifyWarning(testCase, ...

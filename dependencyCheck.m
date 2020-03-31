@@ -77,12 +77,13 @@ fprintf('--------\n');
 
 %% Parallel Computing Toolbox
 
-results = WecOptLib.utils.hasParallelToolbox();
-parLicensed = results(1);
-parInstalled = results(2);
-if parLicensed && parInstalled
+[parallelToolboxFound,      ...
+ parallelToolboxLicensed,   ...
+ parallelToolboxInstalled] = WecOptLib.utils.hasParallelToolbox();
+
+if parallelToolboxFound
     fprintf('Parallel Toolbox:              Found\n');
-elseif ~parallelToolboxLicense && parallelToolboxInstalled
+elseif ~parallelToolboxLicensed && parallelToolboxInstalled
     fprintf('Parallel Toolbox:              Unlicensed\n');
 else
     fprintf('Paralell Toolbox:              Not Installed\n');
