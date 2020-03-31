@@ -32,34 +32,19 @@ function result(study)
         %  d1 - Float Draft [m]
         %  d2 - Reaction Plate depth [m]
         
-        sol = study.out{1};
-        
-        disp("    r1: " + sol(1) + " [m]");
-        disp("    r2: " + sol(2) + " [m]");
-        disp("    d1: " + sol(3) + " [m]");
-        disp("    d2: " + sol(4) + " [m]");
+        disp("    r1: " + study.out.sol(1) + " [m]");
+        disp("    r2: " + study.out.sol(2) + " [m]");
+        disp("    d1: " + study.out.sol(3) + " [m]");
+        disp("    d2: " + study.out.sol(4) + " [m]");
         
     elseif strcmp(study.geomMode, 'scalar')
         
-        sol = study.out{1};
-        disp("    lambda " + sol(1));
+        disp("    lambda " + study.out.sol(1));
     
     end
     
     disp('')
-    
-    
-    if strcmp(study.geomMode, 'parametric') || ...
-       strcmp(study.geomMode, 'scalar')
-   
-        fval = study.out{2};
-        
-    elseif strcmp(study.geomMode, 'existing')
-        
-        fval = study.out{1};
-        
-    end
-    
-    disp("Optimal function value is: " + (-fval) + " [W]")
+    disp("Optimal function value is: "...
+        + (-study.out.fval) + " [W]")
     
 end

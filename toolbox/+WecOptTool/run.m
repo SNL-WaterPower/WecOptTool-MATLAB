@@ -41,7 +41,8 @@ function run(study, optimOptions)
     end
     
     if strcmp(study.geomMode, 'existing')
-        study.out = obj(study.geomX0);
+        study.out.sol = study.geomX0;
+        study.out.fval = obj(study.geomX0);
         return
     end
     
@@ -72,6 +73,10 @@ function run(study, optimOptions)
                                          options);
     toc
     
-    study.out = {sol,fval,exitflag,output};
+    study.out = struct;
+    study.out.sol = sol;
+    study.out.fval = fval;
+    study.out.exitflag = exitflag;
+    study.out.output = output;
     
 end
