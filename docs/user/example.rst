@@ -203,6 +203,17 @@ Set optimization solver and options
 
 MATLAB's ``fmincon`` optimization solver is used in |example.m|_.
 
+.. note::
+    The ``MaxFunctionEvaluations`` is set to 5 in |example.m|_ to permit 
+    reletively quick runs, but can be increased to allow for a potentially 
+    better solution (with the other options left as-is, this should require 150 
+    function evaluations).
+
+
+.. image:: /_static/example_optimplotfval.svg
+   :alt: Progression of objective function value for RM3 example
+
+
 .. literalinclude:: /../example.m
     :language: matlab
     :lines: 57-60
