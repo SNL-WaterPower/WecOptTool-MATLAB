@@ -6,15 +6,20 @@ function [combined, licensed, installed] = hasParallelToolbox()
     iParallelToolbox = addons.Name == "Parallel Computing Toolbox";
     installed = addons.Enabled(iParallelToolbox);
     
-    % Check for used parallel functions
+    % Check for parallel functions used by WecOptTool
     parFunctions = ["getCurrentWorker"];
     hasAllFunctions = true;
     
     for func = parFunctions
-        toggled = exist(func,'file');
-        if toggled ~= 2
+   
+        isFunction = exist(func,'file');
+        if isFunction ~= 2
             hasAllFunctions = false;
+        else
+            fileLoc = which('getCurrentWorker');
+            hasAllFunctions = isfile(fileLoc);            
         end
+        
     end
     
     combined = licensed && installed && hasAllFunctions;
