@@ -14,8 +14,9 @@ See list of external contributors on the WEC-Sim webite.
 Several libraries developed by external parties are used by WEC-Sim. License information for these libraries is as follows:
 source/functions/import_stl_fast/import_stl_fast.m - see license in import_stl_fast.m 
 
-March 2020 (Sandia National Labs)
----------------------------------
+Modifications March 2020
+        National Technology & Engineering Solutions of Sandia, LLC (NTESS)
+--------------------------------------------------------------------------
     + Read_NEMOH.m and Normalize.m packaged within WecOptTool
     + Minor modification was made to Read_NEMOH.m to access package namespace
     + Remove waitbar call in Read_NEMOH.m

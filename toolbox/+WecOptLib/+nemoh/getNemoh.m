@@ -1,7 +1,9 @@
 
 % Copyright Ecole Centrale de Nantes 2014
 % Modifications copyright 2017 Markel Penalba
-% Modifications copyright 2020 Sandia National Labs
+% Modifications copyright 2020 National Technology & Engineering Solutions 
+% of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 with 
+% NTESS, the U.S. Government retains certain rights in this software.
 %
 % This file is part of WecOptTool.
 % 
