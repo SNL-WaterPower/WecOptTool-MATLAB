@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns:xl="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="153 -128 1038 533" width="1038" height="533">
+<svg version="1.1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" viewBox="153 -128 1038 533" width="1038" height="533">
   <defs>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 9 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="-750" x-height="517" cap-height="714" ascent="957.0007" descent="-212.99744" font-style="italic" font-weight="400">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue-Italic"/>
+      </font-face-src>
+    </font-face>
     <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
       <font-face-src>
         <font-face-name name="HelveticaNeue"/>
@@ -17,11 +22,6 @@
         <path d="M 8 0 L 0 -3 L 0 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
       </g>
     </marker>
-    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 9 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="-750" x-height="517" cap-height="714" ascent="957.0007" descent="-212.99744" font-style="italic" font-weight="400">
-      <font-face-src>
-        <font-face-name name="HelveticaNeue-Italic"/>
-      </font-face-src>
-    </font-face>
     <font-face font-family="Helvetica" font-size="9" units-per-em="1000" underline-position="-75.68359" underline-thickness="49.316406" slope="0" x-height="522.9492" cap-height="717.28516" ascent="770.0195" descent="-229.98047" font-weight="400">
       <font-face-src>
         <font-face-name name="Helvetica"/>
@@ -29,9 +29,9 @@
     </font-face>
   </defs>
   <metadata> Produced by OmniGraffle 7.13 
-    <dc:date>2020-03-26 19:33:51 +0000</dc:date>
+    <dc:date>2020-03-31 04:28:57 +0000</dc:date>
   </metadata>
-  <g id="Canvas_1" stroke="none" stroke-dasharray="none" fill-opacity="1" fill="none" stroke-opacity="1">
+  <g id="Canvas_1" fill="none" stroke="none" fill-opacity="1" stroke-opacity="1" stroke-dasharray="none">
     <title>Canvas 1</title>
     <rect fill="white" x="153" y="-128" width="1038" height="533"/>
     <g id="Canvas_1: Layer 1">
@@ -39,6 +39,9 @@
       <g id="Graphic_43">
         <rect x="324" y="104" width="866.5" height="300" fill="#dadada"/>
         <rect x="324" y="104" width="866.5" height="300" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(1055.708 82)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" x="1278977e-18" y="15">“Evaluation block”</tspan>
+        </text>
       </g>
       <g id="Graphic_4">
         <path d="M 500.4 116 L 630 116 L 597.6 219 L 468 219 Z" fill="white"/>
@@ -132,7 +135,7 @@
           <use xl:href="#path"/>
         </clipPath>
         <g clip-path="url(#clip_path)">
-          <image xl:href="./example_rm3Parametric.svg" width="270" height="239" transform="translate(402.8 -44.25) scale(.5)"/>
+          <image xl:href="example_rm3Parametric.svg" width="270" height="239" transform="translate(402.8 -44.25) scale(.5)"/>
         </g>
         <rect x="178" y="-51.5" width="379" height="134" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
         <text transform="translate(183 -46.5)" fill="black">
