@@ -83,19 +83,9 @@ fprintf('--------\n');
 
 %% Parallel Computing Toolbox
 
-% First check for license
-parallelToolboxLicense = license('test', "Distrib_Computing_Toolbox");
-parallelToolboxInstalled = false;
+[parLicensed, parInstalled] = WecOptLib.utils.hasParallelToolbox();
 
-% Second check if installed
-for name = installedNames
-    if contains(name, "Parallel Computing Toolbox")
-        parallelToolboxInstalled = true;
-        break
-    end
-end
-
-if parallelToolboxLicense && parallelToolboxInstalled
+if parLicensed && parInstalled
     fprintf('Parallel Toolbox:              Found\n');
 elseif ~parallelToolboxLicense && parallelToolboxInstalled
     fprintf('Parallel Toolbox:              Unlicensed\n');
