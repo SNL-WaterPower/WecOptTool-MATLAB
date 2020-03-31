@@ -15,7 +15,7 @@ WecOptTool.
     | Dependency           | Website                                                    | Required? |
     +======================+============================================================+===========+
     | MATLAB               | https://www.mathworks.com/products/matlab.html             | yes       |
-    |                      |                                                            | (>=2018b) |
+    |                      |                                                            | (>=2018a) |
     +----------------------+------------------------------------------------------------+-----------+
     | MATLAB Optimization  | https://www.mathworks.com/products/optimization.html       | yes       |
     | Toolbox              |                                                            |           |
@@ -29,9 +29,9 @@ WecOptTool.
     | Toolbox [#f2]_       |                                                            |           |
     +----------------------+------------------------------------------------------------+-----------+
 
-The oldest compatible version of MATLAB currently tested is **MATLAB 2018b 
-(Optimization Toolbox Version 8.2)**. Please help the development team by
-reporting compatibility with older versions `HERE
+The oldest compatible version of MATLAB currently tested is **MATLAB 2018a 
+(9.4.0.949201)**. Please help the development team by reporting compatibility 
+with older versions `HERE
 <https://github.com/SNL-WaterPower/WecOptTool/issues/91>`__.
 
 .. _user-setup-download:
