@@ -160,16 +160,24 @@ sub-package.
 Define design variables
 =======================
 
-The initial values, lower bounds ``lb``, and upper bounds ``ub`` of the design 
-variables can be set as follows. For the RM3 study shown in |example.m|_, the 
-design variables are the radius of the surface float, ``r1``, the radius of the 
-heave plate, ``r2``, the draft of the surface float, ``d1``, and the depth of 
-the heave plate, ``d2``, such that ``x = [r1, r2, d1, d2]``. In addition to 
-bounding the design variables, we must provide an initial guess, ``x0``.
+As shown in the diagram below, for RM3 study considered in |example.m|_ the design 
+variables are the radius of the surface float, ``r1``, the radius of the heave 
+plate, ``r2``, the draft of the surface float, ``d1``, and the depth of the 
+heave plate, ``d2``, such that ``x = [r1, r2, d1, d2]``. The optimization 
+algoritm will attempt to find the values of ``x`` that minimize the objective 
+function. 
+
+.. note::
+    **Objective function:** The built-in objective function of |example.m|_ is
+    set to maximize absorbed power. This function can be altered better 
+    approximate a more meaningful objective (e.g., levelized cost of energy).
 
 .. image:: /_static/example_rm3Parametric.svg
    :width: 400pt
    :alt: RM3 device parametric dimensions
+
+The initial values,``x0``, lower bounds, ``lb``, and upper bounds, 
+``ub`` of the design variables can be set as follows.
 
 .. literalinclude:: /../example.m
     :language: matlab
