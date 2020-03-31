@@ -141,13 +141,12 @@ WecOptTool allows for three types of controllers:
    .. math::
     F_u(\omega) = -Z_i^*(\omega)u(\omega) ,
 
-   where :math:`u(\omega)` is the velocity.
    where :math:`u(\omega)` is the velocity. |br| |br|
 
- - **PseudoSpectral:** Constrained optimal power absorption [Bacelli]_. This 
-   control tracks the above described ComplexConjugate when constraints, such as
-   limited PTO force or limited PTO stroke, are inactive. The dynamics are 
-   solved efficiently via a |pseudo spectral method|_.
+ - **PseudoSpectral:** Constrained optimal power absorption [Bacelli]_. This is 
+   a numerical optimal control algorithm capable of dealing with both 
+   constraints and nonlinear dynamics. This approach is based on 
+   |pseudo spectral method|_.
 
 The controllers are defined as classes in the :mat:mod:`~+WecOptTool.+control` 
 sub-package.
@@ -230,8 +229,8 @@ follows:
 .. _Nemoh: https://github.com/LHEEA/Nemoh
 .. |struct array| replace:: ``struct array``
 .. _struct array: https://www.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html
-.. |pseudo spectral method| replace:: pseudo spectral method
-.. _pseudo spectral method: https://en.wikipedia.org/wiki/Pseudo-spectral_method#Motivation_with_a_concrete_example
+.. |pseudo spectral method| replace:: pseudo spectral optimal control
+.. _pseudo spectral method: https://en.wikipedia.org/wiki/Pseudospectral_optimal_control
 
 .. |br| raw:: html
 
