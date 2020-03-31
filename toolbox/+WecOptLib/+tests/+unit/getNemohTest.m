@@ -36,30 +36,65 @@ function tests = getNemohTest
 end
 
 function testCylinderM(testCase)
-    tol = .001;
 
+    import matlab.unittest.fixtures.TemporaryFolderFixture
+    
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testCylinderM'));
+
+    tol = .001;
+    
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = fullfile(tempdir, 'WecOptTool_testCylinderM');
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+            
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
     
     mAct = hydro.Vo * hydro.rho;
     mExp = 1602.74022500000;
-    verifyEqual(testCase, mAct, mExp, 'RelTol', tol)
     
-    WecOptLib.nemoh.cleanNemoh(rundir);
+    verifyEqual(testCase, mAct, mExp, 'RelTol', tol)
     
 end
 
+function testNoExtraFigures(testCase)
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
+    
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testNoExtraFigures'));
+
+    h =  findobj('type','figure');
+    nExpected = length(h);
+    
+    w = 0.1;
+    r=[0 1 1 0]; 
+    z=[.5 .5 -.5 -.5];
+    WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
+    
+    h =  findobj('type','figure');
+    nActual = length(h);
+    
+    verifyEqual(testCase, nActual, nExpected)
+
+end
+
 function testCylinderA(testCase)
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
+    
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testCylinderA'));
+
     tol = .001;
 
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = fullfile(tempdir, 'WecOptTool_testCylinderA');
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
     
     AAct = squeeze(hydro.A(3,3,:))*hydro.rho;
     
@@ -77,35 +112,44 @@ function testCylinderA(testCase)
   
     verifyEqual(testCase, AAct, AExp, 'RelTol', tol)
     
-    WecOptLib.nemoh.cleanNemoh(rundir);
-    
 end
 
 function testCylinderAinf(testCase)
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
+    
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testCylinderAinf'));
+
     tol = .001;
+    
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = fullfile(tempdir, 'WecOptTool_testCylinderAinf');
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
 
     AinfAct = hydro.Ainf(3,3)*hydro.rho;
     AinfExp = 2.496468000000000e+03;
     
     verifyEqual(testCase, AinfAct, AinfExp, 'RelTol', tol)
     
-    WecOptLib.nemoh.cleanNemoh(rundir);
-    
 end
 
 function testCylinderB(testCase)
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
+    
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testCylinderB'));
+
     tol = .001;
 
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = fullfile(tempdir, 'WecOptTool_testCylinderB');
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
     
     BAct = squeeze(hydro.B(3,3,:)).*w'*hydro.rho;
     BExp = [0.509248900000000;...
@@ -120,18 +164,22 @@ function testCylinderB(testCase)
             387.615300000000];
     verifyEqual(testCase, BAct, BExp, 'RelTol', tol);
     
-    WecOptLib.nemoh.cleanNemoh(rundir);
-    
 end
 
 function testCylinderEx(testCase)
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
+    
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testCylinderEx'));
+
     tol = .001;
 
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = fullfile(tempdir, 'WecOptTool_testCylinderEx');
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
     
     ExAct = (squeeze(hydro.ex_re(3,1,:)) + ...
                 1i * squeeze(hydro.ex_im(3,1,:))) * hydro.rho * hydro.g;
@@ -148,24 +196,26 @@ function testCylinderEx(testCase)
          
      verifyEqual(testCase, ExAct, ExExp, 'RelTol', tol);
      
-     WecOptLib.nemoh.cleanNemoh(rundir);
-     
 end
 
 function testCylinderC(testCase)
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
+    
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testCylinderC'));
+
     tol = .001;
     
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = fullfile(tempdir, 'WecOptTool_testCylinderC');
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
 
     CAct = hydro.C(3,3)*hydro.rho*hydro.g;
     CExp = 3.144575000000000e+04;
     verifyEqual(testCase, CAct, CExp, 'RelTol', tol);
-    
-    WecOptLib.nemoh.cleanNemoh(rundir);
     
 end
 
@@ -188,11 +238,17 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function testSphererM(testCase)
-    tol = .001;
-    n = 40;
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
     
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testSphereM'));
+
+    tol = .001;
+    
+    n = 40;
     w = linspace(0.1,1,10);
-    rundir = fullfile(tempdir, 'WecOptTool_testSphererM');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -216,23 +272,27 @@ function testSphererM(testCase)
         r(k+1) = sqrt(1 - zk^2); 
     end
     
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
     
     mAct = hydro.Vo * hydro.rho;
     mExp = 2.133340700000000e+03;
    
     verifyEqual(testCase, mAct, mExp, 'RelTol', tol)
-    
-    WecOptLib.nemoh.cleanNemoh(rundir);
-    
+        
 end
 
 function testSphereA(testCase)
-    tol = .001;
-    n = 40;
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
     
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testSphereA'));
+
+    tol = .001;
+    
+    n = 40;
     w = linspace(0.1,1,10);
-    rundir = fullfile(tempdir, 'WecOptTool_testSphereA');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -256,7 +316,7 @@ function testSphereA(testCase)
         r(k+1) = sqrt(1 - zk^2); 
     end
     
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
     
     AAct = squeeze(hydro.A(3,3,:))*hydro.rho;
     AExp = [1.805080000000000e+03;...
@@ -271,17 +331,21 @@ function testSphereA(testCase)
             1.866094000000000e+03];
   
     verifyEqual(testCase, AAct, AExp, 'RelTol', tol)
-    
-    WecOptLib.nemoh.cleanNemoh(rundir);
-    
+        
 end
 
 function testSphereAinf(testCase)
-    tol = .001;
-    n = 40;
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
     
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testSphereAinf'));
+
+    tol = .001;
+    
+    n = 40;
     w = linspace(0.1,1,10);
-    rundir = fullfile(tempdir, 'WecOptTool_testSphereAinf');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -305,23 +369,27 @@ function testSphereAinf(testCase)
         r(k+1) = sqrt(1 - zk^2); 
     end
     
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
 
     AinfAct = hydro.Ainf(3,3)*hydro.rho;
     AinfExp = 1.866094000000000e+03;
     
     verifyEqual(testCase, AinfAct, AinfExp, 'RelTol', tol)
-    
-    WecOptLib.nemoh.cleanNemoh(rundir);
-    
+        
 end
 
 function testSphereB(testCase)
-    tol = .001;
-    n = 40;
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
     
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testSphereB'));
+
+    tol = .001;
+    
+    n = 40;
     w = linspace(0.1,1,10);
-    rundir = fullfile(tempdir, 'WecOptTool_testSphereB');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -345,7 +413,7 @@ function testSphereB(testCase)
         r(k+1) = sqrt(1 - zk^2); 
     end
     
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
     
     BAct = squeeze(hydro.B(3,3,:)).*w'*hydro.rho;
     BExp = [0.517412700000000;...
@@ -361,16 +429,20 @@ function testSphereB(testCase)
         
     verifyEqual(testCase, BAct, BExp, 'RelTol', tol);
     
-    WecOptLib.nemoh.cleanNemoh(rundir);
-    
 end
 
 function testSphereEx(testCase)
-    tol = .001;
-    n = 40;
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
     
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testSphereEx'));
+
+    tol = .001;
+    
+    n = 40;
     w = linspace(0.1,1,10);
-    rundir = fullfile(tempdir, 'WecOptTool_testSphereEx');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -393,7 +465,8 @@ function testSphereEx(testCase)
         z(k+1) = zk;
         r(k+1) = sqrt(1 - zk^2); 
     end
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
     
     ExAct = (squeeze(hydro.ex_re(3,1,:)) + ...
                 1i * squeeze(hydro.ex_im(3,1,:))) * hydro.rho * hydro.g;
@@ -409,17 +482,21 @@ function testSphereEx(testCase)
              2.745981680392228e+04 + 3.979351517871062e+02i];
          
      verifyEqual(testCase, ExAct, ExExp, 'RelTol', tol)
-     
-     WecOptLib.nemoh.cleanNemoh(rundir);
-     
+          
 end
 
 function testSphereC(testCase)
-    tol = .001;
-    n = 40;
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
     
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testSphereC'));
+
+    tol = .001;
+    
+    n = 40;
     w = linspace(0.1,1,10);
-    rundir = fullfile(tempdir, 'WecOptTool_testSphereC');
     
     % using n points, preallocating space for speed.
     z = 1:n;
@@ -442,12 +519,12 @@ function testSphereC(testCase)
         z(k+1) = zk;
         r(k+1) = sqrt(1 - zk^2); 
     end
-    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+    
+    [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
 
     CAct = hydro.C(3,3)*hydro.rho*hydro.g;
     CExp = 3.139205000000000e+04;
     
     verifyEqual(testCase, CAct, CExp, 'RelTol', tol)
     
-    WecOptLib.nemoh.cleanNemoh(rundir);
 end

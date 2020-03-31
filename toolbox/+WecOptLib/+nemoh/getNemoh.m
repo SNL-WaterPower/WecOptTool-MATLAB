@@ -401,6 +401,7 @@ cd(startdir)
         axis equal
         fign = fullfile(fullfile(rundir,'mesh','mesh.fig'));
         savefig(fign);
+        close(ff);
         
         clear KH;
         KH=zeros(6,6);
