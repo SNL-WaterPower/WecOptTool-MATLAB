@@ -37,16 +37,10 @@ fprintf('--------\n');
 optimizationToolboxLicense = license('test', "Optimization_Toolbox");
 
 % Second check if installed
-installedProducts = ver;
-installedNames = {installedProducts(:).Name};
-optimizationToolboxInstalled = false;
+addons = matlab.addons.installedAddons();
+iParallelToolbox = find(addons.Name == "Optimization Toolbox");
+optimizationToolboxInstalled = addons.Enabled(iParallelToolbox);
 
-for name = installedNames
-    if contains(name, "Optimization Toolbox")
-        optimizationToolboxInstalled = true;
-        break
-    end
-end
 
 if optimizationToolboxLicense && optimizationToolboxInstalled
     fprintf('Optimization Toolbox:          Found\n');
