@@ -21,12 +21,18 @@ function tests = cleanNemohTest()
 end
 
 function testRemovesDir(testCase)
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
+    
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'cleanNemohTest'));
     
     % calling getNemoh to generate files
     w = linspace(0.1,1,10);
     r=[0 1 1 0]; 
     z=[.5 .5 -.5 -.5];
-    rundir = fullfile(tempdir,'WecOptTool_cleanNemohTest');
+    rundir = fullfile(tempFixture.Folder, 'test');
     WecOptLib.nemoh.getNemoh(r,z,w,rundir);
     
     % running cleanNemoh to immediately remove created files
