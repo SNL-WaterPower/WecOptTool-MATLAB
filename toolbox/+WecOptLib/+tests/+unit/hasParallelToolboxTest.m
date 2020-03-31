@@ -24,9 +24,8 @@ function testhasParallelToolbox(testCase)
 
     import matlab.unittest.constraints.IsSubsetOf
     
-    [licensed, installed] = WecOptLib.utils.hasParallelToolbox();
-    result = licensed && installed;
-    testCase.verifyThat(result, IsSubsetOf(logical([0;1])));
+    result = WecOptLib.utils.hasParallelToolbox();
+    testCase.verifyThat(all(result), IsSubsetOf(logical([0;1])));
     
 end
 
