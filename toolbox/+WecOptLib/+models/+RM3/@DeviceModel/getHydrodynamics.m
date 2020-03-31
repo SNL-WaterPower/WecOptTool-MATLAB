@@ -107,7 +107,7 @@ nemohPath = WecOptLib.utils.getSrcRootPath();
 subdirectory = fullfile(nemohPath, '~nemoh_runs');
 procid = 0;
 
-if WecOptLib.utils.hasParallelToolbox()
+if all(WecOptLib.utils.hasParallelToolbox())
     
     worker = getCurrentWorker;
 
