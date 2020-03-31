@@ -56,7 +56,29 @@ function testCylinderM(testCase)
     
     verifyEqual(testCase, mAct, mExp, 'RelTol', tol)
     
+end
+
+function testNoExtraFigures(testCase)
+
+    import matlab.unittest.fixtures.TemporaryFolderFixture
     
+    tempFixture = testCase.applyFixture(                            ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testNoExtraFigures'));
+
+    h =  findobj('type','figure');
+    nExpected = length(h);
+    
+    w = 0.1;
+    r=[0 1 1 0]; 
+    z=[.5 .5 -.5 -.5];
+    WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
+    
+    h =  findobj('type','figure');
+    nActual = length(h);
+    
+    verifyEqual(testCase, nActual, nExpected)
+
 end
 
 function testCylinderA(testCase)
