@@ -55,9 +55,9 @@ study.addGeometry(parametric);
 % study.addGeometry(scalar);
 
 %% Set up some optimisation options for fmincon
-options = optimoptions('fmincon',                   ...
-                       'MaxFunctionEvaluations', 5, ...
-                       'UseParallel', true);
+options = optimoptions('fmincon');
+options.MaxFunctionEvaluations = 5; % set artificial low for fast running
+options.UseParallel = true;
 
 %% Run the study
 WecOptTool.run(study, options);
