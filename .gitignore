@@ -28,3 +28,6 @@ Thumbs.db
 # Tests
 test_results/
 test_results.pdf
+
+# local sphinx build folder
+docs/_build

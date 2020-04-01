@@ -1,16 +1,30 @@
 # WecOptTool
 
-The WEC Design Optimization Toolbox (WecOptTool) allows users to perform wave 
-energy converter (WEC) device design optimization studies with constrained 
+The WEC Design Optimization MATLAB Toolbox (WecOptTool) allows users to perform 
+wave energy converter (WEC) device design optimization studies with constrained 
 optimal control. 
 
-## Source Code
+## Requirements
 
-Stable release versions or the latest development version of WecOptTool are 
-available for download.
+Dependency                          | Website                                                         | Required?
+----------------------------------- | --------------------------------------------------------------- | ---------
+MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes (>=2018a)
+MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
+Nemoh                               | https://github.com/LHEEA/Nemoh                                  | yes
+WAFO<sup>1</sup>                    | https://github.com/wafo-project/wafo                            | no
+MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | no
 
-Note that, although the developers endeavour to ensure that the development
-version is not broken, bugs or unexpected behaviour may occur, so please beware.
+The oldest compatible version of MATLAB currently tested is **MATLAB 2018a 
+(9.4.0.949201)**. Please help the development team by reporting compatibility 
+with older versions [HERE](
+https://github.com/SNL-WaterPower/WecOptTool/issues/91).
+
+<sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to 
+match the output of the WAFO toolbox. These spectra can also be produced 'by 
+hand' and an example spectra is stored in the `example_data` folder, to use if 
+WAFO is not installed._ 
+
+## Download
 
 ### Stable Version
 
@@ -25,41 +39,28 @@ repository, using the [Clone or download](
 https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 button.
 
-## Dependencies
+Note that, although the developers endeavour to ensure that the development
+version is not broken, bugs or unexpected behaviour may occur, so please beware.
 
-Dependency                          | Website                                                         | Required?
------------------------------------ | --------------------------------------------------------------- | ---------
-MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
-Nemoh                               | https://github.com/LHEEA/Nemoh                                  | yes
-WAFO<sup>1</sup>                    | https://github.com/wafo-project/wafo                            | no
-MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | no
+## Getting Started
 
-<sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to 
-match the output of the WAFO toolbox. These spectra can also be produced 'by 
-hand' and an example spectra is stored in the `example_data` folder, to use if 
-WAFO is not installed._ 
+> :warning: Unexpected behaviour may occur if multiple versions of the toolbox 
+  are installed. Please following the [Uninstall](#uninstall) instructions to 
+  uninstall any previous versions of WecOptTool first.
 
-## Getting started
+1. **Download the WecOptTool software**: See the [Download](#download)
+   section. If required, unzip the archive to a path of your choosing (i.e. 
+   `/path/to/WecOptTool`).
 
-1. **(optional) Remove existing WecOptTool installation**: If you have a 
-previous version of WecOptTool installed (at path '/path/to/WecOptTool'), it 
-should be removed to avoid conflicts. This can be achieved using the MATLAB 
-command prompt (alternatively the "Set Path" tool can be used to remove the 
-toolbox): 
+1. **Add WecOptTool to your MATLAB path**: Add the WecOptTool toolbox to your 
+   MATLAB path using the MATLAB command prompt:
 
     ```matlab
-    >> rmpath('/path/to/WecOptTool/toolbox');
-    ```
-
-1. **Add WecOptTool to your MATLAB path**: After downloading the WecOptTool 
-source code to a path of your choosing (`/path/to/WecOptTool`), add the 
-WecOptTool toolbox to your MATLAB path using the MATLAB command prompt 
-(alternatively the "Set Path" tool can be used to add the toolbox): 
-
-    ```matlab
-    >> addpath('/path/to/WecOptTool/toolbox');
+    >> addpath(genpath('/path/to/WecOptTool/toolbox'));
     >> savepath;
-    ```
+   ```
+   
+   Alternatively the “Set Path” graphical tool can be used to add the toolbox.
 
 1. **Set up Nemoh:**
 
@@ -126,9 +127,28 @@ WecOptTool source code and is run from the MATLAB command window, as follows:
     >> runTests;
     ```
 
+   There should be no *Failed* or *Incomplete* tests at the end of the run.
+   For example:
+   
+    ```
+    Totals:
+          27 Passed, 0 Failed, 0 Incomplete.
+          209.4266 seconds testing time.
+    ```
+
 1. **Begin use:** See the
 [`example.m`](https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m) 
 file.
+
+## Uninstall
+
+Uninstall a previous version of WecOptTool using the MATLAB command prompt: 
+
+```matlab
+>> rmpath(genpath('/path/to/WecOptTool/toolbox'));
+```
+
+Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
 
 ## NEMOH Files
 
@@ -165,16 +185,80 @@ The WecOptTool toolbox is divided into two main packages as follows:
 The code architecture, for both the WecOptTool and WecOptLib packages, is 
 subject to change as the code approaches maturity.
 
+## Documentation
+
+The documentation source code is found in the `docs` folder. HTML is published
+in the `gh-pages` branch.
+
+### Compile Instructions
+
+#### Setup Sphinx (One Time Only)
+
+Install [Anaconda Python](https://www.anaconda.com/distribution/)
+
+Create the Sphinx environment
+
+```
+> conda create -n _sphinx pip "sphinx=1.8.5" sphinx_rtd_theme colorama future
+> activate _sphinx
+(_sphinx) > pip install sphinxcontrib-matlabdomain
+(_sphinx) > conda deactivate
+>
+```
+
+#### Build Locally
+
+Docs can be built locally for inspection prior to publishing. Thy are built in 
+the `docs/_build` directory.
+
+##### Windows
+
+This uses the instructions in `make_www_local.bat`.
+
+```
+> cd path/to/WecOptTool/docs
+> make_www_local
+```
+
+##### OSX / Linux
+
+This uses the instructions in `makefile`.
+
+```bash
+> cd path/to/WecOptTool/docs
+> make html
+```
+
+#### Publish Remotely
+
+Docs can be built and published to a remote branch. For windows:
+
+```
+> cd path/to/WecOptTool/docs
+> make_www_remote <REMOTE> <BRANCH>
+```
+
+\<REMOTE\> refers to the git remote which will be pushed to and \<BRANCH\> 
+refers to the target branch on the remote. If \<BRANCH\> is not given it will 
+default to "gh-pages". Note, this command will add a new commit to the remote, 
+so use with care.
+
+### Docstring Formatting
+
+Docstring formatting should be [Google style] for auto documentation with 
+[sphinx.ext.napoleon]. See the docstrings in the WecOptTool package for 
+examples.
+
+[Google style]: https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html#example-google)
+[sphinx.ext.napoleon]: https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html
+
 ## Contributing
 
 Contributions to the toolbox are welcome. The project follows a [trunk based 
 development](https://trunkbaseddevelopment.com/) paradigm and updates to the 
 code should be made through [pull requests](
 https://help.github.com/en/github/collaborating-with-issues-and-pull-requests).
-
-Contributions to the MATLAB source code should be submitted against the 
-`master` branch, whilst contributions to the documentation are made against the 
-`gh-pages` branch.
+Contributions should be submitted against the `master` branch.
 
 When submitting to the MATLAB source code please run the test suite first:
 
