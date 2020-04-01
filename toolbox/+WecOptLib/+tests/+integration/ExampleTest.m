@@ -55,7 +55,14 @@ classdef ExampleTest < matlab.unittest.TestCase
             
             srcRootPath = WecOptLib.utils.getSrcRootPath();
             cd(srcRootPath);
-            verifyWarningFree(testCase, @example);
+            
+            if WecOptLib.utils.hasParallelToolbox()
+                verifyWarningFree(testCase, @example);
+            else
+                verifyWarning(testCase, ...
+                              @example, ...
+                              'optimlib:commonMsgs:NoPCTLicense');
+            end
             
         end
         

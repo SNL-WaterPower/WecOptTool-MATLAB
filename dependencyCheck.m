@@ -36,23 +36,31 @@ fprintf('--------\n');
 %% Optimisation Toolbox
 
 % First Check for ToolBox license
-optimizationToolboxLicense = license('test', "Optimization_Toolbox");
+optimizationToolboxLicensed = license('test', "Optimization_Toolbox");
 
 % Second check if installed
-installedProducts = ver;
-installedNames = {installedProducts(:).Name};
-optimizationToolboxInstalled = false;
+addons = matlab.addons.installedAddons();
 
-for name = installedNames
-    if contains(name, "Optimization Toolbox")
-        optimizationToolboxInstalled = true;
-        break
+if isempty(addons)
+    
+    optimizationToolboxInstalled = false;
+    
+else
+    
+    iOptimizationToolbox = addons.Name == "Optimization Toolbox";
+
+    if ~iOptimizationToolbox
+        optimizationToolboxInstalled = false;
+    else
+        optimizationToolboxInstalled = ...
+                                    addons.Enabled(iOptimizationToolbox);
     end
+    
 end
 
-if optimizationToolboxLicense && optimizationToolboxInstalled
+if optimizationToolboxLicensed && optimizationToolboxInstalled
     fprintf('Optimization Toolbox:          Found\n');
-elseif ~optimizationToolboxLicense && opmizationToolboxInstalled
+elseif ~optimizationToolboxLicensed && opmizationToolboxInstalled
     allfoundflag = false;
     fprintf('Optimization Toolbox:          Unlicensed\n');
 else
@@ -85,20 +93,13 @@ fprintf('--------\n');
 
 %% Parallel Computing Toolbox
 
-% First check for license
-parallelToolboxLicense = license('test', "Distrib_Computing_Toolbox");
+[parallelToolboxFound,      ...
+ parallelToolboxLicensed,   ...
+ parallelToolboxInstalled] = WecOptLib.utils.hasParallelToolbox();
 
-% Second check if installed
-for name = installedNames
-    if contains(name, "Parallel Computing Toolbox")
-        parallelToolboxInstalled = true;
-        break
-    end
-end
-
-if parallelToolboxLicense && parallelToolboxInstalled
+if parallelToolboxFound
     fprintf('Parallel Toolbox:              Found\n');
-elseif ~parallelToolboxLicense && parallelToolboxInstalled
+elseif ~parallelToolboxLicensed && parallelToolboxInstalled
     fprintf('Parallel Toolbox:              Unlicensed\n');
 else
     fprintf('Paralell Toolbox:              Not Installed\n');
