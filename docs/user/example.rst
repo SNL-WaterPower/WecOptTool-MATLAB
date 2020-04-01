@@ -29,7 +29,7 @@ and an operational constraint, :math:`H_{s,max}`. The device defined by these
 design variables is passed to the grey *evaluation* block. Here, Nemoh_ is used 
 to compute the linear wave-body interaction properties using the boundary 
 element method (BEM). Next, using these properties and some set of sea states, 
-one of three controllers (``ProportionalDamping``, ``ComplexConjugat``, ``PseudoSpectral``) 
+one of three controllers (``ProportionalDamping``, ``ComplexConjugate``, ``PseudoSpectral``) 
 are used to compute the resulting dynamics. From on these dynamics and some 
 model for cost (e.g., based on the size dimensions and the capabilities of the 
 PTO) can be combine to produce an objective function, which is returned to the 
