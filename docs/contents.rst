@@ -3,7 +3,7 @@
    :numbered:
    :caption: User Guide
 
-   user/install
+   user/setup
    user/example
    user/api
    user/license
