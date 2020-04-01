@@ -34,17 +34,31 @@ fprintf('--------\n');
 %% Optimisation Toolbox
 
 % First Check for ToolBox license
-optimizationToolboxLicense = license('test', "Optimization_Toolbox");
+optimizationToolboxLicensed = license('test', "Optimization_Toolbox");
 
 % Second check if installed
 addons = matlab.addons.installedAddons();
-iParallelToolbox = find(addons.Name == "Optimization Toolbox");
-optimizationToolboxInstalled = addons.Enabled(iParallelToolbox);
 
+if isempty(addons)
+    
+    optimizationToolboxInstalled = false;
+    
+else
+    
+    iOptimizationToolbox = addons.Name == "Optimization Toolbox";
 
-if optimizationToolboxLicense && optimizationToolboxInstalled
+    if ~iOptimizationToolbox
+        optimizationToolboxInstalled = false;
+    else
+        optimizationToolboxInstalled = ...
+                                    addons.Enabled(iOptimizationToolbox);
+    end
+    
+end
+
+if optimizationToolboxLicensed && optimizationToolboxInstalled
     fprintf('Optimization Toolbox:          Found\n');
-elseif ~optimizationToolboxLicense && opmizationToolboxInstalled
+elseif ~optimizationToolboxLicensed && opmizationToolboxInstalled
     allfoundflag = false;
     fprintf('Optimization Toolbox:          Unlicensed\n');
 else
