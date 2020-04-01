@@ -57,7 +57,7 @@ Define a Sea-State
 
 WecOptTool can simulate single or multiple spectra sea states, where weightings
 can be provided to indicate the relative likelihood of each spectra. The 
-following lines from |example.m|_ provide means of using the WAFO_ matlab 
+following lines from |example.m|_ provide means of using the WAFO_ MATLAB 
 toolbox or preset spectra from WecOptTool.
 
 .. literalinclude:: /../example.m
@@ -66,7 +66,7 @@ toolbox or preset spectra from WecOptTool.
     :linenos:
     :lineno-start: 25
 
-Spectra are formatted following the convention of the WAFO_ matlab toolbox, but 
+Spectra are formatted following the convention of the WAFO_ MATLAB toolbox, but 
 can be generated in via any means (e.g., from buoy measurements) as long as the 
 structure includes the ``S.S``, ``S.w``, and ``S.phi`` fields.
 
@@ -164,7 +164,7 @@ As shown in the diagram below, for RM3 study considered in |example.m|_ the desi
 variables are the radius of the surface float, ``r1``, the radius of the heave 
 plate, ``r2``, the draft of the surface float, ``d1``, and the depth of the 
 heave plate, ``d2``, such that ``x = [r1, r2, d1, d2]``. The optimization 
-algoritm will attempt to find the values of ``x`` that minimize the objective 
+algorithm will attempt to find the values of ``x`` that minimize the objective 
 function. 
 
 .. note::
@@ -205,7 +205,7 @@ MATLAB's ``fmincon`` optimization solver is used in |example.m|_.
 
 .. note::
     The ``MaxFunctionEvaluations`` is set to 5 in |example.m|_ to permit 
-    reletively quick runs, but can be increased to allow for a potentially 
+    relatively quick runs, but can be increased to allow for a potentially 
     better solution (with the other options left as-is, this should require 150 
     function evaluations).
 
@@ -250,7 +250,7 @@ energy absorbed by the resulting design for each of the eight sea states.
 
 .. image:: /_static/example_spectralPowerPlot.svg
    :width: 400pt
-   :alt: Absorbed pectral power distribution for each sea state
+   :alt: Absorbed Spectral power distribution for each sea state
 
 .. [Falnes] Falnes, Johannes. Ocean waves and oscillating systems: linear 
          interactions including wave-energy extraction. Cambridge University 
