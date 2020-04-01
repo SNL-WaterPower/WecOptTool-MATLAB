@@ -233,6 +233,25 @@ follows:
     :linenos:
     :lineno-start: 62
 
+From :mat:func:`~+WecOptTool.result`, we can see that the study has produced the 
+following design.
+
+.. code:: matlab
+
+    Optimal solution is:
+    r1: 5 [m]
+    r2: 7.5 [m]
+    d1: 1.125 [m]
+    d2: 42 [m]
+    Optimal function value is: 2202421.2193 [W]
+
+From :mat:func:`~+WecOptTool.plot`, we can review the spectral distribution of 
+energy absorbed by the resulting design for each of the eight sea states.
+
+.. image:: /_static/example_spectralPowerPlot.svg
+   :width: 400pt
+   :alt: Absorbed pectral power distribution for each sea state
+
 .. [Falnes] Falnes, Johannes. Ocean waves and oscillating systems: linear 
          interactions including wave-energy extraction. Cambridge University 
          Press, 2002.
