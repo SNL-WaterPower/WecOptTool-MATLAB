@@ -48,7 +48,7 @@ The latest stable version of WecOptTool can be downloaded by clicking `HERE
 
 Details of this and previous stable releases can be found in the `Releases 
 <https://github.com/SNL-WaterPower/WecOptTool/releases/>`__  section of the 
-Github repository.
+GitHub repository.
 
 .. raw:: html
 
@@ -59,12 +59,12 @@ Github repository.
    <details><summary><a>Get the development version</a></summary></br>
 
 To get the latest development version of WecOptTool, clone or download the 
-WecOptTool Github repository using the '`Clone or download 
+WecOptTool GitHub repository using the '`Clone or download 
 <https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository>`__'
 button.
 
-Note that, although the developers endeavour to ensure that the development
-version is not broken, bugs or unexpected behaviour may occur, so please beware.
+Note that, although the developers endeavor to ensure that the development
+version is not broken, bugs or unexpected behavior may occur, so please beware.
 
 Please see the "Contributing" section of the source code's `README.md`_ file 
 for details on how to contribute to the code development.
@@ -77,7 +77,7 @@ Install
 =======
 
 .. note::
-    Unexpected behaviour may occur if multiple versions of the toolbox are 
+    Unexpected behavior may occur if multiple versions of the toolbox are 
     installed. Please following the :ref:`user-setup-uninstall` instructions
     to uninstall any previous versions of WecOptTool first.
 
@@ -120,8 +120,8 @@ Install
 
        <details><summary><a>Linux</a></summary></br>
 
-   To set up NEMOH for linux, first, compile the executables (you will need 
-   gfortran or the intel fortran compiler):
+   To set up NEMOH for Linux, first, compile the executables (you will need 
+   gfortran or the Intel FORTRAN compiler):
 
    ::
 
@@ -210,7 +210,7 @@ Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
          ``example_data`` folder, to use if WAFO is not installed.
 
 .. [#f2] Optimizations can be conducted significantly more efficiently by
-         utilising parallel computation.
+         utilizing parallel computation.
 
 .. |br| raw:: html
 
