@@ -32,6 +32,7 @@ function value = readConfig(key, varargin)
     if ~exist(p.Results.configDir, 'dir')
         errStr = "Config directory '" + p.Results.configDir +   ...
                  "' does not exist";
+        errStr = strrep(errStr, '\', '\\');
         error('WecOptTool:readConfig:missingDirectory', errStr)
     end
     
