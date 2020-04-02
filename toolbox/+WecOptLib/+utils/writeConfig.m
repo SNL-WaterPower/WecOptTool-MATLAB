@@ -41,7 +41,7 @@ function writeConfig(key, value, varargin)
     if exist(configPath, 'file')
         config = jsondecode(fileread(configPath));
     else
-        config = struct(p.Results.key, p.Results.value);
+        config = struct(char(p.Results.key), p.Results.value);
     end
     
     if strcmp(p.Results.value, "")
