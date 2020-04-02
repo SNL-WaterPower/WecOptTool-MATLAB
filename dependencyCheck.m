@@ -37,26 +37,7 @@ fprintf('--------\n');
 
 % First Check for ToolBox license
 optimizationToolboxLicensed = license('test', "Optimization_Toolbox");
-
-% Second check if installed
-addons = matlab.addons.installedAddons();
-
-if isempty(addons)
-    
-    optimizationToolboxInstalled = false;
-    
-else
-    
-    iOptimizationToolbox = addons.Name == "Optimization Toolbox";
-
-    if ~iOptimizationToolbox
-        optimizationToolboxInstalled = false;
-    else
-        optimizationToolboxInstalled = ...
-                                    addons.Enabled(iOptimizationToolbox);
-    end
-    
-end
+optimizationToolboxInstalled = matlab.addons.isAddonEnabled('OP');
 
 if optimizationToolboxLicensed && optimizationToolboxInstalled
     fprintf('Optimization Toolbox:          Found\n');
