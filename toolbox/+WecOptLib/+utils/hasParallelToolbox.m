@@ -20,7 +20,17 @@ function [combined, licensed, installed] = hasParallelToolbox()
 %HASPARALLELTOOLBOX Is the Parallel Computing Toolbox available?
 
     licensed = logical(license('test', "Distrib_Computing_Toolbox"));
-    installed = matlab.addons.isAddonEnabled("DM");
+    
+    installedProducts = ver;
+    installedNames = {installedProducts(:).Name};
+    installed = false;
+
+    for name = installedNames
+        if contains(name, "Parallel Computing Toolbox")
+            installed = true;
+            break
+        end
+    end
 
     combined = licensed && installed;
     
