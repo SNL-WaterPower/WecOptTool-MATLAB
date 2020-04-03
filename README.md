@@ -10,7 +10,7 @@ Dependency                          | Website                                   
 ----------------------------------- | --------------------------------------------------------------- | ---------
 MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes\*
 MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
-Nemoh                               | https://github.com/LHEEA/Nemoh                                  | yes
+NEMOH                               | https://github.com/LHEEA/Nemoh                                  | yes
 WAFO<sup>1</sup>                    | https://github.com/wafo-project/wafo                            | no
 MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | no
 
