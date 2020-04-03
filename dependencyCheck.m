@@ -94,7 +94,7 @@ if parallelToolboxFound
 elseif ~parallelToolboxLicensed && parallelToolboxInstalled
     fprintf('Parallel Toolbox:              Unlicensed\n');
 else
-    fprintf('Paralell Toolbox:              Not Installed\n');
+    fprintf('Parallel Toolbox:              Not Installed\n');
 end
 
 %% WAFO
