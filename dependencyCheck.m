@@ -52,7 +52,7 @@ end
 
 if optimizationToolboxLicensed && optimizationToolboxInstalled
     fprintf('Optimization Toolbox:          Found\n');
-elseif ~optimizationToolboxLicensed && opmizationToolboxInstalled
+elseif ~optimizationToolboxLicensed && optimizationToolboxInstalled
     allfoundflag = false;
     fprintf('Optimization Toolbox:          Unlicensed\n');
 else
