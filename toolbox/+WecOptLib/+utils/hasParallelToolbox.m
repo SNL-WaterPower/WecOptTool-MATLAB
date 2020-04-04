@@ -21,24 +21,17 @@ function [combined, licensed, installed] = hasParallelToolbox()
 
     licensed = logical(license('test', "Distrib_Computing_Toolbox"));
     
-    addons = matlab.addons.installedAddons();
-    
-    if isempty(addons)
-        
-        installed = false;
-        
-    else
-        
-        iParallelToolbox = addons.Name == "Parallel Computing Toolbox";
+    installedProducts = ver;
+    installedNames = {installedProducts(:).Name};
+    installed = false;
 
-        if ~iParallelToolbox
-            installed = false;
-        else
-            installed = addons.Enabled(iParallelToolbox);
+    for name = installedNames
+        if contains(name, "Parallel Computing Toolbox")
+            installed = true;
+            break
         end
-        
     end
-    
+
     combined = licensed && installed;
     
 end

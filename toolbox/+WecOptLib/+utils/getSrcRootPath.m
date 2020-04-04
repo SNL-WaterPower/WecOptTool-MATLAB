@@ -27,7 +27,7 @@ function [srcRootPath] = getSrcRootPath()
     
     % Linux requires a leading slash
     if ~ispc
-        srcRootPath = append(filesep, srcRootPath);
+        srcRootPath = [filesep, srcRootPath];
     end
     
 end

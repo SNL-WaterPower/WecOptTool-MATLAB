@@ -39,28 +39,20 @@ fprintf('--------\n');
 optimizationToolboxLicensed = license('test', "Optimization_Toolbox");
 
 % Second check if installed
-addons = matlab.addons.installedAddons();
+installedProducts = ver;
+installedNames = {installedProducts(:).Name};
+optimizationToolboxInstalled = false;
 
-if isempty(addons)
-    
-    optimizationToolboxInstalled = false;
-    
-else
-    
-    iOptimizationToolbox = addons.Name == "Optimization Toolbox";
-
-    if ~iOptimizationToolbox
-        optimizationToolboxInstalled = false;
-    else
-        optimizationToolboxInstalled = ...
-                                    addons.Enabled(iOptimizationToolbox);
+for name = installedNames
+    if contains(name, "Optimization Toolbox")
+        optimizationToolboxInstalled = true;
+        break
     end
-    
 end
 
 if optimizationToolboxLicensed && optimizationToolboxInstalled
     fprintf('Optimization Toolbox:          Found\n');
-elseif ~optimizationToolboxLicensed && opmizationToolboxInstalled
+elseif ~optimizationToolboxLicensed && optimizationToolboxInstalled
     allfoundflag = false;
     fprintf('Optimization Toolbox:          Unlicensed\n');
 else
@@ -102,7 +94,7 @@ if parallelToolboxFound
 elseif ~parallelToolboxLicensed && parallelToolboxInstalled
     fprintf('Parallel Toolbox:              Unlicensed\n');
 else
-    fprintf('Paralell Toolbox:              Not Installed\n');
+    fprintf('Parallel Toolbox:              Not Installed\n');
 end
 
 %% WAFO
