@@ -73,7 +73,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'WecOptTool'
-copyright = u'2020 Sandia National Labs'.format(now.year)
+copyright = u'{} National Technology and Engineering Solutions of Sandia, LLC'.format(now.year)
 author = u'unknown'
 
 # The version info for the project you're documenting, acts as replacement for
