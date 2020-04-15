@@ -194,16 +194,20 @@ in the `gh-pages` branch.
 
 ### Compile Instructions
 
+These instructions work for both Linux and Windows. For Windows, remember to
+replace slashes (`/`) in paths with backslashes (`\ `).
+
 #### Setup Sphinx (One Time Only)
 
 1. Install [Anaconda Python](https://www.anaconda.com/distribution/).
 
-2. Download sphixcontrib-versioning (from H0R5E):
+2. Download sphixcontrib-versioning (from [H0R5E](
+   https://github.com/H0R5E/sphinxcontrib-versioning)):
    
    ```
-   > git clone --single-branch --branch v1.8.5_support https://github.com/H0R5E/sphinxcontrib-versioning.git <path\to\sphinxcontrib-versioning>
+   > git clone --single-branch --branch v1.8.5_support https://github.com/H0R5E/sphinxcontrib-versioning.git <path/to/sphinxcontrib-versioning>
    ```
-   Replace `<path\to\sphinxcontrib-versioning>` with a path of your choosing.
+   Replace `<path/to/sphinxcontrib-versioning>` with a path of your choosing.
 
 3. Create the Sphinx environment:
    
@@ -211,57 +215,59 @@ in the `gh-pages` branch.
    > conda create -c conda-forge -n _sphinx click colorama colorclass future pip "sphinx=1.8.5" sphinx_rtd_theme 
    > activate _sphinx
    (_sphinx) > pip install sphinxcontrib-matlabdomain
-   (_sphinx) > cd path\to\sphinxcontrib-versioning
+   (_sphinx) > cd path/to/sphinxcontrib-versioning
    (_sphinx) > pip install -e .
    (_sphinx) > conda deactivate
    >
    ```
 
+> :warning: sphinxcontrib-versioning is installed in development mode, so 
+  **do not delete** the folder where it is stored.
+
 #### Build Locally
 
 Docs can be built locally for inspection prior to publishing. They are built in 
 the `docs/_build` directory. Note, docs are built from the remote, so only
-pushed changes will be shown.
+pushed changes will be shown. 
+
+To build the docs as they would be published, use the following:
 
 ```
 > activate _sphinx
-(_sphinx) > cd path\to\WecOptTool 
+(_sphinx) > cd path/to/WecOptTool 
 (_sphinx) > sphinx-versioning build -abt docs docs/_build/html
 (_sphinx) > conda deactivate
 >
 ```
 
-##### Windows
-
-This uses the instructions in `make_www_local.bat`.
+To build the docs with a current feature branch as the default docs use:
 
 ```
-> cd path/to/WecOptTool/docs
-> make_www_local
+> activate _sphinx
+(_sphinx) > cd path/to/WecOptTool 
+(_sphinx) > sphinx-versioning build -ab r <feature-branch> docs docs/_build/html
+(_sphinx) > conda deactivate
+>
 ```
 
-##### OSX / Linux
-
-This uses the instructions in `makefile`.
-
-```bash
-> cd path/to/WecOptTool/docs
-> make html
-```
+The front page of the docs can be accessed at 
+`WecOptTool/docs/_build/html/index.html`. 
 
 #### Publish Remotely
 
-Docs can be built and published to a remote branch. For windows:
+Docs can be built and published to a remote branch, as follows:
 
 ```
-> cd path/to/WecOptTool/docs
-> make_www_remote <REMOTE> <BRANCH>
+> activate _sphinx
+(_sphinx) > cd path/to/WecOptTool 
+(_sphinx) > sphinx-versioning push -abt -p <REMOTE> docs <BRANCH> .
+(_sphinx) > conda deactivate
+>
 ```
 
 \<REMOTE\> refers to the git remote which will be pushed to and \<BRANCH\> 
-refers to the target branch on the remote. If \<BRANCH\> is not given it will 
-default to "gh-pages". Note, this command will add a new commit to the remote, 
-so use with care.
+refers to the target branch on the remote. Note, this command will add a new 
+commit to the remote, so use with care.
 
 ### Docstring Formatting
 
