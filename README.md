@@ -196,22 +196,40 @@ in the `gh-pages` branch.
 
 #### Setup Sphinx (One Time Only)
 
-Install [Anaconda Python](https://www.anaconda.com/distribution/)
+1. Install [Anaconda Python](https://www.anaconda.com/distribution/).
 
-Create the Sphinx environment
+2. Download sphixcontrib-versioning (from H0R5E):
+   
+   ```
+   > git clone --single-branch --branch v1.8.5_support https://github.com/H0R5E/sphinxcontrib-versioning.git <path\to\sphinxcontrib-versioning>
+   ```
+   Replace `<path\to\sphinxcontrib-versioning>` with a path of your choosing.
 
-```
-> conda create -n _sphinx pip "sphinx=1.8.5" sphinx_rtd_theme colorama future
-> activate _sphinx
-(_sphinx) > pip install sphinxcontrib-matlabdomain
-(_sphinx) > conda deactivate
->
-```
+3. Create the Sphinx environment:
+   
+   ```
+   > conda create -c conda-forge -n _sphinx click colorama colorclass future pip "sphinx=1.8.5" sphinx_rtd_theme 
+   > activate _sphinx
+   (_sphinx) > pip install sphinxcontrib-matlabdomain
+   (_sphinx) > cd path\to\sphinxcontrib-versioning
+   (_sphinx) > pip install -e .
+   (_sphinx) > conda deactivate
+   >
+   ```
 
 #### Build Locally
 
-Docs can be built locally for inspection prior to publishing. Thy are built in 
-the `docs/_build` directory.
+Docs can be built locally for inspection prior to publishing. They are built in 
+the `docs/_build` directory. Note, docs are built from the remote, so only
+pushed changes will be shown.
+
+```
+> activate _sphinx
+(_sphinx) > cd path\to\WecOptTool 
+(_sphinx) > sphinx-versioning build -abt docs docs/_build/html
+(_sphinx) > conda deactivate
+>
+```
 
 ##### Windows
 
