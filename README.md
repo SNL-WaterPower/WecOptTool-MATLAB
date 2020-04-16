@@ -260,7 +260,7 @@ Docs can be built and published to a remote branch, as follows:
 ```
 > activate _sphinx
 (_sphinx) > cd path/to/WecOptTool 
-(_sphinx) > sphinx-versioning push -abt -P <REMOTE> docs <BRANCH> .
+(_sphinx) > sphinx-versioning push -abt -e .nojekyll -e README.md -P <REMOTE> docs <BRANCH> .
 (_sphinx) > conda deactivate
 >
 ```
