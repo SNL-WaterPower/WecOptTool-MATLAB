@@ -189,8 +189,10 @@ subject to change as the code approaches maturity.
 
 ## Documentation
 
-The documentation source code is found in the `docs` folder. HTML is published
-in the `gh-pages` branch.
+The documentation is published at [snl-waterpower.github.io/WecOptTool](
+https://snl-waterpower.github.io/WecOptTool/). The documentation source code 
+is found in the `docs` folder and HTML is compiled using the [Sphinx](
+https://www.sphinx-doc.org/en/master/) documentation generator.
 
 ### Compile Instructions
 
@@ -224,7 +226,7 @@ replace slashes (`/`) in paths with backslashes (`\ `).
 > :warning: sphinxcontrib-versioning is installed in development mode, so 
   **do not delete** the folder where it is stored.
 
-#### Build Locally
+#### Building Locally
 
 Docs can be built locally for inspection prior to publishing. They are built in 
 the `docs/_build` directory. Note, docs are built from the remote, so only
@@ -253,9 +255,12 @@ To build the docs with a current feature branch as the default docs use:
 The front page of the docs can be accessed at 
 `WecOptTool/docs/_build/html/index.html`. 
 
-#### Publish Remotely
+#### Publishing Remotely
 
-Docs can be built and published to a remote branch, as follows:
+The WecOptTool docs are rebuilt automatically following every merge commit made 
+to the master branch of the [SNL-WaterPower/WecOptTool](
+https://github.com/SNL-WaterPower/WecOptTool) repository. They can also be 
+published manually, as follows:
 
 ```
 > activate _sphinx
