@@ -1,0 +1,470 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3. API &mdash; WecOptTool 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/banner.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4. License" href="license.html" />
+    <link rel="prev" title="2. Example" href="example.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> WecOptTool
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">1. Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">2. Example</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#wecopttool">3.1. WecOptTool</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#wecopttool-control">3.1.1. WecOptTool.control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wecopttool-geom">3.1.2. WecOptTool.geom</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">4. License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WecOptTool</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>3. API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/user/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+    
+    
+
+
+
+    <p class="scv-banner scv-sphinx_rtd_theme"><a href="../../v0.1.0/user/api.html"><b>Warning:</b> This document is for the development version of WecOptTool. The latest version is v0.1.0.</a></p>
+<div class="section" id="api">
+<h1>3. API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="wecopttool">
+<h2>3.1. WecOptTool<a class="headerlink" href="#wecopttool" title="Permalink to this headline">¶</a></h2>
+<p>The WecOptTool package provides the main interface for the toolbox.</p>
+<span class="target" id="module-+WecOptTool"></span><dl class="class">
+<dt id="+WecOptTool.RM3Study">
+<em class="property">class </em><code class="descclassname">WecOptTool.</code><code class="descname">RM3Study</code><a class="headerlink" href="#+WecOptTool.RM3Study" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface for preparing, executing and inspecting a simulation based
+on the RM3 device</p>
+<dl class="method">
+<dt id="+WecOptTool.RM3Study.addControl">
+<code class="descname">addControl</code><span class="sig-paren">(</span><em>controlObj</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.RM3Study.addControl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a controller type to the simulation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>controlObj</strong> (<em>WecOptTool.control.AbsControl</em>) – Controller specification object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.RM3Study.addGeometry">
+<code class="descname">addGeometry</code><span class="sig-paren">(</span><em>geomObj</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.RM3Study.addGeometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a design variable type to the simulation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>geomObj</strong> (<em>WecOptTool.control.AbsGeom</em>) – Design variable geometry specification object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.RM3Study.addSpectra">
+<code class="descname">addSpectra</code><span class="sig-paren">(</span><em>spectra</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.RM3Study.addSpectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a spectra to the simulation</p>
+<p>A single spectrum or weighted multi-spectra sea-states can
+be simulated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>spectra</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">struct</span></code>) – <p>spectrum structure (can be arrary) in WAFO with the
+fields:</p>
+<blockquote>
+<div><ul class="simple">
+<li>S.w: column vector of frequencies in [rad/s]</li>
+<li>S.S: column vector of spectral density in
+[m^2 rad/ s]</li>
+<li>S.mu (optional): weighting for spectrum in
+multi-spectra sea-states</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="+WecOptTool.plot">
+<code class="descclassname">WecOptTool.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>study</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots frequency vs. power for optimized study</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study</strong> (<a class="reference internal" href="#+WecOptTool.RM3Study" title="+WecOptTool.RM3Study"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">WecOptTool.RM3Study</span></code></a>) – executed RM3Study object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="+WecOptTool.result">
+<code class="descclassname">WecOptTool.</code><code class="descname">result</code><span class="sig-paren">(</span><em>study</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays the results from the optimized study</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>study</strong> (<a class="reference internal" href="#+WecOptTool.RM3Study" title="+WecOptTool.RM3Study"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">WecOptTool.RM3Study</span></code></a>) – executed RM3Study object</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="+WecOptTool.run">
+<code class="descclassname">WecOptTool.</code><code class="descname">run</code><span class="sig-paren">(</span><em>study</em>, <em>optimOptions</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a simulation with optional optimiser options</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>study</strong> (<a class="reference internal" href="#+WecOptTool.RM3Study" title="+WecOptTool.RM3Study"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">WecOptTool.RM3Study</span></code></a>) – configured RM3Study object</li>
+<li><strong>optimOptions</strong> (<em>optional</em>) – options to fmincon, created with <code class="docutils literal notranslate"><span class="pre">optimoptions</span></code></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="section" id="wecopttool-control">
+<h3>3.1.1. WecOptTool.control<a class="headerlink" href="#wecopttool-control" title="Permalink to this headline">¶</a></h3>
+<p>The control subpackage provides options for device control.</p>
+<span class="target" id="module-+WecOptTool.+control"></span><dl class="class">
+<dt id="+WecOptTool.+control.ComplexConjugate">
+<em class="property">class </em><code class="descclassname">WecOptTool.control.</code><code class="descname">ComplexConjugate</code><a class="headerlink" href="#+WecOptTool.+control.ComplexConjugate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides complex congugate control</p>
+<p>Seeks optimal power absorption, see <a class="reference external" href="https://www.cambridge.org/core/books/ocean-waves-and- oscillating-systems/8A3366809DE5C1F916FF87F36C55C459">Falnes2002</a> for technical
+details.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="+WecOptTool.+control.ProportionalDamping">
+<em class="property">class </em><code class="descclassname">WecOptTool.control.</code><code class="descname">ProportionalDamping</code><a class="headerlink" href="#+WecOptTool.+control.ProportionalDamping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides proportional damping control</p>
+<p>Resistive damping (i.e., a proportional feedback on velocity). See
+<a class="reference external" href="https://www.cambridge.org/core/books/ocean-waves-and- oscillating-systems/8A3366809DE5C1F916FF87F36C55C459">Falnes2002</a> for technical details.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="+WecOptTool.+control.PseudoSpectral">
+<em class="property">class </em><code class="descclassname">WecOptTool.control.</code><code class="descname">PseudoSpectral</code><span class="sig-paren">(</span><em>deltaZmax</em>, <em>deltaFmax</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+control.PseudoSpectral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides psuedo spectra control</p>
+<p>Seeks optimal power absorption subject to constraints. See
+<a class="reference external" href="https://ieeexplore.ieee.org/abstract/document/6987295">Bacelli2014</a> for technical details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>deltaZmax</strong> (<em>double, optional</em>) – maximum relative oscillation amplitude [m]</li>
+<li><strong>deltaFmax</strong> (<em>double, optional</em>) – maximum PTO force [N]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">deltaZmax and deltaFmax must be provided together.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="wecopttool-geom">
+<h3>3.1.2. WecOptTool.geom<a class="headerlink" href="#wecopttool-geom" title="Permalink to this headline">¶</a></h3>
+<p>The geom subpackage provides options for device geometry variation.</p>
+<span class="target" id="module-+WecOptTool.+geom"></span><dl class="class">
+<dt id="+WecOptTool.+geom.Existing">
+<em class="property">class </em><code class="descclassname">WecOptTool.geom.</code><code class="descname">Existing</code><span class="sig-paren">(</span><em>nemohRunDirectory</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+geom.Existing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use an existing geometry for control optimisation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nemohRunDirectory</strong> (<em>str</em>) – path to the directory containing the NEMOH results files</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="+WecOptTool.+geom.Parametric">
+<em class="property">class </em><code class="descclassname">WecOptTool.geom.</code><code class="descname">Parametric</code><span class="sig-paren">(</span><em>x0</em>, <em>upperBound</em>, <em>lowerBound</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+geom.Parametric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vary device geometry parametrically.</p>
+<p>For the RM3 study the design variables are</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">r1</span></code>: the radius of the surface float</li>
+<li><code class="docutils literal notranslate"><span class="pre">r2</span></code>: the radius of the heave plate</li>
+<li><code class="docutils literal notranslate"><span class="pre">d1</span></code>: the draft of the surface float</li>
+<li><code class="docutils literal notranslate"><span class="pre">d2</span></code>: the depth of the heave plate,</li>
+</ul>
+</div></blockquote>
+<p>The resulting design array is given as <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">[r1,</span> <span class="pre">r2,</span> <span class="pre">d1,</span> <span class="pre">d2]</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x0</strong> (<em>double[4]</em>) – optimisation initial guess</li>
+<li><strong>upperBound</strong> (<em>double[4]</em>) – optimisation upper bound</li>
+<li><strong>lowerBound</strong> (<em>double[4]</em>) – optimisation lower bound</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="+WecOptTool.+geom.Scalar">
+<em class="property">class </em><code class="descclassname">WecOptTool.geom.</code><code class="descname">Scalar</code><span class="sig-paren">(</span><em>x0</em>, <em>upperBound</em>, <em>lowerBound</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+geom.Scalar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vary device geometry by a global scalar value.</p>
+<p>The entire RM3 device model is scaled using a multiple of the
+base RM3 device dimensions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x0</strong> (<em>double</em>) – optimisation initial guess</li>
+<li><strong>upperBound</strong> (<em>double</em>) – optimisation upper bound</li>
+<li><strong>lowerBound</strong> (<em>double</em>) – optimisation lower bound</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="license.html" class="btn btn-neutral float-right" title="4. License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="example.html" class="btn btn-neutral float-left" title="2. Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020 National Technology and Engineering Solutions of Sandia, LLC
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: master
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../v0.1.0/user/api.html">v0.1.0</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="api.html">master</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

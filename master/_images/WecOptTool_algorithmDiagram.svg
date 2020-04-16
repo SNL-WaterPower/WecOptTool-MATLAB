@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" viewBox="153 -128 1038 533" width="1038" height="533">
+  <defs>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 9 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="-750" x-height="517" cap-height="714" ascent="957.0007" descent="-212.99744" font-style="italic" font-weight="400">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue-Italic"/>
+      </font-face-src>
+    </font-face>
+    <font-face font-family="Helvetica Neue" font-size="16" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue"/>
+      </font-face-src>
+    </font-face>
+    <font-face font-family="Helvetica Neue" font-size="10" panose-1="2 0 5 3 0 0 0 2 0 4" units-per-em="1000" underline-position="-100" underline-thickness="50" slope="0" x-height="517" cap-height="714" ascent="951.9958" descent="-212.99744" font-weight="400">
+      <font-face-src>
+        <font-face-name name="HelveticaNeue"/>
+      </font-face-src>
+    </font-face>
+    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -4 10 8" markerWidth="10" markerHeight="8" color="black">
+      <g>
+        <path d="M 8 0 L 0 -3 L 0 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+      </g>
+    </marker>
+    <font-face font-family="Helvetica" font-size="9" units-per-em="1000" underline-position="-75.68359" underline-thickness="49.316406" slope="0" x-height="522.9492" cap-height="717.28516" ascent="770.0195" descent="-229.98047" font-weight="400">
+      <font-face-src>
+        <font-face-name name="Helvetica"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.13 
+    <dc:date>2020-03-31 04:28:57 +0000</dc:date>
+  </metadata>
+  <g id="Canvas_1" fill="none" stroke="none" fill-opacity="1" stroke-opacity="1" stroke-dasharray="none">
+    <title>Canvas 1</title>
+    <rect fill="white" x="153" y="-128" width="1038" height="533"/>
+    <g id="Canvas_1: Layer 1">
+      <title>Layer 1</title>
+      <g id="Graphic_43">
+        <rect x="324" y="104" width="866.5" height="300" fill="#dadada"/>
+        <rect x="324" y="104" width="866.5" height="300" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(1055.708 82)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" x="1278977e-18" y="15">“Evaluation block”</tspan>
+        </text>
+      </g>
+      <g id="Graphic_4">
+        <path d="M 500.4 116 L 630 116 L 597.6 219 L 468 219 Z" fill="white"/>
+        <path d="M 500.4 116 L 630 116 L 597.6 219 L 468 219 Z" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(505.4 139.828)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="8.327998" y="15">Dynamics </tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="7.7359985" y="33.448">from BEM </tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="9.967998" y="51.895996">(NEMOH)</tspan>
+        </text>
+      </g>
+      <g id="Graphic_5">
+        <path d="M 738.4 116 L 868 116 L 835.6 219 L 706 219 Z" fill="white"/>
+        <path d="M 738.4 116 L 868 116 L 835.6 219 L 706 219 Z" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(738.4 139.856)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="13.639998" y="15">Controller </tspan>
+          <tspan font-family="Helvetica Neue" font-size="10" font-weight="400" fill="black" x="1.0899985" y="28.447998">ProportionalDamping</tspan>
+          <tspan font-family="Helvetica Neue" font-size="10" font-weight="400" fill="black" x="5.5399985" y="40.727997">ComplexConjugate</tspan>
+          <tspan font-family="Helvetica Neue" font-size="10" font-weight="400" fill="black" x="12.949998" y="53.007996">PseudoSpectral</tspan>
+        </text>
+      </g>
+      <g id="Graphic_6">
+        <rect x="944" y="143" width="162" height="49" fill="white"/>
+        <rect x="944" y="143" width="162" height="49" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(949 158.276)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="11.376" y="15">Optimal dynamics</tspan>
+        </text>
+      </g>
+      <g id="Graphic_7">
+        <rect x="880" y="244" width="87" height="49" fill="white"/>
+        <rect x="880" y="244" width="87" height="49" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(885 250.052)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="15.7" y="15">Power </tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="4.42" y="33.448">absorbed</tspan>
+        </text>
+      </g>
+      <g id="Graphic_9">
+        <rect x="981" y="244" width="87" height="49" fill="white"/>
+        <rect x="981" y="244" width="87" height="49" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(986 259.276)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="9.604" y="15">Loading</tspan>
+        </text>
+      </g>
+      <g id="Graphic_11">
+        <path d="M 694.4 327 L 780 327 L 758.6 376 L 673 376 Z" fill="white"/>
+        <path d="M 694.4 327 L 780 327 L 758.6 376 L 673 376 Z" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(699.4 333.052)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="10.212" y="15">Cost </tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="7.1" y="33.448">proxy</tspan>
+        </text>
+      </g>
+      <g id="Graphic_12">
+        <path d="M 274 -117.2 L 461 -127 L 461 -78 L 274 -78 Z" fill="white"/>
+        <path d="M 274 -117.2 L 461 -127 L 461 -78 L 274 -78 Z" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(279 -109.274)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="7.596" y="15">Optimization algorithm</tspan>
+        </text>
+      </g>
+      <g id="Line_14">
+        <path d="M 367.5 82.5 L 367.5 167.5 L 474.3 167.5" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_15">
+        <line x1="613.8" y1="167.5" x2="712.3" y2="167.5" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_16">
+        <line x1="851.8" y1="167.5" x2="934.1" y2="167.5" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_17">
+        <path d="M 1025 192 L 1025 202 L 1024.75 218 L 923.5 218 L 923.5 234.1" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_19">
+        <path d="M 1025 192 L 1025 202 L 1024.75 218 L 1024.5 229.1 L 1024.5 234.1" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_25">
+        <path d="M 726.5 376 L 726.5 386 L 154.46717 386 L 154.46717 -102.5 L 264.1 -102.5" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_27">
+        <path d="M 367.5 82.5 L 367.5 92.5 L 367.56646 249.09165 L 367.56646 310 L 498.7 310" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_29">
+        <rect x="725.5" y="-74" width="123" height="62.5" fill="white"/>
+        <rect x="725.5" y="-74" width="123" height="62.5" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(730.5 -70.422)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="13.372" y="15">Deployment </tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="23.028" y="33.448">site wave </tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="25.532" y="51.895996">resource</tspan>
+        </text>
+      </g>
+      <g id="Graphic_35">
+        <rect x="178" y="-51.5" width="379" height="134" fill="white" id="path"/>
+        <clipPath id="clip_path">
+          <use xl:href="#path"/>
+        </clipPath>
+        <g clip-path="url(#clip_path)">
+          <image xl:href="example_rm3Parametric.svg" width="270" height="239" transform="translate(402.8 -44.25) scale(.5)"/>
+        </g>
+        <rect x="178" y="-51.5" width="379" height="134" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(183 -46.5)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="0" y="15">Design variables (e.g., for RM3):</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="11" y="33.448">•	Geometry (</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="33.448">r</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="40.448">1</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="33.448">, r</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="40.448">2</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="33.448">, d</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="40.448">1</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="33.448">, d</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="40.448">2</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" y="33.448">)</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="11" y="58.895996">•	PTO (</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="58.895996">F</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="65.896">max</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="58.895996">, Δx</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="65.896">max</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" y="58.895996">)</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="11" y="84.34399">•	Operational limits (H</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-style="italic" font-weight="400" fill="black" y="91.34399">s,max</tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" y="84.34399">)</tspan>
+        </text>
+      </g>
+      <g id="Line_38">
+        <line x1="367.5" y1="-78" x2="367.5" y2="-61.4" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_39">
+        <text transform="translate(386.77643 152.76263)" fill="black">
+          <tspan font-family="Helvetica" font-size="9" font-weight="400" fill="black" x="0" y="9">geometry design vars.</tspan>
+        </text>
+      </g>
+      <g id="Line_40">
+        <path d="M 367.5 82.5 L 367.5 92.5 L 367.56646 249.09165 L 787 249.09165 L 787 228.9" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_41">
+        <text transform="translate(489.6093 234.74288)" fill="black">
+          <tspan font-family="Helvetica" font-size="9" font-weight="400" fill="black" x="0" y="9">PTO and operational design vars.</tspan>
+        </text>
+      </g>
+      <g id="Line_42">
+        <line x1="787" y1="82.5" x2="787" y2="106.1" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_44">
+        <path d="M 524.2 285.5 L 649 285.5 L 617.8 334.5 L 493 334.5 Z" fill="white"/>
+        <path d="M 524.2 285.5 L 649 285.5 L 617.8 334.5 L 493 334.5 Z" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(529.2 291.552)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="15.88" y="15">CAPEX </tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="4.751999" y="33.448">estimation</tspan>
+        </text>
+      </g>
+      <g id="Line_45">
+        <path d="M 633.4 310 L 726.5 310 L 726.5 317.1" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_46">
+        <text transform="translate(635.42786 152.93264)" fill="black">
+          <tspan font-family="Helvetica" font-size="9" font-weight="400" fill="black" x="0" y="9">Freq. resp. funs.</tspan>
+        </text>
+      </g>
+      <g id="Graphic_47">
+        <path d="M 738.4 20 L 868 20 L 835.6 82.5 L 706 82.5 Z" fill="white"/>
+        <path d="M 738.4 20 L 868 20 L 835.6 82.5 L 706 82.5 Z" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(743.4 32.802)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="4.1919985" y="15">finite set of </tspan>
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="7.1519985" y="33.448">sea states</tspan>
+        </text>
+      </g>
+      <g id="Line_48">
+        <line x1="787" y1="-11.5" x2="787" y2="10.1" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_50">
+        <path d="M 923.5 293 L 923.5 310 L 726.5 310 L 726.5 317.1" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_51">
+        <rect x="1082" y="244" width="87" height="49" fill="white"/>
+        <rect x="1082" y="244" width="87" height="49" stroke="gray" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <text transform="translate(1087 259.276)" fill="black">
+          <tspan font-family="Helvetica Neue" font-size="16" font-weight="400" fill="black" x="30.5" y="15">…</tspan>
+        </text>
+      </g>
+      <g id="Line_53">
+        <path d="M 1024.5 293 L 1024.5 310 L 726.5 310 L 726.5 317.1" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_54">
+        <path d="M 1125.5 293 L 1125.5 310 L 726.5 310 L 726.5 317.1" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_55">
+        <path d="M 1025 192 L 1025 202 L 1024.75 218 L 1125.5 218 L 1125.5 234.1" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+    </g>
+  </g>
+</svg>

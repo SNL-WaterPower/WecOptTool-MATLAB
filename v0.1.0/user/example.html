@@ -1,0 +1,638 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. Example &mdash; WecOptTool 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/banner.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3. API" href="api.html" />
+    <link rel="prev" title="1. Setup" href="setup.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> WecOptTool
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="setup.html">1. Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#create-an-rm3study-object">2.1. Create an RM3Study Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-a-sea-state">2.2. Define a Sea-State</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-a-controller-to-the-study">2.3. Add a controller to the study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-design-variables">2.4. Define design variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#set-optimization-solver-and-options">2.5. Set optimization solver and options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-the-study-and-view-results">2.6. Run the study and view results</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">3. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">4. License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WecOptTool</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>2. Example</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/user/example.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+
+
+
+<div class="section" id="example">
+<span id="user-example"></span><h1>2. Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h1>
+<p>This section explains and expands upon the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m"><code class="docutils literal notranslate"><span class="pre">example.m</span></code></a> example file provided
+in the root directory of the WecOptTool source code. This example considers the
+DOE Reference Model 3 (<a class="reference external" href="https://tethys-engineering.pnnl.gov/signature-projects/rm3-wave-point-absorber">RM3</a>) device.</p>
+<details><summary><a>See the entire example file</a></summary></br><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Copyright 2020 National Technology &amp; Engineering Solutions of Sandia, </span>
+<span class="c">% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the </span>
+<span class="c">% U.S. Government retains certain rights in this software.</span>
+<span class="c">%</span>
+<span class="c">% This file is part of WecOptTool.</span>
+<span class="c">% </span>
+<span class="c">%     WecOptTool is free software: you can redistribute it and/or modify</span>
+<span class="c">%     it under the terms of the GNU General Public License as published by</span>
+<span class="c">%     the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">%     (at your option) any later version.</span>
+<span class="c">% </span>
+<span class="c">%     WecOptTool is distributed in the hope that it will be useful,</span>
+<span class="c">%     but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">%     GNU General Public License for more details.</span>
+<span class="c">% </span>
+<span class="c">%     You should have received a copy of the GNU General Public License</span>
+<span class="c">%     along with WecOptTool.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+
+<span class="c">%% Suppress warnings</span>
+<span class="n">warning</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">,</span> <span class="s">&#39;WaveSpectra:NoWeighting&#39;</span><span class="p">)</span>
+
+<span class="c">%% Create an RM3 study object</span>
+<span class="n">study</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">RM3Study</span><span class="p">();</span>
+
+<span class="c">%% Create Bretschnider spectrum from WAFO</span>
+<span class="c">%S = bretschneider([],[8,10],0);</span>
+
+<span class="c">%% Alternatively load a single example spectrum</span>
+<span class="c">% S = WecOptLib.tests.data.exampleSpectrum();</span>
+
+<span class="c">%% Or load an example with multiple sea-states (8 differing spectra)</span>
+<span class="n">S</span> <span class="p">=</span> <span class="n">WecOptLib</span><span class="p">.</span><span class="n">tests</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">example8Spectra</span><span class="p">();</span>
+
+<span class="c">%% Add spectra to study</span>
+<span class="n">study</span><span class="p">.</span><span class="n">addSpectra</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>
+
+<span class="c">%% Add a controller to the study</span>
+<span class="n">cc</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">control</span><span class="p">.</span><span class="n">ComplexConjugate</span><span class="p">();</span>
+<span class="n">study</span><span class="p">.</span><span class="n">addControl</span><span class="p">(</span><span class="n">cc</span><span class="p">);</span>
+
+<span class="c">%% Add geometry design variables (parametric)</span>
+<span class="n">x0</span> <span class="p">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">,</span> <span class="mf">1.125</span><span class="p">,</span> <span class="mi">42</span><span class="p">];</span>
+<span class="n">lb</span> <span class="p">=</span> <span class="p">[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mi">41</span><span class="p">];</span>
+<span class="n">ub</span> <span class="p">=</span> <span class="p">[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mi">43</span><span class="p">];</span>
+
+<span class="n">parametric</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">geom</span><span class="p">.</span><span class="n">Parametric</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">);</span>
+<span class="n">study</span><span class="p">.</span><span class="n">addGeometry</span><span class="p">(</span><span class="n">parametric</span><span class="p">);</span>
+
+<span class="c">%% Add geometry design variables (scalar)</span>
+<span class="c">% x0 = 1.;</span>
+<span class="c">% lb = 0.5;</span>
+<span class="c">% ub = 2;</span>
+<span class="c">% </span>
+<span class="c">% scalar = WecOptTool.geom.Scalar(x0, lb, ub);</span>
+<span class="c">% study.addGeometry(scalar);</span>
+
+<span class="c">%% Set up some optimisation options for fmincon</span>
+<span class="n">options</span> <span class="p">=</span> <span class="n">optimoptions</span><span class="p">(</span><span class="s">&#39;fmincon&#39;</span><span class="p">);</span>
+<span class="n">options</span><span class="p">.</span><span class="n">MaxFunctionEvaluations</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c">% set artificial low for fast running</span>
+<span class="n">options</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
+
+<span class="c">%% Run the study</span>
+<span class="n">WecOptTool</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">study</span><span class="p">,</span> <span class="n">options</span><span class="p">);</span>
+
+<span class="c">%% Print the results</span>
+<span class="n">WecOptTool</span><span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">study</span><span class="p">);</span>
+
+<span class="c">%% Plot the results</span>
+<span class="n">WecOptTool</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">study</span><span class="p">);</span>
+
+<span class="c">%% Re-enable warnings</span>
+<span class="n">warning</span><span class="p">(</span><span class="s">&#39;on&#39;</span><span class="p">,</span> <span class="s">&#39;WaveSpectra:NoWeighting&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</details></br><p>The general concept of WecOptTool is illustrated in the diagram below. In the
+upper left-hand corner, an optimization algorithm controls the selection of a
+set of design variables. In this diagram, some geometric design variables,
+<span class="math notranslate nohighlight">\(r_1, r_2, d_1, d_2\)</span>, are considered along with constraints on the power
+take-off (PTO) max force, <span class="math notranslate nohighlight">\(F_{max}\)</span>, and max stroke <span class="math notranslate nohighlight">\(\Delta x_{max}\)</span>
+and an operational constraint, <span class="math notranslate nohighlight">\(H_{s,max}\)</span>. The device defined by these
+design variables is passed to the grey <em>evaluation</em> block. Here, <a class="reference external" href="https://github.com/LHEEA/Nemoh">Nemoh</a> is used
+to compute the linear wave-body interaction properties using the boundary
+element method (BEM). Next, using these properties and some set of sea states,
+one of three controllers (<code class="docutils literal notranslate"><span class="pre">ProportionalDamping</span></code>, <code class="docutils literal notranslate"><span class="pre">ComplexConjugate</span></code>, <code class="docutils literal notranslate"><span class="pre">PseudoSpectral</span></code>)
+are used to compute the resulting dynamics. From on these dynamics and some
+model for cost (e.g., based on the size dimensions and the capabilities of the
+PTO) can be combine to produce an objective function, which is returned to the
+optimization solver.</p>
+<img alt="Conceptual illustration of WecOptTool functionality" src="../_images/WecOptTool_algorithmDiagram.svg" /><div class="section" id="create-an-rm3study-object">
+<h2>2.1. Create an RM3Study Object<a class="headerlink" href="#create-an-rm3study-object" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api.html#+WecOptTool.RM3Study" title="+WecOptTool.RM3Study"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">RM3Study</span></code></a> class allows the user to configure a
+simulation to their specifications. Once instantiated, an RM3Study object can
+be modified using other classes (as described below), and once prepared is
+passed to the main functions of the toolbox.</p>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">,</span> <span class="s">&#39;WaveSpectra:NoWeighting&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="define-a-sea-state">
+<h2>2.2. Define a Sea-State<a class="headerlink" href="#define-a-sea-state" title="Permalink to this headline">¶</a></h2>
+<p>WecOptTool can simulate single or multiple spectra sea states, where weightings
+can be provided to indicate the relative likelihood of each spectra. The
+following lines from <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m"><code class="docutils literal notranslate"><span class="pre">example.m</span></code></a> provide means of using the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO</a> MATLAB
+toolbox or preset spectra from WecOptTool.</p>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>25
+26
+27
+28
+29
+30
+31</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">study</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">RM3Study</span><span class="p">();</span>
+
+<span class="c">%% Create Bretschnider spectrum from WAFO</span>
+<span class="c">%S = bretschneider([],[8,10],0);</span>
+
+<span class="c">%% Alternatively load a single example spectrum</span>
+<span class="c">% S = WecOptLib.tests.data.exampleSpectrum();</span>
+</pre></div>
+</td></tr></table></div>
+<p>Spectra are formatted following the convention of the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO</a> MATLAB toolbox, but
+can be generated in via any means (e.g., from buoy measurements) as long as the
+structure includes the <code class="docutils literal notranslate"><span class="pre">S.S</span></code>, <code class="docutils literal notranslate"><span class="pre">S.w</span></code>, and <code class="docutils literal notranslate"><span class="pre">S.phi</span></code> fields.</p>
+<div class="code matlab highlight-default notranslate"><div class="highlight"><pre><span></span>S =
+
+  struct with fields:
+
+       S: [257×1 double]
+       w: [257×1 double]
+      tr: []
+       h: Inf
+    type: &#39;freq&#39;
+     phi: 0
+    norm: 0
+    note: &#39;Bretschneider, Hm0 = 4, Tp = 5&#39;
+    date: &#39;25-Mar-2020 13:08:28&#39;
+</pre></div>
+</div>
+<p>In the active code above from <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m"><code class="docutils literal notranslate"><span class="pre">example.m</span></code></a>, there are eight spectra loaded into
+a <a class="reference external" href="https://www.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html"><code class="docutils literal notranslate"><span class="pre">struct</span> <span class="pre">array</span></code></a>. These can be plotted using standard MATLAB commands.</p>
+<div class="code matlab highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">figure</span>
+<span class="n">hold</span> <span class="n">on</span>
+<span class="n">grid</span> <span class="n">on</span>
+<span class="n">arrayfun</span><span class="p">(</span><span class="o">@</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">w</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">S</span><span class="p">,</span><span class="s1">&#39;DisplayName&#39;</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">note</span><span class="p">),</span> <span class="n">S</span><span class="p">)</span>
+<span class="n">legend</span><span class="p">()</span>
+<span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Freq. [rad/s]&#39;</span><span class="p">)</span>
+<span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Spect. density [m^2 rad/s]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="Eight spectra consider in example.m" src="../_images/example_spectra.svg" /><p>The desired spectrum or spectra can then be added to the study object.</p>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">S</span> <span class="p">=</span> <span class="n">WecOptLib</span><span class="p">.</span><span class="n">tests</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">example8Spectra</span><span class="p">();</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="add-a-controller-to-the-study">
+<h2>2.3. Add a controller to the study<a class="headerlink" href="#add-a-controller-to-the-study" title="Permalink to this headline">¶</a></h2>
+<p>WecOptTool allows for three types of controllers:</p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>ProportionalDamping:</strong> Resistive damping (i.e., a proportional feedback on
+velocity) (see, e.g., <a class="reference internal" href="#falnes" id="id1">[Falnes]</a>). Here, the power take-off (PTO) force is set
+as</p>
+<div class="math notranslate nohighlight">
+\[F_u(\omega) = -B_{PTO}(\omega)u(\omega)\]</div>
+<p>where <span class="math notranslate nohighlight">\(B_{PTO}\)</span> is a constant chosen to maximize absorbed power and
+<span class="math notranslate nohighlight">\(u(\omega)\)</span> is the velocity. <br /> <br /></p>
+</li>
+<li><p class="first"><strong>ComplexConjugate:</strong> Optimal power absorption through impedance matching
+(see, e.g., <a class="reference internal" href="#falnes" id="id2">[Falnes]</a>). The intrinsic impedance is given by</p>
+<div class="math notranslate nohighlight">
+\[Z_i(\omega) = B(\omega) + i \left( \omega{}(m + A(\omega)) - \frac{K_{HS}}{\omega}\right) ,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\omega\)</span> is the radial frequency, <span class="math notranslate nohighlight">\(B(\omega)\)</span> is the
+radiation damping, <span class="math notranslate nohighlight">\(m\)</span> is the rigid body mass, <span class="math notranslate nohighlight">\(A(\omega)\)</span> is the
+added mass, and <span class="math notranslate nohighlight">\(K_{HS}\)</span> is the hydrostatic stiffness. Optimal power
+transfer occurs when the PTO force, <span class="math notranslate nohighlight">\(F_u\)</span> is set such
+that</p>
+<div class="math notranslate nohighlight">
+\[F_u(\omega) = -Z_i^*(\omega)u(\omega) ,\]</div>
+<p>where <span class="math notranslate nohighlight">\(u(\omega)\)</span> is the velocity. <br /> <br /></p>
+</li>
+<li><p class="first"><strong>PseudoSpectral:</strong> Constrained optimal power absorption <a class="reference internal" href="#bacelli" id="id3">[Bacelli]</a>. This is
+a numerical optimal control algorithm capable of dealing with both
+constraints and nonlinear dynamics. This approach is based on
+<a class="reference external" href="https://en.wikipedia.org/wiki/Pseudospectral_optimal_control">pseudo spectral optimal control</a>.</p>
+</li>
+</ul>
+</div></blockquote>
+<p>The controllers are defined as classes in the <a class="reference internal" href="api.html#module-+WecOptTool.+control" title="+WecOptTool.+control"><code class="xref mat mat-mod docutils literal notranslate"><span class="pre">control</span></code></a>
+sub-package.</p>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>37
+38
+39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">study</span><span class="p">.</span><span class="n">addSpectra</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>
+
+<span class="c">%% Add a controller to the study</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="define-design-variables">
+<h2>2.4. Define design variables<a class="headerlink" href="#define-design-variables" title="Permalink to this headline">¶</a></h2>
+<p>As shown in the diagram below, for RM3 study considered in <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m"><code class="docutils literal notranslate"><span class="pre">example.m</span></code></a> the design
+variables are the radius of the surface float, <code class="docutils literal notranslate"><span class="pre">r1</span></code>, the radius of the heave
+plate, <code class="docutils literal notranslate"><span class="pre">r2</span></code>, the draft of the surface float, <code class="docutils literal notranslate"><span class="pre">d1</span></code>, and the depth of the
+heave plate, <code class="docutils literal notranslate"><span class="pre">d2</span></code>, such that <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">[r1,</span> <span class="pre">r2,</span> <span class="pre">d1,</span> <span class="pre">d2]</span></code>. The optimization
+algorithm will attempt to find the values of <code class="docutils literal notranslate"><span class="pre">x</span></code> that minimize the objective
+function.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Objective function:</strong> The built-in objective function of <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m"><code class="docutils literal notranslate"><span class="pre">example.m</span></code></a> is
+set to maximize absorbed power. This function can be altered better
+approximate a more meaningful objective (e.g., levelized cost of energy).</p>
+</div>
+<a class="reference internal image-reference" href="../_images/example_rm3Parametric.svg"><img alt="RM3 device parametric dimensions" src="../_images/example_rm3Parametric.svg" width="400pt" /></a>
+<p>The initial values,``x0``, lower bounds, <code class="docutils literal notranslate"><span class="pre">lb</span></code>, and upper bounds,
+<code class="docutils literal notranslate"><span class="pre">ub</span></code> of the design variables can be set as follows.</p>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>41
+42
+43
+44
+45
+46</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">study</span><span class="p">.</span><span class="n">addControl</span><span class="p">(</span><span class="n">cc</span><span class="p">);</span>
+
+<span class="c">%% Add geometry design variables (parametric)</span>
+<span class="n">x0</span> <span class="p">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">,</span> <span class="mf">1.125</span><span class="p">,</span> <span class="mi">42</span><span class="p">];</span>
+<span class="n">lb</span> <span class="p">=</span> <span class="p">[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mi">41</span><span class="p">];</span>
+<span class="n">ub</span> <span class="p">=</span> <span class="p">[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mi">43</span><span class="p">];</span>
+</pre></div>
+</td></tr></table></div>
+<p>Alternatively, a simpler study with a single scalar design variable can be
+employed. In this case, instead of scaling various dimensions of the device
+individually, the entire device is scaled based on a single design variable.</p>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>49
+50
+51
+52
+53
+54
+55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">study</span><span class="p">.</span><span class="n">addGeometry</span><span class="p">(</span><span class="n">parametric</span><span class="p">);</span>
+
+<span class="c">%% Add geometry design variables (scalar)</span>
+<span class="c">% x0 = 1.;</span>
+<span class="c">% lb = 0.5;</span>
+<span class="c">% ub = 2;</span>
+<span class="c">% </span>
+</pre></div>
+</td></tr></table></div>
+<p>The options for design variables are defined as classes in the
+<a class="reference internal" href="api.html#module-+WecOptTool.+geom" title="+WecOptTool.+geom"><code class="xref mat mat-mod docutils literal notranslate"><span class="pre">geom</span></code></a> sub-package.</p>
+</div>
+<div class="section" id="set-optimization-solver-and-options">
+<h2>2.5. Set optimization solver and options<a class="headerlink" href="#set-optimization-solver-and-options" title="Permalink to this headline">¶</a></h2>
+<p>MATLAB’s <code class="docutils literal notranslate"><span class="pre">fmincon</span></code> optimization solver is used in <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m"><code class="docutils literal notranslate"><span class="pre">example.m</span></code></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">MaxFunctionEvaluations</span></code> is set to 5 in <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m"><code class="docutils literal notranslate"><span class="pre">example.m</span></code></a> to permit
+relatively quick runs, but can be increased to allow for a potentially
+better solution (with the other options left as-is, this should require 150
+function evaluations).</p>
+</div>
+<img alt="Progression of objective function value for RM3 example" src="../_images/example_optimplotfval.svg" /><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>57
+58
+59
+60</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% study.addGeometry(scalar);</span>
+
+<span class="c">%% Set up some optimisation options for fmincon</span>
+<span class="n">options</span> <span class="p">=</span> <span class="n">optimoptions</span><span class="p">(</span><span class="s">&#39;fmincon&#39;</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="run-the-study-and-view-results">
+<h2>2.6. Run the study and view results<a class="headerlink" href="#run-the-study-and-view-results" title="Permalink to this headline">¶</a></h2>
+<p>The study can be <a class="reference internal" href="api.html#+WecOptTool.run" title="+WecOptTool.run"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">run()</span></code></a> and reviewed
+(with <a class="reference internal" href="api.html#+WecOptTool.result" title="+WecOptTool.result"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">result()</span></code></a> and <a class="reference internal" href="api.html#+WecOptTool.plot" title="+WecOptTool.plot"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">plot()</span></code></a>) as
+follows:</p>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>62
+63
+64
+65
+66
+67
+68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">options</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
+
+<span class="c">%% Run the study</span>
+<span class="n">WecOptTool</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">study</span><span class="p">,</span> <span class="n">options</span><span class="p">);</span>
+
+<span class="c">%% Print the results</span>
+<span class="n">WecOptTool</span><span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">study</span><span class="p">);</span>
+</pre></div>
+</td></tr></table></div>
+<p>From <a class="reference internal" href="api.html#+WecOptTool.result" title="+WecOptTool.result"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">result()</span></code></a>, we can see that the study has produced the
+following design.</p>
+<div class="code matlab highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Optimal</span> <span class="n">solution</span> <span class="ow">is</span><span class="p">:</span>
+<span class="n">r1</span><span class="p">:</span> <span class="mi">5</span> <span class="p">[</span><span class="n">m</span><span class="p">]</span>
+<span class="n">r2</span><span class="p">:</span> <span class="mf">7.5</span> <span class="p">[</span><span class="n">m</span><span class="p">]</span>
+<span class="n">d1</span><span class="p">:</span> <span class="mf">1.125</span> <span class="p">[</span><span class="n">m</span><span class="p">]</span>
+<span class="n">d2</span><span class="p">:</span> <span class="mi">42</span> <span class="p">[</span><span class="n">m</span><span class="p">]</span>
+<span class="n">Optimal</span> <span class="n">function</span> <span class="n">value</span> <span class="ow">is</span><span class="p">:</span> <span class="mf">2202421.2193</span> <span class="p">[</span><span class="n">W</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>From <a class="reference internal" href="api.html#+WecOptTool.plot" title="+WecOptTool.plot"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">plot()</span></code></a>, we can review the spectral distribution of
+energy absorbed by the resulting design for each of the eight sea states.</p>
+<a class="reference internal image-reference" href="../_images/example_spectralPowerPlot.svg"><img alt="Absorbed Spectral power distribution for each sea state" src="../_images/example_spectralPowerPlot.svg" width="400pt" /></a>
+<table class="docutils citation" frame="void" id="falnes" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Falnes]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>)</em> Falnes, Johannes. Ocean waves and oscillating systems: linear
+interactions including wave-energy extraction. Cambridge University
+Press, 2002.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="bacelli" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[Bacelli]</a></td><td>Bacelli, Giorgio, and John V. Ringwood. “Numerical optimal control
+of wave energy converters.” IEEE Transactions on Sustainable Energy 6.2
+(2014): 294-302.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api.html" class="btn btn-neutral float-right" title="3. API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="setup.html" class="btn btn-neutral float-left" title="1. Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020 Sandia National Labs
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: v0.1.0
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="example.html">v0.1.0</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../../master/user/example.html">master</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
