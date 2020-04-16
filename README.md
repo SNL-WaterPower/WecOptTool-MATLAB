@@ -189,61 +189,90 @@ subject to change as the code approaches maturity.
 
 ## Documentation
 
-The documentation source code is found in the `docs` folder. HTML is published
-in the `gh-pages` branch.
+The documentation is published at [snl-waterpower.github.io/WecOptTool](
+https://snl-waterpower.github.io/WecOptTool/). The documentation source code 
+is found in the `docs` folder and HTML is compiled using the [Sphinx](
+https://www.sphinx-doc.org/en/master/) documentation generator.
 
 ### Compile Instructions
 
+These instructions work for both Linux and Windows. For Windows, remember to
+replace slashes (`/`) in paths with backslashes (`\ `).
+
 #### Setup Sphinx (One Time Only)
 
-Install [Anaconda Python](https://www.anaconda.com/distribution/)
+1. Install [Anaconda Python](https://www.anaconda.com/distribution/).
 
-Create the Sphinx environment
+2. Download sphixcontrib-versioning (from [H0R5E](
+   https://github.com/H0R5E/sphinxcontrib-versioning)):
+   
+   ```
+   > git clone --single-branch --branch v1.8.5_support https://github.com/H0R5E/sphinxcontrib-versioning.git <path/to/sphinxcontrib-versioning>
+   ```
+   Replace `<path/to/sphinxcontrib-versioning>` with a path of your choosing.
+
+3. Create the Sphinx environment:
+   
+   ```
+   > conda create -c conda-forge -n _sphinx click colorama colorclass future pip "sphinx=1.8.5" sphinx_rtd_theme 
+   > activate _sphinx
+   (_sphinx) > pip install sphinxcontrib-matlabdomain
+   (_sphinx) > cd path/to/sphinxcontrib-versioning
+   (_sphinx) > pip install -e .
+   (_sphinx) > conda deactivate
+   >
+   ```
+
+> :warning: sphinxcontrib-versioning is installed in development mode, so 
+  **do not delete** the folder where it is stored.
+
+#### Building Locally
+
+Docs can be built locally for inspection prior to publishing. They are built in 
+the `docs/_build` directory. Note, docs are built from the remote, so only
+pushed changes will be shown. 
+
+To build the docs as they would be published, use the following:
 
 ```
-> conda create -n _sphinx pip "sphinx=1.8.5" sphinx_rtd_theme colorama future
 > activate _sphinx
-(_sphinx) > pip install sphinxcontrib-matlabdomain
+(_sphinx) > cd path/to/WecOptTool 
+(_sphinx) > sphinx-versioning build -abt docs docs/_build/html
 (_sphinx) > conda deactivate
 >
 ```
 
-#### Build Locally
-
-Docs can be built locally for inspection prior to publishing. Thy are built in 
-the `docs/_build` directory.
-
-##### Windows
-
-This uses the instructions in `make_www_local.bat`.
+To build the docs with a current feature branch as the default docs use:
 
 ```
-> cd path/to/WecOptTool/docs
-> make_www_local
+> activate _sphinx
+(_sphinx) > cd path/to/WecOptTool 
+(_sphinx) > sphinx-versioning build -ab r <feature-branch> docs docs/_build/html
+(_sphinx) > conda deactivate
+>
 ```
 
-##### OSX / Linux
+The front page of the docs can be accessed at 
+`WecOptTool/docs/_build/html/index.html`. 
 
-This uses the instructions in `makefile`.
+#### Publishing Remotely
 
-```bash
-> cd path/to/WecOptTool/docs
-> make html
-```
-
-#### Publish Remotely
-
-Docs can be built and published to a remote branch. For windows:
+The WecOptTool docs are rebuilt automatically following every merge commit made 
+to the master branch of the [SNL-WaterPower/WecOptTool](
+https://github.com/SNL-WaterPower/WecOptTool) repository. They can also be 
+published manually, as follows:
 
 ```
-> cd path/to/WecOptTool/docs
-> make_www_remote <REMOTE> <BRANCH>
+> activate _sphinx
+(_sphinx) > cd path/to/WecOptTool 
+(_sphinx) > sphinx-versioning push -abt -e .nojekyll -e README.md -P <REMOTE> docs <BRANCH> .
+(_sphinx) > conda deactivate
+>
 ```
 
 \<REMOTE\> refers to the git remote which will be pushed to and \<BRANCH\> 
-refers to the target branch on the remote. If \<BRANCH\> is not given it will 
-default to "gh-pages". Note, this command will add a new commit to the remote, 
-so use with care.
+refers to the target branch on the remote. Note, this command will add a new 
+commit to the remote, so use with care.
 
 ### Docstring Formatting
 
