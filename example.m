@@ -40,6 +40,15 @@ study.addSpectra(S);
 cc = WecOptTool.control.ComplexConjugate();
 study.addControl(cc);
 
+%% Set objective function
+
+RM3Device = WecOptLib.models.RM3.DeviceModel();
+study.addObjective(@(x) -1 * RM3Device.getPower(study.spectra, ...
+    study.controlType,...
+    study.geomMode,...
+    x,...
+    study.controlParams));
+
 %% Add geometry design variables (parametric)
 x0 = [5, 7.5, 1.125, 42];
 lb = [4.5, 7, 1.00, 41];

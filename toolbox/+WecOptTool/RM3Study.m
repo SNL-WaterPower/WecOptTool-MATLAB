@@ -33,6 +33,7 @@ classdef RM3Study < handle
         geomUpperBound
         geomX0
         out
+        objFun
         
     end
     
@@ -85,6 +86,27 @@ classdef RM3Study < handle
             
         end
         
+        function obj = addObjective(obj, objFun)
+            % Add an objective function to study
+            %
+            % Args:
+            %   objFun:
+            %       objective function handle with single input vector.
+            
+            if isempty(objFun)
+                warn = 'No objective function given, using power';
+                warning('DeviceModel:NoObjectiveFunction',warn)
+                RM3Device = WecOptLib.models.RM3.DeviceModel();
+                obj.objFun = @(x) -1 * RM3Device.getPower(obj.spectra,...
+                    obj.controlType,      ...
+                    obj.geomMode,         ...
+                    x,                      ...
+                    obj.controlParams);
+            else
+                obj.objFun = objFun;
+            end
+        end
+                
     end
     
 end
