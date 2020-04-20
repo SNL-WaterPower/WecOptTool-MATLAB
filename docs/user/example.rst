@@ -48,9 +48,9 @@ passed to the main functions of the toolbox.
 
 .. literalinclude:: /../example.m
     :language: matlab
-    :lines: 22-23 
+    :lines: 24-26
     :linenos:
-    :lineno-start: 22
+    :lineno-start: 24
 
 Define a Sea-State
 ==================
@@ -62,9 +62,9 @@ toolbox or preset spectra from WecOptTool.
 
 .. literalinclude:: /../example.m
     :language: matlab
-    :lines: 25-32 
+    :lines: 27-35
     :linenos:
-    :lineno-start: 25
+    :lineno-start: 27
 
 Spectra are formatted following the convention of the WAFO_ MATLAB toolbox, but 
 can be generated in via any means (e.g., from buoy measurements) as long as the 
@@ -107,9 +107,9 @@ The desired spectrum or spectra can then be added to the study object.
 
 .. literalinclude:: /../example.m
     :language: matlab
-    :lines: 34-35
+    :lines: 36-38
     :linenos:
-    :lineno-start: 34
+    :lineno-start: 36
 
 Add a controller to the study
 =============================
@@ -153,9 +153,9 @@ sub-package.
 
 .. literalinclude:: /../example.m
     :language: matlab
-    :lines: 37-39
+    :lines: 39-42
     :linenos:
-    :lineno-start: 37
+    :lineno-start: 39
 
 Define design variables
 =======================
@@ -181,9 +181,9 @@ The initial values,``x0``, lower bounds, ``lb``, and upper bounds,
 
 .. literalinclude:: /../example.m
     :language: matlab
-    :lines: 41-47
+    :lines: 43-50
     :linenos:
-    :lineno-start: 41
+    :lineno-start: 43
 
 Alternatively, a simpler study with a single scalar design variable can be 
 employed. In this case, instead of scaling various dimensions of the device 
@@ -191,9 +191,9 @@ individually, the entire device is scaled based on a single design variable.
 
 .. literalinclude:: /../example.m
     :language: matlab
-    :lines: 49-55
+    :lines: 51-58
     :linenos:
-    :lineno-start: 49
+    :lineno-start: 51
 
 The options for design variables are defined as classes in the 
 :mat:mod:`~+WecOptTool.+geom` sub-package.
@@ -216,9 +216,9 @@ MATLAB's ``fmincon`` optimization solver is used in |example.m|_.
 
 .. literalinclude:: /../example.m
     :language: matlab
-    :lines: 57-60
+    :lines: 59-63
     :linenos:
-    :lineno-start: 57
+    :lineno-start: 59
 
 Run the study and view results
 ==============================
@@ -229,9 +229,9 @@ follows:
 
 .. literalinclude:: /../example.m
     :language: matlab
-    :lines: 62-69
+    :lines: 64-72
     :linenos:
-    :lineno-start: 62
+    :lineno-start: 64
 
 From :mat:func:`~+WecOptTool.result`, we can see that the study has produced the 
 following design.
