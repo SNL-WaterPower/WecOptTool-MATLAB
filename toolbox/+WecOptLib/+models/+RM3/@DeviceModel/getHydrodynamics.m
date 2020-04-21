@@ -18,7 +18,7 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function [hydro,rundir] = getHydrodynamics(obj, mode, varargin)
+function [hydro,rundir] = getHydrodynamics(obj, SS, mode, varargin)
 % function [hydro] = getHydrodynamics(mode,...)
 %
 % Returns WEC-Sim hydro structure for RM3.
@@ -42,7 +42,7 @@ function [hydro,rundir] = getHydrodynamics(obj, mode, varargin)
 % Proceedings of the 12th European Wave and Tidal Energy Conference
 % (EWTEC2017), Cork, Ireland. 2017.
 %%
-
+fprintf(mode)
 switch mode
     case 'scalar'
         if iscell(varargin{1})
@@ -84,7 +84,7 @@ switch mode
         r2 = varargin{1}(2);
         d1 = varargin{1}(3);
         d2 = varargin{1}(4);
-        [hydro,rundir] = RM3_parametric(r1,r2,d1,d2);
+        [hydro,rundir] = RM3_parametric(SS,r1,r2,d1,d2);
     case 'existing'
         rundir = varargin{1};
         hydro = struct();
@@ -100,10 +100,12 @@ end
 
 end
 
-function [hydro,rundir] = RM3_parametric(r1,r2,d1,d2)
+function [hydro,rundir] = RM3_parametric(SS,r1,r2,d1,d2)
 
 w = linspace(0.2,2,10); % TODO: set this based on wave spectrum
+[wMin,wMax] = WecOptLib.utils.seaStatesMinMaxW(SS);
 
+w = linspace(wMin,wMax,ceil(wMax/0.2)); %0.2 Discrtization
 %% Store NEMOH output in fixed user-centric location
 nemohPath = WecOptLib.utils.getSrcRootPath();
 subdirectory = fullfile(nemohPath, '~nemoh_runs');
