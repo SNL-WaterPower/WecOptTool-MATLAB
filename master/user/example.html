@@ -346,7 +346,9 @@ optimization solver.</p>
 simulation to their specifications. Once instantiated, an RM3Study object can
 be modified using other classes (as described below), and once prepared is
 passed to the main functions of the toolbox.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;off&#39;</span><span class="p">,</span> <span class="s">&#39;WaveSpectra:NoWeighting&#39;</span><span class="p">)</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Create an RM3 study object</span>
+<span class="n">study</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">RM3Study</span><span class="p">();</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -356,19 +358,21 @@ passed to the main functions of the toolbox.</p>
 can be provided to indicate the relative likelihood of each spectra. The
 following lines from <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m"><code class="docutils literal notranslate"><span class="pre">example.m</span></code></a> provide means of using the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO</a> MATLAB
 toolbox or preset spectra from WecOptTool.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>25
-26
-27
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>27
 28
 29
 30
-31</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">study</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">RM3Study</span><span class="p">();</span>
-
-<span class="c">%% Create Bretschnider spectrum from WAFO</span>
+31
+32
+33
+34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Create Bretschnider spectrum from WAFO</span>
 <span class="c">%S = bretschneider([],[8,10],0);</span>
 
 <span class="c">%% Alternatively load a single example spectrum</span>
 <span class="c">% S = WecOptLib.tests.data.exampleSpectrum();</span>
+
+<span class="c">%% Or load an example with multiple sea-states (8 differing spectra)</span>
+<span class="n">S</span> <span class="p">=</span> <span class="n">WecOptLib</span><span class="p">.</span><span class="n">tests</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">example8Spectra</span><span class="p">();</span>
 </pre></div>
 </td></tr></table></div>
 <p>Spectra are formatted following the convention of the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO</a> MATLAB toolbox, but
@@ -402,7 +406,9 @@ a <a class="reference external" href="https://www.mathworks.com/help/matlab/matl
 </pre></div>
 </div>
 <img alt="Eight spectra consider in example.m" src="../_images/example_spectra.svg" /><p>The desired spectrum or spectra can then be added to the study object.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">S</span> <span class="p">=</span> <span class="n">WecOptLib</span><span class="p">.</span><span class="n">tests</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">example8Spectra</span><span class="p">();</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>36
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Add spectra to study</span>
+<span class="n">study</span><span class="p">.</span><span class="n">addSpectra</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -441,11 +447,11 @@ constraints and nonlinear dynamics. This approach is based on
 </div></blockquote>
 <p>The controllers are defined as classes in the <a class="reference internal" href="api.html#module-+WecOptTool.+control" title="+WecOptTool.+control"><code class="xref mat mat-mod docutils literal notranslate"><span class="pre">control</span></code></a>
 sub-package.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>37
-38
-39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">study</span><span class="p">.</span><span class="n">addSpectra</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>
-
-<span class="c">%% Add a controller to the study</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>39
+40
+41</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Add a controller to the study</span>
+<span class="n">cc</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">control</span><span class="p">.</span><span class="n">ComplexConjugate</span><span class="p">();</span>
+<span class="n">study</span><span class="p">.</span><span class="n">addControl</span><span class="p">(</span><span class="n">cc</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -466,35 +472,37 @@ approximate a more meaningful objective (e.g., levelized cost of energy).</p>
 <a class="reference internal image-reference" href="../_images/example_rm3Parametric.svg"><img alt="RM3 device parametric dimensions" src="../_images/example_rm3Parametric.svg" width="400pt" /></a>
 <p>The initial values,``x0``, lower bounds, <code class="docutils literal notranslate"><span class="pre">lb</span></code>, and upper bounds,
 <code class="docutils literal notranslate"><span class="pre">ub</span></code> of the design variables can be set as follows.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>41
-42
-43
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>43
 44
 45
-46</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">study</span><span class="p">.</span><span class="n">addControl</span><span class="p">(</span><span class="n">cc</span><span class="p">);</span>
-
-<span class="c">%% Add geometry design variables (parametric)</span>
+46
+47
+48
+49</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Add geometry design variables (parametric)</span>
 <span class="n">x0</span> <span class="p">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mf">7.5</span><span class="p">,</span> <span class="mf">1.125</span><span class="p">,</span> <span class="mi">42</span><span class="p">];</span>
 <span class="n">lb</span> <span class="p">=</span> <span class="p">[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mi">41</span><span class="p">];</span>
 <span class="n">ub</span> <span class="p">=</span> <span class="p">[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mi">43</span><span class="p">];</span>
+
+<span class="n">parametric</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">geom</span><span class="p">.</span><span class="n">Parametric</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">);</span>
+<span class="n">study</span><span class="p">.</span><span class="n">addGeometry</span><span class="p">(</span><span class="n">parametric</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <p>Alternatively, a simpler study with a single scalar design variable can be
 employed. In this case, instead of scaling various dimensions of the device
 individually, the entire device is scaled based on a single design variable.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>49
-50
-51
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>51
 52
 53
 54
-55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">study</span><span class="p">.</span><span class="n">addGeometry</span><span class="p">(</span><span class="n">parametric</span><span class="p">);</span>
-
-<span class="c">%% Add geometry design variables (scalar)</span>
+55
+56
+57</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Add geometry design variables (scalar)</span>
 <span class="c">% x0 = 1.;</span>
 <span class="c">% lb = 0.5;</span>
 <span class="c">% ub = 2;</span>
 <span class="c">% </span>
+<span class="c">% scalar = WecOptTool.geom.Scalar(x0, lb, ub);</span>
+<span class="c">% study.addGeometry(scalar);</span>
 </pre></div>
 </td></tr></table></div>
 <p>The options for design variables are defined as classes in the
@@ -510,13 +518,13 @@ relatively quick runs, but can be increased to allow for a potentially
 better solution (with the other options left as-is, this should require 150
 function evaluations).</p>
 </div>
-<img alt="Progression of objective function value for RM3 example" src="../_images/example_optimplotfval.svg" /><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>57
-58
-59
-60</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% study.addGeometry(scalar);</span>
-
-<span class="c">%% Set up some optimisation options for fmincon</span>
+<img alt="Progression of objective function value for RM3 example" src="../_images/example_optimplotfval.svg" /><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>59
+60
+61
+62</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Set up some optimisation options for fmincon</span>
 <span class="n">options</span> <span class="p">=</span> <span class="n">optimoptions</span><span class="p">(</span><span class="s">&#39;fmincon&#39;</span><span class="p">);</span>
+<span class="n">options</span><span class="p">.</span><span class="n">MaxFunctionEvaluations</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c">% set artificial low for fast running</span>
+<span class="n">options</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -525,19 +533,21 @@ function evaluations).</p>
 <p>The study can be <a class="reference internal" href="api.html#+WecOptTool.run" title="+WecOptTool.run"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">run()</span></code></a> and reviewed
 (with <a class="reference internal" href="api.html#+WecOptTool.result" title="+WecOptTool.result"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">result()</span></code></a> and <a class="reference internal" href="api.html#+WecOptTool.plot" title="+WecOptTool.plot"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">plot()</span></code></a>) as
 follows:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>62
-63
-64
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>64
 65
 66
 67
-68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">options</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
-
-<span class="c">%% Run the study</span>
+68
+69
+70
+71</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Run the study</span>
 <span class="n">WecOptTool</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">study</span><span class="p">,</span> <span class="n">options</span><span class="p">);</span>
 
 <span class="c">%% Print the results</span>
 <span class="n">WecOptTool</span><span class="p">.</span><span class="n">result</span><span class="p">(</span><span class="n">study</span><span class="p">);</span>
+
+<span class="c">%% Plot the results</span>
+<span class="n">WecOptTool</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">study</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <p>From <a class="reference internal" href="api.html#+WecOptTool.result" title="+WecOptTool.result"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">result()</span></code></a>, we can see that the study has produced the
