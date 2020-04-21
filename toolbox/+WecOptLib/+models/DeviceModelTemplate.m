@@ -71,7 +71,7 @@ classdef (Abstract) DeviceModelTemplate
         %                       and the hydro struct from Nemoh
 
         % WEC-Sim hydro structure for RM3
-        [hydro,rundir] = obj.getHydrodynamics(geomMode, geomParams);
+        [hydro,rundir] = obj.getHydrodynamics(SS, geomMode, geomParams);
 
         % If PS control must set max Z and F values
         if strcmp(controlType, 'PS') 
