@@ -106,6 +106,10 @@ w = linspace(0.2,2,10); % TODO: set this based on wave spectrum
 [wMin,wMax] = WecOptLib.utils.seaStatesMinMaxW(SS);
 
 w = linspace(wMin,wMax,ceil(wMax/0.2)); %0.2 Discrtization
+if w(1) == 0
+    w = w(2:end);
+end
+
 %% Store NEMOH output in fixed user-centric location
 nemohPath = WecOptLib.utils.getSrcRootPath();
 subdirectory = fullfile(nemohPath, '~nemoh_runs');
