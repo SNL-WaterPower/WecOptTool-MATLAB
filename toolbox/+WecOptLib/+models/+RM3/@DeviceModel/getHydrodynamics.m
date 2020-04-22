@@ -80,17 +80,17 @@ switch mode
         
         
     case 'parametric'
-        SS = varargin{1};
+        r1 = varargin{1}(1);
+        r2 = varargin{1}(2);
+        d1 = varargin{1}(3);
+        d2 = varargin{1}(4);
+        SS = varargin{2};
         [wMin,wMax] = WecOptLib.utils.seaStatesMinMaxW(SS);
 
         w = linspace(wMin,wMax,ceil(wMax/0.2)); %0.2 Discrtization
         if w(1) == 0
             w = w(2:end);
-        end
-        r1 = varargin{2}(1);
-        r2 = varargin{2}(2);
-        d1 = varargin{2}(3);
-        d2 = varargin{2}(4);
+        end        
         [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2);
     case 'existing'
         rundir = varargin{1};

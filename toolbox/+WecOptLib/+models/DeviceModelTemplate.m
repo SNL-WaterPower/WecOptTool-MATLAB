@@ -22,7 +22,7 @@ classdef (Abstract) DeviceModelTemplate
     
     methods (Abstract)
         
-        [hydro, rundir] = getHydrodynamics(obj, geomMode, SS, geomParams)
+        [hydro, rundir] = getHydrodynamics(obj, geomMode, geomParams, SS)
         motion = getMotion(obj, S, hydro, controlType, maxVals)
         powSS = complexConjugate(obj, motion);
         powSS = damping(obj, motion);
@@ -71,7 +71,7 @@ classdef (Abstract) DeviceModelTemplate
         %                       and the hydro struct from Nemoh
 
         % WEC-Sim hydro structure for RM3
-        [hydro,rundir] = obj.getHydrodynamics(geomMode, SS, geomParams);
+        [hydro,rundir] = obj.getHydrodynamics(geomMode, geomParams, SS);
 
         % If PS control must set max Z and F values
         if strcmp(controlType, 'PS') 
