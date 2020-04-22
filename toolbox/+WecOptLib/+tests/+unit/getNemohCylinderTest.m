@@ -41,9 +41,9 @@ classdef getNemohCylinderTest < matlab.unittest.TestCase
         hydro
     end
  
-    methods(TestMethodSetup)
+    methods(TestClassSetup)
         
-        function createFigure(testCase)
+        function runNEMOH(testCase)
             
             import matlab.unittest.fixtures.TemporaryFolderFixture
             tempFixture = testCase.applyFixture(                        ...
