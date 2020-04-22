@@ -42,7 +42,7 @@ function [hydro,rundir] = getHydrodynamics(obj, SS, mode, varargin)
 % Proceedings of the 12th European Wave and Tidal Energy Conference
 % (EWTEC2017), Cork, Ireland. 2017.
 %%
-fprintf(mode)
+
 switch mode
     case 'scalar'
         if iscell(varargin{1})
@@ -108,9 +108,7 @@ end
 
 function [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2)
 
-
-
-%% Store NEMOH output in fixed user-centric location
+% Store NEMOH output in fixed user-centric location
 nemohPath = WecOptLib.utils.getSrcRootPath();
 subdirectory = fullfile(nemohPath, '~nemoh_runs');
 procid = 0;
