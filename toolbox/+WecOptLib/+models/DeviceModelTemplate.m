@@ -22,7 +22,7 @@ classdef (Abstract) DeviceModelTemplate
     
     methods (Abstract)
         
-        [hydro, rundir] = getHydrodynamics(obj, geomMode, geomParams)
+        [hydro, rundir] = getHydrodynamics(obj, SS, geomMode, geomParams)
         motion = getMotion(obj, S, hydro, controlType, maxVals)
         powSS = complexConjugate(obj, motion);
         powSS = damping(obj, motion);
