@@ -22,26 +22,30 @@ function w = seaStatesGlobalW(SS, step)
 %seaStatesGlobalW Takes a set of sea states and returns a frequency range
 % based on the the global min and  max frequency and a given step size.
 
+WecOptLib.utils.checkSpectrum(SS);
+
+
 w = SS(1).w;
 gMin = min(w);
 gMax = max(w);
 
-for i =2:length(SS)
- 
- w = SS(i).w;
- wMin = min(w);
- wMax = max(w);
+if length(SS) > 1
+    for i =2:length(SS)
 
- if wMin < gMin
-     gMin = wMin;
- end
- 
- if wMax > gMax
-     gMax = wMax;
- end
- 
+     w = SS(i).w;
+     wMin = min(w);
+     wMax = max(w);
+
+     if wMin < gMin
+         gMin = wMin;
+     end
+
+     if wMax > gMax
+         gMax = wMax;
+     end
+
+    end
 end
-
 % Round to nearest step
 gMin = floor(gMin / step) * step;
 gMax = ceil(gMax / step) * step;
