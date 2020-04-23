@@ -24,6 +24,8 @@ function w = seaStatesGlobalW(SS, step)
 
 WecOptLib.utils.checkSpectrum(SS);
 
+assert(isa(step,'double'), 'step must be of type double (float)');
+assert(step >0, 'step must be greater than 0');
 
 w = SS(1).w;
 gMin = min(w);
@@ -46,6 +48,7 @@ if length(SS) > 1
 
     end
 end
+
 % Round to nearest step
 gMin = floor(gMin / step) * step;
 gMax = ceil(gMax / step) * step;
