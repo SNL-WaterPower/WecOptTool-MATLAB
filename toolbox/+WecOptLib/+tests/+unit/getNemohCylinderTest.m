@@ -20,18 +20,14 @@
 
 % Notes: 
 %
-% Currently testing cylinder and sphere shaped geometries, cube to come.
+% Tests cylinder shaped geometries
 %
 % All test functions use a relative tolerance.  to adjust the tolerance,
-% modify the `tol` variable at the top of each test case.
-%
-% All evaluations use verification, rather than something more strict, such
-% as assertions.  This is to ensure that all tests run.
+% modify the `tol` property of the class.
 %
 % Currently all verifications are based off of run data from a working
 % version.  A more analytic approach may be taken at a later date.
 %
-% -Zachary Morrell 5/17/2019
 
 classdef getNemohCylinderTest < matlab.unittest.TestCase
  
