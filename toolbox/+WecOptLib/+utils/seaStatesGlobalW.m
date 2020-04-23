@@ -18,9 +18,9 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function [gMin,gMax] = seaStatesMinMaxW(SS)
-%SEASTATESMINMAX Takes a set of sea states and returns the global min and 
-% max frequency 
+function w = seaStatesGlobalW(SS, step)
+%seaStatesGlobalW Takes a set of sea states and returns a frequency range
+% based on the the global min and  max frequency and a given step size.
 
 gMin=999;
 gMax=-999;
@@ -38,5 +38,12 @@ for i =1:length(SS)
  if wMax > gMax
      gMax = wMax;
  end
+ 
+ % Round to nearest step
+ gMin = floor(gMin / step) * step;
+ gMax = ceil(gMax / step) * step;
+ 
+ w = linspace(gMin, gMax, ceil(gMax/step) + 1);
+ 
 end
 
