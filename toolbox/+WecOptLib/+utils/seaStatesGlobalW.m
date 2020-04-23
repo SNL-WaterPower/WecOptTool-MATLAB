@@ -21,11 +21,11 @@
 function w = seaStatesGlobalW(SS, step)
 %seaStatesGlobalW Takes a set of sea states and returns a frequency range
 % based on the the global min and  max frequency and a given step size.
-
 WecOptLib.utils.checkSpectrum(SS);
 
-assert(isa(step,'double'), 'step must be of type double (float)');
-assert(step >0, 'step must be greater than 0');
+checkStepType(step)
+checkStepValue(step)
+
 
 w = SS(1).w;
 gMin = min(w);
@@ -54,3 +54,25 @@ gMin = floor(gMin / step) * step;
 gMax = ceil(gMax / step) * step;
  
 w = gMin:step:gMax;
+end
+
+function [] = checkStepType(step)
+msg = 'step must be of type double (float)';
+ID = 'WecOptLib:utilityFailure:stepType';
+try
+    assert(isa(step,'double'),ID,msg);
+catch ME
+    throw(ME)
+end
+end
+
+
+function [] = checkStepValue(step)
+msg = 'step must be greater than 0';
+ID = 'WecOptLib:utilityFailure:stepValue';
+try
+    assert(step >0,ID,msg);
+catch ME
+    throw(ME)
+end
+end
