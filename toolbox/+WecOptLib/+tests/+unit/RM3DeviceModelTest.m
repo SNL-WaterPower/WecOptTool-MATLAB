@@ -84,25 +84,3 @@ mass = sum(hydro.Vo * hydro.rho);
 expSol = 1.652838125000000e6;
 verifyEqual(testCase, mass, expSol, 'RelTol', 0.001)
 end
-
-function test_existingRunFiles(testCase)
-tol = 5 * eps;
-S = WecOptLib.tests.data.exampleSpectrum();
-S.ph = rand(length(S.w),1)* 2 * pi;
-[S.w, S.S] = WecOptLib.utils.subSampleFreqs(S);
-RM3Device = WecOptLib.models.RM3.DeviceModel();
-[madepow,etc] = RM3Device.getPower(S,'CC','parametric',[10,15,3,42]);
-madeFile = etc.rundir;
-[existpow,~] = RM3Device.getPower(S,'CC','existing', madeFile);
-verifyEqual(testCase, madepow, existpow, 'RelTol', tol);
-end
-
-function test_runParametric(testCase)
-S = WecOptLib.tests.data.exampleSpectrum();
-S.ph = rand(length(S.w),1)* 2 * pi;
-[S.w, S.S] = WecOptLib.utils.subSampleFreqs(S);
-RM3Device = WecOptLib.models.RM3.DeviceModel();
-WECpow = RM3Device.getPower(S,'CC','parametric',[10,15,3,42]);
-expSol = 4.415667556078834e+06;
-verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
-end
