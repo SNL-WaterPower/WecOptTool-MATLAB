@@ -22,18 +22,16 @@ function w = seaStatesGlobalW(SS, step)
 %seaStatesGlobalW Takes a set of sea states and returns a frequency range
 % based on the the global min and  max frequency and a given step size.
 
+w = SS(1).w;
+gMin = min(w);
+gMax = max(w);
 
-for i =1:length(SS)
+for i =2:length(SS)
  
  w = SS(i).w;
  wMin = min(w);
  wMax = max(w);
- 
- if i == 1
-     gMin = wMin;
-     gMax = wMax;
- end
- 
+
  if wMin < gMin
      gMin = wMin;
  end
