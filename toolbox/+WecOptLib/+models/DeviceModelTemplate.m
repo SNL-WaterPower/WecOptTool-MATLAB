@@ -20,16 +20,13 @@
 
 classdef (Abstract) DeviceModelTemplate
     
-    properties
-        nemohDir
-    end
-    
     methods (Abstract)
         
-        [hydro, rundir] = getHydrodynamics(obj,         ...
-                                           geomMode,    ...
-                                           geomParams,  ...
-                                           varargin)
+        hydro = getHydrodynamics(obj,         ...
+                                 nemohDir,    ...
+                                 geomMode,    ...
+                                 geomParams,  ...
+                                 varargin)
         motion = getMotion(obj, S, hydro, controlType, maxVals)
         powSS = complexConjugate(obj, motion);
         powSS = damping(obj, motion);
@@ -38,12 +35,9 @@ classdef (Abstract) DeviceModelTemplate
     end
         
     methods
-        
-        function obj = DeviceModelTemplate(nemohDir)
-            obj.nemohDir = nemohDir;
-        end
                 
         function [pow, etc] = getPower(obj,             ...
+                                       studyDir,        ...
                                        SS,              ...
                                        controlType,     ...
                                        geomMode,        ...
@@ -55,6 +49,7 @@ classdef (Abstract) DeviceModelTemplate
         % array. getPower will iterate over sea-states and calcualte power.
         %
         % Inputs
+        %     studyDir     Path to folder for file storage
         %     SS           Struct or struct array of spectra(S) w/ fields:
         %         SS.S         spectral energy distribution [m^2 s/rad]
         %         SS.w         frequency [rad/s]
@@ -77,6 +72,7 @@ classdef (Abstract) DeviceModelTemplate
         %                       arguments for deltaZmax and deltaFmax
         %                           Note: to use the optional arguments,
         %                           both must be provided
+        %
         % Outputs
         %     pow             power weighted by weighting factors
         %     etc             structure with two items, containing pow 
@@ -92,9 +88,13 @@ classdef (Abstract) DeviceModelTemplate
         
         geomOptions = p.Results.geomOptions;
         controlParams = p.Results.controlParams;
+
+        % Create a folder for this call
+        uniqueFolder = obj.getUniqueFolderPath(studyDir);
         
         % WEC-Sim hydro structure for RM3
-        [hydro,rundir] = obj.getHydrodynamics(geomMode,     ...
+        [hydro,rundir] = obj.getHydrodynamics(uniqueFolder, ...
+                                              geomMode,     ...
                                               geomParams,   ...
                                               geomOptions{:});
 
@@ -192,18 +192,52 @@ classdef (Abstract) DeviceModelTemplate
 
         % Calculate power across sea-states 
         pow = dot(powSSs(:), mus(:)) / sum([mus]);
-
+        
+        etc.geomParams = geomParams;
         etc.mus  = mus;
         etc.pow = powSSs;
         etc.powPerFreq = powPerFreqs;
         etc.freq = freqs;
         etc.hydro = hydro;
-        etc.rundir = rundir;
+        
+        % Store the etc struct for this run
+        if exist(uniqueFolder,'dir') ~= 7
+            mkdir(uniqueFolder)
+        end
+        
+        etcPath = fullfile(uniqueFolder, "etc.mat");
+        save(etcPath, '-struct', 'etc');
 
         end
         
     end
     
+    methods (Access=protected)
+        
+        function folder = getUniqueFolderPath(obj, path)
+            
+            getCandidateName = @() dec2hex(randi(16777216, 1), 6);
+    
+            d = dir(path);
+            dfolders = d([d(:).isdir] == 1);
+            dfolders = dfolders(~ismember({dfolders(:).name},   ...
+                                          {'.', '..'}));
+
+            while true
+                
+                candidateName = getCandidateName();
+                
+                if ismember(candidateName, {dfolders.name})
+                    continue
+                end
+                
+                folder = fullfile(path, candidateName);
+                return
+                
+            end
+            
+        end
+        
+    end
+    
 end
-
-

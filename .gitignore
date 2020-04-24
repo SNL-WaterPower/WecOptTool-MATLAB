@@ -21,6 +21,7 @@ Thumbs.db
 *.asv
 *.m~
 *.spl
+*.orig
 
 # NEMOH
 ~nemoh_runs/

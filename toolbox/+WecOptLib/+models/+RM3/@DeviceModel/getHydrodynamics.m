@@ -18,14 +18,16 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function [hydro,rundir] = getHydrodynamics(obj, mode,     ...
-                                                params,   ...
-                                                varargin)
+function hydro = getHydrodynamics(obj, nemohDir, ...
+                                       mode,     ...
+                                       params,   ...
+                                       varargin)
 % function [hydro] = getHydrodynamics(mode,...)
 %
 % Returns WEC-Sim hydro structure for RM3.
 %
 % Inputs
+%   nemohDir    Path to folder for NEMOH file storage
 %   mode='scalar'
 %       params = lambda  scaling factor
 %   mode='paramtric'
@@ -73,7 +75,6 @@ switch mode
         dataPath = fullfile(filepath, '..', 'RM3_BEM.mat');
         
         load(dataPath, 'hydro');
-        rundir = '.';
         
         % dimensionalize w/ WEC-Sim built-in function
         hydro.rho = 1025;
@@ -110,7 +111,7 @@ switch mode
             w = w(2:end);
         end
         
-        [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2,obj.nemohDir);
+        hydro = RM3_parametric(w,r1,r2,d1,d2,nemohDir);
         
     case 'existing'
         
@@ -132,25 +133,7 @@ end
 
 end
 
-function [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2,rundirectory)
-
-% Store NEMOH output in fixed user-centric location
-nemohPath = WecOptLib.utils.getSrcRootPath();
-subdirectory = fullfile(nemohPath, '~nemoh_runs');
-procid = 0;
-
-if WecOptLib.utils.hasParallelToolbox()
-    
-    worker = getCurrentWorker;
-
-    if(~isa(worker, 'double'))
-        procid=worker.ProcessId;
-    end
-    
-end
-
-rundir = fullfile(rundirectory,...
-    [datestr(now,'yymmdd_HHMMssFFF'),'_',num2str(procid)]);
+function [hydro] = RM3_parametric(w, r1,r2,d1,d2,rundir)
 
 %% Float
 

@@ -29,6 +29,11 @@ function run(study, optimOptions)
     
     disp("Running study...")
     disp("")
+
+    %% Clean the study directory
+    if exist(study.studyDir, 'dir')
+        WecOptLib.utils.rmdirRetry(study.studyDir);
+    end
     
     %% Add SS to geomOptions for parametric mode
     if strcmp(study.geomMode, 'parametric')
@@ -38,14 +43,15 @@ function run(study, optimOptions)
     end
 
     %% Create the objective function
-    RM3Device = WecOptLib.models.RM3.DeviceModel(study.nemohDir);
+    RM3Device = WecOptLib.models.RM3.DeviceModel();
     
     function pow = obj(x)
         warning('off', 'WaveSpectra:NoWeighting')
-        pow = -1 * RM3Device.getPower(study.spectra,          ...
-                                      study.controlType,      ...
-                                      study.geomMode,         ...
-                                      x,                      ...
+        pow = -1 * RM3Device.getPower(study.studyDir,           ...
+                                      study.spectra,            ...
+                                      study.controlType,        ...
+                                      study.geomMode,           ...
+                                      x,                        ...
                                       geomOptions,            ...
                                       study.controlParams);
     end
@@ -88,5 +94,32 @@ function run(study, optimOptions)
     study.out.fval = fval;
     study.out.exitflag = exitflag;
     study.out.output = output;
+    
+    % Pick up the etc struct for the optimal solution 
+    d = dir(study.studyDir);
+    dfolders = d([d(:).isdir] == 1);
+    dfolders = dfolders(~ismember({dfolders(:).name}, {'.', '..'}));
+    
+    foundMatch = false;
+    
+    for name = {dfolders.name}
+        
+        rundir = fullfile(study.studyDir, name{1});
+        etc = load(fullfile(rundir, 'etc.mat'));
+        
+        if isequal(study.out.sol, etc.geomParams)
+            foundMatch = true;
+            break
+        end
+        
+    end
+    
+    if ~foundMatch
+        error('WecOptTool:run:noMatchingOutput',  ...
+              "Matching hydrodynamics run not found.")
+    end
+    
+    study.out.rundir = rundir;
+    study.out.etc = etc;
     
 end
