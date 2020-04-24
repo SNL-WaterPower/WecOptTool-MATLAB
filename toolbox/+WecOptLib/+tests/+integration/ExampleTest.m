@@ -66,6 +66,44 @@ classdef ExampleTest < matlab.unittest.TestCase
             
         end
         
+        function testScalarExample(testCase)
+            
+            warning('off', 'WaveSpectra:NoWeighting')
+            study = WecOptTool.RM3Study();
+            
+            S = WecOptLib.tests.data.example8Spectra();
+            study.addSpectra(S);
+            
+            cc = WecOptTool.control.ComplexConjugate();
+            study.addControl(cc);
+
+            % Add geometry design variables (scalar)
+            x0 = 1.;
+            lb = 0.5;
+            ub = 2;
+
+            scalar = WecOptTool.geom.Scalar(x0, lb, ub);
+            study.addGeometry(scalar);
+
+            options = optimoptions('fmincon');
+            options.MaxFunctionEvaluations = 5;
+            options.UseParallel = true;
+
+            runStudy = @() WecOptTool.run(study, options);
+            
+            if WecOptLib.utils.hasParallelToolbox()
+                verifyWarningFree(testCase, runStudy);
+            else
+                verifyWarning(testCase, ...
+                              runStudy, ...
+                              'optimlib:commonMsgs:NoPCTLicense');
+            end
+            
+            WecOptTool.result(study);
+            WecOptTool.plot(study);
+            
+        end
+        
     end
     
 end
