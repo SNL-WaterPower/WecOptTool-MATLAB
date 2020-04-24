@@ -104,6 +104,36 @@ classdef ExampleTest < matlab.unittest.TestCase
             
         end
         
+        function testExistingExample(testCase)
+            
+            import matlab.unittest.fixtures.TemporaryFolderFixture
+            tempFixture = testCase.applyFixture(                    ...
+             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
+                                    'WithSuffix', 'testStudySaveNEMOH'));
+            
+
+            RM3Device = WecOptLib.models.RM3.DeviceModel();
+            hydro = RM3Device.getHydrodynamics(tempFixture.Folder,  ...
+                                               'parametric',        ...
+                                               [5, 7.5, 1.125, 42]);
+                                            
+            study = WecOptTool.RM3Study();
+            S = WecOptLib.tests.data.example8Spectra();
+            study.addSpectra(S);
+            
+            cc = WecOptTool.control.ComplexConjugate();
+            study.addControl(cc);
+
+            % Add geometry design variables (existing)
+            existing = WecOptTool.geom.Existing(hydro.rundir);
+            study.addGeometry(existing);
+
+            WecOptTool.run(study);
+            WecOptTool.result(study);
+            WecOptTool.plot(study);
+                                            
+        end
+        
     end
     
 end

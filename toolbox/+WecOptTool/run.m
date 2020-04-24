@@ -57,9 +57,19 @@ function run(study, optimOptions)
     end
     
     if strcmp(study.geomMode, 'existing')
+        
+        [negPow, etc] = RM3Device.getPower(study.studyDir,      ...
+                                           study.spectra,       ...
+                                           study.controlType,   ...
+                                           study.geomMode,      ...
+                                           study.geomX0,        ...
+                                           study.controlParams);
+        
         study.out.sol = study.geomX0;
-        study.out.fval = obj(study.geomX0);
+        study.out.fval = -1 * negPow;
+        study.out.etc = etc;
         return
+        
     end
     
     %define these parameters as null to allow passing non-default options
@@ -119,7 +129,6 @@ function run(study, optimOptions)
               "Matching hydrodynamics run not found.")
     end
     
-    study.out.rundir = rundir;
     study.out.etc = etc;
     
 end
