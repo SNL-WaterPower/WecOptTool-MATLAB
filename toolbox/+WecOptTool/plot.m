@@ -26,32 +26,8 @@ function plot(study)
     %         executed RM3Study object
     
     disp("Generating plot...")
-
-    if ~strcmp(study.geomMode, 'scalar')
-        geomMode = 'existing';
-        x = study.out.rundir;
-    else
-        geomMode = 'scalar';
-        x = study.out.sol;
-    end
     
-    % Add SS to geomOptions for parametric mode
-    if strcmp(study.geomMode, 'parametric')
-        geomOptions = [study.geomOptions, {'spectra', study.spectra}];
-    else
-        geomOptions = study.geomOptions;
-    end
-    
-    RM3Device = WecOptLib.models.RM3.DeviceModel();
-    [~, etc] = RM3Device.getPower(study.studyDir,                   ...
-                                  study.spectra,                    ...
-                                  study.controlType,                ...
-                                  geomMode,                         ...
-                                  x,                                ...
-                                  geomOptions,                      ...
-                                  study.controlParams);
-
     % Power vs Frequency Plot
-    WecOptLib.plots.powerPerFreq(study.spectra, etc);
+    WecOptLib.plots.powerPerFreq(study.spectra, study.out.etc);
     
 end
