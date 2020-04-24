@@ -102,21 +102,19 @@ classdef ExampleTest < matlab.unittest.TestCase
             WecOptTool.result(study);
             WecOptTool.plot(study);
             
+            warning('on', 'WaveSpectra:NoWeighting')
+            
         end
         
         function testExistingExample(testCase)
+            
+            warning('off', 'WaveSpectra:NoWeighting')
             
             import matlab.unittest.fixtures.TemporaryFolderFixture
             tempFixture = testCase.applyFixture(                    ...
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
                                     'WithSuffix', 'testStudySaveNEMOH'));
-            
-
-            RM3Device = WecOptLib.models.RM3.DeviceModel();
-            hydro = RM3Device.getHydrodynamics(tempFixture.Folder,  ...
-                                               'parametric',        ...
-                                               [5, 7.5, 1.125, 42]);
-                                            
+                                                        
             study = WecOptTool.RM3Study();
             S = WecOptLib.tests.data.example8Spectra();
             study.addSpectra(S);
@@ -125,13 +123,16 @@ classdef ExampleTest < matlab.unittest.TestCase
             study.addControl(cc);
 
             % Add geometry design variables (existing)
-            existing = WecOptTool.geom.Existing(hydro.rundir);
+            WecOptLib.tests.data.exampleNEMOH(tempFixture.Folder)
+            existing = WecOptTool.geom.Existing(tempFixture.Folder);
             study.addGeometry(existing);
 
             WecOptTool.run(study);
             WecOptTool.result(study);
             WecOptTool.plot(study);
-                                            
+            
+            warning('on', 'WaveSpectra:NoWeighting')
+            
         end
         
     end
