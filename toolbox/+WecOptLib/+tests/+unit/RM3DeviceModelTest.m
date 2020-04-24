@@ -39,7 +39,7 @@ function testVerify_CC(testCase)
     import matlab.unittest.fixtures.TemporaryFolderFixture
     tempFixture = testCase.applyFixture(                            ...
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testStudySaveNEMOH'));
+                                    'WithSuffix', 'testVerify_CC'));
 
 
     S = WecOptLib.tests.data.exampleSpectrum();
@@ -57,7 +57,7 @@ function testVerify_damping(testCase)
     import matlab.unittest.fixtures.TemporaryFolderFixture
     tempFixture = testCase.applyFixture(                            ...
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testStudySaveNEMOH'));
+                                    'WithSuffix', 'testVerify_damping'));
 
 
     S = WecOptLib.tests.data.exampleSpectrum();
@@ -88,7 +88,7 @@ function testVerify_PS(testCase)
     import matlab.unittest.fixtures.TemporaryFolderFixture
     tempFixture = testCase.applyFixture(                            ...
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testStudySaveNEMOH'));
+                                    'WithSuffix', 'testVerify_PS'));
 
 
     S = WecOptLib.tests.data.exampleSpectrum();
@@ -115,7 +115,7 @@ function test_RM3_mass(testCase)
     import matlab.unittest.fixtures.TemporaryFolderFixture
     tempFixture = testCase.applyFixture(                            ...
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testStudySaveNEMOH'));
+                                    'WithSuffix', 'test_RM3_mass'));
 
     RM3Device = WecOptLib.models.RM3.DeviceModel();
     hydro = RM3Device.getHydrodynamics(tempFixture.Folder,'scalar',1);

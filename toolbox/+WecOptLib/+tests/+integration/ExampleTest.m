@@ -113,7 +113,7 @@ classdef ExampleTest < matlab.unittest.TestCase
             import matlab.unittest.fixtures.TemporaryFolderFixture
             tempFixture = testCase.applyFixture(                    ...
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testStudySaveNEMOH'));
+                                    'WithSuffix', 'testExistingExample'));
                                                         
             study = WecOptTool.RM3Study();
             S = WecOptLib.tests.data.example8Spectra();
