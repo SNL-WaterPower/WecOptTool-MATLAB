@@ -123,4 +123,23 @@ function testCheck_frequecyRange(testCase)
     
     verifyTrue(testCase, wRangePositiveAndInStepRange);
 end
-%multiple SS check
+
+
+function testCheck_multiSSfrequecyRange(testCase)
+    S = WecOptLib.tests.data.example8Spectra();    
+    step=0.333;
+    w = WecOptLib.utils.seaStatesGlobalW(S, step);
+    wMin = min(w);
+    wMax = max(w);
+    wRange = wMax - wMin;
+    
+    isPositive = wRange >= 0;
+    wRangeInStepRange = true;                     
+    if  isPositive    
+        upperRange = wMax - wMin + 2*step;
+        wRangeInStepRange =   wRange <= upperRange;             
+    end
+    wRangePositiveAndInStepRange = and(isPositive, wRangeInStepRange);
+                
+    verifyTrue(testCase, wRangePositiveAndInStepRange);
+end
