@@ -34,22 +34,31 @@ classdef Parametric < WecOptTool.geom.AbsGeom
     %     x0 (double[4]): optimisation initial guess
     %     upperBound (double[4]): optimisation upper bound
     %     lowerBound (double[4]): optimisation lower bound
+    %     varargin: optional name-value pair arguments (see below)
+    %
+    % The following options are supported:
+    %
+    %   freqStep:
+    %     Frequency discretisation step used in NEMOH calculations
+    %
     
     properties
         geomMode = 'parametric'
         geomLowerBound
         geomUpperBound
         geomX0
+        geomOptions
     end
     
     methods
     
-        function obj = Parametric(x0, upperBound, lowerBound)
+        function obj = Parametric(x0, upperBound, lowerBound, varargin)
              
             obj = obj@WecOptTool.geom.AbsGeom();
             obj.geomLowerBound = upperBound;
             obj.geomUpperBound = lowerBound;
             obj.geomX0 = x0;
+            obj.geomOptions = varargin;
         
         end
     

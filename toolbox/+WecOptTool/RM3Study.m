@@ -32,6 +32,7 @@ classdef RM3Study < handle
         geomLowerBound
         geomUpperBound
         geomX0
+        geomOptions
         out
         
     end
@@ -61,6 +62,7 @@ classdef RM3Study < handle
             obj.geomLowerBound = geomObj.geomLowerBound;
             obj.geomUpperBound = geomObj.geomUpperBound;
             obj.geomX0 = geomObj.geomX0;
+            obj.geomOptions = geomObj.geomOptions;
         end
         
         function obj = addSpectra(obj, spectra)

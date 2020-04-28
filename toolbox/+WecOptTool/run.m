@@ -29,6 +29,13 @@ function run(study, optimOptions)
     
     disp("Running study...")
     disp("")
+    
+    %% Add SS to geomOptions for parametric mode
+    if strcmp(study.geomMode, 'parametric')
+        geomOptions = [study.geomOptions, {'spectra', study.spectra}];
+    else
+        geomOptions = study.geomOptions;
+    end
 
     %% Create the objective function
     RM3Device = WecOptLib.models.RM3.DeviceModel();
@@ -39,6 +46,7 @@ function run(study, optimOptions)
                                       study.controlType,      ...
                                       study.geomMode,         ...
                                       x,                      ...
+                                      geomOptions,            ...
                                       study.controlParams);
     end
     
