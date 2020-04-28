@@ -48,7 +48,7 @@ function testCheck_frequecyStepValue(testCase)
     verifyTrue(testCase, all(abs(diff(w)-step)<0.0001));
 end
 
-% Range check
+
 function testCheck_frequecyMin(testCase)
     S = WecOptLib.tests.data.exampleSpectrum();
     shiftInputFrequency = 0.17;
@@ -125,21 +125,35 @@ function testCheck_frequecyRange(testCase)
 end
 
 
-function testCheck_multiSSfrequecyRange(testCase)
-    S = WecOptLib.tests.data.example8Spectra();    
+function testCheck_multiSSFrequecyRange(testCase)
+    Sw = linspace(0.333,10.77,7)';
+    S = struct();
+    idx = 1:1:3;
+    for i =1:length(idx)        
+        S(i).w = Sw + i;
+        S(i).S = Sw;
+    end
+    SwMin = min(S(idx(1)).w);
+    SwMax = max(S(idx(end)).w);
+    SwRange = SwMax - SwMin;
+        
     step=0.333;
     w = WecOptLib.utils.seaStatesGlobalW(S, step);
     wMin = min(w);
     wMax = max(w);
     wRange = wMax - wMin;
     
-    isPositive = wRange >= 0;
-    wRangeInStepRange = true;                     
-    if  isPositive    
-        upperRange = wMax - wMin + 2*step;
-        wRangeInStepRange =   wRange <= upperRange;             
-    end
-    wRangePositiveAndInStepRange = and(isPositive, wRangeInStepRange);
-                
+    wRangePositiveAndInStepRange=true;
+    if wRange ~= SwRange  
+        isPositive = wRange >= 0;
+        wRangeInStepRange = true; 
+        if isPositive            
+            upperRange = SwMax - SwMin + 2*step;
+            wRangeInStepRange =   wRange <= upperRange & wRange > SwRange ;             
+        end
+        wRangePositiveAndInStepRange = and(isPositive, wRangeInStepRange);
+    end        
+    
     verifyTrue(testCase, wRangePositiveAndInStepRange);
 end
+
