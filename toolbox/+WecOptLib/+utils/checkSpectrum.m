@@ -91,7 +91,7 @@ end
 function [] = checkPositive(S, idx)
 msg = ['Frequency in Spectrum #%i contains negative values. Frequency'... 
 ' values must be positive'];
-ID = 'WecOptTool:invalidSpectrum:notColumnVectors';
+ID = 'WecOptTool:invalidSpectrum:negativeFrequencies';
 try
     assert(all(S.w >=0) ,ID,msg, idx)
 catch ME
