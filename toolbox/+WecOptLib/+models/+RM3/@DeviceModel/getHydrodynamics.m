@@ -26,9 +26,9 @@ function [hydro,rundir] = getHydrodynamics(obj, mode,     ...
 % Returns WEC-Sim hydro structure for RM3.
 %
 % Inputs
-%   geomMode='scalar'
+%   mode='scalar'
 %       params = lambda  scaling factor
-%   geomMode='paramtric'
+%   mode='paramtric'
 %       params = r1      float radius [m]
 %                r2      heave plate radius [m]
 %                d1      draft of float [m]
