@@ -22,10 +22,8 @@ function w = seaStatesGlobalW(SS, step)
 %seaStatesGlobalW Takes a set of sea states and returns a frequency range
 % based on the the global min and  max frequency and a given step size.
 WecOptLib.utils.checkSpectrum(SS);
-
 checkStepType(step)
 checkStepValue(step)
-
 
 w = SS(1).w;
 gMin = min(w);
