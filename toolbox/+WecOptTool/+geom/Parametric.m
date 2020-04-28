@@ -39,7 +39,8 @@ classdef Parametric < WecOptTool.geom.AbsGeom
     % The following options are supported:
     %
     %   freqStep (float):
-    %     Frequency discretisation step used in NEMOH calculations
+    %     Frequency discretisation step used in NEMOH calculations. Defaults to
+    %     0.2 (Hz).
     %
     
     properties
