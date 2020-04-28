@@ -1,5 +1,4 @@
 
-
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
 % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
 % U.S. Government retains certain rights in this software.
@@ -51,4 +50,11 @@ function testCheck_multiSeaStates(testCase)
     catch
         verifyFail(testCase)
     end
+end
+
+function testCheck_Positive(testCase)
+    S = WecOptLib.tests.data.exampleSpectrum();
+    S.w(1) = -1.0;
+    eID = 'WecOptTool:invalidSpectrum:negativeFrequencies';
+    verifyError(testCase,@() WecOptLib.utils.checkSpectrum(S),eID)
 end
