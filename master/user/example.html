@@ -297,7 +297,7 @@ DOE Reference Model 3 (<a class="reference external" href="https://tethys-engine
 <span class="n">lb</span> <span class="p">=</span> <span class="p">[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mi">41</span><span class="p">];</span>
 <span class="n">ub</span> <span class="p">=</span> <span class="p">[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mi">43</span><span class="p">];</span>
 
-<span class="n">parametric</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">geom</span><span class="p">.</span><span class="n">Parametric</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">);</span>
+<span class="n">parametric</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">geom</span><span class="p">.</span><span class="n">Parametric</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="s">&#39;freqStep&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">);</span>
 <span class="n">study</span><span class="p">.</span><span class="n">addGeometry</span><span class="p">(</span><span class="n">parametric</span><span class="p">);</span>
 
 <span class="c">%% Add geometry design variables (scalar)</span>
@@ -483,7 +483,7 @@ approximate a more meaningful objective (e.g., levelized cost of energy).</p>
 <span class="n">lb</span> <span class="p">=</span> <span class="p">[</span><span class="mf">4.5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mi">41</span><span class="p">];</span>
 <span class="n">ub</span> <span class="p">=</span> <span class="p">[</span><span class="mf">5.5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mi">43</span><span class="p">];</span>
 
-<span class="n">parametric</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">geom</span><span class="p">.</span><span class="n">Parametric</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">);</span>
+<span class="n">parametric</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">geom</span><span class="p">.</span><span class="n">Parametric</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="s">&#39;freqStep&#39;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">);</span>
 <span class="n">study</span><span class="p">.</span><span class="n">addGeometry</span><span class="p">(</span><span class="n">parametric</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>

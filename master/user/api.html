@@ -349,7 +349,7 @@ details.</p>
 
 <dl class="class">
 <dt id="+WecOptTool.+geom.Parametric">
-<em class="property">class </em><code class="descclassname">WecOptTool.geom.</code><code class="descname">Parametric</code><span class="sig-paren">(</span><em>x0</em>, <em>upperBound</em>, <em>lowerBound</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+geom.Parametric" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">WecOptTool.geom.</code><code class="descname">Parametric</code><span class="sig-paren">(</span><em>x0</em>, <em>upperBound</em>, <em>lowerBound</em>, <em>varargin</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+geom.Parametric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Vary device geometry parametrically.</p>
 <p>For the RM3 study the design variables are</p>
 <blockquote>
@@ -369,11 +369,20 @@ details.</p>
 <li><strong>x0</strong> (<em>double[4]</em>) – optimisation initial guess</li>
 <li><strong>upperBound</strong> (<em>double[4]</em>) – optimisation upper bound</li>
 <li><strong>lowerBound</strong> (<em>double[4]</em>) – optimisation lower bound</li>
+<li><strong>varargin</strong> – optional name-value pair arguments (see below)</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<p>The following options are supported:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>freqStep (float):</dt>
+<dd>Angular frequency discretisation step used in NEMOH calculations.
+Defaults to 0.2 (rad/s).</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="class">
