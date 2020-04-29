@@ -112,13 +112,8 @@ end
 
 function test_RM3_mass(testCase)
 
-    import matlab.unittest.fixtures.TemporaryFolderFixture
-    tempFixture = testCase.applyFixture(                            ...
-             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'test_RM3_mass'));
-
     RM3Device = WecOptLib.models.RM3.DeviceModel();
-    hydro = RM3Device.getHydrodynamics(tempFixture.Folder,'scalar',1);
+    hydro = RM3Device.getHydrodynamics('scalar',1);
     mass = sum(hydro.Vo * hydro.rho);
     
     expSol = 1.652838125000000e6;

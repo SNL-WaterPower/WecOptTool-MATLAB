@@ -92,9 +92,13 @@ classdef (Abstract) DeviceModelTemplate
         % Create a folder for this call
         uniqueFolder = obj.getUniqueFolderPath(studyDir);
         
+        % Fix geomOptions if in parametric mode
+        if strcmp(geomMode, 'parametric')
+            geomOptions = [geomOptions, {'nemohDir', uniqueFolder}];
+        end
+        
         % WEC-Sim hydro structure for RM3
-        hydro = obj.getHydrodynamics(uniqueFolder,  ...
-                                     geomMode,      ...
+        hydro = obj.getHydrodynamics(geomMode,      ...
                                      geomParams,    ...
                                      geomOptions{:});
 

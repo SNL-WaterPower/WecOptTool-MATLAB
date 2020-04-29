@@ -18,8 +18,7 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function hydro = getHydrodynamics(obj, nemohDir, ...
-                                       mode,     ...
+function hydro = getHydrodynamics(obj, mode,     ...
                                        params,   ...
                                        varargin)
 % function [hydro] = getHydrodynamics(mode,...)
@@ -27,7 +26,6 @@ function hydro = getHydrodynamics(obj, nemohDir, ...
 % Returns WEC-Sim hydro structure for RM3.
 %
 % Inputs
-%   nemohDir    Path to folder for NEMOH file storage
 %   mode='scalar'
 %       params = lambda  scaling factor
 %   mode='paramtric'
@@ -39,6 +37,8 @@ function hydro = getHydrodynamics(obj, nemohDir, ...
 % Name-value Inputs
 %  'spectra' (required for geomMode='paramtric')
 %      Sea state description
+%  'nemohDir' (string, optional for geomMode='paramtric')
+%      Directory for NEMOH files (default = ".")
 %  'freqStep' (float, optional for geomMode='paramtric')
 %      Sea state frequency discretization (default = 0.2)
 %
@@ -53,13 +53,16 @@ function hydro = getHydrodynamics(obj, nemohDir, ...
 % (EWTEC2017), Cork, Ireland. 2017.
 %%
 
+defaultNEMOHDir = ".";
 defaultSS = struct();
 defaultFreqStep = 0.2;
 
 validScalarPosNum = @(x) isnumeric(x) && isscalar(x) && (x > 0);
+validName = @(x) isstring(x) | ischar(x);
 
 p = inputParser;
 addParameter(p, 'spectra', defaultSS);
+addParameter(p, 'nemohDir', defaultNEMOHDir, validName);
 addParameter(p, 'freqStep', defaultFreqStep, validScalarPosNum);
 parse(p, varargin{:});
 
@@ -103,6 +106,7 @@ switch mode
         
         SS = p.Results.spectra;
         freqStep = p.Results.freqStep;
+        nemohDir = p.Results.nemohDir;
         
         % Get global frequency range at freqStep (rad/s) discrtization 
         w = WecOptLib.utils.seaStatesGlobalW(SS, freqStep);
