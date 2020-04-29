@@ -103,7 +103,7 @@ switch mode
         SS = p.Results.spectra;
         freqStep = p.Results.freqStep;
         
-        % Get global frequency range at freqStep (Hz) discrtization 
+        % Get global frequency range at freqStep (rad/s) discrtization 
         w = WecOptLib.utils.seaStatesGlobalW(SS, freqStep);
                
         if w(1) == 0
