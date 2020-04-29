@@ -18,7 +18,7 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-classdef ExampleTest < matlab.unittest.TestCase
+classdef ExampleScalarTest < matlab.unittest.TestCase
     
     properties
         OriginalDefault
@@ -50,21 +50,6 @@ classdef ExampleTest < matlab.unittest.TestCase
     end
     
     methods(Test)
-        
-        function testExample(testCase)
-            
-            srcRootPath = WecOptLib.utils.getSrcRootPath();
-            cd(srcRootPath);
-            
-            if WecOptLib.utils.hasParallelToolbox()
-                verifyWarningFree(testCase, @example);
-            else
-                verifyWarning(testCase, ...
-                              @example, ...
-                              'optimlib:commonMsgs:NoPCTLicense');
-            end
-            
-        end
         
         function testScalarExample(testCase)
             
@@ -99,35 +84,6 @@ classdef ExampleTest < matlab.unittest.TestCase
                               'optimlib:commonMsgs:NoPCTLicense');
             end
             
-            WecOptTool.result(study);
-            WecOptTool.plot(study);
-            
-            warning('on', 'WaveSpectra:NoWeighting')
-            
-        end
-        
-        function testExistingExample(testCase)
-            
-            warning('off', 'WaveSpectra:NoWeighting')
-            
-            import matlab.unittest.fixtures.TemporaryFolderFixture
-            tempFixture = testCase.applyFixture(                    ...
-             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testExistingExample'));
-                                                        
-            study = WecOptTool.RM3Study();
-            S = WecOptLib.tests.data.example8Spectra();
-            study.addSpectra(S);
-            
-            cc = WecOptTool.control.ComplexConjugate();
-            study.addControl(cc);
-
-            % Add geometry design variables (existing)
-            WecOptLib.tests.data.exampleNEMOH(tempFixture.Folder)
-            existing = WecOptTool.geom.Existing(tempFixture.Folder);
-            study.addGeometry(existing);
-
-            WecOptTool.run(study);
             WecOptTool.result(study);
             WecOptTool.plot(study);
             
