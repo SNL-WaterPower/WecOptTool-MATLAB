@@ -41,7 +41,7 @@ function run(study, optimOptions)
     else
         geomOptions = study.geomOptions;
     end
-
+    
     %% Create the objective function
     RM3Device = WecOptLib.models.RM3.DeviceModel();
     
@@ -63,6 +63,7 @@ function run(study, optimOptions)
                                            study.controlType,   ...
                                            study.geomMode,      ...
                                            study.geomX0,        ...
+                                           geomOptions,         ...
                                            study.controlParams);
         
         study.out.sol = study.geomX0;
