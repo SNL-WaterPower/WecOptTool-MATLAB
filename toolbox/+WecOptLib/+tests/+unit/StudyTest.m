@@ -77,7 +77,7 @@ function testStudySaveNEMOH(testCase)
     
 end
 
-function testStudyNoSopyNEMOH(testCase)
+function testStudyNoCopyNEMOH(testCase)
 
     import matlab.unittest.fixtures.TemporaryFolderFixture
     
