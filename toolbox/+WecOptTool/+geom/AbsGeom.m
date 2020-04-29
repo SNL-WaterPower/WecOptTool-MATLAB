@@ -24,5 +24,6 @@ classdef AbsGeom
         geomLowerBound
         geomUpperBound
         geomX0
+        geomOptions
     end
 end

@@ -34,6 +34,7 @@ classdef Scalar < WecOptTool.geom.AbsGeom
         geomLowerBound
         geomUpperBound
         geomX0
+        geomOptions = {}
     end
     
     methods

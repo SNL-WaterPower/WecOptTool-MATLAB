@@ -49,6 +49,7 @@ try
     arrayfun(@(Spect,idx) checkFields(Spect, idx), S, inds);
     arrayfun(@(Spect,idx) checkLengths(Spect, idx), S, inds);
     arrayfun(@(Spect,idx) checkCol(Spect, idx), S, inds);
+    arrayfun(@(Spect,idx) checkPositive(Spect, idx), S, inds);
 catch MEs
     throw(MEs)
 end
@@ -81,6 +82,18 @@ msg = 'Spectrum #%i in array S.S and S.w fields are not column vectors';
 ID = 'WecOptTool:invalidSpectrum:notColumnVectors';
 try
     assert(iscolumn(S.S) && iscolumn(S.w),ID,msg, idx)
+catch ME
+    throw(ME)
+end
+end
+
+
+function [] = checkPositive(S, idx)
+msg = ['Frequency in Spectrum #%i contains negative values. Frequency'... 
+' values must be positive'];
+ID = 'WecOptTool:invalidSpectrum:negativeFrequencies';
+try
+    assert(all(S.w >=0) ,ID,msg, idx)
 catch ME
     throw(ME)
 end

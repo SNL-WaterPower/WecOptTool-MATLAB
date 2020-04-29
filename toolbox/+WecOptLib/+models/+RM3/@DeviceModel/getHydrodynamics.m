@@ -18,19 +18,27 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function [hydro,rundir] = getHydrodynamics(obj, mode, varargin)
+function [hydro,rundir] = getHydrodynamics(obj, mode,     ...
+                                                params,   ...
+                                                varargin)
 % function [hydro] = getHydrodynamics(mode,...)
 %
 % Returns WEC-Sim hydro structure for RM3.
 %
 % Inputs
 %   mode='scalar'
-%       lambda  scaling factor
+%       params = lambda  scaling factor
 %   mode='paramtric'
-%       r1      float radius [m]
-%       r2      heave plate radius [m]
-%       d1      draft of float [m]
-%       d2      depth of heave plate [m]
+%       params = r1      float radius [m]
+%                r2      heave plate radius [m]
+%                d1      draft of float [m]
+%                d2      depth of heave plate [m]
+%
+% Name-value Inputs
+%  'spectra' (required for geomMode='paramtric')
+%      Sea state description
+%  'freqStep' (float, optional for geomMode='paramtric')
+%      Sea state frequency discretization (default = 0.2)
 %
 % Outputs
 %       hydro   BEM data saved to WEC-Sim hydro structure
@@ -43,13 +51,21 @@ function [hydro,rundir] = getHydrodynamics(obj, mode, varargin)
 % (EWTEC2017), Cork, Ireland. 2017.
 %%
 
+defaultSS = struct();
+defaultFreqStep = 0.2;
+
+validScalarPosNum = @(x) isnumeric(x) && isscalar(x) && (x > 0);
+
+p = inputParser;
+addParameter(p, 'spectra', defaultSS);
+addParameter(p, 'freqStep', defaultFreqStep, validScalarPosNum);
+parse(p, varargin{:});
+
 switch mode
+    
     case 'scalar'
-        if iscell(varargin{1})
-            lambda = varargin{1}{1};
-        else
-            lambda = varargin{1};
-        end
+        
+        lambda = params;
         
         % Get data file path
         p = mfilename('fullpath');
@@ -65,7 +81,6 @@ switch mode
 %         hydro = Normalize(hydro); % TODO - this doesn't work for our data
 %         that was produced w/ WAMIT...
 
-        
         % scale by scaling factor lambda
         hydro.Vo = hydro.Vo .* lambda^3;
         hydro.C = hydro.C .* lambda^2;
@@ -78,33 +93,48 @@ switch mode
         hydro.ex_im = imag(hydro.ex);
         % TODO: scale rest off FRFs
         
-        
     case 'parametric'
-        r1 = varargin{1}(1);
-        r2 = varargin{1}(2);
-        d1 = varargin{1}(3);
-        d2 = varargin{1}(4);
-        [hydro,rundir] = RM3_parametric(r1,r2,d1,d2);
+        
+        r1 = params(1);
+        r2 = params(2);
+        d1 = params(3);
+        d2 = params(4);
+        
+        SS = p.Results.spectra;
+        freqStep = p.Results.freqStep;
+        
+        % Get global frequency range at freqStep (rad/s) discrtization 
+        w = WecOptLib.utils.seaStatesGlobalW(SS, freqStep);
+               
+        if w(1) == 0
+            w = w(2:end);
+        end
+        
+        [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2);
+        
     case 'existing'
-        rundir = varargin{1};
+        
+        rundir = params;
         hydro = struct();
         hydro = WecOptLib.vendor.WEC_Sim.Read_NEMOH(hydro, rundir);
         hydro.rundir = rundir;
+        
     otherwise
-        errmsg = ['Invalid argument for RM3_getNemoh.  Must be either', ...
-                 ' "parametric", "scalar", or "existing".  Perhaps a typo was made...'];
+        
+        errmsg = ['Invalid argument for RM3_getNemoh.  Must be ',   ...
+                  'either "parametric", "scalar", or "existing". ', ...
+                  'Perhaps a typo was made...'];
         error(errmsg);
+    
 end
 
 % hydro = Normalize(hydro);
 
 end
 
-function [hydro,rundir] = RM3_parametric(r1,r2,d1,d2)
+function [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2)
 
-w = linspace(0.2,2,10); % TODO: set this based on wave spectrum
-
-%% Store NEMOH output in fixed user-centric location
+% Store NEMOH output in fixed user-centric location
 nemohPath = WecOptLib.utils.getSrcRootPath();
 subdirectory = fullfile(nemohPath, '~nemoh_runs');
 procid = 0;

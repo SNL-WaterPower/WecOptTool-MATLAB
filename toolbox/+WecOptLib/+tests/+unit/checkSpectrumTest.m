@@ -51,3 +51,10 @@ function testCheck_multiSeaStates(testCase)
         verifyFail(testCase)
     end
 end
+
+function testCheck_Positive(testCase)
+    S = WecOptLib.tests.data.exampleSpectrum();
+    S.w(1) = -1.0;
+    eID = 'WecOptTool:invalidSpectrum:negativeFrequencies';
+    verifyError(testCase,@() WecOptLib.utils.checkSpectrum(S),eID)
+end

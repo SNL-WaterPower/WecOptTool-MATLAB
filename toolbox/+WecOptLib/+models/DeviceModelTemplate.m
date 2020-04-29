@@ -22,7 +22,10 @@ classdef (Abstract) DeviceModelTemplate
     
     methods (Abstract)
         
-        [hydro, rundir] = getHydrodynamics(obj, geomMode, geomParams)
+        [hydro, rundir] = getHydrodynamics(obj,         ...
+                                           geomMode,    ...
+                                           geomParams,  ...
+                                           varargin)
         motion = getMotion(obj, S, hydro, controlType, maxVals)
         powSS = complexConjugate(obj, motion);
         powSS = damping(obj, motion);
@@ -37,7 +40,7 @@ classdef (Abstract) DeviceModelTemplate
                                        controlType,     ...
                                        geomMode,        ...
                                        geomParams,      ...
-                                       controlParams)
+                                       varargin)
         % pow, etc = DeviceModelTemplate.getPower(SS, controlType, ...)
         %
         % Takes a specta S struct or a series of sea-states in a struct 
@@ -61,6 +64,7 @@ classdef (Abstract) DeviceModelTemplate
         %                           parametric: [r1, r2, d1, d2] parameters
         %                           existing: pass existing NEMOH rundir
         %     geomParams      contains parameters for the geometric mode
+        %     geomOptions     options to be passed to getHydrodynamics
         %     controlParams   if using the 'PS' control type, optional
         %                       arguments for deltaZmax and deltaFmax
         %                           Note: to use the optional arguments,
@@ -69,9 +73,22 @@ classdef (Abstract) DeviceModelTemplate
         %     pow             power weighted by weighting factors
         %     etc             structure with two items, containing pow 
         %                       and the hydro struct from Nemoh
-
+        
+        defaultGeomOptions = {};
+        defaultControlParams = [];
+        
+        p = inputParser;
+        addOptional(p, 'geomOptions', defaultGeomOptions);
+        addOptional(p, 'controlParams', defaultControlParams);
+        parse(p, varargin{:});
+        
+        geomOptions = p.Results.geomOptions;
+        controlParams = p.Results.controlParams;
+        
         % WEC-Sim hydro structure for RM3
-        [hydro,rundir] = obj.getHydrodynamics(geomMode, geomParams);
+        [hydro,rundir] = obj.getHydrodynamics(geomMode,     ...
+                                              geomParams,   ...
+                                              geomOptions{:});
 
         % If PS control must set max Z and F values
         if strcmp(controlType, 'PS') 

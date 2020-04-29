@@ -45,7 +45,7 @@ x0 = [5, 7.5, 1.125, 42];
 lb = [4.5, 7, 1.00, 41];
 ub = [5.5, 8, 1.25, 43];
 
-parametric = WecOptTool.geom.Parametric(x0, lb, ub);
+parametric = WecOptTool.geom.Parametric(x0, lb, ub, 'freqStep', 0.5);
 study.addGeometry(parametric);
 
 %% Add geometry design variables (scalar)
