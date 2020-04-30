@@ -29,7 +29,7 @@ function testIsParallelTrue(testCase)
     
     tests = zeros(1, 2);
     
-    parfor i = 1:2
+    parfor i = 1:length(tests)
         tests(i) = WecOptLib.utils.isParallel();
     end
     
@@ -41,7 +41,7 @@ function testIsParallelFalse(testCase)
 
     tests = zeros(1, 2);
     
-    for i = 1:2
+    for i = 1:length(tests)
         tests(i) = WecOptLib.utils.isParallel();
     end
     

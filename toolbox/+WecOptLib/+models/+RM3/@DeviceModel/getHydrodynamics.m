@@ -35,11 +35,11 @@ function hydro = getHydrodynamics(obj, mode,     ...
 %                d2      depth of heave plate [m]
 %
 % Name-value Inputs
-%  'spectra' (required for geomMode='paramtric')
+%  'spectra' (required for mode='paramtric')
 %      Sea state description
-%  'nemohDir' (string, optional for geomMode='paramtric')
+%  'nemohDir' (string, optional for mode='paramtric')
 %      Directory for NEMOH files (default = ".")
-%  'freqStep' (float, optional for geomMode='paramtric')
+%  'freqStep' (float, optional for mode='paramtric')
 %      Sea state frequency discretization (default = 0.2)
 %
 % Outputs
