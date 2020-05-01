@@ -135,7 +135,7 @@ classdef RM3Study < handle
         end
         
         function obj = rmStudyDir(obj)
-            if exist(obj.studyDir, 'dir')
+            if isfolder(obj.studyDir)
                 WecOptLib.utils.rmdirRetry(obj.studyDir);
             end
         end

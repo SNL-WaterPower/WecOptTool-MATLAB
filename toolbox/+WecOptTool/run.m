@@ -31,7 +31,7 @@ function run(study, optimOptions)
     disp("")
 
     %% Clean the study directory
-    if exist(study.studyDir, 'dir')
+    if isfolder(study.studyDir)
         WecOptLib.utils.rmdirRetry(study.studyDir);
     end
     

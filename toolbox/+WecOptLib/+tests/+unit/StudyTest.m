@@ -68,7 +68,7 @@ function testSaveStudyData(testCase)
     testDir = fullfile(tempFixture.Folder, "test");
     testStudy.saveStudyData(testDir);
     
-    verifyEqual(testCase, exist(testDir, 'dir'), 7)
+    verifyTrue(testCase, isfolder(testDir))
     rmdir(testDir, 's')
     
 end
@@ -87,6 +87,6 @@ function testSaveStudyDataNoCopy(testCase)
     testDir = fullfile(tempFixture.Folder, "test");
     testStudy.saveStudyData(testDir);
     
-    verifyTrue(testCase, ~exist(testDir, 'dir'))
+    verifyFalse(testCase, isfolder(testDir))
     
 end
