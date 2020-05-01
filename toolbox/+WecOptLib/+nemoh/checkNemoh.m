@@ -95,10 +95,11 @@ if plotFlag
     figure
     hold on
     grid on
-    plot(hydro.w, Bdiag0,'r')
-    plot(hydro.w,Bdiag1,'b')
+    pb = plot(hydro.w, Bdiag0,'r','DisplayName','before');
+    pa = plot(hydro.w,Bdiag1,'b','DisplayName','after');
     xlabel('Frequency [rad/s]')
     ylabel('Radiation damping')
+    legend([pb(1), pa(1)])
     
     fprintf('\nBefore\n')
     fprintf('----------\n')
