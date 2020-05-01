@@ -80,12 +80,13 @@ Bdiag1 = cell2mat(arrayfun(@(x) diag(hydro.B(:,:,x)), 1:size(hydro.B,3),...
 
 ltzw_locs = find(ltzw ~= 0)';
 
-if any(ltzw ~= 0)
-    ltzw_locs = find(ltzw ~= 0)';
-    warning('WecOptTool:nemohNegativeRad',...
-        ['Negative radiation values in following diagonal FRFs: ',...
-        num2str(ltzw_locs)])     
-end
+% raise warning 
+% if any(ltzw ~= 0)
+%     ltzw_locs = find(ltzw ~= 0)';
+%     warning('WecOptTool:nemohNegativeRad',...
+%         ['Negative radiation values in following diagonal FRFs: ',...
+%         num2str(ltzw_locs)])
+% end
 
 %% Plotting and debugging output (optional)
 
