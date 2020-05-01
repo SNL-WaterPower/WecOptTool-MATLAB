@@ -36,20 +36,19 @@ end
 
 function testStudyDestructor(testCase)
     
-    testStudy = WecOptTool.RM3Study();
-    
-    % Fake directory build
+    % Directory build
+    testStudy = WecOptTool.RM3Study();    
+    assertTrue(testCase, isfolder(testStudy.studyDir))
     testDir = testStudy.studyDir;
-    mkdir(testStudy.studyDir)
     
     % Trigger destructor
     clear testStudy
     
-    verifyEqual(testCase, exist(testDir, 'dir'), 0)
+    verifyEqual(testCase, isfolder(testDir), false)
     
 end
 
-function testStudySaveNEMOH(testCase)
+function testSaveStudyData(testCase)
 
     import matlab.unittest.fixtures.TemporaryFolderFixture
     
@@ -59,9 +58,6 @@ function testStudySaveNEMOH(testCase)
     
     testStudy = WecOptTool.RM3Study();
     
-    % Fake directory build
-    mkdir(testStudy.studyDir)
-    
     filePath = fullfile(testStudy.studyDir, 'changing.txt');
     fileID = fopen(filePath,'w');
     fmt = '%5d %5d %5d %5d\n';
@@ -70,14 +66,14 @@ function testStudySaveNEMOH(testCase)
     
     % Copy data
     testDir = fullfile(tempFixture.Folder, "test");
-    testStudy.saveNEMOH(testDir);
+    testStudy.saveStudyData(testDir);
     
     verifyEqual(testCase, exist(testDir, 'dir'), 7)
     rmdir(testDir, 's')
     
 end
 
-function testStudyNoCopyNEMOH(testCase)
+function testSaveStudyDataNoCopy(testCase)
 
     import matlab.unittest.fixtures.TemporaryFolderFixture
     
@@ -87,9 +83,9 @@ function testStudyNoCopyNEMOH(testCase)
     
     testStudy = WecOptTool.RM3Study();
     
-    % Attempt Copy data
+    % Attempt to copy data
     testDir = fullfile(tempFixture.Folder, "test");
-    testStudy.saveNEMOH(testDir);
+    testStudy.saveStudyData(testDir);
     
     verifyTrue(testCase, ~exist(testDir, 'dir'))
     

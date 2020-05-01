@@ -38,7 +38,8 @@ function hydro = getHydrodynamics(obj, mode,     ...
 %  'spectra' (required for mode='paramtric')
 %      Sea state description
 %  'nemohDir' (string, optional for mode='paramtric')
-%      Directory for NEMOH files (default = ".")
+%      Directory for NEMOH files. Defaults to a temporary folder name.
+%      See hydro.rundir for path.
 %  'freqStep' (float, optional for mode='paramtric')
 %      Sea state frequency discretization (default = 0.2)
 %
@@ -53,7 +54,7 @@ function hydro = getHydrodynamics(obj, mode,     ...
 % (EWTEC2017), Cork, Ireland. 2017.
 %%
 
-defaultNEMOHDir = ".";
+defaultNEMOHDir = tempname;
 defaultSS = struct();
 defaultFreqStep = 0.2;
 
@@ -99,6 +100,13 @@ switch mode
         
     case 'parametric'
         
+        nemohDir = p.Results.nemohDir;
+        
+        % Reserve the nemohDir now if it doesn't exist
+        if ~isfolder(nemohDir)
+            mkdir(nemohDir)
+        end
+        
         r1 = params(1);
         r2 = params(2);
         d1 = params(3);
@@ -106,7 +114,6 @@ switch mode
         
         SS = p.Results.spectra;
         freqStep = p.Results.freqStep;
-        nemohDir = p.Results.nemohDir;
         
         % Get global frequency range at freqStep (rad/s) discrtization 
         w = WecOptLib.utils.seaStatesGlobalW(SS, freqStep);

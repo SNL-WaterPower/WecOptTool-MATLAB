@@ -85,8 +85,14 @@ classdef (Abstract) DeviceModelTemplate
         geomOptions = p.Results.geomOptions;
         controlParams = p.Results.controlParams;
 
-        % Create a folder for this call
-        uniqueFolder = obj.getUniqueFolderPath(studyDir);
+        % Create a folder for this call (and check for race condition)
+        uniqueFolder = tempname(studyDir);
+        [~, ~, message] = mkdir(uniqueFolder);
+
+        if strcmp(message, 'MATLAB:MKDIR:DirectoryExists')
+            errStr = "uniqueFolder is already a directory";
+            error('WecOptLib:DeviceModelTemplate:DirectoryExists', errStr)
+        end
         
         % Fix geomOptions if in parametric mode
         if strcmp(geomMode, 'parametric')
@@ -201,42 +207,9 @@ classdef (Abstract) DeviceModelTemplate
         etc.hydro = hydro;
         
         % Store the etc struct for this run
-        if exist(uniqueFolder,'dir') ~= 7
-            mkdir(uniqueFolder)
-        end
-        
         etcPath = fullfile(uniqueFolder, "etc.mat");
         save(etcPath, '-struct', 'etc');
 
-        end
-        
-    end
-    
-    methods (Access=protected)
-        
-        function folder = getUniqueFolderPath(obj, basePath)
-            % Create a unique folder name at the given base path
-            %
-            % Args:
-            %     basePath (string): base path for new folder name
-            %
-            
-            getCandidateName = @() dec2hex(randi(16777216, 1), 6);
-            folderNames = WecOptLib.utils.getFolders(basePath);
-
-            while true
-                
-                candidateName = getCandidateName();
-                
-                if ismember(candidateName, folderNames)
-                    continue
-                end
-                
-                folder = fullfile(basePath, candidateName);
-                return
-                
-            end
-            
         end
         
     end
