@@ -22,6 +22,8 @@
 
 %% Init
 
+function dependencyCheck()
+
 allfoundflag = true;
 
 fprintf('\nWecOptTool Dependency Checker\n');
