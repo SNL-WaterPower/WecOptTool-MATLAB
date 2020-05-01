@@ -42,20 +42,10 @@ function run(study, optimOptions)
         geomOptions = study.geomOptions;
     end
     
-    %% Create the objective function
+    %% Create the device model
     RM3Device = WecOptLib.models.RM3.DeviceModel();
     
-    function pow = obj(x)
-        warning('off', 'WaveSpectra:NoWeighting')
-        pow = -1 * RM3Device.getPower(study.studyDir,           ...
-                                      study.spectra,            ...
-                                      study.controlType,        ...
-                                      study.geomMode,           ...
-                                      x,                        ...
-                                      geomOptions,            ...
-                                      study.controlParams);
-    end
-    
+    %% If in existing mode, run getPower and return
     if strcmp(study.geomMode, 'existing')
         
         [negPow, etc] = RM3Device.getPower(study.studyDir,      ...
@@ -73,11 +63,17 @@ function run(study, optimOptions)
         
     end
     
-    %define these parameters as null to allow passing non-default options
-    A = [];
-    b = [];
-    Aeq = [];
-    beq = [];
+    %% Create the objective function    
+    function pow = obj(x)
+        warning('off', 'WaveSpectra:NoWeighting')
+        pow = -1 * RM3Device.getPower(study.studyDir,           ...
+                                      study.spectra,            ...
+                                      study.controlType,        ...
+                                      study.geomMode,           ...
+                                      x,                        ...
+                                      geomOptions,              ...
+                                      study.controlParams);
+    end
     
     %% Set the optimization options
     if nargin == 2
@@ -85,6 +81,12 @@ function run(study, optimOptions)
     else
         options = optimoptions('fmincon');
     end
+    
+    % define these parameters as null to allow passing non-default options
+    A = [];
+    b = [];
+    Aeq = [];
+    beq = [];
     
     %% Call the optimization
     tic
