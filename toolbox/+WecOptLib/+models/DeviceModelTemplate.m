@@ -214,24 +214,25 @@ classdef (Abstract) DeviceModelTemplate
     
     methods (Access=protected)
         
-        function folder = getUniqueFolderPath(obj, path)
+        function folder = getUniqueFolderPath(obj, basePath)
+            % Create a unique folder name at the given base path
+            %
+            % Args:
+            %     basePath (string): base path for new folder name
+            %
             
             getCandidateName = @() dec2hex(randi(16777216, 1), 6);
-    
-            d = dir(path);
-            dfolders = d([d(:).isdir] == 1);
-            dfolders = dfolders(~ismember({dfolders(:).name},   ...
-                                          {'.', '..'}));
+            folderNames = WecOptLib.utils.getFolders(basePath);
 
             while true
                 
                 candidateName = getCandidateName();
                 
-                if ismember(candidateName, {dfolders.name})
+                if ismember(candidateName, folderNames)
                     continue
                 end
                 
-                folder = fullfile(path, candidateName);
+                folder = fullfile(basePath, candidateName);
                 return
                 
             end

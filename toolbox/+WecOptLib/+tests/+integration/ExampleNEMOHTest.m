@@ -75,6 +75,8 @@ classdef ExampleNEMOHTest < matlab.unittest.TestCase
             
             warning('off', 'WaveSpectra:NoWeighting')
             
+            import WecOptLib.utils.getFolders
+            
             study = WecOptTool.RM3Study();
             S = WecOptLib.tests.data.example8Spectra();
             study.addSpectra(S);
@@ -83,13 +85,11 @@ classdef ExampleNEMOHTest < matlab.unittest.TestCase
             study.addControl(cc);
 
             % Add geometry design variables (existing)
-            d = dir(testCase.Study.studyDir);
-            dfolders = d([d(:).isdir] == 1);
-            dfolders = dfolders(~ismember({dfolders(:).name},   ...
-                                          {'.', '..'}));
-            nemohDir = fullfile(testCase.Study.studyDir, dfolders(1).name);
+            nemohDirs = getFolders(testCase.Study.studyDir,     ...
+                                   "absPath", true);
+            assertTrue(testCase, isfolder(nemohDirs{1}))
             
-            existing = WecOptTool.geom.Existing(nemohDir);
+            existing = WecOptTool.geom.Existing(nemohDirs{1});
             study.addGeometry(existing);
 
             WecOptTool.run(study);

@@ -107,16 +107,13 @@ function run(study, optimOptions)
     study.out.output = output;
     
     % Pick up the etc struct for the optimal solution 
-    d = dir(study.studyDir);
-    dfolders = d([d(:).isdir] == 1);
-    dfolders = dfolders(~ismember({dfolders(:).name}, {'.', '..'}));
-    
+    nemohDirs = WecOptLib.utils.getFolders(study.studyDir,  ...
+                                           "absPath", true);
     foundMatch = false;
     
-    for name = {dfolders.name}
+    for runDir = nemohDirs
         
-        rundir = fullfile(study.studyDir, name{1});
-        etc = load(fullfile(rundir, 'etc.mat'));
+        etc = load(fullfile(runDir{1}, 'etc.mat'));
         
         if isequal(study.out.sol, etc.geomParams)
             foundMatch = true;
