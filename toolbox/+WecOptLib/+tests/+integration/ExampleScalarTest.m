@@ -18,7 +18,7 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-classdef ExampleTest < matlab.unittest.TestCase
+classdef ExampleScalarTest < matlab.unittest.TestCase
     
     properties
         OriginalDefault
@@ -51,18 +51,43 @@ classdef ExampleTest < matlab.unittest.TestCase
     
     methods(Test)
         
-        function testExample(testCase)
+        function testScalarExample(testCase)
             
-            srcRootPath = WecOptLib.utils.getSrcRootPath();
-            cd(srcRootPath);
+            warning('off', 'WaveSpectra:NoWeighting')
+            study = WecOptTool.RM3Study();
+            
+            S = WecOptLib.tests.data.example8Spectra();
+            study.addSpectra(S);
+            
+            cc = WecOptTool.control.ComplexConjugate();
+            study.addControl(cc);
+
+            % Add geometry design variables (scalar)
+            x0 = 1.;
+            lb = 0.5;
+            ub = 2;
+
+            scalar = WecOptTool.geom.Scalar(x0, lb, ub);
+            study.addGeometry(scalar);
+
+            options = optimoptions('fmincon');
+            options.MaxFunctionEvaluations = 5;
+            options.UseParallel = true;
+
+            runStudy = @() WecOptTool.run(study, options);
             
             if WecOptLib.utils.hasParallelToolbox()
-                verifyWarningFree(testCase, @example);
+                verifyWarningFree(testCase, runStudy);
             else
                 verifyWarning(testCase, ...
-                              @example, ...
+                              runStudy, ...
                               'optimlib:commonMsgs:NoPCTLicense');
             end
+            
+            WecOptTool.result(study);
+            WecOptTool.plot(study);
+            
+            warning('on', 'WaveSpectra:NoWeighting')
             
         end
         

@@ -27,22 +27,7 @@ function plot(study)
     
     disp("Generating plot...")
     
-    % Add SS to geomOptions for parametric mode
-    if strcmp(study.geomMode, 'parametric')
-        geomOptions = [study.geomOptions, {'spectra', study.spectra}];
-    else
-        geomOptions = study.geomOptions;
-    end
-    
-    RM3Device = WecOptLib.models.RM3.DeviceModel();
-    [~, etc] = RM3Device.getPower(study.spectra,                    ...
-                                  study.controlType,                ...
-                                  study.geomMode,                   ...
-                                  study.out.sol,                    ...
-                                  geomOptions,                      ...
-                                  study.controlParams);
-
     % Power vs Frequency Plot
-    WecOptLib.plots.powerPerFreq(study.spectra, etc);
+    WecOptLib.plots.powerPerFreq(study.spectra, study.out.etc);
     
 end

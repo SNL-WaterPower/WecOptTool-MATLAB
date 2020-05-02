@@ -29,6 +29,11 @@ function run(study, optimOptions)
     
     disp("Running study...")
     disp("")
+
+    %% Clean the study directory
+    if isfolder(study.studyDir)
+        WecOptLib.utils.rmdirRetry(study.studyDir);
+    end
     
     %% Add SS to geomOptions for parametric mode
     if strcmp(study.geomMode, 'parametric')
@@ -36,31 +41,39 @@ function run(study, optimOptions)
     else
         geomOptions = study.geomOptions;
     end
-
-    %% Create the objective function
+    
+    %% Create the device model
     RM3Device = WecOptLib.models.RM3.DeviceModel();
     
+    %% If in existing mode, run getPower and return
+    if strcmp(study.geomMode, 'existing')
+        
+        [negPow, etc] = RM3Device.getPower(study.studyDir,      ...
+                                           study.spectra,       ...
+                                           study.controlType,   ...
+                                           study.geomMode,      ...
+                                           study.geomX0,        ...
+                                           geomOptions,         ...
+                                           study.controlParams);
+        
+        study.out.sol = study.geomX0;
+        study.out.fval = -1 * negPow;
+        study.out.etc = etc;
+        return
+        
+    end
+    
+    %% Create the objective function    
     function pow = obj(x)
         warning('off', 'WaveSpectra:NoWeighting')
-        pow = -1 * RM3Device.getPower(study.spectra,          ...
-                                      study.controlType,      ...
-                                      study.geomMode,         ...
-                                      x,                      ...
-                                      geomOptions,            ...
+        pow = -1 * RM3Device.getPower(study.studyDir,           ...
+                                      study.spectra,            ...
+                                      study.controlType,        ...
+                                      study.geomMode,           ...
+                                      x,                        ...
+                                      geomOptions,              ...
                                       study.controlParams);
     end
-    
-    if strcmp(study.geomMode, 'existing')
-        study.out.sol = study.geomX0;
-        study.out.fval = obj(study.geomX0);
-        return
-    end
-    
-    %define these parameters as null to allow passing non-default options
-    A = [];
-    b = [];
-    Aeq = [];
-    beq = [];
     
     %% Set the optimization options
     if nargin == 2
@@ -68,6 +81,12 @@ function run(study, optimOptions)
     else
         options = optimoptions('fmincon');
     end
+    
+    % define these parameters as null to allow passing non-default options
+    A = [];
+    b = [];
+    Aeq = [];
+    beq = [];
     
     %% Call the optimization
     tic
@@ -88,5 +107,28 @@ function run(study, optimOptions)
     study.out.fval = fval;
     study.out.exitflag = exitflag;
     study.out.output = output;
+    
+    % Pick up the etc struct for the optimal solution 
+    nemohDirs = WecOptLib.utils.getFolders(study.studyDir,  ...
+                                           "absPath", true);
+    foundMatch = false;
+    
+    for runDir = nemohDirs
+        
+        etc = load(fullfile(runDir{1}, 'etc.mat'));
+        
+        if isequal(study.out.sol, etc.geomParams)
+            foundMatch = true;
+            break
+        end
+        
+    end
+    
+    if ~foundMatch
+        error('WecOptTool:run:noMatchingOutput',  ...
+              "Matching hydrodynamics run not found.")
+    end
+    
+    study.out.etc = etc;
     
 end

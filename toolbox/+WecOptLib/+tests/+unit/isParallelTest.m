@@ -18,30 +18,33 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function tests = getNemohTest
+function tests = isParallelTest()
    tests = functiontests(localfunctions);
 end
 
-function testNoExtraFigures(testCase)
+function testIsParallelTrue(testCase)
 
-    import matlab.unittest.fixtures.TemporaryFolderFixture
+    testCase.assumeTrue(WecOptLib.utils.hasParallelToolbox(),   ...
+                        'Parallel toolbox not available')
     
-    tempFixture = testCase.applyFixture(                            ...
-             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testNoExtraFigures'));
-
-    h =  findobj('type','figure');
-    nExpected = length(h);
+    tests = zeros(1, 2);
     
-    w = 0.1;
-    r=[0 1 1 0]; 
-    z=[.5 .5 -.5 -.5];
-    WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
+    parfor i = 1:length(tests)
+        tests(i) = WecOptLib.utils.isParallel();
+    end
     
-    h =  findobj('type','figure');
-    nActual = length(h);
-    
-    verifyEqual(testCase, nActual, nExpected)
+    verifyEqual(testCase, all(tests), true)
 
 end
 
+function testIsParallelFalse(testCase)
+
+    tests = zeros(1, 2);
+    
+    for i = 1:length(tests)
+        tests(i) = WecOptLib.utils.isParallel();
+    end
+    
+    verifyEqual(testCase, any(tests), false)
+
+end

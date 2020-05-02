@@ -18,30 +18,16 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function tests = getNemohTest
-   tests = functiontests(localfunctions);
-end
-
-function testNoExtraFigures(testCase)
-
-    import matlab.unittest.fixtures.TemporaryFolderFixture
+function result = isParallel()
+    % Determine if the current process is being run in parallel
     
-    tempFixture = testCase.applyFixture(                            ...
-             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testNoExtraFigures'));
-
-    h =  findobj('type','figure');
-    nExpected = length(h);
+    import WecOptLib.utils.hasParallelToolbox
     
-    w = 0.1;
-    r=[0 1 1 0]; 
-    z=[.5 .5 -.5 -.5];
-    WecOptLib.nemoh.getNemoh(r,z,w,tempFixture.Folder);
+    if ~hasParallelToolbox()
+        result = false;
+        return
+    end
     
-    h =  findobj('type','figure');
-    nActual = length(h);
+    result = ~isempty(getCurrentTask());
     
-    verifyEqual(testCase, nActual, nExpected)
-
-end
-
+end 

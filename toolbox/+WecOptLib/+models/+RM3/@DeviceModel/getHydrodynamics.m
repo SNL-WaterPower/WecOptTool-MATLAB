@@ -18,9 +18,9 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function [hydro,rundir] = getHydrodynamics(obj, mode,     ...
-                                                params,   ...
-                                                varargin)
+function hydro = getHydrodynamics(obj, mode,     ...
+                                       params,   ...
+                                       varargin)
 % function [hydro] = getHydrodynamics(mode,...)
 %
 % Returns WEC-Sim hydro structure for RM3.
@@ -35,9 +35,12 @@ function [hydro,rundir] = getHydrodynamics(obj, mode,     ...
 %                d2      depth of heave plate [m]
 %
 % Name-value Inputs
-%  'spectra' (required for geomMode='paramtric')
+%  'spectra' (required for mode='paramtric')
 %      Sea state description
-%  'freqStep' (float, optional for geomMode='paramtric')
+%  'nemohDir' (string, optional for mode='paramtric')
+%      Directory for NEMOH files. Defaults to a temporary folder name.
+%      See hydro.rundir for path.
+%  'freqStep' (float, optional for mode='paramtric')
 %      Sea state frequency discretization (default = 0.2)
 %
 % Outputs
@@ -51,13 +54,16 @@ function [hydro,rundir] = getHydrodynamics(obj, mode,     ...
 % (EWTEC2017), Cork, Ireland. 2017.
 %%
 
+defaultNEMOHDir = tempname;
 defaultSS = struct();
 defaultFreqStep = 0.2;
 
 validScalarPosNum = @(x) isnumeric(x) && isscalar(x) && (x > 0);
+validName = @(x) isstring(x) | ischar(x);
 
 p = inputParser;
 addParameter(p, 'spectra', defaultSS);
+addParameter(p, 'nemohDir', defaultNEMOHDir, validName);
 addParameter(p, 'freqStep', defaultFreqStep, validScalarPosNum);
 parse(p, varargin{:});
 
@@ -73,7 +79,6 @@ switch mode
         dataPath = fullfile(filepath, '..', 'RM3_BEM.mat');
         
         load(dataPath, 'hydro');
-        rundir = '.';
         
         % dimensionalize w/ WEC-Sim built-in function
         hydro.rho = 1025;
@@ -95,6 +100,13 @@ switch mode
         
     case 'parametric'
         
+        nemohDir = p.Results.nemohDir;
+        
+        % Reserve the nemohDir now if it doesn't exist
+        if ~isfolder(nemohDir)
+            mkdir(nemohDir)
+        end
+        
         r1 = params(1);
         r2 = params(2);
         d1 = params(3);
@@ -110,7 +122,7 @@ switch mode
             w = w(2:end);
         end
         
-        [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2);
+        hydro = RM3_parametric(w,r1,r2,d1,d2,nemohDir);
         
     case 'existing'
         
@@ -132,25 +144,7 @@ end
 
 end
 
-function [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2)
-
-% Store NEMOH output in fixed user-centric location
-nemohPath = WecOptLib.utils.getSrcRootPath();
-subdirectory = fullfile(nemohPath, '~nemoh_runs');
-procid = 0;
-
-if WecOptLib.utils.hasParallelToolbox()
-    
-    worker = getCurrentWorker;
-
-    if(~isa(worker, 'double'))
-        procid=worker.ProcessId;
-    end
-    
-end
-
-rundir = fullfile(subdirectory,...
-    [datestr(now,'yymmdd_HHMMssFFF'),'_',num2str(procid)]);
+function [hydro] = RM3_parametric(w, r1,r2,d1,d2,rundir)
 
 %% Float
 
