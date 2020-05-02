@@ -66,7 +66,7 @@ function testSaveStudyData(testCase)
     
     % Copy data
     testDir = fullfile(tempFixture.Folder, "test");
-    testStudy.saveStudyData(testDir);
+    testStudy.saveData(testDir);
     
     verifyTrue(testCase, isfolder(testDir))
     rmdir(testDir, 's')
@@ -85,7 +85,7 @@ function testSaveStudyDataNoCopy(testCase)
     
     % Attempt to copy data
     testDir = fullfile(tempFixture.Folder, "test");
-    testStudy.saveStudyData(testDir);
+    testStudy.saveData(testDir);
     
     verifyFalse(testCase, isfolder(testDir))
     

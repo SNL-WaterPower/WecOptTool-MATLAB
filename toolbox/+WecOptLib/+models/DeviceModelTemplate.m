@@ -87,11 +87,11 @@ classdef (Abstract) DeviceModelTemplate
 
         % Create a folder for this call (and check for race condition)
         uniqueFolder = tempname(studyDir);
-        [~, ~, message] = mkdir(uniqueFolder);
+        [status, ~, message] = mkdir(uniqueFolder);
 
-        if strcmp(message, 'MATLAB:MKDIR:DirectoryExists')
-            errStr = "uniqueFolder is already a directory";
-            error('WecOptLib:DeviceModelTemplate:DirectoryExists', errStr)
+        if ~status || strcmp(message, 'MATLAB:MKDIR:DirectoryExists')
+            errStr = "Failed to create unique folder";
+            error('WecOptLib:DeviceModelTemplate:NoUniqueFolder', errStr)
         end
         
         % Fix geomOptions if in parametric mode
