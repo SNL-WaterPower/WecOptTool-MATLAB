@@ -24,7 +24,6 @@ function dependencyCheck()
 % Check that all dependencies are licensed and installed
 %
 % -------------------------------------------------------------------------
-%% Init
 
 allfoundflag = true;
 
