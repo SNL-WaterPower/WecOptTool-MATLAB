@@ -18,11 +18,13 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-%%%% Purpose: Check that all dependencies are accounted for
-
-%% Init
-
 function dependencyCheck()
+% dependencyCheck()
+%
+% Check that all dependencies are licensed and installed
+%
+% -------------------------------------------------------------------------
+%% Init
 
 allfoundflag = true;
 
