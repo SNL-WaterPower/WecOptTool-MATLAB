@@ -124,3 +124,5 @@ end
 
 %% Cleanup
 WecOptLib.utils.rmdirRetry(nemohTestPath);
+
+end
