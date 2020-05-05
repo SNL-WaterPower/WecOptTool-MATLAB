@@ -20,7 +20,7 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool. If not, see <https://www.gnu.org/licenses/>.
 
-function [hydro, etc] = getNemoh(r,z,freq,rundir,varargin)
+function [hydro] = getNemoh(r,z,freq,rundir,varargin)
 % [hydro] = getNemoh(r,z,freq,rundir)
 %
 % Builds axisymmetric NEMOH mesh, runs NEMOH and returns results (heave
@@ -162,9 +162,6 @@ nemohCall(nemoh_postProc_command);
 % parse Nemoh output files
 hydro = struct();
 hydro = WecOptLib.vendor.WEC_Sim.Read_NEMOH(hydro, rundir);
-
-% check Nemoh results for problems
-[hydro, etc.ltzw_locs] = WecOptLib.nemoh.checkNemoh(hydro, 0);
 
 cd(startdir)
 

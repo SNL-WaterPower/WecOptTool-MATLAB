@@ -72,6 +72,7 @@ for ii = 1:n
     
     % reassign
     hydro.B(ii,ii,:) = Bdiag;
+    
 end
 
 % to check result
@@ -107,6 +108,9 @@ if plotFlag
     fprintf('\nAfter\n')
     fprintf('---------\n')
     disp(Bdiag1)
+    
+end
+
 end
 
 

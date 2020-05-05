@@ -39,6 +39,8 @@ function [hydro,rundir] = getHydrodynamics(obj, mode,     ...
 %      Sea state description
 %  'freqStep' (float, optional for geomMode='paramtric')
 %      Sea state frequency discretization (default = 0.2)
+%  'fixNegative' (bool, optional for geomMode='paramtric')
+%      Fix negative radiation damping values (defaults to true)
 %
 % Outputs
 %       hydro   BEM data saved to WEC-Sim hydro structure
@@ -59,6 +61,8 @@ validScalarPosNum = @(x) isnumeric(x) && isscalar(x) && (x > 0);
 p = inputParser;
 addParameter(p, 'spectra', defaultSS);
 addParameter(p, 'freqStep', defaultFreqStep, validScalarPosNum);
+addParameter(p, 'fixNegative', true, @islogical);
+
 parse(p, varargin{:});
 
 switch mode
@@ -110,7 +114,8 @@ switch mode
             w = w(2:end);
         end
         
-        [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2);
+        fixNegative = p.Results.fixNegative;
+        [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2,fixNegative);
         
     case 'existing'
         
@@ -132,7 +137,7 @@ end
 
 end
 
-function [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2)
+function [hydro,rundir] = RM3_parametric(w,r1,r2,d1,d2,fixNegative)
 
 % Store NEMOH output in fixed user-centric location
 nemohPath = WecOptLib.utils.getSrcRootPath();
@@ -180,6 +185,14 @@ z = {zf, zs};
 %% Solve
 
 [hydro] = WecOptLib.nemoh.getNemoh(r,z,w,rundir);
+
+if fixNegative
+    [hydro, ltzw] = WecOptLib.nemoh.checkNemoh(hydro, 0);
+else
+    ltzw = [];
+end
+
+hydro.ltzw = ltzw;
 hydro.rundir = rundir;
 
 end
