@@ -41,6 +41,8 @@ classdef Parametric < WecOptTool.geom.AbsGeom
     %   freqStep (float):
     %     Angular frequency discretisation step used in NEMOH calculations. 
     %     Defaults to 0.2 (rad/s).
+    %   fixNegative (bool):
+    %     Fix negative radiation damping values (defaults to true)
     %
     
     properties
