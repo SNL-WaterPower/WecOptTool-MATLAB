@@ -61,7 +61,7 @@ function [hydro, etc] = getNemoh(r,z,freq,rundir,varargin)
 % (EWTEC2017), Cork, Ireland. 2017.
 %
 % Originally licensed under the Apache License, Version 2.0
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% -------------------------------------------------------------------------
 startdir = pwd;
 
 if exist(rundir,'dir') ~= 7
@@ -151,15 +151,19 @@ for ii = 1:nBody
         axiMesh(r{ii},z{ii},ntheta,nfobj,zG(ii),ii);
 end
 
+% write the input files for Nemoh
 writeNemohCal(meshNames,nx,nf)
 
+% call Nemoh preprocessor, solver, and postprocessor binaries
 nemohCall(nemoh_preProc_command);
 nemohCall(nemoh_run_command);
 nemohCall(nemoh_postProc_command);
 
+% parse Nemoh output files
 hydro = struct();
 hydro = WecOptLib.vendor.WEC_Sim.Read_NEMOH(hydro, rundir);
 
+% check Nemoh results for problems
 [hydro, etc.ltzw_locs] = WecOptLib.nemoh.checkNemoh(hydro, 0);
 
 cd(startdir)
