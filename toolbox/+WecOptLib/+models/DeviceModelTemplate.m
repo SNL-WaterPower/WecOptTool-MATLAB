@@ -146,9 +146,7 @@ classdef (Abstract) DeviceModelTemplate
         elseif n_mu == 0
             
             % Equalise weightings for multi-sea-states if not given
-            for iSS = 1:NSS
-                SS(iSS).mu = 1;     
-            end            
+            [SS.mu] = deal(1);    
             
             warn = ['Provided wave spectra have no weightings ' ...
                     '(field mu). Equal weighting presumed.'];
