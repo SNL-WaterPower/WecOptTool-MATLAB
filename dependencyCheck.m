@@ -19,110 +19,110 @@
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
 function dependencyCheck()
-% dependencyCheck()
-%
-% Check that all dependencies are licensed and installed
-%
-% -------------------------------------------------------------------------
-
-allfoundflag = true;
-
-fprintf('\nWecOptTool Dependency Checker\n');
-fprintf('-------------------------------\n');
-
-%% Required Products
-
-fprintf('\n');
-fprintf('Required\n');
-fprintf('--------\n');
-
-%% Optimisation Toolbox
-
-% First Check for ToolBox license
-optimizationToolboxLicensed = license('test', "Optimization_Toolbox");
-
-% Second check if installed
-installedProducts = ver;
-installedNames = {installedProducts(:).Name};
-optimizationToolboxInstalled = false;
-
-for name = installedNames
-    if contains(name, "Optimization Toolbox")
-        optimizationToolboxInstalled = true;
-        break
+    % dependencyCheck()
+    %
+    % Check that all dependencies are licensed and installed
+    %
+    % -------------------------------------------------------------------------
+    
+    allfoundflag = true;
+    
+    fprintf('\nWecOptTool Dependency Checker\n');
+    fprintf('-------------------------------\n');
+    
+    %% Required Products
+    
+    fprintf('\n');
+    fprintf('Required\n');
+    fprintf('--------\n');
+    
+    %% Optimisation Toolbox
+    
+    % First Check for ToolBox license
+    optimizationToolboxLicensed = license('test', "Optimization_Toolbox");
+    
+    % Second check if installed
+    installedProducts = ver;
+    installedNames = {installedProducts(:).Name};
+    optimizationToolboxInstalled = false;
+    
+    for name = installedNames
+        if contains(name, "Optimization Toolbox")
+            optimizationToolboxInstalled = true;
+            break
+        end
     end
-end
-
-if optimizationToolboxLicensed && optimizationToolboxInstalled
-    fprintf('Optimization Toolbox:          Found\n');
-elseif ~optimizationToolboxLicensed && optimizationToolboxInstalled
-    allfoundflag = false;
-    fprintf('Optimization Toolbox:          Unlicensed\n');
-else
-    allfoundflag = false;
-    fprintf('Optimization Toolbox:          Not Installed\n');
-end
-
-%% Nemoh
-
-nemohTestPath = fullfile(tempdir, "WecOptTool_dependencyCheck");
-
-if ~exist(nemohTestPath, 'dir')
-    mkdir(nemohTestPath)
-end
-
-nemohExistFlag = WecOptLib.nemoh.isNemohInPath(nemohTestPath);
-
-if nemohExistFlag
-    fprintf('NEMOH:                         Found\n');
-else
-    allfoundflag = false;
-    fprintf('NEMOH:                         Not found\n');
-end
-
-%% Optional Products
-
-fprintf('\n');
-fprintf('Optional\n');
-fprintf('--------\n');
-
-%% Parallel Computing Toolbox
-
-[parallelToolboxFound,      ...
-    parallelToolboxLicensed,   ...
-    parallelToolboxInstalled] = WecOptLib.utils.hasParallelToolbox();
-
-if parallelToolboxFound
-    fprintf('Parallel Toolbox:              Found\n');
-elseif ~parallelToolboxLicensed && parallelToolboxInstalled
-    fprintf('Parallel Toolbox:              Unlicensed\n');
-else
-    fprintf('Parallel Toolbox:              Not Installed\n');
-end
-
-%% WAFO
-
-wafoFunction = 'bretschneider';
-wafoPath = fullfile('wafo', 'spec','bretschneider.m');
-
-wafoCheck = lower(which(wafoFunction));
-
-% Don't set allfoundflag for missing optional deps
-if contains(wafoCheck, wafoPath) && (exist(wafoCheck, 'file') == 2)
-    fprintf('WAFO:                          Found\n');
-else
-    fprintf('WAFO:                          Not found\n');
-end
-
-fprintf('\n')
-
-%% Warn if execution not possible
-
-if ~allfoundflag
-    warning("Mandatory dependencies are missing!")
-end
-
-%% Cleanup
-WecOptLib.utils.rmdirRetry(nemohTestPath);
-
+    
+    if optimizationToolboxLicensed && optimizationToolboxInstalled
+        fprintf('Optimization Toolbox:          Found\n');
+    elseif ~optimizationToolboxLicensed && optimizationToolboxInstalled
+        allfoundflag = false;
+        fprintf('Optimization Toolbox:          Unlicensed\n');
+    else
+        allfoundflag = false;
+        fprintf('Optimization Toolbox:          Not Installed\n');
+    end
+    
+    %% Nemoh
+    
+    nemohTestPath = fullfile(tempdir, "WecOptTool_dependencyCheck");
+    
+    if ~exist(nemohTestPath, 'dir')
+        mkdir(nemohTestPath)
+    end
+    
+    nemohExistFlag = WecOptLib.nemoh.isNemohInPath(nemohTestPath);
+    
+    if nemohExistFlag
+        fprintf('NEMOH:                         Found\n');
+    else
+        allfoundflag = false;
+        fprintf('NEMOH:                         Not found\n');
+    end
+    
+    %% Optional Products
+    
+    fprintf('\n');
+    fprintf('Optional\n');
+    fprintf('--------\n');
+    
+    %% Parallel Computing Toolbox
+    
+    [parallelToolboxFound,      ...
+        parallelToolboxLicensed,   ...
+        parallelToolboxInstalled] = WecOptLib.utils.hasParallelToolbox();
+    
+    if parallelToolboxFound
+        fprintf('Parallel Toolbox:              Found\n');
+    elseif ~parallelToolboxLicensed && parallelToolboxInstalled
+        fprintf('Parallel Toolbox:              Unlicensed\n');
+    else
+        fprintf('Parallel Toolbox:              Not Installed\n');
+    end
+    
+    %% WAFO
+    
+    wafoFunction = 'bretschneider';
+    wafoPath = fullfile('wafo', 'spec','bretschneider.m');
+    
+    wafoCheck = lower(which(wafoFunction));
+    
+    % Don't set allfoundflag for missing optional deps
+    if contains(wafoCheck, wafoPath) && (exist(wafoCheck, 'file') == 2)
+        fprintf('WAFO:                          Found\n');
+    else
+        fprintf('WAFO:                          Not found\n');
+    end
+    
+    fprintf('\n')
+    
+    %% Warn if execution not possible
+    
+    if ~allfoundflag
+        warning("Mandatory dependencies are missing!")
+    end
+    
+    %% Cleanup
+    WecOptLib.utils.rmdirRetry(nemohTestPath);
+    
 end
