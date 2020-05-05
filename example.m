@@ -18,9 +18,6 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-%% Suppress warnings
-warning('off', 'WaveSpectra:NoWeighting')
-
 %% Create an RM3 study object
 study = WecOptTool.RM3Study();
 
@@ -69,6 +66,3 @@ WecOptTool.result(study);
 
 %% Plot the results
 WecOptTool.plot(study);
-
-%% Re-enable warnings
-warning('on', 'WaveSpectra:NoWeighting')

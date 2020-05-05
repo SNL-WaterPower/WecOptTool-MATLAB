@@ -21,9 +21,14 @@
 function SS = example8Spectra
 %EXAMPLE8SPECTRA Example Bretschneider spectrum with varying HHm0s, Tps, 
 %                Nbins, and range
+
+    % load data
     p = mfilename('fullpath');
     [filepath, ~, ~] = fileparts(p);
     dataPath = fullfile(filepath, '8spectra.mat');
     example_data = load(dataPath);
     SS = example_data.SS;
+    
+    % set equal weighting for each sea state
+    [SS.mu] = deal(1);
 end
