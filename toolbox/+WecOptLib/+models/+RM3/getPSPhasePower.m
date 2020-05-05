@@ -63,7 +63,7 @@ function [pow, powPerFreq] = getPSPhasePower(motion, ph)
                                   [], [], [],      ...
                                   qp_options);
     
-    if exitflag
+    if exitflag == 0
         error("WecOptTool:getPSPhasePower:NoConvergence",   ...
               "Failed to coverge")
     end
