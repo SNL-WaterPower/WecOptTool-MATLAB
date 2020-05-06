@@ -33,8 +33,16 @@ study = WecOptTool.RM3Study();
 %% Or load an example with multiple sea-states (8 differing spectra)
 S = WecOptLib.tests.data.example8Spectra();
 
+%% Pre-process  spectra to reduce the number of frequency bins
+tailTolerence = 1;
+minBins = 10;
+noTailsS = WecOptLib.utils.removeSpectraTails(S, tailTolerence, minBins);
+
+maxError=5;
+downSampledS = WecOptLib.utils.downSampleSpectra(noTailsS, maxError, minBins);
+
 %% Add spectra to study
-study.addSpectra(S);
+study.addSpectra(downSampledS);
 
 %% Add a controller to the study
 cc = WecOptTool.control.ComplexConjugate();
