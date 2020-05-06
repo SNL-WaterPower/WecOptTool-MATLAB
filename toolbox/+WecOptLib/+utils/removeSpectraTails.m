@@ -41,6 +41,9 @@ function noTailsSS = removeSpectraTails(SS, tailTolerence, minBins)
     % noTailsSS: struct    
     %    spectra greater than the specified tailTolerence
 
+    %TEMPORARY HARDCODED PLOT FUNCTION 
+    plot=false;
+    
     WecOptLib.utils.checkSpectrum(SS);
     assertLengthOneOrLengthSS(tailTolerence,SS)
     assertPositiveFloat(tailTolerence)
@@ -68,8 +71,9 @@ function noTailsSS = removeSpectraTails(SS, tailTolerence, minBins)
     end            
     
     WecOptLib.utils.checkSpectrum(noTailsSS);
-    
-    plotNoTailsSS(SS, noTailsSS)
+    if plot==true
+        plotNoTailsSS(SS, noTailsSS)
+    end
 end
 
 
@@ -245,9 +249,11 @@ function plotNoTailsSS(originalSS, noTailsSS)
     WecOptLib.utils.checkSpectrum(originalSS);
     WecOptLib.utils.checkSpectrum(noTailsSS);
     assertEqualLength(originalSS, noTailsSS)
-        
+    
+    figureN = get(gcf,'Number');
+    
     for i=1:length(originalSS)
-        figure(i)
+        figure(figureN + i)
         hold on;
         
         wOrig = originalSS(i).w;

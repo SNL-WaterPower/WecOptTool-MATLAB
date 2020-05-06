@@ -40,6 +40,9 @@ function downSampleSS = downSampleSpectra(SS, maxError, minBins)
     % -------
     % downSampledSS: struct
     %     struct of down-sampled sea states
+    
+    %TEMPORARY HARDCODED PLOT FUNCTION 
+    plot=false;
 
     WecOptLib.utils.checkSpectrum(SS);
     assertLengthOneOrLengthSS(maxError,SS)
@@ -66,7 +69,10 @@ function downSampleSS = downSampleSpectra(SS, maxError, minBins)
         downSampleSS(i).S = SNew;               
     end
     
-    plotDownSampledSS(SS, downSampleSS)
+    %TEMPORARY HARDCODED PLOT FUNCTION 
+    if plot==true
+        plotDownSampledSS(SS, downSampleSS)
+    end
 
 end
 
@@ -268,9 +274,9 @@ function plotDownSampledSS(SSOriginal, SSDownSampled)
     
     %assert(len(SS)==len(SSNew))
     % checkSpectrum
-    
+    figureN = get(gcf,'Number');
     for i=1:length(SSOriginal)
-        figure(i)
+        figure(figureN+i)
         hold on;
         
         wOrig = SSOriginal(i).w;
