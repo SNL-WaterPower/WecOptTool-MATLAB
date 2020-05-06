@@ -38,7 +38,7 @@ tailTolerence = 1;
 minBins = 10;
 noTailsS = WecOptLib.utils.removeSpectraTails(S, tailTolerence, minBins);
 
-maxError=5;
+maxError=1;
 downSampledS = WecOptLib.utils.downSampleSpectra(noTailsS, maxError, minBins);
 
 %% Add spectra to study
