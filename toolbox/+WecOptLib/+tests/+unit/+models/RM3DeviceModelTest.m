@@ -98,23 +98,6 @@ end
 %         "WecOptTool:getPSPhasePower:NoConvergence");
 % end
 
-function testPSConverge(testCase)
-    S = WecOptLib.tests.data.exampleSpectrum();
-    S.ph = rand(length(S.w),1)* 2 * pi;
-    [S.w, S.S] = WecOptLib.utils.subSampleFreqs(S);
-    delta_Zmax = 10;
-    delta_Fmax = 1e9;
-    RM3Device = WecOptLib.models.RM3.DeviceModel();
-    geomOptions = {'spectra', S};
-    RM3Device.getPower(S,                            ...
-        'PS',                         ...
-        'parametric',                 ...
-        [14.76, 15.71, 2.58, 37.27],  ...
-        {},                           ...
-        [delta_Zmax,delta_Fmax],      ...
-        "geomOptions", geomOptions);
-end
-
 function test_RM3_mass(testCase)
     RM3Device = WecOptLib.models.RM3.DeviceModel();
     hydro = RM3Device.getHydrodynamics('scalar', 1);
