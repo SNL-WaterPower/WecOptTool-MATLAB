@@ -29,6 +29,4 @@ function SS = example8Spectra
     example_data = load(dataPath);
     SS = example_data.SS;
     
-    % set equal weighting for each sea state
-    [SS.mu] = deal(1);
 end
