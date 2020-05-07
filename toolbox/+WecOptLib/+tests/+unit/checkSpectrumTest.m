@@ -58,3 +58,17 @@ function testCheck_Positive(testCase)
     eID = 'WecOptTool:invalidSpectrum:negativeFrequencies';
     verifyError(testCase,@() WecOptLib.utils.checkSpectrum(S),eID)
 end
+
+function testCheck_missingWeights(testCase)
+    S = WecOptLib.tests.data.example8Spectra();
+    S = rmfield(S,'mu');
+    wID = 'WaveSpectra:NoWeighting';
+    verifyWarning(testCase,@() WecOptLib.utils.checkSpectrum(S),wID)
+end
+
+function testCheck_WeightingsInconsistent(testCase)
+    S = WecOptLib.tests.data.example8Spectra();
+    S(1).mu = [];
+    eID = 'WecOptTool:invalidSpectrum:invalidWeightings';
+    verifyError(testCase,@() WecOptLib.utils.checkSpectrum(S),eID)
+end

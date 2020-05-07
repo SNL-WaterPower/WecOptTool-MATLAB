@@ -1,100 +1,123 @@
 
-% Copyright 2020 National Technology & Engineering Solutions of Sandia, 
-% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
+% Copyright 2020 National Technology & Engineering Solutions of Sandia,
+% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the
 % U.S. Government retains certain rights in this software.
 %
 % This file is part of WecOptTool.
-% 
+%
 %     WecOptTool is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
 %     the Free Software Foundation, either version 3 of the License, or
 %     (at your option) any later version.
-% 
+%
 %     WecOptTool is distributed in the hope that it will be useful,
 %     but WITHOUT ANY WARRANTY; without even the implied warranty of
 %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 %     GNU General Public License for more details.
-% 
+%
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
 function [] = checkSpectrum(S)
-% checkSprectrum(S)
-%
-% Checks whether the input S is a valid spectrum structure (following
-% WAFO).
-%
-% Inputs
-%   S           spectrum structure (can be arrary) in the style of WAFO
-%               with the fields:
-%       S.w     column vector of frequencies in [rad/s]
-%       S.S     column vector of spectral density in [m^2 rad/ s]
-%
-% Outputs
-%   (none)      (will throw error if not valid)
-%
-%
-% Example
-%   Hm0 = 5;
-%   Tp = 8;
-%   S = bretschneider([],[Hm0,Tp]);
-%   WecOptLib.utils.checkSpectrum(S)
-%
-% -------------------------------------------------------------------------
-
-
-inds = 1:length(S);
-
-try
-    arrayfun(@(Spect,idx) checkFields(Spect, idx), S, inds);
-    arrayfun(@(Spect,idx) checkLengths(Spect, idx), S, inds);
-    arrayfun(@(Spect,idx) checkCol(Spect, idx), S, inds);
-    arrayfun(@(Spect,idx) checkPositive(Spect, idx), S, inds);
-catch MEs
-    throw(MEs)
-end
-
+    % checkSprectrum(S)
+    %
+    % Checks whether the input S is a valid spectrum structure (following
+    % WAFO).
+    %
+    % Inputs
+    %   S           spectrum structure (can be arrary) in the style of WAFO
+    %               with the fields:
+    %       S.w     column vector of frequencies in [rad/s]
+    %       S.S     column vector of spectral density in [m^2 rad/ s]
+    %
+    % Outputs
+    %   (none)      (will throw error if not valid)
+    %
+    %
+    % Example
+    %   Hm0 = 5;
+    %   Tp = 8;
+    %   S = bretschneider([],[Hm0,Tp]);
+    %   WecOptLib.utils.checkSpectrum(S)
+    %
+    % -------------------------------------------------------------------------
+    
+    
+    inds = 1:length(S);
+    
+    % check if there are no weightings, if necessary populate and warn
+    S = checkWeightingsPresent(S);
+    
+    try
+        arrayfun(@(Spect,idx) checkFields(Spect, idx), S, inds);
+        arrayfun(@(Spect,idx) checkLengths(Spect, idx), S, inds);
+        arrayfun(@(Spect,idx) checkCol(Spect, idx), S, inds);
+        arrayfun(@(Spect,idx) checkPositive(Spect, idx), S, inds);
+        checkWeightingsConsistent(S)
+    catch MEs
+        throw(MEs)
+    end
 end
 
 function [] = checkFields(S, idx)
-fns = {'S','w'};
-msg = 'Spectrum #%i in array does not contain required S.S and S.w fields';
-ID = 'WecOptTool:invalidSpectrum:missingFields';
-try
-    assert(all(isfield(S,fns)),ID,msg,idx)
-catch ME
-    throw(ME)
-end
+    fns = {'S','w'};
+    msg = 'Spectrum #%i in array does not contain required S.S and S.w fields';
+    ID = 'WecOptTool:invalidSpectrum:missingFields';
+    try
+        assert(all(isfield(S,fns)),ID,msg,idx)
+    catch ME
+        throw(ME)
+    end
 end
 
 function [] = checkLengths(S, idx)
-msg = 'Spectrum #%i in array S.S and S.w fields are not same length';
-ID = 'WecOptTool:invalidSpectrum:mismatchedLengths';
-try
-    assert(length(S.S) == length(S.w),ID,msg, idx)
-catch ME
-    throw(ME)
-end
+    msg = 'Spectrum #%i in array S.S and S.w fields are not same length';
+    ID = 'WecOptTool:invalidSpectrum:mismatchedLengths';
+    try
+        assert(length(S.S) == length(S.w),ID,msg, idx)
+    catch ME
+        throw(ME)
+    end
 end
 
 function [] = checkCol(S, idx)
-msg = 'Spectrum #%i in array S.S and S.w fields are not column vectors';
-ID = 'WecOptTool:invalidSpectrum:notColumnVectors';
-try
-    assert(iscolumn(S.S) && iscolumn(S.w),ID,msg, idx)
-catch ME
-    throw(ME)
+    msg = 'Spectrum #%i in array S.S and S.w fields are not column vectors';
+    ID = 'WecOptTool:invalidSpectrum:notColumnVectors';
+    try
+        assert(iscolumn(S.S) && iscolumn(S.w),ID,msg, idx)
+    catch ME
+        throw(ME)
+    end
 end
-end
-
 
 function [] = checkPositive(S, idx)
-msg = ['Frequency in Spectrum #%i contains negative values. Frequency'... 
-' values must be positive'];
-ID = 'WecOptTool:invalidSpectrum:negativeFrequencies';
-try
-    assert(all(S.w >=0) ,ID,msg, idx)
-catch ME
-    throw(ME)
+    msg = ['Frequency in Spectrum #%i contains negative values. Frequency'...
+        ' values must be positive'];
+    ID = 'WecOptTool:invalidSpectrum:negativeFrequencies';
+    try
+        assert(all(S.w >=0) ,ID,msg, idx)
+    catch ME
+        throw(ME)
+    end
 end
+
+function [] = checkWeightingsConsistent(S)
+    emsg = ['Some spectra are missing the weighting field mu'];
+    eID = 'WecOptTool:invalidSpectrum:invalidWeightings';
+    try
+        n_mu = sum(arrayfun(@(x) ~isempty(x.mu), S));
+        n_S = length(S);
+        assert(n_mu == n_S, eID, emsg);
+    catch ME
+        throw(ME)
+    end
+end
+
+function [S] = checkWeightingsPresent(S)
+    wmsg = ['Missing spetra weighting fields, set to equal weighting'];
+    wID = 'WaveSpectra:NoWeighting';
+    if all(arrayfun(@(x) ~isfield(x,'mu'), S))
+        warning(wID,wmsg)
+        [S.mu] = deal(1);
+    end
 end

@@ -125,41 +125,6 @@ classdef (Abstract) DeviceModelTemplate
         powSSs = zeros(NSS, 1);
         powPerFreqs = cell(NSS);
         freqs = cell(NSS);
-        n_mu = 0;
-        
-        % Check sea-state weights
-        for iSS = 1:NSS
-            
-            S = SS(iSS);
-            
-            if isfield(S, 'mu')
-                n_mu = n_mu + 1;    
-            end
-            
-        end
-        
-        if NSS == 1
-            
-            % Single sea-state requires no weighting
-            SS(1).mu = 1;  
-            
-        elseif n_mu == 0
-            
-            % Equalise weightings for multi-sea-states if not given
-            [SS.mu] = deal(1);    
-            
-            warn = ['Provided wave spectra have no weightings ' ...
-                    '(field mu). Equal weighting presumed.'];
-            warning('WaveSpectra:NoWeighting', warn);
-            
-        elseif n_mu ~= NSS
-            
-            % Don't allow partial weightings
-            msg = ['Weighting field mu must be set for all spectra '    ...
-                   'or for none of them.'];
-            error(msg)
-            
-        end
 
         % Iterate over Sea-States
         for iSS = 1:NSS % TODO - consider parfor?
