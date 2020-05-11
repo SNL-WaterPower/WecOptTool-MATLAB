@@ -123,10 +123,49 @@ classdef waveBot < handle
                 otherwise
                     error('invalid geometryType')
             end
-            obj.hydro = WecOptLib.nemoh.getNemoh(obj.geom.r,obj.geom.z,...
-                obj.w,obj.studyDir);
-            obj.hydro.w = obj.hydro.w(:);
-            obj.hydro.T = obj.hydro.T(:);
+            
+            % create a substructure for the raw output from Read_Nemoh
+            obj.hydro.raw = WecOptLib.nemoh.getNemoh(obj.geom.r, ...
+                obj.geom.z, obj.w,obj.studyDir);
+            
+            obj.hydro.w = obj.hydro.raw.w(:);
+            obj.hydro.T = obj.hydro.raw.T(:);
+            obj.hydro.rho = obj.hydro.raw.rho;
+            obj.hydro.g = obj.hydro.raw.g;
+            obj.hydro.Vo = obj.hydro.raw.Vo;
+            
+            % mass
+            obj.hydro.m = obj.hydro.Vo * obj.hydro.rho;
+            
+            % hydrostatic stiffness
+            obj.hydro.K = obj.hydro.raw.C(3,3) * obj.hydro.raw.g ...
+                * obj.hydro.rho;
+            
+            % radiation damping FRF
+            obj.hydro.B = squeeze(obj.hydro.raw.B(3,3,:)) ... 
+                * obj.hydro.rho .* obj.hydro.w;
+            
+            % added mass FRF
+            obj.hydro.A = squeeze(obj.hydro.raw.A(3,3,:)) * obj.hydro.rho;
+            
+            % friction
+            obj.hydro.Bf = max(obj.hydro.B) * 0.1;
+            
+            % intrinsic impedance
+            obj.hydro.Zi = obj.hydro.B + obj.hydro.Bf + ...
+                1i * (obj.hydro.w .* (obj.hydro.m + obj.hydro.A) - ...
+                obj.hydro.K ./ obj.hydro.w);
+            
+            % excitation FRF
+            obj.hydro.Hex = complex(squeeze(obj.hydro.raw.ex_re(3, 1, :)),...
+                squeeze(obj.hydro.raw.ex_im(3, 1, :)))...
+                * obj.hydro.g * obj.hydro.rho;
+            
+            % reorder the fields for better comprehension
+            fl = {'w','T','A','B','Zi','Hex',...
+                'K','Bf','Vo','m','rho','g','raw'};
+            obj.hydro = orderfields(obj.hydro, fl);
+            
         end
         
         function plot(obj, ax)
@@ -199,32 +238,8 @@ classdef waveBot < handle
             eta_fd = waveAmp .* exp(1i*ph);
             eta_fd = eta_fd(:);
             
-            % excitation FRF
-            Hex = complex(squeeze(obj.hydro.ex_re(3, 1, :)),...
-                squeeze(obj.hydro.ex_im(3, 1, :)))...
-                * obj.hydro.g * obj.hydro.rho;
-            
             % excitation spectrum
-            Fe = Hex .* eta_fd;
-            
-            % mass
-            m = obj.hydro.Vo * obj.hydro.rho;
-            
-            % hydrostatic stiffness
-            K = obj.hydro.C(3,3) * obj.hydro.g * obj.hydro.rho;
-            
-            % radiation damping FRF
-            B = squeeze(obj.hydro.B(3,3,:)) * obj.hydro.rho .* obj.hydro.w;
-            
-            % added mass FRF
-            A = squeeze(obj.hydro.A(3,3,:)) * obj.hydro.rho;
-            
-            % friction
-            Bf = max(B) * 0.1;
-            
-            % intrinsic impedance
-            Zi = B + Bf + 1i * (obj.hydro.w .* (m + A) - K ./ obj.hydro.w);
-            
+            Fe = obj.hydro.Hex .* eta_fd;
             
             % -------------------------------------------------------------
             switch obj.controlType
@@ -232,13 +247,13 @@ classdef waveBot < handle
                 case 'CC' % -----------------------------------------------
                     
                     % power (see, e.g., Falnes 2002, eq 3.44)
-                    pow = abs(Fe).^2 ./ (8 * real(Zi));
+                    pow = abs(Fe).^2 ./ (8 * real(obj.hydro.Zi));
                     
                     % velocity (see, e.g., Falnes 2002, eq 3.46)
-                    u = Fe ./ (2 * real(Zi));
+                    u = Fe ./ (2 * real(obj.hydro.Zi));
                     
                     % PTO impedance (see, e.g., Falnes 2002, eq 6.24)
-                    Zpto = conj(Zi);
+                    Zpto = conj(obj.hydro.Zi);
                     
                     % PTO force
                     Fpto = -Zpto .* u;
@@ -247,7 +262,7 @@ classdef waveBot < handle
                     
                     % define objective function for power from a damping
                     % controller (see, e.g., Falnes 2002, pg. 51-52)
-                    P_max = @(b) -0.5*b*sum(abs(Fe ./ (Zi + b)).^2);
+                    P_max = @(b) -0.5*b*sum(abs(Fe ./ (obj.hydro.Zi + b)).^2);
                     
                     % solve for damping to produce most power (can do
                     % analytically for a single frequency, but must use
@@ -256,19 +271,19 @@ classdef waveBot < handle
                     % the following should be true: -1 * fval = sum(pow),
                     % where pow is the frequency dependent array calculated
                     % below.
-                    [B_opt, ~] = fminsearch(P_max, max(real(Zi)));
+                    [B_opt, ~] = fminsearch(P_max, max(real(obj.hydro.Zi)));
                     
                     % velocity
-                    u = Fe ./ (B_opt + Zi);
+                    u = Fe ./ (B_opt + obj.hydro.Zi);
                     
                     % power
                     pow = 0.5 * B_opt .* abs(u).^2;
                     
-                    % PTO force
-                    Fpto = -B_opt .* u;
-                    
                     % PTO impedance
-                    Zpto = B_opt * ones(size(Zi));
+                    Zpto = B_opt * ones(size(obj.hydro.Zi));
+                    
+                    % PTO force
+                    Fpto = -Zpto .* u;
                     
                 case 'PS' % -----------------------------------------------
                     error('not yet implemented') % TODO
@@ -278,6 +293,7 @@ classdef waveBot < handle
             end
             
             % assembly output
+            simRes.ph = ph;
             simRes.w = obj.hydro.w;
             simRes.eta = eta_fd;
             simRes.Fe = Fe;
