@@ -244,46 +244,53 @@ classdef waveBot < handle
             % -------------------------------------------------------------
             switch obj.controlType
                 
-                case 'CC' % -----------------------------------------------
+                % since both CC and P can be described in terms of a
+                % complex PTO impedance, it is convenient to handle them
+                % together
+                case {'CC', 'P'} % ----------------------------------------
                     
-                    % power (see, e.g., Falnes 2002, eq 3.44)
-                    pow = abs(Fe).^2 ./ (8 * real(obj.hydro.Zi));
-                    
-                    % velocity (see, e.g., Falnes 2002, eq 3.46)
-                    u = Fe ./ (2 * real(obj.hydro.Zi));
-                    
-                    % PTO impedance (see, e.g., Falnes 2002, eq 6.24)
-                    Zpto = conj(obj.hydro.Zi);
-                    
-                    % PTO force
-                    Fpto = -Zpto .* u;
-                    
-                case 'P' % ------------------------------------------------
-                    
-                    % define objective function for power from a damping
-                    % controller (see, e.g., Falnes 2002, pg. 51-52)
-                    P_max = @(b) -0.5*b*sum(abs(Fe ./ (obj.hydro.Zi + b)).^2);
-                    
-                    % solve for damping to produce most power (can do
-                    % analytically for a single frequency, but must use
-                    % numerical solution for spectrum). Note that fval is
-                    % the sum of power absorbed (negative being "good") -
-                    % the following should be true: -1 * fval = sum(pow),
-                    % where pow is the frequency dependent array calculated
-                    % below.
-                    [B_opt, ~] = fminsearch(P_max, max(real(obj.hydro.Zi)));
+                    switch obj.controlType
+                        
+                        case 'CC' % ---------------------------------------
+                            
+                            % PTO impedance (see, e.g., Falnes 2002, eq 6.24)
+                            Zpto = conj(obj.hydro.Zi);
+                            
+                        case 'P' % ----------------------------------------
+                            
+                            % define objective function for power from a
+                            % damping controller (see, e.g., Falnes 2002,
+                            % pg. 51-52)
+                            P_max = @(b) -0.5*b*sum(abs(Fe ./ ...
+                                (obj.hydro.Zi + b)).^2);
+                            
+                            % solve for damping to produce most power (can
+                            % do analytically for a single frequency, but
+                            % must use numerical solution for spectrum).
+                            % Note that fval is the sum of power absorbed
+                            % (negative being "good") - the following
+                            % should be true: -1 * fval = sum(pow), where
+                            % pow is the frequency dependent array
+                            % calculated below.
+                            [B_opt, ~] = fminsearch(P_max, ...
+                                max(real(obj.hydro.Zi)));
+                            
+                            % PTO impedance
+                            Zpto = complex(B_opt * ones(size(obj.hydro.Zi)),0);
+                            
+                    end
                     
                     % velocity
-                    u = Fe ./ (B_opt + obj.hydro.Zi);
+                    u = Fe ./ (Zpto + obj.hydro.Zi);
                     
-                    % power
-                    pow = 0.5 * B_opt .* abs(u).^2;
-                    
-                    % PTO impedance
-                    Zpto = B_opt * ones(size(obj.hydro.Zi));
+                    % position
+                    pos = u ./ (1i * obj.hydro.w);
                     
                     % PTO force
                     Fpto = -Zpto .* u;
+                    
+                    % power
+                    pow = 0.5 * Fpto .* conj(u);
                     
                 case 'PS' % -----------------------------------------------
                     error('not yet implemented') % TODO
