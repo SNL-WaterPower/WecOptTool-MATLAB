@@ -70,11 +70,11 @@ classdef waveBot < handle
             if nargin < 3
                 w = 2*pi*linspace(0.05, 2, 50)';
             end
-
+            
             obj.controlType = controlType;
             obj.geomType = geomType;
             obj.w = w;
-            obj.makeStudyDir()
+            obj.makeStudyDir();
         end
         
         function runHydro(obj, geomDef)
@@ -142,7 +142,7 @@ classdef waveBot < handle
                 * obj.hydro.rho;
             
             % radiation damping FRF
-            obj.hydro.B = squeeze(obj.hydro.raw.B(3,3,:)) ... 
+            obj.hydro.B = squeeze(obj.hydro.raw.B(3,3,:)) ...
                 * obj.hydro.rho .* obj.hydro.w;
             
             % added mass FRF
