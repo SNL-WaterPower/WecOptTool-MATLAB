@@ -300,14 +300,17 @@ classdef waveBot < handle
             end
             
             % assembly output
+            nm = sprintf('WaveBot_%s',obj.controlType); % TODO add datetime?
+            simRes = WecOptLib.simRes(nm);
             simRes.ph = ph;
             simRes.w = obj.hydro.w;
             simRes.eta = eta_fd;
             simRes.Fe = Fe;
-            simRes.pow = pow;
             simRes.u = u;
+            simRes.pos = pos;
             simRes.Zpto = Zpto;
             simRes.Fpto = Fpto;
+            simRes.pow = pow;
             
         end
     end
