@@ -230,7 +230,7 @@ cd(startdir)
             fprintf(fid,'0				            ! Number of lines of additional information \n');
         end
         fprintf(fid,'--- Load cases to be solved -------------------------------------------------------------------------------------------------------\n');
-        fprintf(fid,'%i	%.2f %.2f		            ! Number of wave frequencies, Min, and Max (rad/s)\n',length(freq),freq(1),freq(end));
+        fprintf(fid,'%i	%f %f		                ! Number of wave frequencies, Min, and Max (rad/s)\n',length(freq),freq(1),freq(end));
         fprintf(fid,'1	0.	0.                      ! Number of wave directions, Min and Max (degrees)\n');
         fprintf(fid,'--- Post processing ---------------------------------------------------------------------------------------------------------------\n');
         fprintf(fid,'0	0.1	10.                     ! IRF 				! IRF calculation (0 for no calculation), time step and duration\n');
