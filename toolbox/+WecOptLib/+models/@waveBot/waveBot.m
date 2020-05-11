@@ -234,7 +234,7 @@ classdef waveBot < handle
             % get wave elevation spectrum
             dw = mean(diff(obj.hydro.w));
             waveAmp = sqrt(2 * dw * S);
-            ph = rand(length(S), 1);
+            ph = rand(length(S), 1) * 2 * pi;
             eta_fd = waveAmp .* exp(1i*ph);
             eta_fd = eta_fd(:);
             
