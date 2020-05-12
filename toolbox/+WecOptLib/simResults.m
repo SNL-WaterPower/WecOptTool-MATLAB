@@ -1,22 +1,8 @@
-classdef simRes
-    % waveBot   WECs based on the Sandia "WaveBot" device
-    % The WaveBot is a model-scale wave energy converter (WEC) tested in
-    % the Navy's Manuevering and Sea Keeping (MASK) basin. Reports and
-    % papers about the WaveBot are available at advweccntrls.sandia.gov.
+classdef simResults
+    % simResults   simulation results class for WecOptTool
+    % TODO
     %
-    % waveBot Properties:
-    %   controlType - determines type of controller ('P', 'CC', or 'PS')
-    %   geomType - determines way device geometry is set by user
-    %   w - determines frequencies for evaluation [rad/s]
-    %   studyDir - location to run BEM
-    %   hydro - structure created by Read_NEMOH
-    %
-    % waveBot Methods:
-    %   runHydro - defines geometry and runs BEM
-    %   plot - plots geometry cross section
-    %   simPerformance - simulates the performance of the design
-    %
-    % See also WECOPTLIB.NEMOH.GETNEMOH, READ_NEMOH
+    % See also WECOPTLIB.MODELS.WAVEBOT
     %
     % Copyright 2020 National Technology & Engineering Solutions of Sandia,
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the
@@ -51,11 +37,16 @@ classdef simRes
         name
     end
     methods
-        function obj = simRes(name)
+        function obj = simResults(name)
             obj.name = name;
         end
         
         function plotTime(obj ,t)
+            
+            if nargin < 2
+                trep = 2*pi/(obj(1).w(2) - obj(1).w(1));
+                t = 0:0.05:trep;
+            end
             
             figure('Name','simRes.plotTime')
             
@@ -85,6 +76,7 @@ classdef simRes
                 linkaxes(ax,'x')
                 xlabel(ax(end),'Time [s]')
             end
+            xlim([t(1), t(end)])
             
         end
         

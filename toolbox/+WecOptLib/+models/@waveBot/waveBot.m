@@ -194,7 +194,7 @@ classdef waveBot < handle
         end
         
         
-        function simRes = simPerformance(obj, Spect)
+        function simResults = simPerformance(obj, Spect)
             % simPerformance    simulates the performance of the design
             %   finds the maximum power possible for the given design in
             %   the specified conditions
@@ -203,18 +203,18 @@ classdef waveBot < handle
             %   Spect       wave spectrum (or spectra) defined in the style
             %               of WAFO
             % Returns
-            %   simRes      object containing simulation results with
+            %   simResults  object containing simulation results with
             %               fileds
             %               w       frequency vector
             %               eta     complex wave elevation spectrum
             %               Fe      complex excitation spectrum
             %               pow     real power spectrum
-            %                       (tot_avg_pow = sum(simRes.pow)
+            %                       (tot_avg_pow = sum(simResults.pow)
             %               u       complex velocity spectrum
             %               Zpto    PTO impedance
             %               Fpto    complex PTO force spectrum
             %
-            % See also JONSWAP, WecOptLib.simRes
+            % See also JONSWAP, WecOptLib.simResults
             
             % check spectrum for validity
             WecOptLib.utils.checkSpectrum(Spect)
@@ -301,16 +301,16 @@ classdef waveBot < handle
             
             % assembly output
             nm = sprintf('WaveBot_%s',obj.controlType); % TODO add datetime?
-            simRes = WecOptLib.simRes(nm);
-            simRes.ph = ph;
-            simRes.w = obj.hydro.w;
-            simRes.eta = eta_fd;
-            simRes.Fe = Fe;
-            simRes.u = u;
-            simRes.pos = pos;
-            simRes.Zpto = Zpto;
-            simRes.Fpto = Fpto;
-            simRes.pow = pow;
+            simResults = WecOptLib.simResults(nm);
+            simResults.ph = ph;
+            simResults.w = obj.hydro.w;
+            simResults.eta = eta_fd;
+            simResults.Fe = Fe;
+            simResults.u = u;
+            simResults.pos = pos;
+            simResults.Zpto = Zpto;
+            simResults.Fpto = Fpto;
+            simResults.pow = pow;
             
         end
     end
