@@ -1,6 +1,6 @@
-% clc
-% clear
-% close all
+clc
+clear
+close all
 
 %% set up problem
 
@@ -31,6 +31,7 @@ LB = 0.25;
 UB = 2;
 NONLCON = [];
 opts = optimoptions('fmincon');
+opts.UseParallel = true;
 opts.Display = 'iter';
 opts.PlotFcn = {@optimplotx,@optimplotfval};
 % opts.OptimalityTolerance = 1e-8;
@@ -56,6 +57,6 @@ function [fval] = myWaveBotObjFun(x,a,S)
     
     a.runHydro(x);
     r = a.simPerformance(S);
-    fval = -1 * sum(r.pow);
+    fval = sum(real(r.pow));
     
 end
