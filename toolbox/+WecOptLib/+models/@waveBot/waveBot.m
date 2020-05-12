@@ -203,8 +203,8 @@ classdef waveBot < handle
             %   Spect       wave spectrum (or spectra) defined in the style
             %               of WAFO
             % Returns
-            %   simRes      structure (TODO - make this a class?)
-            %               containing simulation results with fileds
+            %   simRes      object containing simulation results with
+            %               fileds
             %               w       frequency vector
             %               eta     complex wave elevation spectrum
             %               Fe      complex excitation spectrum
@@ -214,7 +214,7 @@ classdef waveBot < handle
             %               Zpto    PTO impedance
             %               Fpto    complex PTO force spectrum
             %
-            % See also JONSWAP
+            % See also JONSWAP, WecOptLib.simRes
             
             % check spectrum for validity
             WecOptLib.utils.checkSpectrum(Spect)
