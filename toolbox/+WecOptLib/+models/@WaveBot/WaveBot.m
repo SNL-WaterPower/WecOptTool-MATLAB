@@ -208,7 +208,7 @@ classdef WaveBot < handle
             %               of WAFO by functions such as jonswap, 
             %               bretschneider
             % Returns
-            %   simResults  object containing simulation results
+            %   SimResults  object containing simulation results
             %
             % See also jonswap, bretschneider, WecOptLib.simResults
             
@@ -322,7 +322,7 @@ classdef WaveBot < handle
             
             % assembly output
             nm = sprintf('WaveBot_%s',obj.controlType); % TODO add datetime?
-            simResults = WecOptLib.simResults(nm);
+            simResults = WecOptLib.SimResults(nm);
             simResults.ph = ph;
             simResults.w = obj.hydro.w;
             simResults.eta = eta_fd;

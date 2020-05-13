@@ -1,5 +1,5 @@
-classdef simResults
-    % simResults   simulation results class for WecOptTool
+classdef SimResults
+    % SimResults   simulation results class for WecOptTool
     % TODO
     %
     % simResults Properties:
@@ -53,7 +53,7 @@ classdef simResults
         name
     end
     methods
-        function obj = simResults(name)
+        function obj = SimResults(name)
             obj.name = name;
         end
         
