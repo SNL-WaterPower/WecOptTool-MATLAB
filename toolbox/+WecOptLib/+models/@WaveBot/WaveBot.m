@@ -41,7 +41,8 @@ classdef WaveBot < handle
     properties
         controlType     % 'P', 'CC', or 'PS'
         geomType        % 'scalar' or 'parametric'
-        w               % column vector of frequencies [rad/s]
+        w               % column vector of frequencies at which to perform
+                        % analyses [rad/s]
         dw
         studyDir        % TODO
         hydro           % TODO
@@ -66,7 +67,8 @@ classdef WaveBot < handle
             %                                   (r2), draft of chine (d1),
             %                                   and overall draft (d2)
             %                   'existing'      TODO
-            %   w               frequency vector [rad/s]
+            %   w               column vector of frequencies at which to perform
+            %                   analyses [rad/s]
             
             if nargin < 3
                 w = 2*pi*linspace(0.05, 2, 50)';
