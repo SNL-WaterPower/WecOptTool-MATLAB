@@ -64,7 +64,7 @@ classdef SimResults
                 t = 0:0.05:trep;
             end
             
-            figure('Name','simRes.plotTime')
+            figure('Name','SimRes.plotTime')
             
             for ii = 1:5
                 ax(ii) = subplot(5, 1, ii);
@@ -102,7 +102,7 @@ classdef SimResults
                 error('Not implemented') % TODO
             end
             
-            figure('Name','simRes.plotFreq')
+            figure('Name','SimRes.plotFreq')
             ax(1) = subplot(2,1,1);
             hold on
             grid on
