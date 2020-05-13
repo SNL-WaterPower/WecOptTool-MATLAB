@@ -207,16 +207,7 @@ classdef WaveBot < handle
             %   Spect       wave spectrum (or spectra) defined in the style
             %               of WAFO
             % Returns
-            %   simResults  object containing simulation results with
-            %               fileds
-            %               w       frequency vector
-            %               eta     complex wave elevation spectrum
-            %               Fe      complex excitation spectrum
-            %               pow     real power spectrum
-            %                       (tot_avg_pow = sum(simResults.pow)
-            %               u       complex velocity spectrum
-            %               Zpto    PTO impedance
-            %               Fpto    complex PTO force spectrum
+            %   simResults  object containing simulation results
             %
             % See also JONSWAP, WecOptLib.simResults
             

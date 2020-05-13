@@ -2,6 +2,22 @@ classdef simResults
     % simResults   simulation results class for WecOptTool
     % TODO
     %
+    % simResults Properties:
+    %   ph - phase
+    %   w - frequency vector
+    %   eta - complex wave elevation spectrum
+    %   Fe - complex excitation spectrum
+    %   pow - real power spectrum (tot_avg_pow = sum(simResults.pow)
+    %   u - complex velocity spectrum
+    %   Zpto - PTO impedance
+    %   Fpto - complex PTO force spectrum
+    %   name - unique name for plot legends, etc.
+    %
+    % simResults Methods:
+    %   plotTime - plots realization of time domain results
+    %   plotFreq - plots frequency domain results
+    %   summary - producing a table of summary results
+    %
     % See also WECOPTLIB.MODELS.WAVEBOT
     %
     % Copyright 2020 National Technology & Engineering Solutions of Sandia,
