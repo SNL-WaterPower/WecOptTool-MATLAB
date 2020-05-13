@@ -1,5 +1,5 @@
-classdef waveBot < handle
-    % waveBot   WECs based on the Sandia "WaveBot" device
+classdef WaveBot < handle
+    % WaveBot   WECs based on the Sandia "WaveBot" device
     % The WaveBot is a model-scale wave energy converter (WEC) tested in
     % the Navy's Manuevering and Sea Keeping (MASK) basin. Reports and
     % papers about the WaveBot are available at advweccntrls.sandia.gov.
@@ -42,13 +42,14 @@ classdef waveBot < handle
         controlType     % 'P', 'CC', or 'PS'
         geomType        % 'scalar' or 'parametric'
         w               % column vector of frequencies [rad/s]
+        dw
         studyDir        % TODO
         hydro           % TODO
         geom            % TODO
     end
     methods
-        function obj = waveBot(controlType,geomType,w)
-            % waveBot   creates object of type waveBot
+        function obj = WaveBot(controlType,geomType,w)
+            % WaveBot   creates object of type WaveBot
             %
             % Args.
             %   controlType     determines the type of controller that will
@@ -74,6 +75,7 @@ classdef waveBot < handle
             obj.controlType = controlType;
             obj.geomType = geomType;
             obj.w = w;
+            obj.dw = w(2) - w(1);
             obj.makeStudyDir();
         end
         
@@ -293,7 +295,32 @@ classdef waveBot < handle
                     pow = 0.5 * Fpto .* conj(u);
                     
                 case 'PS' % -----------------------------------------------
-                    error('not yet implemented') % TODO
+                    %                     error('not yet implemented') % TODO
+                    
+                    ps = getPSCoefficients(obj);
+                    ps.wave_amp = waveAmp; % TODO
+                    
+                    % Add phase realizations
+                    n_ph_avg = 5;
+                    ph_mat = 2 * pi * rand(length(ps.w), n_ph_avg);
+                    n_ph = size(ph_mat, 2);
+                    
+                    freq = ps.W;
+                    n_freqs = length(freq);
+                    powPerFreqMat = zeros(n_ph, n_freqs);
+                    
+                    for ind_ph = 1 : n_ph
+                        
+                        ph = ph_mat(:, ind_ph);
+                        [~, phasePowPerFreq] = obj.getPSPhasePower(ps, ph);
+                        
+                        for ind_freq = 1 : n_freqs
+                            powPerFreqMat(ind_ph, ind_freq) = obj.phasePowPerFreq(ind_freq);
+                        end
+                        
+                    end
+                    
+                    pow = mean(powPerFreqMat);
                     
                 otherwise % -----------------------------------------------
                     error('invalid controlType')
@@ -316,6 +343,211 @@ classdef waveBot < handle
     end
     
     methods (Access=protected)
+        
+        function ps = getPSCoefficients(obj)
+            
+            
+            delta_Zmax = 10;
+            delta_Fmax = 1e5;
+            
+            
+            %PSCOEFFICIENTS
+            % Bacelli 2014: Background Chapter 4.1, 4.2; RM3 in section 6.1
+            % Number of frequency - half the number of fourier coefficients
+            Nf = length(obj.w);
+            % Collocation points uniformly distributed btween 0 and T
+            Nc = (2*Nf) + 2;
+            
+            % Frequency vector (re-build)
+            w0 = obj.dw;
+            T = 2 * pi/w0;
+            W = obj.w(1) + w0 * (0:Nf-1)';
+            
+            % Building cost function
+            H = [0, 0, 1; 1, -1, 0];
+            H_mat = 0.5 * kron(H, eye(1*Nf));
+            
+            % Building matrices B33 and A33
+            Adiag33 = zeros(2*Nf-1,1);
+            Adiag33(1:2:end) = W.* obj.hydro.A;
+            
+            Bdiag33 = zeros(2*Nf,1);
+            Bdiag33(1:2:end) = obj.hydro.B;
+            Bdiag33(2:2:end) = Bdiag33(1:2:end);
+            
+            Bmat = diag(Bdiag33);
+            Amat = diag(Adiag33,1);
+            Amat = Amat - Amat';
+            
+            G33 = (Amat + Bmat);
+            
+            %             % Building matrices B39 and A39
+            %             Adiag39 = zeros(2*Nf-1,1);
+            %             Bdiag39 = zeros(2*Nf,1);
+            %
+            %             Adiag39(1:2:end) = W.* obj.A39;
+            %             Bdiag39(1:2:end) = obj.B39;
+            %             Bdiag39(2:2:end) = Bdiag39(1:2:end);
+            %
+            %             Bmat = diag(Bdiag39);
+            %             Amat = diag(Adiag39,1);
+            %             Amat = Amat - Amat';
+            %
+            %             G39 = (Amat + Bmat);
+            
+            %             % Building matrices B99 and A99
+            %             Adiag99 = zeros(2*Nf-1,1);
+            %             Bdiag99 = zeros(2*Nf,1);
+            %
+            %             Adiag99(1:2:end) = W.* obj.A99;
+            %             Bdiag99(1:2:end) = obj.B99;
+            %             Bdiag99(2:2:end) = Bdiag99(1:2:end);
+            %
+            %             Bmat = diag(Bdiag99);
+            %             Amat = diag(Adiag99,1);
+            %             Amat = Amat - Amat';
+            %
+            %             G99 = (Amat + Bmat);
+            
+            G = [G33];
+            
+            B = obj.hydro.Bf * eye(2*Nf);
+            C = blkdiag(obj.hydro.K * eye(2*Nf));
+            M = blkdiag(obj.hydro.m * eye(2*Nf));
+            
+            % Building derivative matrix
+            d = [W(:)'; zeros(1, length(W))];
+            Dphi1 = diag(d(1:end-1), 1);
+            Dphi1 = (Dphi1 - Dphi1');
+            %             Dphi = blkdiag(Dphi1, Dphi1);
+            Dphi = blkdiag(Dphi1);
+            
+            m_scale = obj.hydro.m; % scaling factor for optimization
+            
+            % equality constraints for EOM
+            P =  (M*Dphi + B + G + (C / Dphi)) / m_scale;
+%             Aeq = [P, -[eye(2*Nf)] ];
+            Aeq = [P, -[eye(1*Nf); -eye(1*Nf)] ];
+            
+            % Calculating collocation points for constraints
+            tkp = linspace(0, T, 4*(Nc));
+            tkp = tkp(1:end);
+            Wtkp = W*tkp;
+            Phip1 = zeros(2*size(Wtkp,1),size(Wtkp,2));
+            Phip1(1:2:end,:) = cos(Wtkp);
+            Phip1(2:2:end,:) = sin(Wtkp);
+            
+            Phip = blkdiag(Phip1, Phip1);
+            
+            A_ineq = kron([1 -1 0; -1 1 0], Phip1' / Dphi1);
+            B_ineq = ones(size(A_ineq, 1),1) * delta_Zmax;
+            
+            %force constraint section
+            siz = size(A_ineq);
+            forc =  Phip1';
+            
+            B_ineq = [B_ineq; ones(siz(1),1) * delta_Fmax/m_scale];
+            A_ineq = [A_ineq; kron([0 0 1; 0 0 -1], forc)];
+            
+            ps.w = obj.w; % TODO
+            ps.Nf = Nf;
+            ps.T = T;
+            ps.W = W;
+            ps.H_mat = H_mat;
+            ps.tkp = tkp;
+            ps.Aeq = Aeq;
+            ps.A_ineq = A_ineq;
+            ps.B_ineq = B_ineq;
+            ps.Phip = Phip;
+            ps.Phip1 = Phip1;
+            ps.Dphi = Dphi;
+            ps.m_scale = m_scale;
+            
+        end
+        
+        function [pow, powPerFreq] = getPSPhasePower(obj, ps, ph)
+            %Calculates power using the pseudospectral method given a phase and
+            % a descrption of the body movement. Returns total phase power and
+            % power per frequency
+            
+            eta_fd = ps.wave_amp .* exp(1i*ph);
+            %             eta_fd = eta_fd(start:end);
+            
+            fef3 = zeros(2*ps.Nf,1);
+            %             fef9 = zeros(2*obj.Nf,1);
+            
+            E3 = obj.hydro.Hex .* eta_fd;
+            %             E9 = obj.H9 .* eta_fd;
+            
+            fef3(1:2:end) =  real(E3);
+            fef3(2:2:end) = -imag(E3);
+%             fef9(1:2:end) =  real(E9);
+%             fef9(2:2:end) = -imag(E9);
+            
+            Beq = [fef3] / ps.m_scale;
+            
+            % constrained optimiztion
+            qp_options = optimoptions('fmincon',                        ...
+                'Algorithm', 'sqp',               ...
+                'Display', 'off',                 ...
+                'MaxIterations', 1e3,             ...
+                'MaxFunctionEvaluations', 1e5,    ...
+                'OptimalityTolerance', 1e-8,      ...
+                'StepTolerance', 1e-6);
+            
+            siz = size(ps.A_ineq);
+            X0 = zeros(siz(2),1);
+            pow_calc(X0)
+            [y, ~, ~, ~] = fmincon(@pow_calc,       ...
+                X0,              ...
+                ps.A_ineq,   ...
+                ps.B_ineq,   ...
+                ps.Aeq,      ...
+                Beq,             ...
+                [], [], [],      ...
+                qp_options);
+            
+            % y is a vector of x1hat, x2hat, & uhat. Calculate energy using
+            % Equation 6.11 of Bacelli 2014
+            uEnd = numel(y);
+            x1End = uEnd / 3;
+            x2Start = x1End + 1;
+            x2End = 2 * uEnd / 3;
+            uStart = x2End + 1;
+            
+            x1hat = y(1:x1End);
+            x2hat = y(x2Start:x2End);
+            uhat = y(uStart:end);
+            
+            Pvec = -1 / 2 * (x1hat - x2hat) .* uhat;
+            % Add the sin and cos components to get power as function of W
+            powPerFreq = Pvec(1:2:end) + Pvec(2:2:end);
+            powPerFreq = powPerFreq * ps.m_scale;
+            
+            velT = ps.Phip' * [x1hat;x2hat];
+            body1End = numel(velT) / 2;
+            Body2Start = body1End + 1;
+            velTBody1 = velT(1:body1End);
+            velTBody2 = velT(Body2Start:end);
+            
+            % posT = (motion.Phip' / motion.Dphi) * [x1hat;x2hat];
+            % relative position (check constraint satisfaction)
+            
+            % relPosT = posT(1:end/2)- posT(end/2+1:end);
+            % relative velocity (check constraint satisfaction)
+            % relVelT = velT(1:end/2)- velT(end/2+1:end);
+            
+            % Alternative power calculation
+            uT = ps.m_scale * ps.Phip1' * uhat;
+            Pt = (velTBody2 - velTBody1) .* uT;
+            pow = trapz(ps.tkp, Pt) / (ps.tkp(end) - ps.tkp(1));
+            assert(WecOptLib.utils.isClose(pow, sum(powPerFreq)))
+            
+            function P = pow_calc(X)
+                P = X' * ps.H_mat * X;
+            end
+            
+        end
         
         function obj = makeStudyDir(obj)
             

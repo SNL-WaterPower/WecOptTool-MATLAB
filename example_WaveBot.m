@@ -10,7 +10,7 @@ w = 2*pi*linspace(0.05, 2, 50)';
 % define an instance of the waveBot class with some specific options
 cntrlMode = 'CC';
 geomMode = 'scalar';
-a = WecOptLib.models.waveBot(cntrlMode,geomMode,w);
+a = WecOptLib.models.WaveBot(cntrlMode,geomMode,w);
 
 % define sea state of interest
 S = jonswap(w,[0.125, 2, 1],0);
