@@ -205,11 +205,12 @@ classdef WaveBot < handle
             %
             % Args.
             %   Spect       wave spectrum (or spectra) defined in the style
-            %               of WAFO
+            %               of WAFO by functions such as jonswap, 
+            %               bretschneider
             % Returns
             %   simResults  object containing simulation results
             %
-            % See also JONSWAP, WecOptLib.simResults
+            % See also jonswap, bretschneider, WecOptLib.simResults
             
             % check spectrum for validity
             WecOptLib.utils.checkSpectrum(Spect)
