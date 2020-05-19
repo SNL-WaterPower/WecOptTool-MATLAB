@@ -35,7 +35,7 @@ function [] = assertGreaterThanOrEqual(x, y)
     msg = ['x must be greater than or equal to y'];
     ID = 'WecOptLib:errorCheckFailure:greaterThanOrEqual';
     try
-        assert(x>=y,ID,msg) ;
+        assert(all(x>=y),ID,msg) ;
     catch ME
         throw(ME)
     end
