@@ -79,7 +79,7 @@ classdef (Abstract) Blueprint
                 
                 for j = 1:length(controlTypes)
                     
-                    controlType = controlTypes{i};
+                    controlType = controlTypes{j};
                     Controller = obj.Controllers.(controlType);
                     controller = Controller();
             
