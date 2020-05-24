@@ -1,4 +1,4 @@
-classdef (Abstract) Device 
+classdef (Abstract) Device < handle
     % Abstract class for creating new Device structures which will be
     % creted by BluePrint subclasses (as per the Abstract Factor Pattern).
     %

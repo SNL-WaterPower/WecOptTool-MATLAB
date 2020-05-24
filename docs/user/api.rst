@@ -6,9 +6,15 @@ Experimental
 ============
 
 WecOptLib.experimental
-------------------------------
+----------------------
 
-.. mat:automodule:: +WecOptLib.+experimental.+blocks
+.. mat:automodule:: +WecOptLib.+experimental
+    :members:
+
+WecOptLib.experimental.callbacks.geometry
+-----------------------------------------
+
+.. mat:automodule:: +WecOptLib.+experimental.+callbacks.+geometry
     :members:
 
 WecOptTool

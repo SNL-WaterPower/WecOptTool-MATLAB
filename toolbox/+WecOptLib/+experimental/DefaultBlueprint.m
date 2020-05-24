@@ -1,33 +1,74 @@
 classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
-    % Abstract class for creating a new WEC blueprint. Multiple geometries 
-    % and controllers can be added to the blueprint alongside the dyanamic
-    % model to describe the WECs motion (using the electrical circuit 
-    % analogue).
+    % Abstract class for creating a new WEC blueprint where multiple  
+    % geometries and controllers can be added to the blueprint alongside 
+    % the model used to describe the WECs motion.
     %
     % A concrete implementation of the Blueprint class is defined as
     % follows::
     %
-    %     classdef MyWEC < WecOptLib.experimental.blocks.Blueprint
+    %     classdef MyWEC < WecOptLib.experimental.base.Blueprint
     %
-    % The properties 'Model', 'Geometries' and 'Controllers' must also
-    % be defined, as described below
+    % The abstract properties ``geometryCallbacks``, 
+    % ``staticModelCallback``, ``dynamicModelCallback`` and 
+    % ``controllerCallbacks`` must be defined, as described below.
     %
     % Attributes:
-    %     Model (:mat:class:`+WecOptLib.experimental.blocks.Model`):
-    %         A single Model class must be given, i.e. Model = MyModel
-    %     Geometries (struct of :mat:class:`WecOptLib.experimental.blocks.Geometry):
-    %         A struct with Geometry class values and identifying fields,
-    %         i.e.::
+    %     geometryCallbacks (struct of function handles):
+    %         (ABSTRACT) A struct of function handles where each function 
+    %         should take a single input argument and return a Hydro 
+    %         object. For instance, to include the following function::
     %
-    %             Geometries = struct("geo1": MyFirstGeometry,    ...
-    %                                 "geo2": MySecondGeometry)
+    %             function hydro = myGeom(size)
+    %                 import WecOptLib.experimental.types.Hydro
+    %                 ...
+    %                 hydro = Hydro(vars)
+    %             end
     %
-    %     Controllers (struct of :mat:class:`+WecOptLib.experimental.blocks.Control`): 
-    %         A struct with Control classes values and identifying fields,
-    %         i.e.::
+    %         and use one pre-defined callback for an existing NEMOH 
+    %         solution, geometryCallbacks is then defined::
     %
-    %             Controllers = struct("CC": ComplexCongugate,    ...
-    %                                  "D": Damping)
+    %             geometryCallbacks = ...
+    %               struct('existing', @WecOptLib.experimental.callbacks.geometry.existingNEMOH, ...
+    %                      'mygeom', @myGeom)
+    %
+    %
+    %     staticModelCallback (function handle):
+    %         (ABSTRACT) A function handle for a function that takes a 
+    %         Hydro object and returns an intermediate struct that will be 
+    %         passed to the input of dynamicModelCallback. The signature 
+    %         of the callback function is as follows::
+    %
+    %             static = myStaticModel(hydro)
+    %
+    %
+    %     dynamicModelCallback (function handle):
+    %         (ABSTRACT) A function handle for a function that takes the 
+    %         result of staticModelCallback, a Hydro object and a SeaState 
+    %         object and returns a Motion object. An example of the 
+    %         callback function is as follows::
+    %
+    %             function motion = myDynamicModel(static, hydro, seaState)
+    %                 import WecOptLib.experimental.types.Motion
+    %                 ...
+    %                 motion = Motion(vars)
+    %             end
+    %           
+    %
+    %     controllerCallbacks (struct of function handles): 
+    %         (ABSTRACT) A struct of function handles where each function 
+    %         should take a Motion and a SeaState object and return a 
+    %         Perfomance object. For instance, to with the following 
+    %         function::
+    %
+    %             function performace = myController(motion, seaState)
+    %                 import WecOptLib.experimental.types.Performance
+    %                 ...
+    %                 performace = Performance(vars)
+    %             end
+    %         
+    %         Define::
+    %
+    %             controllerCallbacks = struct('mycontrol', @myController)
     %
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
@@ -64,7 +105,25 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
         function devices = makeDevices(obj, geomTypes,         ...
                                             geomParams,        ...
                                             controlTypes)
-                        
+            % Create an m x n array of DefaultDevice objects for a given
+            % set of geometry and controller configurations.
+            %
+            % Arguments:
+            %     geomTypes (cell array of string):
+            %         A cell of array of geometry type indentifiers
+            %     geomParams (cell array):
+            %         A cell array containing the input relevant to the
+            %         geometry type at the same index
+            %     controlTypes (cell array of string):
+            %         A cell array of controller type indentifiers
+            %
+            % Returns:
+            %    array of :mat:class:`+WecOptLib.+experimental.DefaultDevice`:
+            %        An array of DefaultDevice objects with chosen 
+            %        geometries along the first dimension and chosen
+            %        controllers along the second.
+            %
+
             if ~iscell(geomTypes)
                 geomTypes = {geomTypes};
                 geomParams = {geomParams};
@@ -79,6 +138,10 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
                                             controlTypes);
             
         end
+        
+    end
+    
+    methods (Access=private)
         
         function devices = iterateGeometries(obj, geomTypes,  ...
                                                   geomParams, ...
