@@ -2,6 +2,15 @@
 API
 ***
 
+Experimental
+============
+
+WecOptLib.experimental
+------------------------------
+
+.. mat:automodule:: +WecOptLib.+experimental.+blocks
+    :members:
+
 WecOptTool
 ==========
 
