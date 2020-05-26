@@ -39,10 +39,7 @@ function noTailsSS = removeSpectraTails(SS, tailTolerence, minBins)
     % 
     %     You should have received a copy of the GNU General Public License
     %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.    
-    
-    %TEMPORARY HARDCODED PLOT FUNCTION 
-    plot=false;
-    
+       
     WecOptLib.utils.checkSpectrum(SS);
     WecOptLib.errorCheck.assertLengthOneOrLengthSS(tailTolerence,SS)
     WecOptLib.errorCheck.assertPositiveFloat(tailTolerence)
@@ -70,9 +67,7 @@ function noTailsSS = removeSpectraTails(SS, tailTolerence, minBins)
     end            
     
     WecOptLib.utils.checkSpectrum(noTailsSS);
-    if plot==true
-        plotNoTailsSS(SS, noTailsSS)
-    end
+
 end
 
 
@@ -103,7 +98,7 @@ function [noTailW, noTailS] = removeTails(w, S, tailTolerence)
     WecOptLib.errorCheck.assertPositiveFloat(tailTolerence)
         
     % Remove tails of the spectra; return indicies of the vals>tol% of max
-    specGreaterThanTolerence = find(S > max(S)*tailTolerence/100);
+    specGreaterThanTolerence = find(S > max(S)*tailTolerence);
 
     iStart = min(specGreaterThanTolerence);
     iEnd   = max(specGreaterThanTolerence);
