@@ -84,9 +84,9 @@ function [wDownSampled, SDownSampled, err] = downSample(w, S, maxError, minBins)
     % Returns
     % -------
     % wDownSampled : vector
-    %    w of less frequency bins 
+    %    down sampled frequency bins 
     % SDownSampled: vector
-    %    S less or equal 
+    %    Spectral densities associtated with wDownSampled
 
     wMin=min(w);
     wMax=max(w);
@@ -98,16 +98,18 @@ function [wDownSampled, SDownSampled, err] = downSample(w, S, maxError, minBins)
         wDownSampled = linspace(wMin,wMax,bins)';
         SDownSampled = interp1(w, S, wDownSampled);
         
-        %check for NaNs e.g. isRealPositive
+        %check down sample for NaNs e.g. isRealPositive
         
-        err = WecOptLib.utils.MAPError(w,S,wDownSampled,SDownSampled);                
+        SOrigInterpolated = interp1(wDownSampled, SDownSampled, w,'linear', 0);        
+        err = WecOptLib.utils.MAAPError(S,SOrigInterpolated);                
     end
 
     bins = bins+1;    
     wDownSampled = linspace(wMin,wMax,bins)';
     SDownSampled = interp1(w, S, wDownSampled);  
     
-    err = WecOptLib.utils.MAPError(w,S,wDownSampled,SDownSampled);
+    SOrigInterpolated = interp1(wDownSampled, SDownSampled, w,'linear', 0);                    
+    err = WecOptLib.utils.MAAPError(S,SOrigInterpolated );
     
     WecOptLib.errorCheck.assertLessThan(err, maxError)            
     WecOptLib.errorCheck.assertEqualLength(wDownSampled,SDownSampled)
