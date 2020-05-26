@@ -75,11 +75,11 @@ function compareSpectra(SSOriginal, SSModified, errorField)
         elseif isfield(SSModified(i),errorField)                
             errorVal = SSModified(i).(errorField);
             if strcmp(errorField, 'resampleError')
-                title(sprintf('Fitting Error (No Extrapolation): %.2f%%', errorVal))                    
+                title(sprintf('Fitting Error (No Extrapolation): %.2f%%', errorVal*100))                    
             elseif strcmp(errorField,'downSampleError')        
-                title(sprintf('Fitting Error : %.2f%%', errorVal))                    
+                title(sprintf('Fitting Error : %.2f%%', errorVal*100))                    
             else
-                title(sprintf('Error : %.2f%', errorVal))
+                title(sprintf('Error : %.2f%', errorVal*100))
             end                                        
         end
     end
