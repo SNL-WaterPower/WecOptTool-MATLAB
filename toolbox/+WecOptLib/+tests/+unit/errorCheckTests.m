@@ -203,4 +203,36 @@ function testCheck_errorNotLessThanArrayY(testCase)
     verifyError(testCase,@() WecOptLib.errorCheck.assertLessThan(x,y),eID)
 end
 
+function testCheck_successPositiveFloat(testCase)
+    x=2.;
+    verifyWarningFree(testCase,@() WecOptLib.errorCheck.assertPositiveFloat(x))
+end
 
+function testCheck_errorPositiveFloatNegative(testCase)
+    x = -2.;
+    eID =  'WecOptLib:errorCheckFailure:positiveFloat';
+    verifyError(testCase,@() WecOptLib.errorCheck.assertPositiveFloat(x),eID)
+end
+
+function testCheck_errorPositiveFloatCharacter(testCase)
+    x = 'char';
+    eID =  'WecOptLib:errorCheckFailure:positiveFloat';
+    verifyError(testCase,@() WecOptLib.errorCheck.assertPositiveFloat(x),eID)
+end
+
+function testCheck_successPositiveInteger(testCase)
+    x=2.;
+    verifyWarningFree(testCase,@() WecOptLib.errorCheck.assertPositiveInteger(x))
+end
+
+function testCheck_errorPositiveIntegerNegative(testCase)
+    x = -2.;
+    eID =  'WecOptLib:errorCheckFailure:positiveInt';
+    verifyError(testCase,@() WecOptLib.errorCheck.assertPositiveInteger(x),eID)
+end
+
+function testCheck_errorPositiveIntegerFloat(testCase)
+    x = 1.1;
+    eID =  'WecOptLib:errorCheckFailure:positiveInt';
+    verifyError(testCase,@() WecOptLib.errorCheck.assertPositiveInteger(x),eID)
+end
