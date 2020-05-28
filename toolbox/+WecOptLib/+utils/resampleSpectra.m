@@ -47,6 +47,12 @@ function SSResampled = resampleSpectra(SS, dw, NSuperHarmonics)
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
     
+    arguments
+        SS;
+        dw;
+        NSuperHarmonics=6;
+    end
+
     WecOptLib.utils.checkSpectrum(SS);        
        
     %assert(dw, positive, real)

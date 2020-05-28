@@ -40,6 +40,12 @@ function downSampleSS = downSampleSpectra(SS, maxError, minBins)
     %     You should have received a copy of the GNU General Public License
     %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
     
+    arguments
+        SS;
+        maxError = 0.01;
+        minBins = 10;
+    end
+    
     WecOptLib.utils.checkSpectrum(SS);
     WecOptLib.errorCheck.assertLengthOneOrLengthSS(maxError,SS)
     WecOptLib.errorCheck.assertPositiveFloat(maxError)

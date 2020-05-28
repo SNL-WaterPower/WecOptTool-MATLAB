@@ -38,7 +38,14 @@ function noTailsSS = removeSpectraTails(SS, tailTolerence, minBins)
     %     GNU General Public License for more details.
     % 
     %     You should have received a copy of the GNU General Public License
-    %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.    
+    %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
+    
+    arguments
+        SS;
+        tailTolerence = 0.01;
+        minBins = 10;
+    end
+        
        
     WecOptLib.utils.checkSpectrum(SS);
     WecOptLib.errorCheck.assertLengthOneOrLengthSS(tailTolerence,SS)
@@ -59,9 +66,9 @@ function noTailsSS = removeSpectraTails(SS, tailTolerence, minBins)
          noTailsSS(i).S = noTailS;  
          
         if length(noTailw)< minBins
-            msg=['Error: Returned specturm length less than minBins.'...
+            msg=['Error: Returned specturm length less than minBins. '...
                 'Consider lowering the tailTolerence'];
-            disp(msg)
+            error(msg)
             break
         end
     end            
