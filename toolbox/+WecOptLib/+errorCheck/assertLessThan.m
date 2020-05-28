@@ -34,7 +34,7 @@ function [] = assertLessThan(x, y)
     msg = ['x must be less than  y'];
     ID = 'WecOptLib:errorCheckFailure:lessThan';
     try
-        assert(x<y,ID,msg) ;
+        assert(all(x<y),ID,msg) ;
     catch ME
         throw(ME)
     end
