@@ -163,3 +163,44 @@ function testCheck_errorLengthOneOrLengthSSOne(testCase)
     eID = 'WecOptLib:errorCheckFailure:incorrectLength';
     verifyError(testCase,@() WecOptLib.errorCheck.assertLengthOneOrLengthSS(x,S),eID)
 end
+
+function testCheck_successLessThan(testCase)
+    x=2.0;
+    y=3.0;
+    verifyWarningFree(testCase,@() WecOptLib.errorCheck.assertLessThan(x,y))
+end
+
+function testCheck_successLessThanArrayX(testCase)
+    x=linspace(2.1, 5, 3);
+    y=6.0;
+    verifyWarningFree(testCase,@() WecOptLib.errorCheck.assertLessThan(x,y))
+end
+
+function testCheck_successLessThanArrayY(testCase)
+    x=2.;
+    y=linspace(2.1,5,3);
+    verifyWarningFree(testCase,@() WecOptLib.errorCheck.assertLessThan(x,y))
+end
+
+function testCheck_errorNotLessThan(testCase)
+    x=2.0;
+    y=2.0;
+    eID = 'WecOptLib:errorCheckFailure:lessThan';
+    verifyError(testCase,@() WecOptLib.errorCheck.assertLessThan(x,y),eID)
+end
+
+function testCheck_errorNotlessThanArrayX(testCase)
+    x=linspace(0,5,3);
+    y=2.0;
+    eID = 'WecOptLib:errorCheckFailure:lessThan';
+    verifyError(testCase,@() WecOptLib.errorCheck.assertLessThan(x,y),eID)
+end
+
+function testCheck_errorNotLessThanArrayY(testCase)
+    x=2;
+    y=linspace(2,5,3);
+    eID = 'WecOptLib:errorCheckFailure:lessThan';
+    verifyError(testCase,@() WecOptLib.errorCheck.assertLessThan(x,y),eID)
+end
+
+
