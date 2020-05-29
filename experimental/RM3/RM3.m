@@ -12,6 +12,8 @@ classdef RM3 < WecOptLib.experimental.DefaultBlueprint
         
         controllerCallbacks = struct('CC', @complexCongugateControl,    ...
                                      'P',  @dampingControl)
+                                 
+        aggregationHook = @aggregate
         
     end
     
@@ -42,6 +44,8 @@ function hydro = getHydroScalar(lambda)
     hydro.ex_ph = angle(hydro.ex);
     hydro.ex_re = real(hydro.ex);
     hydro.ex_im = imag(hydro.ex);
+    
+    hydro = WecOptLib.experimental.types.Hydro(hydro);
            
 end
 
@@ -57,7 +61,7 @@ function static = getStaticModel(hydro)
 
 end
         
-function dynamic = getDynamicModel(static, hydro, S)
+function motion = getDynamicModel(static, hydro, S)
 
     function result = interp_mass(hydro, dof1, dof2, w)
         result = interp1(hydro.w,                           ...
@@ -184,26 +188,24 @@ function dynamic = getDynamicModel(static, hydro, S)
     dynamic.Z0 = Z0;
     dynamic.Zi = Zi;
     dynamic.F0 = F0;
+    
+    motion = WecOptLib.experimental.types.Motion(dynamic);
 
 end
 
 
 function performance = complexCongugateControl(motion, S)
             
-    % Frequencies
-    freqs = motion.w;
-
     % Maximum absorbed power
     % Note: Re{Zi} = Radiation Damping Coeffcient
-    performance = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
+    out.pow = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
+    
+    performance = WecOptLib.experimental.types.Performance(out);
 
 end
 
 function performance = dampingControl(motion, S)
             
-    % Frequencies
-    freqs = motion.w;
-
     % Max Power for a given Damping Coeffcient [Falnes 2002 
     % (p.51-52)]
     P_max = @(b) -0.5 * b *     ...
@@ -213,7 +215,17 @@ function performance = dampingControl(motion, S)
     B_opt = fminsearch(P_max, max(real(motion.Zi)));
 
     % Power per frequency at optimial damping?
-    performance = 0.5 * B_opt * ...
+    out.pow = 0.5 * B_opt * ...
                     (abs(motion.F0 ./ (motion.Zi + B_opt)) .^ 2);
+                
+    performance = WecOptLib.experimental.types.Performance(out);
 
+end
+
+function out = aggregate(seastate, hydro, motions, performances)
+    for i = 1:length(performances)
+        powperfreq(i) = sum(performances(i).pow);
+    end
+    s = seastate.toStruct();
+    out.pow = dot(powperfreq, [s.mu]) / sum([s.mu]);
 end

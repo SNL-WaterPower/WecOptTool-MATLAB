@@ -3,9 +3,12 @@ classdef (Abstract) Device < handle
     % creted by BluePrint subclasses (as per the Abstract Factor Pattern).
     %
     % Devices should provide access to the three main data types through
-    % the hydro, motion and performance properties and should implement
-    % method (simulate) which evalutates the performance of the device
-    % per sea-state
+    % the hydro, motions and performances properties and should implement
+    % one method (simulate) which evalutates the performance of the device
+    % per sea-state.
+    %
+    % The aggregation property is for added aggregated results from
+    % simulations over multiple sea-states, and is optional.
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -27,10 +30,11 @@ classdef (Abstract) Device < handle
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    properties (Abstract)
+    properties
         hydro
-        motion
-        performance
+        motions
+        performances
+        aggregation
     end
     
     methods (Abstract)

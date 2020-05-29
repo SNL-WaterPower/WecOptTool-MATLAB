@@ -15,10 +15,13 @@ gamma = 3.3;
 w = 2*pi*linspace(0.05, 2, 50)';
 S = jonswap(w,[Hm0, Tp, gamma],0);
 
+% Create a SeaState object before optimisation to avoid warnings.
+SS = WecOptLib.experimental.types.SeaState(S);
+
 %% solve via brute force
 
 lambdas = 0.25:0.25:2;
-mcres = arrayfun(@(x) myWaveBotObjFun(x,blueprint,S), lambdas);
+mcres = arrayfun(@(x) myWaveBotObjFun(x,blueprint,SS), lambdas);
 
 %% solve via a solver
 
@@ -35,7 +38,7 @@ opts.UseParallel = true;
 opts.Display = 'iter';
 opts.PlotFcn = {@optimplotx,@optimplotfval};
 % opts.OptimalityTolerance = 1e-8;
-[x, fval] = fmincon(@(x) myWaveBotObjFun(x,blueprint,S),...
+[x, fval] = fmincon(@(x) myWaveBotObjFun(x,blueprint,SS),...
     x0,A,B,Aeq,Beq,LB,UB,NONLCON,opts);
 
 %% compare results
@@ -60,6 +63,6 @@ function [fval] = myWaveBotObjFun(x, bp, S)
 
     device = bp.makeDevices(geomMode, x, cntrlMode);
     device.simulate(S);
-    fval = sum(device.performance);
+    fval = sum(device.aggregation.pow);
     
 end

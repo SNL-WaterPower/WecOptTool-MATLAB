@@ -57,7 +57,7 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
     %     controllerCallbacks (struct of function handles): 
     %         (ABSTRACT) A struct of function handles where each function 
     %         should take a Motion and a SeaState object and return a 
-    %         Perfomance object. For instance, to with the following 
+    %         Perfomance object. For instance, to apply the following 
     %         function::
     %
     %             function performace = myController(motion, seaState)
@@ -66,9 +66,23 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
     %                 performace = Performance(vars)
     %             end
     %         
-    %         Define::
+    %         with the name 'mycontrol', define::
     %
     %             controllerCallbacks = struct('mycontrol', @myController)
+    %
+    %     aggregationHook (function handle): 
+    %         (OPTIONAL) A function handle for a function which aggregates
+    %         the outputs from multiple sea-states. It takes all of the
+    %         properties of the DefaultDevice class and the given SeaState
+    %         object as input and the result will be added to the 
+    %         aggregation property of DefaultDevice. An example function 
+    %         with the required signature is shown below::
+    %
+    %             function out = aggregate(seastate, hydro, motions, performances)
+    %                 p = performances.toStruct()
+    %                 out.pow = sum([p.pow])
+    %             end
+    %
     %
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
@@ -97,6 +111,7 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
         staticModelCallback
         dynamicModelCallback
         controllerCallbacks
+        % aggregationHook (optional)
         
     end
     
@@ -156,8 +171,14 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
                 
                 geometryCB = obj.geometryCallbacks.(geomType);
                 hydro = geometryCB(geomParam);
-                jdevices = obj.iterateControllers(hydro, controlTypes);
                 
+                if ~isa(hydro, "WecOptLib.experimental.types.Hydro")
+                    errStr = "The geometry model must return a " +   ...
+                             "Hydro object";
+                    error("WecOptTool:Blueprint:NotHydro", errStr)
+                end
+                
+                jdevices = obj.iterateControllers(hydro, controlTypes);
                 devices = [devices; jdevices];
                 
             end
@@ -168,6 +189,13 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
             
             import  WecOptLib.experimental.DefaultDevice
             
+            % Setting of aggregationHook is optional
+            if isprop(obj, "aggregationHook")
+                aggregationHook = obj.aggregationHook;
+            else
+                aggregationHook = [];
+            end
+            
             for i = 1:length(controlTypes)
                     
                 controlType = controlTypes{i};
@@ -176,7 +204,8 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
                 devices(i) = DefaultDevice(hydro,                       ...
                                            obj.staticModelCallback,     ...
                                            obj.dynamicModelCallback,    ...
-                                           controllerCB);
+                                           controllerCB,                ...
+                                           aggregationHook);
 
             end
             
