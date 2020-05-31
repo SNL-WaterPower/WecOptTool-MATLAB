@@ -1,4 +1,4 @@
-classdef RM3 < WecOptLib.experimental.DefaultBlueprint
+classdef RM3 < WecOptLib.experimental.Blueprint
     
     properties
         
@@ -198,7 +198,7 @@ function performance = complexCongugateControl(motion, S)
             
     % Maximum absorbed power
     % Note: Re{Zi} = Radiation Damping Coeffcient
-    out.pow = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
+    out.powPerFreq = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
     
     performance = WecOptLib.experimental.types.Performance(out);
 
@@ -215,7 +215,7 @@ function performance = dampingControl(motion, S)
     B_opt = fminsearch(P_max, max(real(motion.Zi)));
 
     % Power per frequency at optimial damping?
-    out.pow = 0.5 * B_opt * ...
+    out.powPerFreq = 0.5 * B_opt * ...
                     (abs(motion.F0 ./ (motion.Zi + B_opt)) .^ 2);
                 
     performance = WecOptLib.experimental.types.Performance(out);
@@ -223,9 +223,7 @@ function performance = dampingControl(motion, S)
 end
 
 function out = aggregate(seastate, hydro, motions, performances)
-    for i = 1:length(performances)
-        powperfreq(i) = sum(performances(i).pow);
-    end
     s = struct(seastate);
-    out.pow = dot(powperfreq, [s.mu]) / sum([s.mu]);
+    p = struct(performances);
+    out.pow = dot([p.pow], [s.mu]) / sum([s.mu]);
 end

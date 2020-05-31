@@ -10,7 +10,7 @@ controllers = {'CC', 'P'};
 % make devices from blueprint. All arguments can be given as cell
 % arrays (or scalars) which produces an mxn device array.
 blueprint = RM3();
-devices = blueprint.makeDevices(geomMode, geomParams, controllers);
+devices = makeDevices(blueprint, geomMode, geomParams, controllers);
 
 % define sea state of interest
 % Hm0 = 0.125;
@@ -21,13 +21,13 @@ devices = blueprint.makeDevices(geomMode, geomParams, controllers);
 S = WecOptLib.tests.data.example8Spectra();
 
 % Create a SeaState object before optimisation to avoid warnings.
-SS = WecOptLib.experimental.types.SeaState(S);
+SS = WecOptLib.experimental.types.typeArray("SeaState", S);
 
 [m,n] = size(devices);
 
 for i = 1:m
     for j = 1:n
-        devices(i, j).simulate(SS);
+        simulate(devices(i, j), SS);
         % The device stores the results as properties
         r(i, j) = sum(devices(i, j).aggregation.pow);
     end

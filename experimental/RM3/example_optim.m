@@ -9,14 +9,15 @@ close all
 blueprint = RM3();
 
 % define sea state of interest
-Hm0 = 0.125;
-Tp = 2;
-gamma = 3.3;
-w = 2*pi*linspace(0.05, 2, 50)';
-S = jonswap(w,[Hm0, Tp, gamma],0);
+% Hm0 = 0.125;
+% Tp = 2;
+% gamma = 3.3;
+% w = 2*pi*linspace(0.05, 2, 50)';
+% S = jonswap(w,[Hm0, Tp, gamma],0);
+S = WecOptLib.tests.data.example8Spectra();
 
 % Create a SeaState object before optimisation to avoid warnings.
-SS = WecOptLib.experimental.types.SeaState(S);
+SS = WecOptLib.experimental.types.typeArray("SeaState", S);
 
 %% solve via brute force
 
@@ -38,7 +39,7 @@ opts.UseParallel = true;
 opts.Display = 'iter';
 opts.PlotFcn = {@optimplotx,@optimplotfval};
 % opts.OptimalityTolerance = 1e-8;
-[x, fval] = fmincon(@(x) myWaveBotObjFun(x,blueprint,SS),...
+[x, fval] = fmincon(@(x) myWaveBotObjFun(x,blueprint,SS),   ...
     x0,A,B,Aeq,Beq,LB,UB,NONLCON,opts);
 
 %% compare results
@@ -51,6 +52,20 @@ plot(x * ones(2,1), ylim, 'r--', 'LineWidth', 5)
 legend('MC','fmincon','location','southeast')
 xlabel('Lambda')
 ylabel('Power')
+
+%% Get device for best simulation and plot power per freq
+devices = blueprint.recoverDevices();
+    
+for device = devices
+
+    if isequal(device.geomParams, x)
+        bestDevice = device;
+        break
+    end
+
+end
+
+WecOptLib.experimental.plot.powerPerFreq(bestDevice);
 
 %% objective function
 % this can take any form that complies with the requirements of the MATLAB

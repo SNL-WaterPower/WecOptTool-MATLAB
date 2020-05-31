@@ -1,13 +1,26 @@
-classdef AutoFolder
+classdef AutoFolder < handle
     
     properties
         folder
     end
     
+    properties (Access = private)
+        autoRemoveFolder = true
+    end
+    
     methods
         
-        function obj = AutoFolder()
-            obj.makeFolder();
+        function obj = AutoFolder(base)
+            
+            args = {};
+            
+            if nargin > 0
+                args{1} = base;
+                obj.autoRemoveFolder = false;
+            end
+                
+            obj.makeFolder(args{:});
+            
         end
         
         function saveFolder(obj, targetPath)
@@ -33,7 +46,7 @@ classdef AutoFolder
     
     methods (Access=protected)
         
-        function obj = makeFolder(obj)
+        function obj = makeFolder(obj, base)
             
             if obj.folder
                 errStr = "folder is already defined";
@@ -41,7 +54,12 @@ classdef AutoFolder
             end
             
             % Try to ensure folder is unique and reserved
-            obj.folder = tempname;
+            if nargin > 1
+                obj.folder = tempname(base);
+            else
+                obj.folder = tempname;
+            end
+            
             [status, ~, message] = mkdir(obj.folder);
             
             if ~status || strcmp(message, 'MATLAB:MKDIR:DirectoryExists')
@@ -58,7 +76,7 @@ classdef AutoFolder
         end
                 
         function delete(obj)
-            if ~WecOptLib.utils.isParallel()
+            if obj.autoRemoveFolder && ~WecOptLib.utils.isParallel()
                 obj.rmFolder();
             end
         end

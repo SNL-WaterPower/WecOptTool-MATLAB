@@ -12,27 +12,24 @@ classdef (Abstract) Data < dynamicprops
                 return
             end
             
-            p = obj.parseParams(input(1));
+            if length(input) > 1
+                error("Only length 1 structs may be passed as input")
+            end
+            
+            p = obj.parseParams(input);
             props = obj.buildProperties(p);
             
             % Add values to properties
-            n = length(input);
-            obj = repelem(obj,1,n);
+            fn = fieldnames(p.Results);
 
-            for i = 1:n
-                
-                fn = fieldnames(p.Results);
+            for j = 1:numel(fn)
+                obj.(fn{j}) = p.Results.(fn{j});
+            end
 
-                for j = 1:numel(fn)
-                    obj(i).(fn{j}) = p.Results.(fn{j});
-                end
+            fn = fieldnames(p.Unmatched);
 
-                fn = fieldnames(p.Unmatched);
-
-                for j = 1:numel(fn)
-                    obj(i).(fn{j}) = p.Unmatched.(fn{j});
-                end
-                
+            for j = 1:numel(fn)
+                obj.(fn{j}) = p.Unmatched.(fn{j});
             end
             
             % Disallow setting access
@@ -88,7 +85,7 @@ classdef (Abstract) Data < dynamicprops
             
             argList = [argList reshape([fields.';values.'], 1, [])];
             
-            % Check for and validate any parameters defined in meta
+            % Validate any parameters defined in meta
             p = inputParser;
             p.KeepUnmatched = true;
             
@@ -102,7 +99,6 @@ classdef (Abstract) Data < dynamicprops
         
         function props = buildProperties(obj, p)
                             
-            % Build properties
             fn = fieldnames(p.Results);
             props = {};
 

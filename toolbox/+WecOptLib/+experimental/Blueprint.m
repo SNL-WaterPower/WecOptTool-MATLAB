@@ -1,4 +1,4 @@
-classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
+classdef (Abstract) Blueprint < WecOptLib.experimental.base.AutoFolder
     % Abstract class for creating a new WEC blueprint where multiple  
     % geometries and controllers can be added to the blueprint alongside 
     % the model used to describe the WECs motion.
@@ -133,12 +133,12 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
             %         A cell array of controller type indentifiers
             %
             % Returns:
-            %    array of :mat:class:`+WecOptLib.+experimental.DefaultDevice`:
-            %        An array of DefaultDevice objects with chosen 
-            %        geometries along the first dimension and chosen
-            %        controllers along the second.
+            %    array of :mat:class:`+WecOptLib.+experimental.Device`:
+            %        An array of Device objects with chosen geometries 
+            %        along the first dimension and chosen controllers 
+            %        along the second.
             %
-
+            
             if ~iscell(geomTypes)
                 geomTypes = {geomTypes};
                 geomParams = {geomParams};
@@ -151,6 +151,32 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
             devices = obj.iterateGeometries(geomTypes,  ...
                                             geomParams, ...
                                             controlTypes);
+            
+        end
+        
+        function devices = recoverDevices(obj)
+            % Recover all simulations from devices assosiated to this
+            % blueprint.
+            %
+            % This can be useful if an optimisation has been run in 
+            % parallel mode, where any new devices will not be stored.
+            %
+            % Returns:
+            %    array of :mat:class:`+WecOptLib.+experimental.Device`:
+            %        An array of Device objects
+            %
+            
+            
+            import WecOptLib.experimental.Device
+            
+            deviceDirs = WecOptLib.utils.getFolders(obj.folder,  ...
+                                                    "absPath", true);
+            n = length(deviceDirs);
+
+            for i = 1:n
+                dir = deviceDirs{i};
+                devices(i) = load(fullfile(dir, 'device.mat')).obj;
+            end
             
         end
         
@@ -178,16 +204,23 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
                     error("WecOptTool:Blueprint:NotHydro", errStr)
                 end
                 
-                jdevices = obj.iterateControllers(hydro, controlTypes);
+                jdevices = obj.iterateControllers(geomType,     ...
+                                                  geomParam,    ...
+                                                  hydro,        ...
+                                                  controlTypes);
+                
                 devices = [devices; jdevices];
                 
             end
             
         end
         
-        function devices = iterateControllers(obj, hydro, controlTypes)
+        function devices = iterateControllers(obj, geomType,    ...
+                                                   geomParam,   ...
+                                                   hydro,       ...
+                                                   controlTypes)
             
-            import  WecOptLib.experimental.DefaultDevice
+            import WecOptLib.experimental.Device
             
             % Setting of aggregationHook is optional
             if isprop(obj, "aggregationHook")
@@ -201,11 +234,15 @@ classdef (Abstract) DefaultBlueprint < WecOptLib.experimental.base.Blueprint
                 controlType = controlTypes{i};
                 controllerCB = obj.controllerCallbacks.(controlType);
 
-                devices(i) = DefaultDevice(hydro,                       ...
-                                           obj.staticModelCallback,     ...
-                                           obj.dynamicModelCallback,    ...
-                                           controllerCB,                ...
-                                           aggregationHook);
+                devices(i) = Device(obj.folder,                 ...
+                                    geomType,                   ...
+                                    geomParam,                  ...
+                                    controlType,                ...
+                                    hydro,                      ...
+                                    obj.staticModelCallback,    ...
+                                    obj.dynamicModelCallback,   ...
+                                    controllerCB,               ...
+                                    aggregationHook);
 
             end
             
