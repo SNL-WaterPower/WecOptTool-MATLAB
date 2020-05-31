@@ -42,7 +42,7 @@ classdef (Abstract) Data < dynamicprops
             
         end
         
-        function out = toStruct(obj)
+        function out = struct(obj)
             % Return the object data as a struct
             
             props = properties(obj(1));

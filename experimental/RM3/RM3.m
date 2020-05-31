@@ -226,6 +226,6 @@ function out = aggregate(seastate, hydro, motions, performances)
     for i = 1:length(performances)
         powperfreq(i) = sum(performances(i).pow);
     end
-    s = seastate.toStruct();
+    s = struct(seastate);
     out.pow = dot(powperfreq, [s.mu]) / sum([s.mu]);
 end
