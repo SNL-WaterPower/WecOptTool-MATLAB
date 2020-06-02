@@ -18,7 +18,7 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function inpath = isNemohInPath(rundir)
+function inpath = isNemohInPath()
     
     startdir = pwd;
     inpath = 1;
@@ -29,6 +29,14 @@ function inpath = isNemohInPath(rundir)
         inpath = 0;
         cd(startdir);
         return
+    end
+    
+    rundir = tempname;
+    [status, ~, message] = mkdir(rundir);
+            
+    if ~status || strcmp(message, 'MATLAB:MKDIR:DirectoryExists')
+        errStr = "Failed to create unique folder";
+        error('WecOptTool:AutoFolder:NoUniqueFolder', errStr)
     end
     
     cd(rundir);
@@ -69,5 +77,6 @@ function inpath = isNemohInPath(rundir)
     end
     
     cd(startdir);
+    WecOptLib.utils.rmdirRetry(rundir);
 
 end
