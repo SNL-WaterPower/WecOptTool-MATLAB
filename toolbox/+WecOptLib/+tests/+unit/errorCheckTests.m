@@ -236,3 +236,22 @@ function testCheck_errorPositiveIntegerFloat(testCase)
     eID =  'WecOptLib:errorCheckFailure:positiveInt';
     verifyError(testCase,@() WecOptLib.errorCheck.assertPositiveInteger(x),eID)
 end
+
+function testCheck_successMinMaxRange(testCase)
+    xMin=2.;
+    xMax=3.;
+    dx=1.0;
+    verifyWarningFree(testCase,@() WecOptLib.errorCheck.checkMinMaxStepRange(xMin,xMax,dx))
+end
+
+function testCheck_errorMinMaxRange(testCase)
+    xMin=2.;
+    xMax=2.9;
+    dx=1.0;
+    eID ='WecOptLib:errorCheckFailure:wMinMaxRange';
+    verifyError(testCase,@() WecOptLib.errorCheck.checkMinMaxStepRange(xMin,xMax,dx),eID)
+end
+
+
+
+
