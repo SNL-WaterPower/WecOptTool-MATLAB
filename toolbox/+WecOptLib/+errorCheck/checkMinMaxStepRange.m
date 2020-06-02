@@ -3,17 +3,16 @@ function [] = checkMinMaxStepRange(xMin, xMax, dx)
     %
     % Parameters
     %-----------
-    % xMin: 
+    % xMin: float 
     %    Then minimum of a range of values
-    % xMax: 
+    % xMax: float
     %    Then maximum of a range of values    
-    % dx:
+    % dx: float
     %    The step size of a range of values
     %
     % Returns
     % -------
-    % Error if length(x) is not equal to length(y), otherwise retuns 
-    % nothing    
+    % Error if 'xMax' is not greater than 'xMin' by at least 'dx'   
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -37,7 +36,7 @@ function [] = checkMinMaxStepRange(xMin, xMax, dx)
     msg = 'xMax must be greater than xMin by at least dx';
     ID = 'WecOptLib:errorCheckFailure:wMinMaxRange';
     try    
-        assert((xMax-xMin)/dx > 1,ID,msg);
+        assert((xMax-xMin)/dx >= 1,ID,msg);
     catch ME
         throw(ME)
     end
