@@ -28,9 +28,11 @@ function compareNoTailsSS(originalSS, noTailsSS)
     %     You should have received a copy of the GNU General Public License
     %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.      
             
-    WecOptLib.utils.checkSpectrum(originalSS);
-    WecOptLib.utils.checkSpectrum(noTailsSS);
-    WecOptLib.errorCheck.assertEqualLength(originalSS, noTailsSS)
+    arguments
+        originalSS {WecOptLib.utils.checkSpectrum(originalSS)};
+        noTailsSS {WecOptLib.utils.checkSpectrum(noTailsSS), ...
+            WecOptLib.errorCheck.assertEqualLength(originalSS, noTailsSS)};
+    end
     
     figureN = get(gcf,'Number');
     

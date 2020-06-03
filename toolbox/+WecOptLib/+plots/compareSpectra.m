@@ -41,10 +41,12 @@ function compareSpectra(SSOriginal, SSModified, errorField)
     %     You should have received a copy of the GNU General Public License
     %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
     
-    
-    WecOptLib.utils.checkSpectrum(SSOriginal)
-    WecOptLib.utils.checkSpectrum(SSModified)
-    WecOptLib.errorCheck.assertEqualLength(SSOriginal, SSModified)
+    arguments
+        SSOriginal {WecOptLib.utils.checkSpectrum(SSOriginal)};
+        SSModified  {WecOptLib.utils.checkSpectrum(SSModified), ...
+            WecOptLib.errorCheck.assertEqualLength(SSOriginal, SSModified)};
+        errorField char = 'None';        
+    end
     
     figureN = get(gcf,'Number');
     for i=1:length(SSOriginal)
@@ -58,7 +60,7 @@ function compareSpectra(SSOriginal, SSModified, errorField)
         
         
         labelOrig= sprintf('Original (Bins=%d)' ,length(wOrig));
-        labelMod = sprintf('Resampled (Bins=%d)',length(wMod));
+        labelMod = sprintf('Modified (Bins=%d)',length(wMod));
         
         plot(wOrig, SOrig,'DisplayName', labelOrig)
         plot(wMod, SMod,'DisplayName', labelMod)
@@ -70,9 +72,7 @@ function compareSpectra(SSOriginal, SSModified, errorField)
         ylabel('Spectral Density','Interpreter','latex')
         grid
         
-        if isnan(errorField)
-            pass
-        elseif isfield(SSModified(i),errorField)                
+        if isfield(SSModified(i),errorField)                
             errorVal = SSModified(i).(errorField);
             if strcmp(errorField, 'resampleError')
                 title(sprintf('Fitting Error (No Extrapolation): %.2f%%', errorVal*100))                    
