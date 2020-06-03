@@ -6,7 +6,7 @@ function w = seaStatesGlobalW(SS, step)
     % Parameters
     % ----------
     % SS: struct
-    %    spectra or Spectrum with optional fields 'dw', 'wMin', 'wMax'
+    %    spectra or Spectrum 
     % step: numeric
     %     specifies the frequency discrtization
     %
