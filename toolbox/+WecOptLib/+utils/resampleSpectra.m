@@ -67,13 +67,16 @@ function SSResampled = resampleSpectra(SS, dw, NSuperHarmonics,wMin,wMax)
         
     N=length(SS);    
     if length(dw) ~= N 
-        dw = dw*ones(length(SS));
-    elseif length(NSuperHarmonics)~=N
-        NSuperHarmonics = NSuperHarmonics*ones(N);
-    elseif length(wMin) ~= N
-        wMin = wMin*ones(N);
-    elseif length(wMax) ~= N
-        wMax = wMax*ones(N);
+        dw = dw*ones(length(SS),1);
+    end
+    if length(NSuperHarmonics)~=N
+        NSuperHarmonics = NSuperHarmonics*ones(N,1);
+    end
+    if length(wMin) ~= N
+        wMin = wMin*ones(N,1);
+    end
+    if length(wMax) ~= N
+        wMax = wMax*ones(N,1);
     end
         
     SSResampled = SS;
