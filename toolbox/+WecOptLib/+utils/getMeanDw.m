@@ -1,4 +1,4 @@
-function dw = getDw(S)
+function dw = getMeanDw(S)
     % getMeanDw - Returns the mean of the frequency discrtization for each w as
     % a key in the struct S
     %
@@ -30,8 +30,10 @@ function dw = getDw(S)
     % 
     %     You should have received a copy of the GNU General Public License
     %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
-
-    WecOptLib.utils.checkSpectrum(S);
+    
+    arguments
+        S {WecOptLib.utils.checkSpectrum(S)};
+    end
 
     for i=1:length(S)    
         dw =mean(diff(S(i).w));
