@@ -1,6 +1,7 @@
 function downSampleSS = downSampleSpectra(SS, maxError, minBins)
-    % downSampleSS takes a set of sea states and down samples the 
-    % number of frequencies.
+    % downSampleSpectra takes a set of sea states and down samples the 
+    % number of frequencies of each spectra to be within a specified 
+    % maxError and/ or minimum number of bins.
     %
     % Parameters
     % ---------
@@ -41,18 +42,17 @@ function downSampleSS = downSampleSpectra(SS, maxError, minBins)
     %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
     
     arguments
-        SS;
-        maxError = 0.01;
-        minBins = 10;
+        SS {WecOptLib.utils.checkSpectrum(SS)};
+        maxError {mustBeNumeric, mustBePositive, mustBeFinite, ...
+                  WecOptLib.errorCheck.assertLengthOneOrLengthSS(maxError,SS)...
+                  } = 0.01 ;
+        minBins  {mustBeNumeric, mustBePositive, mustBeFinite, ...
+                  mustBeGreaterThan(minBins,1), ...
+                  WecOptLib.utils.assertStructFieldLengthGreaterThanOrEqualToReference(SS,'S',minBins)...
+                  WecOptLib.errorCheck.assertLengthOneOrLengthSS(minBins,SS)...
+                  } = 10;
     end
-    
-    WecOptLib.utils.checkSpectrum(SS);
-    WecOptLib.errorCheck.assertLengthOneOrLengthSS(maxError,SS)
-    WecOptLib.errorCheck.assertPositiveFloat(maxError)
-    WecOptLib.errorCheck.assertLengthOneOrLengthSS(minBins,SS)
-    WecOptLib.errorCheck.assertPositiveInteger(minBins)
-    WecOptLib.errorCheck.assertGreaterThan(minBins,1)
-    WecOptLib.errorCheck.assertStructFieldLengthGreaterThanOrEqualToReference(SS,'S',minBins) 
+                           
     
     downSampleSS = SS;
     for i =1:length(SS)
@@ -77,7 +77,7 @@ end
 
 function [wDownSampled, SDownSampled, err] = downSample(w, S, maxError, minBins)
     % Removes Spectra less than tol % of max(S)
-
+    %
     % Parameters
     % ----------
     % w: vector
@@ -85,7 +85,7 @@ function [wDownSampled, SDownSampled, err] = downSample(w, S, maxError, minBins)
     % S: vector
     %    Spectral densities
     % maxError: float
-    %    Percent maximum error the resampled data can have by MAPE
+    %    Percent maximum error the resampled data can have by MAAPE
     %
     % Returns
     % -------
@@ -102,10 +102,8 @@ function [wDownSampled, SDownSampled, err] = downSample(w, S, maxError, minBins)
     while and(err < maxError, bins>=minBins)
         bins = bins-1;    
         wDownSampled = linspace(wMin,wMax,bins)';
-        SDownSampled = interp1(w, S, wDownSampled);
-        
-        %check down sample for NaNs e.g. isRealPositive
-        
+        SDownSampled = interp1(w, S, wDownSampled);        
+        mustBeFinite(SDownSampled)
         SOrigInterpolated = interp1(wDownSampled, SDownSampled, w,'linear', 0);        
         err = WecOptLib.utils.MAAPError(S,SOrigInterpolated);                
     end
@@ -117,7 +115,7 @@ function [wDownSampled, SDownSampled, err] = downSample(w, S, maxError, minBins)
     SOrigInterpolated = interp1(wDownSampled, SDownSampled, w,'linear', 0);                    
     err = WecOptLib.utils.MAAPError(S,SOrigInterpolated );
     
-    WecOptLib.errorCheck.assertLessThan(err, maxError)            
+    mustBeLessThan(err,maxError)         
     WecOptLib.errorCheck.assertEqualLength(wDownSampled,SDownSampled)
         
 end

@@ -38,9 +38,12 @@ function maape = MAAPError(actual, predicted)
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>
-      
-    % assert equal lengths
-
+    
+    arguments
+        actual    {mustBeNumeric, mustBeFinite, mustBeNonzero}
+        predicted {mustBeNumeric, mustBeFinite, WecOptLib.errorCheck.assertEqualLength(actual, predicted) }
+    end
+            
     N = length(actual);
     
     L1 = (1 - predicted ./ actual );
