@@ -58,7 +58,7 @@ devices = blueprint.recoverDevices();
     
 for device = devices
 
-    if isequal(device.geomParams, x)
+    if isequal(device.geomParams, {x})
         bestDevice = device;
         break
     end
