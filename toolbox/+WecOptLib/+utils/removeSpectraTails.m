@@ -1,6 +1,6 @@
 function noTailsSS = removeSpectraTails(SS, tailTolerence, minBins)
     % Removes the spectrum tails based on the provided tailTolerence such
-    % that S > max(S)*tailTolerence/100 & length(S) >= minBins
+    % that S > max(S)*tailTolerence & length(S) >= minBins
     %
     % Parameters
     % ---------
@@ -41,20 +41,15 @@ function noTailsSS = removeSpectraTails(SS, tailTolerence, minBins)
     %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
     
     arguments
-        SS;
-        tailTolerence = 0.01;
-        minBins = 10;
+        SS {WecOptLib.utils.checkSpectrum(SS)};
+        tailTolerence {mustBePositive, mustBeNumeric, mustBeFinite,...
+                      WecOptLib.errorCheck.assertLengthOneOrLengthSS(tailTolerence,SS)}= 0.01;
+        minBins {mustBeInteger, mustBePositive,mustBeGreaterThan(minBins,1)...
+                 WecOptLib.errorCheck.assertLengthOneOrLengthSS(minBins,SS),...
+                 WecOptLib.utils.assertStructFieldLengthGreaterThanOrEqualToReference(SS,'S',minBins)...
+                } = 10;
     end
-        
-       
-    WecOptLib.utils.checkSpectrum(SS);
-    WecOptLib.errorCheck.assertLengthOneOrLengthSS(tailTolerence,SS)
-    WecOptLib.errorCheck.assertPositiveFloat(tailTolerence)
-    WecOptLib.errorCheck.assertLengthOneOrLengthSS(minBins,SS)
-    WecOptLib.errorCheck.assertPositiveInteger(minBins)
-    WecOptLib.errorCheck.assertGreaterThan(minBins,1)
-    WecOptLib.errorCheck.assertStructFieldLengthGreaterThanOrEqualToReference(SS,'S',minBins)    
-                      
+                          
     noTailsSS = SS;
     for i =1:length(SS)        
         w = SS(i).w;
@@ -69,7 +64,6 @@ function noTailsSS = removeSpectraTails(SS, tailTolerence, minBins)
             msg=['Error: Returned specturm length less than minBins. '...
                 'Consider lowering the tailTolerence'];
             error(msg)
-            break
         end
     end            
     
@@ -102,7 +96,7 @@ function [noTailW, noTailS] = removeTails(w, S, tailTolerence)
     SS.S = S;
     WecOptLib.utils.checkSpectrum(SS);
     clear SS
-    WecOptLib.errorCheck.assertPositiveFloat(tailTolerence)
+    
         
     % Remove tails of the spectra; return indicies of the vals>tol% of max
     specGreaterThanTolerence = find(S > max(S)*tailTolerence);
@@ -111,7 +105,7 @@ function [noTailW, noTailS] = removeTails(w, S, tailTolerence)
     iEnd   = max(specGreaterThanTolerence);
     iSkip  = 1;
     
-    WecOptLib.errorCheck.assertGreaterThanOrEqual(iEnd, iStart)
+    mustBeGreaterThanOrEqual(iEnd, iStart)
 
     noTailW = w(iStart:iSkip:iEnd);
     noTailS = S(iStart:iSkip:iEnd);    
