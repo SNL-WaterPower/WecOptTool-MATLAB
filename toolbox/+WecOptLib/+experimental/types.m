@@ -1,4 +1,4 @@
-function result = typeArray(typeName, input)
+function result = types(typeName, input)
 
     fullQName = "WecOptLib.experimental.types." + typeName;
     typeHandle = str2func(fullQName);

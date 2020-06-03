@@ -17,7 +17,7 @@ blueprint = RM3();
 S = WecOptLib.tests.data.example8Spectra();
 
 % Create a SeaState object before optimisation to avoid warnings.
-SS = WecOptLib.experimental.types.typeArray("SeaState", S);
+SS = WecOptLib.experimental.types("SeaState", S);
 
 %% solve via brute force
 

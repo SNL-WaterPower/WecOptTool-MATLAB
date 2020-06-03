@@ -15,10 +15,11 @@ classdef (Abstract) Blueprint < WecOptLib.experimental.base.AutoFolder
     % Attributes:
     %     geometryCallbacks (struct of function handles):
     %         (ABSTRACT) A struct of function handles where each function 
-    %         should take a single input argument and return a Hydro 
+    %         should take a folder path as the first input argument, an 
+    %         arbitrary number of additional inputs and return a Hydro 
     %         object. For instance, to include the following function::
     %
-    %             function hydro = myGeom(size)
+    %             function hydro = myGeom(folder, sizeA, sizeB)
     %                 import WecOptLib.experimental.types.Hydro
     %                 ...
     %                 hydro = Hydro(vars)
@@ -196,7 +197,7 @@ classdef (Abstract) Blueprint < WecOptLib.experimental.base.AutoFolder
                 geomParam = geomParams{i};
                 
                 geometryCB = obj.geometryCallbacks.(geomType);
-                hydro = geometryCB(geomParam);
+                hydro = geometryCB(obj.folder, geomParam{:});
                 
                 if ~isa(hydro, "WecOptLib.experimental.types.Hydro")
                     errStr = "The geometry model must return a " +   ...

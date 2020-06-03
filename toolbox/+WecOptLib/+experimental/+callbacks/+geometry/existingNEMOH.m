@@ -1,4 +1,4 @@
-function hydro = existingNEMOH(nemohFolder)
+function hydro = existingNEMOH(folder, nemohFolder)
     % A predefined geometry callback for reading an existing NEMOH
     % solution.
     %

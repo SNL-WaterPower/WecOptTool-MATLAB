@@ -1,4 +1,4 @@
-classdef AxiMesh < WecOptLib.experimental.base.AutoFolder
+classdef AxiMesh < WecOptLib.experimental.base.Mesher
     
     properties
         verb = false
@@ -9,9 +9,10 @@ classdef AxiMesh < WecOptLib.experimental.base.AutoFolder
     methods
         
         function mesh = makeMesh(obj, r, z, ntheta, nfobj, zG, bodyNum)
-            % [Mass,Inertia,KH,XB,YB,ZB]=axiMesh(r,z,n)
+            % [Mass,Inertia,KH,XB,YB,ZB] = axiMesh(r,z,n)
             %
-            % Purpose : Mesh generation of an axisymmetric body for use with Nemoh
+            % Purpose : Mesh generation of an axisymmetric body for use 
+            %           with Nemoh
             %
             % Inputs : description of radial profile of the body
             %   - n         : number of points for discretisation
@@ -20,8 +21,8 @@ classdef AxiMesh < WecOptLib.experimental.base.AutoFolder
             %
             % Outputs : hydrostatics
             %   - Mass      : mass of buoy
-            %   - Inertia   : inertia matrix (estimated assuming mass is distributed on
-            %   wetted surface)
+            %   - Inertia   : inertia matrix (estimated assuming mass is 
+            %                 distributed on wetted surface)
             %   - KH        : hydrostatic stiffness matrix
             %   - XB,YB,ZB  : coordinates of buoyancy center
             %
@@ -37,11 +38,12 @@ classdef AxiMesh < WecOptLib.experimental.base.AutoFolder
             nemohExistFlag = WecOptLib.nemoh.isNemohInPath();
 
             if(~ nemohExistFlag)
-                errMsg = ['Error: Unable to locate Nemoh binaries. It is ',     ...
-                          'possible that the Nemoh path has not been added ',   ...
-                          'to WecOptTool. Make sure that the file path is ',    ...
-                          'spelled correctly and has been added to WecOptTool ',...
-                          'using the InstallNemoh.m script'];
+                errMsg = ['Error: Unable to locate Nemoh binaries. ',   ...
+                          'It is possible that the Nemoh path has not ',...
+                          'been added to WecOptTool. Make sure that ',  ...
+                          'the file path is  spelled correctly and ',   ...
+                          'has been added to WecOptTool using the ',    ...
+                          'InstallNemoh.m script'];
                 error(errMsg);
             end
             
@@ -113,8 +115,8 @@ classdef AxiMesh < WecOptLib.experimental.base.AutoFolder
 
              % obj.folder;
 
-            % If this is a multi-body device the mesh and results directories
-            % will already exist
+            % If this is a multi-body device the mesh and results 
+            % directories will already exist
             if exist(fullfile(rundir,'mesh'),'dir') ~= 7
                 mkdir(fullfile(rundir,'mesh'));
             end

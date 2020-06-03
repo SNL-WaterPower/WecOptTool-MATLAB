@@ -5,7 +5,8 @@ classdef RM3 < WecOptLib.experimental.Blueprint
         geometryCallbacks = struct(                                     ...
             'existing',                                                 ...
               @WecOptLib.experimental.callbacks.geometry.existingNEMOH, ...
-            'scalar', @getHydroScalar)
+            'scalar', @getHydroScalar,                                  ...
+            'parametric', @getHydroParametric)
         
         staticModelCallback = @getStaticModel
         dynamicModelCallback = @getDynamicModel
@@ -19,7 +20,7 @@ classdef RM3 < WecOptLib.experimental.Blueprint
     
 end
 
-function hydro = getHydroScalar(lambda)
+function hydro = getHydroScalar(folder, lambda)
                     
     % Get data file path
     p = mfilename('fullpath');
@@ -45,9 +46,56 @@ function hydro = getHydroScalar(lambda)
     hydro.ex_re = real(hydro.ex);
     hydro.ex_im = imag(hydro.ex);
     
-    hydro = WecOptLib.experimental.types.Hydro(hydro);
+    hydro = WecOptLib.experimental.types("Hydro", hydro);
            
 end
+
+
+function hydro = getHydroParametric(folder, r1, r2, d1, d2, S, freqStep)
+                    
+    w = WecOptLib.utils.seaStatesGlobalW(S, freqStep);
+               
+    if w(1) == 0
+        w = w(2:end);
+    end
+    
+    % Float
+    
+    rf = [0 r1 r1 0];
+    zf = [0 0 -d1 -d1];
+
+    % Heave plate
+
+    thk = 1;
+    rs = [0 r2 r2 0];
+    zs = [-d2 -d2 -d2-thk -d2-thk];
+
+    % Mesh
+    ntheta = 20;
+    nfobj = 200;
+    zG = 0;
+    
+    meshes = WecOptLib.experimental.mesh("AxiMesh",    ...
+                                         folder,       ...
+                                         rf,           ...
+                                         zf,           ...
+                                         ntheta,       ...
+                                         nfobj,        ...
+                                         zG,           ...
+                                         1);
+    meshes(2) = WecOptLib.experimental.mesh("AxiMesh",  ...
+                                            folder,     ...
+                                            rf,         ...
+                                            zf,         ...
+                                            ntheta,     ...
+                                            nfobj,      ...
+                                            zG,         ...
+                                            2);
+    
+    hydro = WecOptLib.experimental.solver("NEMOH", folder, meshes, w);
+           
+end
+
 
 function static = getStaticModel(hydro)
             
@@ -189,7 +237,7 @@ function motion = getDynamicModel(static, hydro, S)
     dynamic.Zi = Zi;
     dynamic.F0 = F0;
     
-    motion = WecOptLib.experimental.types.Motion(dynamic);
+    motion = WecOptLib.experimental.types("Motion", dynamic);
 
 end
 
@@ -200,7 +248,7 @@ function performance = complexCongugateControl(motion, S)
     % Note: Re{Zi} = Radiation Damping Coeffcient
     out.powPerFreq = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
     
-    performance = WecOptLib.experimental.types.Performance(out);
+    performance = WecOptLib.experimental.types("Performance", out);
 
 end
 
@@ -218,7 +266,7 @@ function performance = dampingControl(motion, S)
     out.powPerFreq = 0.5 * B_opt * ...
                     (abs(motion.F0 ./ (motion.Zi + B_opt)) .^ 2);
                 
-    performance = WecOptLib.experimental.types.Performance(out);
+    performance = WecOptLib.experimental.types("Performance", out);
 
 end
 
