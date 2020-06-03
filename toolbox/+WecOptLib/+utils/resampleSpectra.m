@@ -1,4 +1,4 @@
-function SSResampled = resampleSpectra(SS, dw, NSuperHarmonics)
+function SSResampled = resampleSpectra(SS, dw, NSuperHarmonics,wMin,wMax)
     % Takes a set of sea states and resamples the spectrum
     % based on a provided angular frequency discritization ('dw') and 
     % number of super harmonics to consider (NSuperHarmonics). 
@@ -13,15 +13,17 @@ function SSResampled = resampleSpectra(SS, dw, NSuperHarmonics)
     % Parameters
     % ---------
     % SS: struct
-    %    spectra or Spectrum with optional fields 'dw', 'wMin', 'wMax'
-    %    'dw': numeric
+    %    spectra or Spectrum 
+    % dw: numeric
     %        specifies the frequency discrtization
-    %    'wMin': float
-    %        Specifies the minimum frequency. Will be modified if not an
-    %        iteger multple of 'dw'
-    %    'wMax': float
-    %        Specifies the maximum frequency. Will be modified if not an
-    %        iteger multple of 'dw'    
+    % NSuperHarmonics: int
+    %        Number of super harmoics to consider
+    % wMin: float
+    %       Specifies the minimum frequency. Will be modified if not an
+    %       iteger multple of 'dw'
+    % wMax: float
+    %       Specifies the maximum frequency. Will be modified if not an
+    %       iteger multple of 'dw'    
     %
     % Returns
     % -------
@@ -48,33 +50,42 @@ function SSResampled = resampleSpectra(SS, dw, NSuperHarmonics)
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
     
     arguments
-        SS;
-        dw;
-        NSuperHarmonics=6;
+        SS {WecOptLib.utils.checkSpectrum(SS)};
+        dw {mustBePositive, mustBeFinite, mustBeNonzero,...
+            WecOptLib.errorCheck.assertLengthOneOrLengthSS(dw,SS)};
+        NSuperHarmonics {mustBePositive, mustBeInteger,...
+            WecOptLib.errorCheck.assertLengthOneOrLengthSS(NSuperHarmonics,SS)}...
+                        =6;
+        wMin {mustBePositive, mustBeFinite, mustBeNonzero, ...
+             WecOptLib.errorCheck.assertLengthOneOrLengthSS(wMin,SS)} ...
+             = WecOptLib.utils.getStructFieldMin(SS,'w');
+        wMax {mustBePositive, mustBeFinite, mustBeNonzero, ...
+            WecOptLib.errorCheck.assertLengthOneOrLengthSS(wMax,SS), ...
+            WecOptLib.errorCheck.checkMinMaxStepRange(wMin,wMax,dw)} ...
+            = WecOptLib.utils.getStructFieldMax(SS,'w');
     end
-
-    WecOptLib.utils.checkSpectrum(SS);        
-       
-    %assert(dw, positive, real)
-    %assert(dw, len1 or lenSS)
-    
-    %[noTailsS(:).dw]  = deal(dw);
-    
+        
+    N=length(SS);    
+    if length(dw) ~= N 
+        dw = dw*ones(length(SS));
+    elseif length(NSuperHarmonics)~=N
+        NSuperHarmonics = NSuperHarmonics*ones(N);
+    elseif length(wMin) ~= N
+        wMin = wMin*ones(N);
+    elseif length(wMax) ~= N
+        wMax = wMax*ones(N);
+    end
+        
     SSResampled = SS;
-    for i =1:length(SS)
+    for i =1:N                
                 
-        wMin = min(SS(i).w);
-        wMax = max(SS(i).w);
+        wIntegerStepMin = floor(wMin(i) / dw(i)) * dw(i);
+        wIntegerStepMax = ceil(wMax(i) / dw(i)) * dw(i);                                
         
-        WecOptLib.errorCheck.checkMinMaxStepRange(wMin,wMax,dw)
-                
-        wIntegerStepMin = floor(wMin / dw) * dw;
-        wIntegerStepMax = ceil(wMax / dw) * dw;                                
-        
-        wResampled = wIntegerStepMin:dw:wIntegerStepMax*NSuperHarmonics;
+        wResampled = wIntegerStepMin:dw(i):wIntegerStepMax*NSuperHarmonics(i);
         wResampled = wResampled';
         
-        WecOptLib.errorCheck.checkMinMaxStepRange(min(wResampled), max(wResampled), dw)
+        WecOptLib.errorCheck.checkMinMaxStepRange(min(wResampled), max(wResampled), dw(i))
         
         wOrig = SS(i).w;
         SOrig = SS(i).S;  
