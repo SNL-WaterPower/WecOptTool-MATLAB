@@ -22,24 +22,6 @@ function tests = seaStatesGlobalWTest()
    tests = functiontests(localfunctions);
 end
 
-function testCheck_stepType(testCase)
-    S = WecOptLib.tests.data.exampleSpectrum();   
-    eID = 'WecOptLib:utilityFailure:stepType';
-    verifyError(testCase,@() WecOptLib.utils.seaStatesGlobalW(S,'a'),eID)
-end
-
-function testCheck_stepNegativeValue(testCase)
-    S = WecOptLib.tests.data.exampleSpectrum();   
-    eID = 'WecOptLib:utilityFailure:stepValue';
-    verifyError(testCase,@() WecOptLib.utils.seaStatesGlobalW(S,-1.0),eID)
-end
-
-function testCheck_stepZeroValue(testCase)
-    S = WecOptLib.tests.data.exampleSpectrum();   
-    eID = 'WecOptLib:utilityFailure:stepValue';
-    verifyError(testCase,@() WecOptLib.utils.seaStatesGlobalW(S,0),eID)
-end
-
 
 function testCheck_frequecyStepValue(testCase)
     S = WecOptLib.tests.data.exampleSpectrum();
