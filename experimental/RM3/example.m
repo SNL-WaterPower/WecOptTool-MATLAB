@@ -13,12 +13,13 @@ S = WecOptLib.tests.data.example8Spectra();
 
 % make devices from blueprint. All arguments can be given as cell
 % arrays (or scalars) which produces an mxn device array.
-geomMode = 'parametric';
-geomParams = {5 7.5 1.125 42 S, 0.5};
-controllers = {'CC', 'P'};
+geomParams.type = 'parametric';
+geomParams.params = {5 7.5 1.125 42 S, 0.5};
+controlParams.type = 'CC';
+controlParams(2).type = 'P';
 
 blueprint = RM3();
-devices = makeDevices(blueprint, geomMode, geomParams, controllers);
+devices = makeDevices(blueprint, geomParams, controlParams);
 
 % Create a SeaState object before optimisation to avoid warnings.
 SS = WecOptLib.experimental.types("SeaState", S);

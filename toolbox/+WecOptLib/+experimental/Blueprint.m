@@ -118,40 +118,61 @@ classdef (Abstract) Blueprint < WecOptLib.experimental.base.AutoFolder
     
     methods
         
-        function devices = makeDevices(obj, geomTypes,         ...
-                                            geomParams,        ...
-                                            controlTypes)
+        function devices = makeDevices(obj, geomParams,          ...
+                                            controlParams,       ...
+                                            modelParams)
             % Create an m x n array of DefaultDevice objects for a given
             % set of geometry and controller configurations.
             %
             % Arguments:
-            %     geomTypes (cell array of string):
-            %         A cell of array of geometry type indentifiers
-            %     geomParams (cell array):
-            %         A cell array containing the input relevant to the
-            %         geometry type at the same index
-            %     controlTypes (cell array of string):
-            %         A cell array of controller type indentifiers
+            %     geomParams (array of struct)
+            %     controlParams (array of struct)
+            %     modelParams (optional array of struct)
             %
             % Returns:
             %    array of :mat:class:`+WecOptLib.+experimental.Device`:
             %        An array of Device objects with chosen geometries 
-            %        along the first dimension and chosen controllers 
-            %        along the second.
+            %        along the first dimension, the chosen controllers 
+            %        along the second and chosen model parameters along
+            %        the third (if supplied).
             %
             
-            if ~iscell(geomTypes)
-                geomTypes = {geomTypes};
-                geomParams = {geomParams};
+            if ~isfield(geomParams, "type")
+                error("geomParams must have field 'type' defined")
+            end
+              
+            if ~isfield(controlParams, "type")
+                error("controlParams must have field 'type' defined")
             end
             
-            if ~iscell(controlTypes)
-                controlTypes = {controlTypes};
+            if ~isfield(geomParams, "params")
+                geomParams(1).params = [];
             end
-                        
-            devices = obj.iterateGeometries(geomTypes,  ...
-                                            geomParams, ...
-                                            controlTypes);
+              
+            if ~isfield(controlParams, "params")
+                controlParams(1).params = [];
+            end
+            
+            if nargin == 3
+                
+                devices = obj.iterateGeometries(geomParams,    ...
+                                                controlParams);
+                return
+                
+            end
+            
+            if ~isfield(controlParams, "params")
+                error("modelParams must have field 'params' defined")
+            end
+      
+            for k = length(modelParams)
+            
+                modelParam = modelParams(k).params;
+                devices(:, :, k) = obj.iterateGeometries(geomParams,    ...
+                                                         controlParams, ...
+                                                         modelParam);
+                                                     
+            end
             
         end
         
@@ -185,41 +206,59 @@ classdef (Abstract) Blueprint < WecOptLib.experimental.base.AutoFolder
     
     methods (Access=private)
         
-        function devices = iterateGeometries(obj, geomTypes,  ...
-                                                  geomParams, ...
-                                                  controlTypes)
-        
+        function devices = iterateGeometries(obj, geomParams,       ...
+                                                  controlParams,    ...
+                                                  modelParam)
+            
             devices = [];
-                                              
-            for i = 1:length(geomTypes)
+            
+            for i = 1:length(geomParams)
                 
-                geomType = geomTypes{i};
-                geomParam = geomParams{i};
+                geomType = geomParams(i).type;
+                
+                if isempty(geomParams(i).params)
+                    geomParam = {};
+                else
+                    geomParam = geomParams(i).params;
+                end
                 
                 geometryCB = obj.geometryCallbacks.(geomType);
                 hydro = geometryCB(obj.folder, geomParam{:});
                 
                 if ~isa(hydro, "WecOptLib.experimental.types.Hydro")
-                    errStr = "The geometry model must return a " +   ...
+                    errStr = "The geometry model must return a " +  ...
                              "Hydro object";
                     error("WecOptTool:Blueprint:NotHydro", errStr)
                 end
                 
-                jdevices = obj.iterateControllers(geomType,     ...
-                                                  geomParam,    ...
-                                                  hydro,        ...
-                                                  controlTypes);
+                if nargin == 3
                 
+                    jdevices = obj.iterateControllers(hydro,            ...
+                                                      geomType,         ...
+                                                      geomParam,        ...
+                                                      controlParams);
+                
+                else
+                
+                    jdevices = obj.iterateControllers(hydro,            ...
+                                                      geomType,         ...
+                                                      geomParam,        ...
+                                                      controlParams,    ...
+                                                      modelParam);
+                                                  
+                end
+                                                 
                 devices = [devices; jdevices];
                 
             end
             
         end
         
-        function devices = iterateControllers(obj, geomType,    ...
-                                                   geomParam,   ...
-                                                   hydro,       ...
-                                                   controlTypes)
+        function devices = iterateControllers(obj, hydro,           ...
+                                                   geomType,        ...
+                                                   geomParam,       ...
+                                                   controlParams,   ...
+                                                   modelParam)
             
             import WecOptLib.experimental.Device
             
@@ -230,20 +269,46 @@ classdef (Abstract) Blueprint < WecOptLib.experimental.base.AutoFolder
                 aggregationHook = [];
             end
             
-            for i = 1:length(controlTypes)
+            for i = 1:length(controlParams)
+                
+                controlType = controlParams(i).type;
+                
+                if isempty(controlParams(i).params)
+                    controlParam = {};
+                else
+                    controlParam = controlParams(i).params;
+                end
                     
-                controlType = controlTypes{i};
                 controllerCB = obj.controllerCallbacks.(controlType);
+                
+                if nargin == 5
+                   
+                    devices(i) = Device(obj.folder,                 ...
+                                        hydro,                      ...
+                                        obj.staticModelCallback,    ...
+                                        obj.dynamicModelCallback,   ...
+                                        controllerCB,               ...
+                                        aggregationHook,            ...
+                                        geomType,                   ...
+                                        geomParam,                  ...
+                                        controlType,                ...
+                                        controlParam);
+                                    
+                else
 
-                devices(i) = Device(obj.folder,                 ...
-                                    geomType,                   ...
-                                    geomParam,                  ...
-                                    controlType,                ...
-                                    hydro,                      ...
-                                    obj.staticModelCallback,    ...
-                                    obj.dynamicModelCallback,   ...
-                                    controllerCB,               ...
-                                    aggregationHook);
+                    devices(i) = Device(obj.folder,                 ...
+                                        hydro,                      ...
+                                        obj.staticModelCallback,    ...
+                                        obj.dynamicModelCallback,   ...
+                                        controllerCB,               ...
+                                        aggregationHook,            ...
+                                        geomType,                   ...
+                                        geomParam,                  ...
+                                        controlType,                ...
+                                        controlParam,               ...
+                                        modelParam);
+                                    
+                end
 
             end
             

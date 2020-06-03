@@ -12,7 +12,8 @@ classdef RM3 < WecOptLib.experimental.Blueprint
         dynamicModelCallback = @getDynamicModel
         
         controllerCallbacks = struct('CC', @complexCongugateControl,    ...
-                                     'P',  @dampingControl)
+                                     'P',  @dampingControl,             ...
+                                     'PS', @pseudoSpectralControl)
                                  
         aggregationHook = @aggregate
         
@@ -85,8 +86,8 @@ function hydro = getHydroParametric(folder, r1, r2, d1, d2, S, freqStep)
                                          1);
     meshes(2) = WecOptLib.experimental.mesh("AxiMesh",  ...
                                             folder,     ...
-                                            rf,         ...
-                                            zf,         ...
+                                            rs,         ...
+                                            zs,         ...
                                             ntheta,     ...
                                             nfobj,      ...
                                             zG,         ...
@@ -268,6 +269,237 @@ function performance = dampingControl(motion, S)
                 
     performance = WecOptLib.experimental.types("Performance", out);
 
+end
+
+function performance = pseudoSpectralControl(motion, S)
+    % PSEUDOSPECTRAL Pseudo spectral control
+    %   Returns power per frequency and frequency bins
+        
+    % Fix random seed <- Do we want this???
+    rng(1);
+    
+    % Reformulate equations of motion
+    motion = getPSCoefficients(motion);
+    
+    % Add phase realizations
+    n_ph_avg = 5;
+    ph_mat = 2 * pi * rand(length(motion.w), n_ph_avg); 
+    n_ph = size(ph_mat, 2);
+    
+    freq = motion.W;
+    n_freqs = length(freq);
+    powPerFreqMat = zeros(n_ph, n_freqs);
+    
+    for ind_ph = 1 : n_ph
+        
+        ph = ph_mat(:, ind_ph);
+        [~, phasePowPerFreq] = getPSPhasePower(motion, ph);
+        
+        for ind_freq = 1 : n_freqs
+            powPerFreqMat(ind_ph, ind_freq) = phasePowPerFreq(ind_freq);
+        end
+        
+    end
+    
+    out.powPerFreq = mean(powPerFreqMat);
+    performance = WecOptLib.experimental.types("Performance", out);
+    
+end
+
+function motion = getPSCoefficients(motion)
+    %PSCOEFFICIENTS
+    % Bacelli 2014: Background Chapter 4.1, 4.2; RM3 in section 6.1
+    % Number of frequency - half the number of fourier coefficients
+    Nf = length(motion.w);
+    % Collocation points uniformly distributed btween 0 and T
+    Nc = (2*Nf) + 2;
+
+    % Frequency vector (re-build)
+    w0 = motion.dw;
+    T = 2*pi/w0;
+    W = motion.w(1)+w0*(0:Nf-1)';
+
+    % Building cost function
+    H = [0, 0, 1; 0, 0, -1; 1, -1, 0];
+    H_mat = 0.5 * kron(H, eye(2*Nf));
+
+    % Building matrices B33 and A33
+    Adiag33 = zeros(2*Nf-1,1);
+    Bdiag33 = zeros(2*Nf,1);
+
+    Adiag33(1:2:end) = W.* motion.A33;
+    Bdiag33(1:2:end) = motion.B33;
+    Bdiag33(2:2:end) = Bdiag33(1:2:end);
+
+    Bmat = diag(Bdiag33);
+    Amat = diag(Adiag33,1);
+    Amat = Amat - Amat';
+
+    G33 = (Amat + Bmat);
+
+    % Building matrices B39 and A39
+    Adiag39 = zeros(2*Nf-1,1);
+    Bdiag39 = zeros(2*Nf,1);
+
+    Adiag39(1:2:end) = W.* motion.A39;
+    Bdiag39(1:2:end) = motion.B39;
+    Bdiag39(2:2:end) = Bdiag39(1:2:end);
+
+    Bmat = diag(Bdiag39);
+    Amat = diag(Adiag39,1);
+    Amat = Amat - Amat';
+
+    G39 = (Amat + Bmat);
+
+    % Building matrices B99 and A99
+    Adiag99 = zeros(2*Nf-1,1);
+    Bdiag99 = zeros(2*Nf,1);
+
+    Adiag99(1:2:end) = W.* motion.A99;
+    Bdiag99(1:2:end) = motion.B99;
+    Bdiag99(2:2:end) = Bdiag99(1:2:end);
+
+    Bmat = diag(Bdiag99);
+    Amat = diag(Adiag99,1);
+    Amat = Amat - Amat';
+
+    G99 = (Amat + Bmat);
+
+    G = [G33, G39;
+         G39, G99];
+
+    B = motion.Bf * eye(4*Nf);
+    C = blkdiag(motion.K3 * eye(2*Nf), motion.K9 * eye(2*Nf));
+    M = blkdiag(motion.mass1 * eye(2*Nf), motion.mass2 * eye(2*Nf));
+
+    % Building derivative matrix
+    d = [W(:)'; zeros(1, length(W))];
+    Dphi1 = diag(d(1:end-1), 1);
+    Dphi1 = (Dphi1 - Dphi1');
+    Dphi = blkdiag(Dphi1, Dphi1);
+
+    m_scale = (motion.mass1+motion.mass2)/2; % scaling factor for optimization
+
+    % equality constraints for EOM
+    P =  (M*Dphi + B + G + (C / Dphi)) / m_scale;
+    Aeq = [P, -[eye(2*Nf); -eye(2*Nf)] ];
+
+    % Calculating collocation points for constraints
+    tkp = linspace(0, T, 4*(Nc));
+    tkp = tkp(1:end);
+    Wtkp = W*tkp;
+    Phip1 = zeros(2*size(Wtkp,1),size(Wtkp,2));
+    Phip1(1:2:end,:) = cos(Wtkp);
+    Phip1(2:2:end,:) = sin(Wtkp);
+
+    Phip = blkdiag(Phip1, Phip1);
+
+    A_ineq = kron([1 -1 0; -1 1 0], Phip1' / Dphi1);
+    B_ineq = ones(size(A_ineq, 1),1) * motion.delta_Zmax;
+
+    %force constraint section
+    siz = size(A_ineq);
+    forc =  Phip1';
+
+    B_ineq=[B_ineq; ones(siz(1),1) * motion.delta_Fmax/m_scale];
+    A_ineq=[A_ineq; kron([0 0 1; 0 0 -1], forc)];
+    
+    motion.Nf = Nf;
+    motion.T = T;
+    motion.W = W;
+    motion.H_mat = H_mat;
+    motion.tkp = tkp;
+    motion.Aeq = Aeq;
+    motion.A_ineq = A_ineq;
+    motion.B_ineq = B_ineq;
+    motion.Phip = Phip;
+    motion.Phip1 = Phip1;
+    motion.Dphi = Dphi;
+    motion.m_scale = m_scale;
+    
+end
+
+function [pow, powPerFreq] = getPSPhasePower(motion, ph)
+    %Calculates power using the pseudospectral method given a phase and
+    % a descrption of the body movement. Returns total phase power and 
+    % power per frequency 
+    
+    function P = pow_calc(X)
+        P = X' * motion.H_mat * X;
+    end
+    
+    eta_fd = motion.wave_amp .* exp(1i*ph);
+    %             eta_fd = eta_fd(start:end);
+    
+    fef3 = zeros(2*motion.Nf,1);
+    fef9 = zeros(2*motion.Nf,1);
+    
+    E3 = motion.H3 .* eta_fd;
+    E9 = motion.H9 .* eta_fd;
+    
+    fef3(1:2:end) =  real(E3);
+    fef3(2:2:end) = -imag(E3);
+    fef9(1:2:end) =  real(E9);
+    fef9(2:2:end) = -imag(E9);
+    
+    Beq = [fef3; fef9] / motion.m_scale;
+    
+    % constrained optimiztion
+    qp_options = optimoptions('fmincon',                        ...
+                              'Algorithm', 'sqp',               ...
+                              'Display', 'off',                 ...
+                              'MaxIterations', 1e3,             ...
+                              'MaxFunctionEvaluations', 1e5,    ...
+                              'OptimalityTolerance', 1e-8,      ...
+                              'StepTolerance', 1e-6);
+    
+    siz = size(motion.A_ineq);
+    X0 = zeros(siz(2),1);
+    [y, ~, ~, ~] = fmincon(@pow_calc,       ...
+                           X0,              ...
+                           motion.A_ineq,   ...
+                           motion.B_ineq,   ...
+                           motion.Aeq,      ...
+                           Beq,             ...
+                           [], [], [],      ...
+                           qp_options); 
+    
+    % y is a vector of x1hat, x2hat, & uhat. Calculate energy using
+    % Equation 6.11 of Bacelli 2014
+    uEnd = numel(y);
+    x1End = uEnd / 3;
+    x2Start = x1End + 1;
+    x2End = 2 * uEnd / 3;
+    uStart = x2End + 1;
+    
+    x1hat = y(1:x1End);
+    x2hat = y(x2Start:x2End);
+    uhat = y(uStart:end);
+    
+    Pvec = -1 / 2 * (x1hat - x2hat) .* uhat;
+    % Add the sin and cos components to get power as function of W
+    powPerFreq = Pvec(1:2:end) + Pvec(2:2:end);
+    powPerFreq = powPerFreq * motion.m_scale;
+    
+    velT = motion.Phip' * [x1hat;x2hat];
+    body1End = numel(velT) / 2;
+    Body2Start = body1End + 1;
+    velTBody1 = velT(1:body1End);
+    velTBody2 = velT(Body2Start:end);
+    
+    % posT = (motion.Phip' / motion.Dphi) * [x1hat;x2hat];
+    % relative position (check constraint satisfaction)
+    
+    % relPosT = posT(1:end/2)- posT(end/2+1:end);
+    % relative velocity (check constraint satisfaction)
+    % relVelT = velT(1:end/2)- velT(end/2+1:end);
+    
+    % Alternative power calculation
+    uT = motion.m_scale * motion.Phip1' * uhat;
+    Pt = (velTBody2 - velTBody1) .* uT;
+    pow = trapz(motion.tkp, Pt) / (motion.tkp(end) - motion.tkp(1));
+    assert(WecOptLib.utils.isClose(pow, sum(powPerFreq)))
+    
 end
 
 function out = aggregate(seastate, hydro, motions, performances)

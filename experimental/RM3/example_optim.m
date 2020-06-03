@@ -73,10 +73,11 @@ WecOptLib.experimental.plot.powerPerFreq(bestDevice);
 
 function [fval] = myWaveBotObjFun(x, bp, S)
     
-    cntrlMode = 'CC';
-    geomMode = 'scalar';
+    geomMode.type = 'scalar';
+    geomMode.params = {x};
+    cntrlMode.type = 'CC';
 
-    device = bp.makeDevices(geomMode, x, cntrlMode);
+    device = bp.makeDevices(geomMode, cntrlMode);
     device.simulate(S);
     fval = sum(device.aggregation.pow);
     

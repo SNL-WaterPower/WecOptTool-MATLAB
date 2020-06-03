@@ -48,14 +48,16 @@ classdef Device < WecOptLib.experimental.base.AutoFolder
     %     <https://www.gnu.org/licenses/>. 
     
     properties
-        geomType
-        geomParams
-        controlType
-        hydro
         seaState
+        hydro
         motions
         performances
         aggregation
+        geomType
+        geomParams
+        controlType
+        controlParam
+        modelParam = {}
     end
     
     properties (Access = private)
@@ -68,25 +70,34 @@ classdef Device < WecOptLib.experimental.base.AutoFolder
     methods (Access = {?WecOptLib.experimental.Blueprint})
         
         function obj = Device(baseFolder,           ...
-                              geomType,             ...
-                              geomParams,           ...
-                              controlType,          ...
                               hydro,                ...
                               staticModelCallback,  ...
                               dynamicModelCallback, ...
                               controllerCallbBack,  ...
-                              aggregationCB)
-            
+                              aggregationCB,        ...
+                              geomType,             ...
+                              geomParams,           ...
+                              controlType,          ...
+                              controlParam,         ...
+                              modelParam)
+                          
             obj = obj@WecOptLib.experimental.base.AutoFolder(baseFolder);
+                        
+            if nargin == 11
+                obj.modelParam = modelParam;
+            end
             
-            obj.geomType = geomType;
-            obj.geomParams = geomParams;
-            obj.controlType = controlType;
             obj.hydro = hydro;
-            obj.staticMotion = staticModelCallback(hydro);
+            obj.staticMotion = staticModelCallback(hydro,   ...
+                                                   obj.modelParam{:});
             obj.dynamicModelCB = dynamicModelCallback;
             obj.controllerCB = controllerCallbBack;
             obj.aggregationCB = aggregationCB;
+            obj.geomType = geomType;
+            obj.geomParams = geomParams;
+            obj.controlType = controlType;
+            obj.controlParam = controlParam;
+
             
         end
         
@@ -120,7 +131,8 @@ classdef Device < WecOptLib.experimental.base.AutoFolder
                 
                 smotion = obj.dynamicModelCB(obj.staticMotion, ...
                                              obj.hydro,        ...
-                                             S);
+                                             S,                ...
+                                             obj.modelParam{:});
 
                 if ~isa(smotion, "WecOptLib.experimental.types.Motion")
                     errStr = "The dynamic model must return a " +   ...
