@@ -42,11 +42,13 @@ classdef WaveBot < matlab.mixin.Copyable
         controlType     % 'P', 'CC', or 'PS'
         geomType        % 'scalar' or 'parametric'
         w               % column vector of frequencies at which to perform
-                        % analyses [rad/s]
+        % analyses [rad/s]
         dw
         studyDir        % TODO
         hydro           % TODO
         geom            % TODO
+        delta_Zmax (1,1)  double {mustBePositive} = 0.7
+        delta_Fmax (1,1)  double {mustBePositive} = 5e3
     end
     methods
         function obj = WaveBot(controlType,geomType,w)
@@ -205,7 +207,7 @@ classdef WaveBot < matlab.mixin.Copyable
             %
             % Args.
             %   Spect       wave spectrum (or spectra) defined in the style
-            %               of WAFO by functions such as jonswap, 
+            %               of WAFO by functions such as jonswap,
             %               bretschneider
             % Returns
             %   SimResults  object containing simulation results
@@ -291,30 +293,36 @@ classdef WaveBot < matlab.mixin.Copyable
                 case 'PS' % -----------------------------------------------
                     %                     error('not yet implemented') % TODO
                     
-                    ps = getPSCoefficients(obj);
+                    ps = obj.getPSCoefficients;
                     ps.wave_amp = waveAmp; % TODO
                     
-                    % Add phase realizations
-                    n_ph_avg = 5;
-                    ph_mat = 2 * pi * rand(length(ps.w), n_ph_avg);
-                    n_ph = size(ph_mat, 2);
+                    % Use mutliple phase realizations for PS at the model
+                    % is nonlinear (note that we use the original phasing
+                    % from the other cases)
+                    n_ph = 5;
+                    ph_mat = [ph, rand(length(ps.w), n_ph-1)];
+                    
                     
                     freq = ps.W;
                     n_freqs = length(freq);
-                    powPerFreqMat = zeros(n_ph, n_freqs);
+                    phasePowMat = zeros(n_ph, 1);
+                    powPerFreqMat = zeros(n_freqs, n_ph);
                     
                     for ind_ph = 1 : n_ph
                         
                         ph = ph_mat(:, ind_ph);
-                        [~, phasePowPerFreq] = obj.getPSPhasePower(ps, ph);
-                        
-                        for ind_freq = 1 : n_freqs
-                            powPerFreqMat(ind_ph, ind_freq) = obj.phasePowPerFreq(ind_freq);
-                        end
+                        [powTot, fRes(ind_ph), tRes(ind_ph)] = obj.getPSPhasePower(ps, ph);
+                        phasePowMat(ind_ph) = powTot;
+                        powPerFreqMat(:, ind_ph) = fRes.pow;
                         
                     end
                     
-                    pow = mean(powPerFreqMat);
+                    ph = ph_mat(:,1);
+                    u = fRes(1).vel;
+                    pos = fRes(1).pos;
+                    Zpto = nan(size(obj.hydro.Zi)); % TODO
+                    Fpto = fRes(1).u;
+                    pow = powPerFreqMat(:,1);
                     
                 otherwise % -----------------------------------------------
                     error('invalid controlType')
@@ -338,72 +346,51 @@ classdef WaveBot < matlab.mixin.Copyable
     
     methods (Access=protected)
         
-        function ps = getPSCoefficients(obj)
-            
-            
-            delta_Zmax = 10;
-            delta_Fmax = 1e5;
-            
-            
-            %PSCOEFFICIENTS
+        function motion = getPSCoefficients(obj)
+            % getPSCoefficients   constructs the necessary coefficients and
+            % matrices used in the pseudospectral control optimization
+            % problem
+            %
+            % Note that these coefficients are not sea state dependent,
+            % thus it is beneficial to find them once only when doing a
+            % study involving multiple sea states.
+            %
             % Bacelli 2014: Background Chapter 4.1, 4.2; RM3 in section 6.1
-            % Number of frequency - half the number of fourier coefficients
+            
+            % Number of frequency - half the number of Fourier coefficients
             Nf = length(obj.w);
-            % Collocation points uniformly distributed btween 0 and T
+            
+            % Collocation points uniformly distributed between 0 and T
+            % note that we have 2*Nf collocation points since we will have
+            % two Fourier coefficients for each frequency
             Nc = (2*Nf) + 2;
             
-            % Frequency vector (re-build)
-            w0 = obj.dw;
-            T = 2 * pi/w0;
+            % Rebuild frequency vector to ensure monotonically increasing
+            % with w(1) = w0
+            w0 = obj.dw;                    % fundamental frequency
+            T = 2 * pi/w0;                  % '' period
             W = obj.w(1) + w0 * (0:Nf-1)';
             
-            % Building cost function
-            H = [0, 0, 1; 1, -1, 0];
-            H_mat = 0.5 * kron(H, eye(1*Nf));
+            % Building cost function component
+            % we will form the cost function as transpose(x) * H x, where x
+            % is a vector of [vel, u]; we want the product above to result
+            % in power (u*vel)
+            H = [0,1;1,0];
+            H_mat = 0.5 * kron(H, eye(2*Nf));
             
             % Building matrices B33 and A33
             Adiag33 = zeros(2*Nf-1,1);
-            Adiag33(1:2:end) = W.* obj.hydro.A;
-            
             Bdiag33 = zeros(2*Nf,1);
+            
+            Adiag33(1:2:end) = W.* obj.hydro.A;
             Bdiag33(1:2:end) = obj.hydro.B;
             Bdiag33(2:2:end) = Bdiag33(1:2:end);
             
             Bmat = diag(Bdiag33);
             Amat = diag(Adiag33,1);
             Amat = Amat - Amat';
-            
-            G33 = (Amat + Bmat);
-            
-            %             % Building matrices B39 and A39
-            %             Adiag39 = zeros(2*Nf-1,1);
-            %             Bdiag39 = zeros(2*Nf,1);
-            %
-            %             Adiag39(1:2:end) = W.* obj.A39;
-            %             Bdiag39(1:2:end) = obj.B39;
-            %             Bdiag39(2:2:end) = Bdiag39(1:2:end);
-            %
-            %             Bmat = diag(Bdiag39);
-            %             Amat = diag(Adiag39,1);
-            %             Amat = Amat - Amat';
-            %
-            %             G39 = (Amat + Bmat);
-            
-            %             % Building matrices B99 and A99
-            %             Adiag99 = zeros(2*Nf-1,1);
-            %             Bdiag99 = zeros(2*Nf,1);
-            %
-            %             Adiag99(1:2:end) = W.* obj.A99;
-            %             Bdiag99(1:2:end) = obj.B99;
-            %             Bdiag99(2:2:end) = Bdiag99(1:2:end);
-            %
-            %             Bmat = diag(Bdiag99);
-            %             Amat = diag(Adiag99,1);
-            %             Amat = Amat - Amat';
-            %
-            %             G99 = (Amat + Bmat);
-            
-            G = [G33];
+
+            G = Amat + Bmat;
             
             B = obj.hydro.Bf * eye(2*Nf);
             C = blkdiag(obj.hydro.K * eye(2*Nf));
@@ -413,15 +400,14 @@ classdef WaveBot < matlab.mixin.Copyable
             d = [W(:)'; zeros(1, length(W))];
             Dphi1 = diag(d(1:end-1), 1);
             Dphi1 = (Dphi1 - Dphi1');
-            %             Dphi = blkdiag(Dphi1, Dphi1);
             Dphi = blkdiag(Dphi1);
             
-            m_scale = obj.hydro.m; % scaling factor for optimization
+            % scaling factor to improve optimization performance
+            m_scale = obj.hydro.m; 
             
             % equality constraints for EOM
             P =  (M*Dphi + B + G + (C / Dphi)) / m_scale;
-%             Aeq = [P, -[eye(2*Nf)] ];
-            Aeq = [P, -[eye(1*Nf); -eye(1*Nf)] ];
+            Aeq = [P, -eye(2*Nf) ];
             
             % Calculating collocation points for constraints
             tkp = linspace(0, T, 4*(Nc));
@@ -431,57 +417,53 @@ classdef WaveBot < matlab.mixin.Copyable
             Phip1(1:2:end,:) = cos(Wtkp);
             Phip1(2:2:end,:) = sin(Wtkp);
             
-            Phip = blkdiag(Phip1, Phip1);
+            Phip = blkdiag(Phip1);
             
-            A_ineq = kron([1 -1 0; -1 1 0], Phip1' / Dphi1);
-            B_ineq = ones(size(A_ineq, 1),1) * delta_Zmax;
+            A_ineq = kron([1 0], Phip1' / Dphi1);
+            B_ineq = ones(size(A_ineq, 1),1) * obj.delta_Zmax;
             
             %force constraint section
             siz = size(A_ineq);
             forc =  Phip1';
             
-            B_ineq = [B_ineq; ones(siz(1),1) * delta_Fmax/m_scale];
-            A_ineq = [A_ineq; kron([0 0 1; 0 0 -1], forc)];
+            B_ineq = [B_ineq; ones(siz(1),1) * obj.delta_Fmax/m_scale];
+            A_ineq = [A_ineq; kron([0 1], forc)];
             
-            ps.w = obj.w; % TODO
-            ps.Nf = Nf;
-            ps.T = T;
-            ps.W = W;
-            ps.H_mat = H_mat;
-            ps.tkp = tkp;
-            ps.Aeq = Aeq;
-            ps.A_ineq = A_ineq;
-            ps.B_ineq = B_ineq;
-            ps.Phip = Phip;
-            ps.Phip1 = Phip1;
-            ps.Dphi = Dphi;
-            ps.m_scale = m_scale;
+             
+            motion.Nf = Nf;
+            motion.T = T;
+            motion.W = W;                   % TODO: not sure should be carrying around another omega
+            motion.w = obj.hydro.w;
+            motion.H_mat = H_mat;
+            motion.tkp = tkp;
+            motion.Aeq = Aeq;
+            motion.A_ineq = A_ineq;
+            motion.B_ineq = B_ineq;
+            motion.Phip = Phip;
+            motion.Phip1 = Phip1;
+            motion.Dphi = Dphi;
+            motion.m_scale = m_scale;
             
         end
         
-        function [pow, powPerFreq] = getPSPhasePower(obj, ps, ph)
+        function [powTot, fRes, tRes] = getPSPhasePower(obj, ps, ph)
             %Calculates power using the pseudospectral method given a phase and
             % a descrption of the body movement. Returns total phase power and
             % power per frequency
             
             eta_fd = ps.wave_amp .* exp(1i*ph);
-            %             eta_fd = eta_fd(start:end);
             
             fef3 = zeros(2*ps.Nf,1);
-            %             fef9 = zeros(2*obj.Nf,1);
             
             E3 = obj.hydro.Hex .* eta_fd;
-            %             E9 = obj.H9 .* eta_fd;
             
             fef3(1:2:end) =  real(E3);
             fef3(2:2:end) = -imag(E3);
-%             fef9(1:2:end) =  real(E9);
-%             fef9(2:2:end) = -imag(E9);
             
             Beq = [fef3] / ps.m_scale;
             
             % constrained optimiztion
-            qp_options = optimoptions('fmincon',                        ...
+            qp_options = optimoptions('fmincon',  ...
                 'Algorithm', 'sqp',               ...
                 'Display', 'off',                 ...
                 'MaxIterations', 1e3,             ...
@@ -491,51 +473,50 @@ classdef WaveBot < matlab.mixin.Copyable
             
             siz = size(ps.A_ineq);
             X0 = zeros(siz(2),1);
-            pow_calc(X0)
-            [y, ~, ~, ~] = fmincon(@pow_calc,       ...
-                X0,              ...
-                ps.A_ineq,   ...
-                ps.B_ineq,   ...
-                ps.Aeq,      ...
-                Beq,             ...
-                [], [], [],      ...
+            [y, fval, exitflag, output] = fmincon(@pow_calc,...
+                X0,...
+                ps.A_ineq,...
+                ps.B_ineq,...
+                ps.Aeq,...
+                Beq,...
+                [], [], [],...
                 qp_options);
             
-            % y is a vector of x1hat, x2hat, & uhat. Calculate energy using
-            % Equation 6.11 of Bacelli 2014
-            uEnd = numel(y);
-            x1End = uEnd / 3;
-            x2Start = x1End + 1;
-            x2End = 2 * uEnd / 3;
-            uStart = x2End + 1;
+            % y is a column vector containing [vel; u] of the
+            % pseudospectral coefficients
+            tmp = reshape(y,[],2);
+            x1hat = tmp(:,1);
+            uhat = tmp(:,2);
+            Phat = 1/2 * x1hat .* uhat;
             
-            x1hat = y(1:x1End);
-            x2hat = y(x2Start:x2End);
-            uhat = y(uStart:end);
+%             % find the spectra
+            ps2spec = @(x) (x(1:2:end) +  x(2:2:end));  % TODO - probably make this a global function
+            velFreq = ps2spec(x1hat);                   % TODO - make these complex
+            posFreq = velFreq ./ obj.w;
+            uFreq = ps.m_scale * ps2spec(uhat);
+            powFreq = ps.m_scale * ps2spec(Phat);
+            zFreq = uFreq ./ velFreq;
+
+%             % find time histories
+            spec2time = @(x) ps.Phip' * x;              % TODO - probably make this a global function
+            velT = spec2time(x1hat);
+            posT = (ps.Phip' / ps.Dphi) * x1hat;
+            uT = ps.m_scale * spec2time(uhat);
+            powT = 1 * velT .* uT;
             
-            Pvec = -1 / 2 * (x1hat - x2hat) .* uhat;
-            % Add the sin and cos components to get power as function of W
-            powPerFreq = Pvec(1:2:end) + Pvec(2:2:end);
-            powPerFreq = powPerFreq * ps.m_scale;
+            powTot = trapz(ps.tkp, powT) / (ps.tkp(end) - ps.tkp(1));
+            assert(WecOptLib.utils.isClose(powTot, sum(powFreq), 'rtol', 0.05))
             
-            velT = ps.Phip' * [x1hat;x2hat];
-            body1End = numel(velT) / 2;
-            Body2Start = body1End + 1;
-            velTBody1 = velT(1:body1End);
-            velTBody2 = velT(Body2Start:end);
+            % assemble outputs
+            fRes.pos = posFreq;
+            fRes.vel = velFreq;
+            fRes.u = uFreq;
+            fRes.pow = powFreq;
             
-            % posT = (motion.Phip' / motion.Dphi) * [x1hat;x2hat];
-            % relative position (check constraint satisfaction)
-            
-            % relPosT = posT(1:end/2)- posT(end/2+1:end);
-            % relative velocity (check constraint satisfaction)
-            % relVelT = velT(1:end/2)- velT(end/2+1:end);
-            
-            % Alternative power calculation
-            uT = ps.m_scale * ps.Phip1' * uhat;
-            Pt = (velTBody2 - velTBody1) .* uT;
-            pow = trapz(ps.tkp, Pt) / (ps.tkp(end) - ps.tkp(1));
-            assert(WecOptLib.utils.isClose(pow, sum(powPerFreq)))
+            tRes.pos = posT;
+            tRes.vel = velT;
+            tRes.u = uT;
+            tRes.pow = powT;
             
             function P = pow_calc(X)
                 P = X' * ps.H_mat * X;
