@@ -1,3 +1,9 @@
+% Case A
+% This case shows a comparison between the different controllers currently
+% available in WecOptTool. This is NOT an optimization study. Instead, a
+% single device design is simulated in a sea state using each of the three
+% controllers.
+
 clc
 clear
 close all
@@ -13,6 +19,8 @@ w = 2*pi*linspace(0.05, 2, 50)';
 geomMode = 'scalar';
 a(1) = WecOptLib.models.WaveBot('CC',geomMode,w);
 a(2) = WecOptLib.models.WaveBot('P',geomMode,w);
+a(3) = WecOptLib.models.WaveBot('PS',geomMode,w);
+a(3).delta_Fmax = 100;
 
 %% run hydrodynamics
 
@@ -40,8 +48,11 @@ end
 
 %% plot results
 
-r(1).plotFreq
+for ii = 1:length(r)
+    r(ii).plotFreq
+end
 r.plotTime(0:0.01:100)
+legend('CC','P','PS')
 
 %% report results
 
