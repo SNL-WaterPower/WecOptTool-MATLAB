@@ -238,12 +238,18 @@ function motion = getDynamicModel(static, hydro, S)
     dynamic.Zi = Zi;
     dynamic.F0 = F0;
     
+    % Merge in static
+    fn = fieldnames(static);
+    for i = 1:length(fn)
+       dynamic.(fn{i}) = static.(fn{i});
+    end
+    
     motion = WecOptLib.experimental.types("Motion", dynamic);
 
 end
 
 
-function performance = complexCongugateControl(motion, S)
+function performance = complexCongugateControl(motion)
             
     % Maximum absorbed power
     % Note: Re{Zi} = Radiation Damping Coeffcient
@@ -253,7 +259,7 @@ function performance = complexCongugateControl(motion, S)
 
 end
 
-function performance = dampingControl(motion, S)
+function performance = dampingControl(motion)
             
     % Max Power for a given Damping Coeffcient [Falnes 2002 
     % (p.51-52)]
@@ -271,15 +277,20 @@ function performance = dampingControl(motion, S)
 
 end
 
-function performance = pseudoSpectralControl(motion, S)
+function performance = pseudoSpectralControl(motion,        ...
+                                             delta_Zmax,    ...
+                                             delta_Fmax)
+
     % PSEUDOSPECTRAL Pseudo spectral control
     %   Returns power per frequency and frequency bins
+    
+    motion = struct(motion);
         
     % Fix random seed <- Do we want this???
     rng(1);
     
     % Reformulate equations of motion
-    motion = getPSCoefficients(motion);
+    motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);
     
     % Add phase realizations
     n_ph_avg = 5;
@@ -306,10 +317,11 @@ function performance = pseudoSpectralControl(motion, S)
     
 end
 
-function motion = getPSCoefficients(motion)
+function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     %PSCOEFFICIENTS
     % Bacelli 2014: Background Chapter 4.1, 4.2; RM3 in section 6.1
     % Number of frequency - half the number of fourier coefficients
+
     Nf = length(motion.w);
     % Collocation points uniformly distributed btween 0 and T
     Nc = (2*Nf) + 2;
@@ -395,13 +407,13 @@ function motion = getPSCoefficients(motion)
     Phip = blkdiag(Phip1, Phip1);
 
     A_ineq = kron([1 -1 0; -1 1 0], Phip1' / Dphi1);
-    B_ineq = ones(size(A_ineq, 1),1) * motion.delta_Zmax;
+    B_ineq = ones(size(A_ineq, 1),1) * delta_Zmax;
 
     %force constraint section
     siz = size(A_ineq);
     forc =  Phip1';
 
-    B_ineq=[B_ineq; ones(siz(1),1) * motion.delta_Fmax/m_scale];
+    B_ineq=[B_ineq; ones(siz(1),1) * delta_Fmax / m_scale];
     A_ineq=[A_ineq; kron([0 0 1; 0 0 -1], forc)];
     
     motion.Nf = Nf;

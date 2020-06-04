@@ -140,7 +140,8 @@ classdef Device < WecOptLib.experimental.base.AutoFolder
                     error("WecOptTool:Device:NotMotion", errStr)
                 end
 
-                sperformance = obj.controllerCB(smotion, S);
+                sperformance = obj.controllerCB(smotion,    ...
+                                                obj.controlParam{:});
                 
                 if ~isa(sperformance,   ...
                         "WecOptLib.experimental.types.Performance")

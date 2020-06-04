@@ -9,14 +9,16 @@ close all
 % gamma = 3.3;
 % w = 2*pi*linspace(0.05, 2, 50)';
 % S = jonswap(w,[Hm0, Tp, gamma],0);
-S = WecOptLib.tests.data.example8Spectra();
+S = WecOptLib.tests.data.exampleSpectrum();
 
-% make devices from blueprint. All arguments can be given as cell
-% arrays (or scalars) which produces an mxn device array.
-geomParams.type = 'parametric';
-geomParams.params = {5 7.5 1.125 42 S, 0.5};
+% make devices from blueprint. All arguments given as struct arrays
+% arrays with type and params field. 
+geomParams.type = 'scalar';
+geomParams.params = {1};
 controlParams.type = 'CC';
 controlParams(2).type = 'P';
+controlParams(3).type = 'PS';
+controlParams(3).params = {10 1e9};
 
 blueprint = RM3();
 devices = makeDevices(blueprint, geomParams, controlParams);
@@ -28,6 +30,7 @@ SS = WecOptLib.experimental.types("SeaState", S);
 
 for i = 1:m
     for j = 1:n
+        disp("Simulation " + (i + j - 1) + " of " + (m * n))
         simulate(devices(i, j), SS);
         % The device stores the results as properties
         r(i, j) = sum(devices(i, j).aggregation.pow);

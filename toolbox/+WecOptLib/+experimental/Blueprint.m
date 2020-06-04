@@ -57,11 +57,10 @@ classdef (Abstract) Blueprint < WecOptLib.experimental.base.AutoFolder
     %
     %     controllerCallbacks (struct of function handles): 
     %         (ABSTRACT) A struct of function handles where each function 
-    %         should take a Motion and a SeaState object and return a 
-    %         Perfomance object. For instance, to apply the following 
-    %         function::
+    %         should take a Motion object and return a Perfomance object. 
+    %         For instance, to apply the following function::
     %
-    %             function performace = myController(motion, seaState)
+    %             function performace = myController(motion)
     %                 import WecOptLib.experimental.types.Performance
     %                 ...
     %                 performace = Performance(vars)
