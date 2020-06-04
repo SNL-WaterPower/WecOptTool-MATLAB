@@ -1,4 +1,4 @@
-classdef WaveBot < handle
+classdef WaveBot < matlab.mixin.Copyable
     % WaveBot   WECs based on the Sandia "WaveBot" device
     % The WaveBot is a model-scale wave energy converter (WEC) tested in
     % the Navy's Manuevering and Sea Keeping (MASK) basin. Reports and
