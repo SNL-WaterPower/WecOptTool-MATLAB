@@ -187,16 +187,18 @@ classdef (Abstract) Blueprint < WecOptLib.experimental.base.AutoFolder
             %        An array of Device objects
             %
             
-            
-            import WecOptLib.experimental.Device
-            
             deviceDirs = WecOptLib.utils.getFolders(obj.folder,  ...
                                                     "absPath", true);
-            n = length(deviceDirs);
+            nDirs = length(deviceDirs);
+            nDevices = 1;
 
-            for i = 1:n
+            for i = 1:nDirs
                 dir = deviceDirs{i};
-                devices(i) = load(fullfile(dir, 'device.mat')).obj;
+                fileName = fullfile(dir, 'device.mat');
+                if isfile(fileName)
+                    devices(nDevices) = load(fileName).obj;
+                    nDevices = nDevices + 1;
+                end
             end
             
         end
