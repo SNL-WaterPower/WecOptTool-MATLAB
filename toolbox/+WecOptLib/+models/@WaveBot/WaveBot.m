@@ -490,7 +490,7 @@ classdef WaveBot < matlab.mixin.Copyable
             Phat = 1/2 * x1hat .* uhat;
             
 %             % find the spectra
-            ps2spec = @(x) (x(1:2:end) +  x(2:2:end));  % TODO - probably make this a global function
+            ps2spec = @(x) (x(1:2:end) - 1i * x(2:2:end));  % TODO - probably make this a global function
             velFreq = ps2spec(x1hat);                   % TODO - make these complex
             posFreq = velFreq ./ obj.w;
             uFreq = ps.m_scale * ps2spec(uhat);
