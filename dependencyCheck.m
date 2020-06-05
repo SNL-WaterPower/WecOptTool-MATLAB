@@ -65,13 +65,7 @@ function dependencyCheck()
     
     %% Nemoh
     
-    nemohTestPath = fullfile(tempdir, "WecOptTool_dependencyCheck");
-    
-    if ~exist(nemohTestPath, 'dir')
-        mkdir(nemohTestPath)
-    end
-    
-    nemohExistFlag = WecOptLib.nemoh.isNemohInPath(nemohTestPath);
+    nemohExistFlag = WecOptTool.base.NEMOH.isNemohInPath();
     
     if nemohExistFlag
         fprintf('NEMOH:                         Found\n');
@@ -121,8 +115,5 @@ function dependencyCheck()
     if ~allfoundflag
         warning("Mandatory dependencies are missing!")
     end
-    
-    %% Cleanup
-    WecOptLib.utils.rmdirRetry(nemohTestPath);
     
 end

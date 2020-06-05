@@ -32,13 +32,7 @@ function installNemoh(nemohPath)
     WecOptLib.utils.writeConfig('nemohPath', nemohPath)
     
     % Check installation
-    nemohTestPath = fullfile(tempdir, "nemoh_installCheck");
-
-    if ~exist(nemohTestPath, 'dir')
-        mkdir(nemohTestPath)
-    end
-
-    nemohExistFlag = WecOptLib.nemoh.isNemohInPath(nemohTestPath);
+    nemohExistFlag = WecOptTool.base.NEMOH.isNemohInPath();
 
     if nemohExistFlag
         
