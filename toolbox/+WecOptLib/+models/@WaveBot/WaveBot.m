@@ -17,7 +17,7 @@ classdef WaveBot < matlab.mixin.Copyable
     %   simPerformance - simulates the performance of the design
     %
     % See also WECOPTLIB.NEMOH.GETNEMOH, READ_NEMOH
-    %
+    
     % Copyright 2020 National Technology & Engineering Solutions of Sandia,
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the
     % U.S. Government retains certain rights in this software.
@@ -47,8 +47,12 @@ classdef WaveBot < matlab.mixin.Copyable
         studyDir        % TODO
         hydro           % TODO
         geom            % TODO
-        delta_Zmax (1,1)  double {mustBePositive} = 0.7
-        delta_Fmax (1,1)  double {mustBePositive} = 5e3
+        delta_Zmax (1,1)  double {mustBePositive} = 0.7 % max PTO travel
+        delta_Fmax (1,1)  double {mustBePositive} = 5e3 % max PTO force
+        N (1,1) double {mustBePositive} = 12.47 % gear ratio
+        Kt (1,1) double {mustBePositive} = 6.17 % torque constant [Nm/A]
+        Ke (1,1) double {mustBePositive} = 4.12 % elec. constant [Vs/rad]
+        Rw (1,1) double {mustBePositive} = 0.5 % motor winding resistnace [Ohms]
     end
     methods
         function obj = WaveBot(controlType,geomType,w)
