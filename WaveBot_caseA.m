@@ -8,48 +8,57 @@ clc
 clear
 close all
 
-%% set up problem
+%% set up one device and run BEM solver
 
-% set a fixed frequency vector
+geomMode = 'scalar';
+lambda = 1;
+w = 2*pi*linspace(0.05, 2, 50)';
+a = WecOptLib.models.WaveBot('CC',geomMode,w);
+a.runHydro(lambda);
+
+%% Duplicate object and change controllers
+
+% three devices with same hydrodynamics
+b = [a, copy(a), copy(a)];
+
+% device with complex conjugate control
+b(1).controlType = 'CC';
+
+% device with proportional control
+b(2).controlType = 'P';
+
+% device with pseudo-spectral control
+b(3).controlType = 'PS';
+b(3).delta_Fmax = 1000;
+b(3).delta_Zmax = 0.9;
+
+%% define sea state of interest
+
 Hm0 = 0.125;
 Tp = 2;
 gamma = 3.3;
-w = 2*pi*linspace(0.05, 2, 50)';
-
-geomMode = 'scalar';
-a(1) = WecOptLib.models.WaveBot('CC',geomMode,w);
-a(2) = WecOptLib.models.WaveBot('P',geomMode,w);
-a(3) = WecOptLib.models.WaveBot('PS',geomMode,w);
-a(3).delta_Fmax = 100;
-
-%% run hydrodynamics
-
-arrayfun(@(x) x.runHydro(1), a)
-
-%%
-
-% define sea state of interest
 S = jonswap(a(1).w,[Hm0, Tp, gamma],0);
 
 % make this a regular wave instead
-% [~,idx] = min(abs(S.w - 2*pi/Tp));
-% Sn = S;
-% Sn.S = Sn.S * 0;
-% Sn.S(idx) = S.S(idx);
-% S = Sn;
-% clear Sn
+[~,idx] = min(abs(S.w - 2*pi/Tp));
+Sn = S;
+Sn.S = Sn.S * 0;
+Sn.S(idx) = S.S(idx);
+S = Sn;
+clear Sn
 
-%% simulate performance
+%% simulate performance for each device
 
-for ii = 1:length(a)
-    rng(3)
-    r(ii) = a(ii).simPerformance(S);
+for ii = 1:length(b)
+    rng(3) % run same wave phasing for each case
+    r(ii) = b(ii).simPerformance(S);
 end
 
 %% plot results
 
 for ii = 1:length(r)
     r(ii).plotFreq
+    title(b(ii).controlType)
 end
 r.plotTime(0:0.01:100)
 legend('CC','P','PS')
