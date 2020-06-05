@@ -67,7 +67,7 @@ classdef Device < WecOptTool.base.AutoFolder
         aggregationCB
     end
     
-    methods (Access = {?WecOptTool.Blueprint})
+    methods (Access = {?WecOptTool.Blueprint ?matlab.unittest.TestCase})
         
         function obj = Device(baseFolder,           ...
                               hydro,                ...
@@ -80,10 +80,16 @@ classdef Device < WecOptTool.base.AutoFolder
                               controlType,          ...
                               controlParam,         ...
                               modelParam)
+            
+            if nargin < 1
+                baseFolder = [];
+            end
                           
             obj = obj@WecOptTool.base.AutoFolder(baseFolder);
-                        
-            if nargin == 11
+            
+            if nargin < 1
+                return
+            elseif nargin == 11
                 obj.modelParam = modelParam;
             end
             

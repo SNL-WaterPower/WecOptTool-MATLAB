@@ -33,8 +33,6 @@ function powerPerFreq(device)
         
         freq = device.motions(1).w;
         powPerFreq = device.performances(1).powPerFreq;
-        length(powPerFreq)
-        length(freq)
         plot(freq, powPerFreq)
         
     end

@@ -1,14 +1,5 @@
 
-clc
-clear
-close all
-
 % define sea state of interest
-% Hm0 = 0.125;
-% Tp = 2;
-% gamma = 3.3;
-% w = 2*pi*linspace(0.05, 2, 50)';
-% S = jonswap(w,[Hm0, Tp, gamma],0);
 S = WecOptLib.tests.data.exampleSpectrum();
 
 % make devices from blueprint. All arguments given as struct arrays

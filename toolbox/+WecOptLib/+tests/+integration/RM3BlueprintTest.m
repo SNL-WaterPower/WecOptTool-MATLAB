@@ -1,54 +1,34 @@
-
-% Copyright 2020 National Technology & Engineering Solutions of Sandia, 
-% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
-% U.S. Government retains certain rights in this software.
-%
-% This file is part of WecOptTool.
-% 
-%     WecOptTool is free software: you can redistribute it and/or modify
-%     it under the terms of the GNU General Public License as published by
-%     the Free Software Foundation, either version 3 of the License, or
-%     (at your option) any later version.
-% 
-%     WecOptTool is distributed in the hope that it will be useful,
-%     but WITHOUT ANY WARRANTY; without even the implied warranty of
-%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%     GNU General Public License for more details.
-% 
-%     You should have received a copy of the GNU General Public License
-%     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
-
-function tests = RM3DeviceModelTest()
-% RM3DeviceModelTest
-%
-% Performs a series of unit tests to verify that the code is (still)
-% working correctly.
-%
-% Call as
-%           results = runtests('RM3DeviceModelTest')
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-tests = functiontests(localfunctions);
-
+function tests = RM3BlueprintTest()
+    tests = functiontests(localfunctions);
 end
 
 function testVerify_CC(testCase)
 
-    import matlab.unittest.fixtures.TemporaryFolderFixture
-    tempFixture = testCase.applyFixture(                            ...
-             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testVerify_CC'));
-
+    import matlab.unittest.fixtures.PathFixture
+            
+    addFolder = fullfile(WecOptLib.utils.getSrcRootPath(),  ...
+                         "examples",                        ...
+                         "RM3");
+    testCase.applyFixture(PathFixture(addFolder));
 
     S = WecOptLib.tests.data.exampleSpectrum();
     S.ph = rand(length(S.w),1)* 2 * pi;
-    RM3Device = WecOptLib.models.RM3.DeviceModel();
-    WECpow = RM3Device.getPower(tempFixture.Folder, S,'CC','scalar',1);
+    SS = WecOptTool.types("SeaState", S);
+    
+    blueprint = RM3();
+            
+    geomMode.type = 'scalar';
+    geomMode.params = {1};
+    cntrlMode.type = 'CC';
+    
+    RM3Device = makeDevices(blueprint, geomMode, cntrlMode);
+    simulate(RM3Device, SS);
     
     expSol = 3.772016088262561e+06;
-    verifyEqual(testCase, WECpow, expSol, 'RelTol', 0.001)
+    verifyEqual(testCase,                   ...
+                RM3Device.aggregation.pow,  ... 
+                expSol,                     ...
+                'RelTol', 0.001)
     
 end
 
@@ -121,3 +101,21 @@ function test_RM3_mass(testCase)
 
 end
 
+% Copyright 2020 National Technology & Engineering Solutions of Sandia, 
+% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
+% U.S. Government retains certain rights in this software.
+%
+% This file is part of WecOptTool.
+% 
+%     WecOptTool is free software: you can redistribute it and/or modify
+%     it under the terms of the GNU General Public License as published by
+%     the Free Software Foundation, either version 3 of the License, or
+%     (at your option) any later version.
+% 
+%     WecOptTool is distributed in the hope that it will be useful,
+%     but WITHOUT ANY WARRANTY; without even the implied warranty of
+%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%     GNU General Public License for more details.
+% 
+%     You should have received a copy of the GNU General Public License
+%     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.

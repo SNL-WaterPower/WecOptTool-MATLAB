@@ -33,6 +33,6 @@ function hydro = existingNEMOH(folder, nemohFolder)
     hydro = struct();
     hydro = WecOptLib.vendor.WEC_Sim.Read_NEMOH(hydro,          ...
                                                 nemohFolder);
-    hydro = WecOptLib.types.Hydro(hydro);
+    hydro = WecOptTool.types.Hydro(hydro);
     
 end

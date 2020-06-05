@@ -1,19 +1,10 @@
 
-clc
-clear
-close all
-
 %% setup
 
 % Create RM3 blueprint.
 blueprint = RM3();
 
 % define sea state of interest
-% Hm0 = 0.125;
-% Tp = 2;
-% gamma = 3.3;
-% w = 2*pi*linspace(0.05, 2, 50)';
-% S = jonswap(w,[Hm0, Tp, gamma],0);
 S = WecOptLib.tests.data.example8Spectra();
 
 % Create a SeaState object before optimisation to avoid warnings.
@@ -37,7 +28,7 @@ NONLCON = [];
 opts = optimoptions('fmincon');
 opts.UseParallel = true;
 opts.Display = 'iter';
-opts.PlotFcn = {@optimplotx,@optimplotfval};
+% opts.PlotFcn = {@optimplotx,@optimplotfval};
 % opts.OptimalityTolerance = 1e-8;
 [x, fval] = fmincon(@(x) myWaveBotObjFun(x,blueprint,SS),   ...
     x0,A,B,Aeq,Beq,LB,UB,NONLCON,opts);

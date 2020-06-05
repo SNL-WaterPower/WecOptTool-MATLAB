@@ -12,6 +12,11 @@ classdef AutoFolder < handle
         
         function obj = AutoFolder(base)
             
+            if nargin > 0 && isempty(base)
+                obj.autoRemoveFolder = false;
+                return
+            end
+            
             args = {};
             
             if nargin > 0
