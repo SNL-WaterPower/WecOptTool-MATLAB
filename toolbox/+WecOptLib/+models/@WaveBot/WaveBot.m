@@ -481,7 +481,7 @@ classdef WaveBot < matlab.mixin.Copyable
                 X0,...
                 ps.A_ineq,...
                 ps.B_ineq,...
-                ps.Aeq,...
+                ps.Aeq,...         % Aeq and Beq are the hydrodynamic model
                 Beq,...
                 [], [], [],...
                 qp_options);
@@ -491,17 +491,17 @@ classdef WaveBot < matlab.mixin.Copyable
             tmp = reshape(y,[],2);
             x1hat = tmp(:,1);
             uhat = tmp(:,2);
-            Phat = 1/2 * x1hat .* uhat;
+%             Phat = 1/2 * transpose(x1hat) * uhat;
             
-%             % find the spectra
+            % find the spectra
             ps2spec = @(x) (x(1:2:end) - 1i * x(2:2:end));  % TODO - probably make this a global function
             velFreq = ps2spec(x1hat);                   % TODO - make these complex
             posFreq = velFreq ./ obj.w;
             uFreq = ps.m_scale * ps2spec(uhat);
-            powFreq = ps.m_scale * ps2spec(Phat);
+            powFreq = 1/2 * uFreq .* conj(velFreq);
             zFreq = uFreq ./ velFreq;
 
-%             % find time histories
+            % find time histories
             spec2time = @(x) ps.Phip' * x;              % TODO - probably make this a global function
             velT = spec2time(x1hat);
             posT = (ps.Phip' / ps.Dphi) * x1hat;
@@ -509,13 +509,14 @@ classdef WaveBot < matlab.mixin.Copyable
             powT = 1 * velT .* uT;
             
             powTot = trapz(ps.tkp, powT) / (ps.tkp(end) - ps.tkp(1));
-%             assert(WecOptLib.utils.isClose(powTot, sum(powFreq), 'rtol', 0.10)) TODO
+            assert(WecOptLib.utils.isClose(powTot, sum(real(powFreq)), 'rtol', 0.10))
             
             % assemble outputs
             fRes.pos = posFreq;
             fRes.vel = velFreq;
             fRes.u = uFreq;
             fRes.pow = powFreq;
+            fRes.Zpto = zFreq;
             
             tRes.pos = posT;
             tRes.vel = velT;
