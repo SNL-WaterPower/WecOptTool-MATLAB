@@ -317,7 +317,7 @@ classdef WaveBot < matlab.mixin.Copyable
                         ph = ph_mat(:, ind_ph);
                         [powTot, fRes(ind_ph), tRes(ind_ph)] = obj.getPSPhasePower(ps, ph);
                         phasePowMat(ind_ph) = powTot;
-                        powPerFreqMat(:, ind_ph) = fRes.pow;
+                        powPerFreqMat(:, ind_ph) = fRes(ind_ph).pow;
                         
                     end
                     
