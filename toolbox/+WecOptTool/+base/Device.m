@@ -1,14 +1,25 @@
 classdef (Abstract) Device < handle
-    % Abstract class for creating new Device structures which will be
-    % creted by BluePrint subclasses (as per the Abstract Factor Pattern).
+    % Abstract class for creating new Device objects,  which are
+    % created by :mat:class:`+WecOptTool.+base.Blueprint` subclasses.
     %
-    % Devices should provide access to the three main data types through
-    % the hydro, motions and performances properties and should implement
-    % one method (simulate) which evalutates the performance of the device
-    % per sea-state.
+    % Devices should populate the hydro, motions and performances 
+    % properties with :mat:class:`+WecOptTool.+types.Hydro`, 
+    % :mat:class:`+WecOptTool.+types.Motion` and 
+    % :mat:class:`+WecOptTool.+types.Performance` data types, and 
+    % should implement the simulate method, which evaluates the 
+    % performance of the device for a given 
+    % :mat:class:`+WecOptTool.+types.SeaState` object.
     %
     % The aggregation property is for added aggregated results from
-    % simulations over multiple sea-states, and is optional.
+    % simulations over multiple sea-states, and should be optional.
+    %
+    % --
+    %
+    % See also WecOptTool.base.Blueprint, WecOptTool.types.Hydro,
+    %   WecOptTool.types.Motion, WecOptTool.types.Performance,
+    %   WecOptTool.types.SeaState
+    %
+    % --
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 

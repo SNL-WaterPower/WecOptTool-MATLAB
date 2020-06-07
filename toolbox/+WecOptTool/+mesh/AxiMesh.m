@@ -1,4 +1,48 @@
 classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
+    % Class for making meshes using the NEMOH aximesh routine
+    %
+    % Attributes:
+    %     verb (bool): use verbose console outputs (default false)
+    %     rho (float): water density (default = 1025 kg/m\ :sup:`3`)
+    %     g (float):
+    %         gravitational acceleration (default = 9.81 m/s\ :sup:`2`)
+    %
+    % --
+    %
+    % AxiMesh Properties:
+    %     verb - use verbose console outputs (default false)
+    %     rho - water density (default = 1025 kg/m^3)
+    %     g - gravitational acceleration (default = 9.81 m/s^2)
+    %
+    % AxiMesh Methods:
+    %     makeMesh - Mesh generation of for an axisymmetric body.
+    %
+    % See also WecOptTool.mesh
+    %
+    % --
+    
+    % Copyright Ecole Centrale de Nantes 2014
+    % Modifications copyright 2017 Markel Penalba
+    % Modifications copyright 2020 National Technology & Engineering  
+    % Solutions of Sandia, LLC (NTESS). Under the terms of Contract  
+    % DE-NA0003525 with NTESS, the U.S. Government retains certain rights 
+    % in this software.
+    %
+    % This file is part of WecOptTool.
+    % 
+    %     WecOptTool is free software: you can redistribute it and/or 
+    %     modify it under the terms of the GNU General Public License as 
+    %     published by the Free Software Foundation, either version 3 of 
+    %     the License, or (at your option) any later version.
+    % 
+    %     WecOptTool is distributed in the hope that it will be useful,
+    %     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    %     GNU General Public License for more details.
+    % 
+    %     You should have received a copy of the GNU General Public 
+    %     License along with WecOptTool.  If not, see 
+    %     <https://www.gnu.org/licenses/>.
     
     properties
         verb = false
@@ -9,28 +53,45 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
     methods
         
         function mesh = makeMesh(obj, r, z, ntheta, nfobj, zG, bodyNum)
-            % [Mass,Inertia,KH,XB,YB,ZB] = axiMesh(r,z,n)
+            % Mesh generation of an axisymmetric body.
             %
-            % Purpose : Mesh generation of an axisymmetric body for use 
-            %           with Nemoh
+            % All coordinates are measured from the undisturbed sea
+            % surface and only the body description below the sea surface
+            % should be given, thus all z-coordinates should be negative.
             %
-            % Inputs : description of radial profile of the body
-            %   - n         : number of points for discretisation
-            %   - r         : array of radial coordinates
-            %   - z         : array of vertical coordinates
+            % The produced mesh represents half of the body and is 
+            % symmetric in the xz plane.
             %
-            % Outputs : hydrostatics
-            %   - Mass      : mass of buoy
-            %   - Inertia   : inertia matrix (estimated assuming mass is 
-            %                 distributed on wetted surface)
-            %   - KH        : hydrostatic stiffness matrix
-            %   - XB,YB,ZB  : coordinates of buoyancy center
+            % Arguments:
+            %   r (array of float): radial coordinates
+            %   z (array of float): vertical coordinates
+            %   ntheta (int):
+            %       number of points for discretisation in angular 
+            %       direction (over pi radians)
+            %   nfobj (int):
+            %       number of nodes within the resulting half body mesh
+            %   zG (float):
+            %       z-coordinate of the bodies centre of gravity
+            %   bodyNum (int):
+            %       the number of the body (starting from one)
+            %       
+            % Returns:
+            %    :mat:class:`+WecOptTool.+types.Mesh`:
+            %        A populated Mesh object for the body
             %
-            % Warning : z(i) must be greater than z(i+1)
+            % Warning:
+            %     z(i) must be greater than or equal to z(i+1)
+            % 
+            % Note:
+            %     The original aximesh function was written by A. Babarit, 
+            %     LHEEA Lab, and licensed under the Apache License, 
+            %     Version 2.0.
             %
-            % Originally licensed under the Apache License, Version 2.0
-            % Written by A. Babarit, LHEEA Lab.
+            % --
+            % 
+            % See also WecOptTool.types.Mesh
             %
+            % --
 
             import WecOptTool.types.Mesh
             
@@ -179,7 +240,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
         
     end
         
-    methods (Static)
+    methods (Static, Access=private)
         
         function meshData = readNEMOHMesh(datFilePath)
 
@@ -188,12 +249,12 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             
             meshData.xzSymmetric = M(1, 2) == 1;
             nodes = M(2:zeroIdxs(1) - 1, :);
-            meshData.nodes = table(nodes(:,1),     ...
-                                   nodes(:,2),     ...
-                                   nodes(:,3),     ...
-                                   nodes(:,4),     ...
+            meshData.nodes = table(int32(nodes(:,1)),   ...
+                                   nodes(:,2),          ...
+                                   nodes(:,3),          ...
+                                   nodes(:,4),          ...
                                    'VariableNames', {'ID', 'x', 'y', 'z'});
-            meshData.panels = M(zeroIdxs(1) + 1:zeroIdxs(2) - 1, :);
+            meshData.panels = int32(M(zeroIdxs(1) + 1:zeroIdxs(2) - 1, :));
             
         end
         

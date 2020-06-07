@@ -2,8 +2,8 @@ classdef (Abstract) Blueprint
     % Abstract class for creating new Blueprint structures (using the
     % Abstract Factory Pattern).
     %
-    % One method must be implemented, makeDevices, which should generate
-    % an array of Device type objects.
+    % One method must be implemented, ``makeDevices``, which should 
+    % generate an array of :mat:class:`+WecOptTool.+base.Device` objects.
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 

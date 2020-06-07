@@ -3,12 +3,19 @@ function hydro = existingNEMOH(folder, nemohFolder)
     % solution.
     %
     % Arguments:
+    %     folder (string):
+    %         folder to store resources (unused)
     %     nemohFolder (string):
-    %         Path to the folder containing NEMOH output files
+    %         Path to the folder containing existing NEMOH output files
     %
     % Returns:
     %    Hydro: A populated Hydro object
     %
+    % --
+    %
+    % See also WecOptTool.Blueprint
+    %
+    % --
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 

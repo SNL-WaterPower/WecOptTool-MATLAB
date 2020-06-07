@@ -1,4 +1,53 @@
 classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
+    % Class for solving meshes using the NEMOH suite.
+    %
+    % Arguments:
+    %    basePath (string):
+    %        Path to folder for storing NEMOH input and output files.
+    %
+    % Attributes:
+    %     verb (bool): use verbose console outputs (default false)
+    %     rho (float): water density (default = 1025 kg/m\ :sup:`3`)
+    %     g (float):
+    %         gravitational acceleration (default = 9.81 m/s\ :sup:`2`)
+    %
+    % --
+    %
+    % NEMOH Properties:
+    %     verb - use verbose console outputs (default false)
+    %     rho - water density (default = 1025 kg/m^3)
+    %     g - gravitational acceleration (default = 9.81 m/s^2)
+    %
+    % NEMOH Methods:
+    %     getHydro - Calculate floating body hydrodynamic coefficients 
+    %                using NEMOH
+    %
+    % See also WecOptTool.solver
+    %
+    % --
+    
+    % Copyright Ecole Centrale de Nantes 2014
+    % Modifications copyright 2017 Markel Penalba
+    % Modifications copyright 2020 National Technology & Engineering  
+    % Solutions of Sandia, LLC (NTESS). Under the terms of Contract  
+    % DE-NA0003525 with NTESS, the U.S. Government retains certain rights 
+    % in this software.
+    %
+    % This file is part of WecOptTool.
+    % 
+    %     WecOptTool is free software: you can redistribute it and/or 
+    %     modify it under the terms of the GNU General Public License as 
+    %     published by the Free Software Foundation, either version 3 of 
+    %     the License, or (at your option) any later version.
+    % 
+    %     WecOptTool is distributed in the hope that it will be useful,
+    %     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    %     GNU General Public License for more details.
+    % 
+    %     You should have received a copy of the GNU General Public 
+    %     License along with WecOptTool.  If not, see 
+    %     <https://www.gnu.org/licenses/>.
     
     properties
         verb = false
@@ -55,7 +104,33 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             
         end
         
-        function hydro = getHydro(obj, meshes, freqs)
+        function hydro = getHydro(obj, meshes, w)
+            % Calculate floating body hydrodynamic coefficients using 
+            % NEMOH
+            %
+            % Arguments:
+            %   meshes (array of :mat:class:`+WecOptTool.+types.Mesh`):
+            %       The meshes to be solved. Each object in the array
+            %       represents a different body with body number given by 
+            %       the ``bodyNum`` property.
+            %   w (array of float):
+            %       The angular wave frequencies to be calculated.
+            %       
+            % Returns:
+            %    :mat:class:`+WecOptTool.+types.Hydro`:
+            %        A populated Hydro object containing the hydrodynamic 
+            %        coefficients system of bodies.
+            % 
+            % Note:
+            %     The original aximesh function was written by A. Babarit, 
+            %     LHEEA Lab, and licensed under the Apache License, 
+            %     Version 2.0.
+            %
+            % --
+            % 
+            % See also WecOptTool.types.Mesh, WecOptTool.types.Hydro
+            %
+            % --
             
             if length(meshes) == 1
                 singleBody = true;
@@ -70,7 +145,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
                 obj.writeMeshFile(imesh, meshFilePath)
             end
             
-            obj.writeNemohCal(meshes, freqs)
+            obj.writeNemohCal(meshes, w)
             
             rundir = obj.folder;
             startdir = pwd;
@@ -96,6 +171,10 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             cd(startdir)
 
         end
+        
+    end
+    
+    methods (Access=private)
        
         function makeHydrostatics(obj, mesh, singleBody)
             % Originally licensed under the Apache License, Version 2.0
@@ -190,7 +269,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             
         end
         
-        function writeNemohCal(obj, meshes, freqs)
+        function writeNemohCal(obj, meshes, w)
             
             nBody = length(meshes);
             filePath = fullfile(obj.folder, 'Nemoh.cal');
@@ -208,7 +287,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
                 fileStrings = [fileStrings bodyStrings];
             end
             
-            footerString = obj.getCalFooter(freqs);
+            footerString = obj.getCalFooter(w);
             fileStrings = [fileStrings footerString];
             
             fid = fopen(filePath, 'w');
@@ -237,7 +316,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
         
     end
     
-    methods (Static)
+    methods (Static, Access=private)
                 
         function writeMeshFile(mesh, path)
             
@@ -333,13 +412,13 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             
         end
         
-        function footerStrings = getCalFooter(freq)
+        function footerStrings = getCalFooter(w)
             
             p = mfilename('fullpath');
             [filepath, ~, ~] = fileparts(p);
             
             footerStrings = strings(1, 8);
-            lineOps = {2 [length(freq) freq(1) freq(end)]};
+            lineOps = {2 [length(w) w(1) w(end)]};
             
             fid = fopen(fullfile(filepath, "nemohcalfooter.txt"));
             

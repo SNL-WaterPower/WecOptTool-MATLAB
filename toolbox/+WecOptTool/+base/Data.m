@@ -11,6 +11,9 @@ classdef (Abstract) Data < dynamicprops
     %                  "validation", {@isnumeric,    ...
     %                                 @isstring});
     %
+    % The method validateArray can also be overloaded to provide additional
+    % steps needed when creating arrays of Data subclass objects.
+    %
     % --
     %
     % See also WecOptTool.types
@@ -93,6 +96,11 @@ classdef (Abstract) Data < dynamicprops
             
             out = struct(argcell{:});
             
+        end
+        
+        function validateArray(obj)
+            % A function to be used for tasks required following 
+            % instatiation of an array
         end
             
     end

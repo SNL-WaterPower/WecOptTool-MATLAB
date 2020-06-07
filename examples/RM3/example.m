@@ -1,4 +1,6 @@
 
+clear geomParams controlParams
+
 % define sea state of interest
 S = WecOptLib.tests.data.exampleSpectrum();
 

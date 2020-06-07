@@ -6,5 +6,7 @@ function result = types(typeName, input)
     for i = 1:length(input)
         result(i) = typeHandle(input(i));
     end
+    
+    result.validateArray()
 
 end
