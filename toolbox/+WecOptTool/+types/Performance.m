@@ -10,8 +10,8 @@ classdef Performance < WecOptTool.base.Data
     %
     %     * powPerFreq
     %
-    % The following parameters are added automatically upon instantiation
-    % of the object:
+    % The following additional parameters are available following 
+    % instantiation of the object:
     %
     %     * pow
     %

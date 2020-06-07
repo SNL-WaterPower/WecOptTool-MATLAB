@@ -3,9 +3,33 @@ API
 ***
 
 WecOptTool
-==========
+----------
 
 The WecOptTool package provides the main interface for the toolbox.
+
+WecOptTool.callbacks
+--------------------
+
+The mesh callbacks provides callbacks for use with user defined
+blueprints created using the :mat:class:`+WecOptTool.Blueprint` class.
+This allows reuse of commonly used functionality between blueprints.
+
+WecOptTool.callbacks.geometry
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Geometry callbacks are used with the ``geometryCallbacks`` property
+of :mat:class:`+WecOptTool.Blueprint`.
+
+.. mat:automodule:: +WecOptTool.+callbacks.+geometry
+    :members:
+
+WecOptTool.plot
+---------------
+
+The plot subpackage provides plots.
+
+.. mat:automodule:: +WecOptTool.+plot
+    :members:
 
 WecOptTool.types
 ----------------
@@ -29,22 +53,6 @@ various stages of a WecOptTool calculation.
 .. mat:autoclass:: +WecOptTool.+types.SeaState(input)
     :members:
 
-WecOptTool.callbacks
---------------------
-
-The mesh callbacks provides callbacks for use with user defined
-blueprints created using the :mat:class:`+WecOptTool.Blueprint` class.
-This allows reuse of commonly used functionality between blueprints.
-
-WecOptTool.callbacks.geometry
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Geometry callbacks are used with the ``geometryCallbacks`` property
-of :mat:class:`+WecOptTool.Blueprint`.
-
-.. mat:automodule:: +WecOptTool.+callbacks.+geometry
-    :members:
-
 WecOptTool.mesh
 ---------------
 
@@ -61,14 +69,6 @@ The solver subpackage provides hydrodynamic solver classes, that
 provide the standard method ``getHydro``.
 
 .. mat:automodule:: +WecOptTool.+solver
-    :members:
-
-WecOptTool.plot
----------------
-
-The plot subpackage provides plots.
-
-.. mat:automodule:: +WecOptTool.+plot
     :members:
 
 WecOptTool.base
