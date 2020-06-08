@@ -89,9 +89,7 @@ classdef SeaState < WecOptTool.base.Data
     methods (Access=private)
         
         function makeMu(obj)
-            
-            length(obj)
-            
+                        
             if isprop(obj(1), "mu")
                 return
             end
