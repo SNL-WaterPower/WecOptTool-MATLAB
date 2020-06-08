@@ -1,37 +1,33 @@
-function plotFreq(device)
-            
-    % Look at first sea state only
 
-    figure('Name','SimRes.plotFreq')
-    ax(1) = subplot(2,1,1);
-    hold on
-    grid on
-    ax(2) = subplot(2,1,2);
-    hold on
-    grid on
+clear geomParams controlParams
 
-    fns = ["eta", "F0", "u", "Fpto"];
-    vrs = {device.motions(1).eta_fd    ...
-           device.motions(1).F0        ...
-           device.performances(1).u    ...
-           device.performances(1).Fpto};
-    mrks = {'o','.','+','s'};
+% define sea state of interest
+S = WecOptLib.tests.data.exampleSpectrum();
 
-    for ii = 1:length(fns)
+% make devices from blueprint. All arguments given as struct arrays
+% arrays with type and params field. 
+geomParams.type = 'scalar';
+geomParams.params = {1};
+controlParams.type = 'CC';
+controlParams(2).type = 'P';
+controlParams(3).type = 'PS';
+controlParams(3).params = {10 1e9};
 
-        stem(ax(1),device.motions(1).w, abs(vrs{ii}), mrks{ii},...
-            'DisplayName', fns{ii})
-        stem(ax(2),device.motions(1).w, angle(vrs{ii}), mrks{ii},...
-            'DisplayName', fns{ii})
+blueprint = RM3();
+devices = makeDevices(blueprint, geomParams, controlParams);
+
+% Create a SeaState object before optimisation to avoid warnings.
+SS = WecOptTool.types("SeaState", S);
+
+[m,n] = size(devices);
+
+for i = 1:m
+    for j = 1:n
+        disp("Simulation " + (i + j - 1) + " of " + (m * n))
+        simulate(devices(i, j), SS);
+        % The device stores the results as properties
+        r(i, j) = sum(devices(i, j).aggregation.pow);
     end
-
-    ylabel(ax(1),'Magnitude')
-    ylabel(ax(2),'Angle [rad]')
-    xlabel('Frequency [rad/s]')
-
-    legend(ax(1))
-    linkaxes(ax,'x')
-
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 

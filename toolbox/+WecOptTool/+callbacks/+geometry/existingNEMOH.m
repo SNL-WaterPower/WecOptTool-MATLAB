@@ -9,7 +9,7 @@ function hydro = existingNEMOH(folder, nemohFolder)
     %         Path to the folder containing existing NEMOH output files
     %
     % Returns:
-    %    Hydro: A populated Hydro object
+    %    :mat:class:`+WecOptTool.+types.Hydro`: A populated Hydro object
     %
     % --
     %

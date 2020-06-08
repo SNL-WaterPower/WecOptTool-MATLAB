@@ -14,6 +14,11 @@ classdef (Abstract) Data < dynamicprops
     % The method validateArray can also be overloaded to provide additional
     % steps needed when creating arrays of Data subclass objects.
     %
+    % Arguments:
+    %    input (struct):
+    %        A struct (not array) whose fields represent the parameters
+    %        to be stored.
+    %
     % --
     %
     % See also WecOptTool.types

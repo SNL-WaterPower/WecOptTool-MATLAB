@@ -12,20 +12,28 @@ classdef (Abstract) Blueprint < WecOptTool.base.AutoFolder
     % ``staticModelCallback``, ``dynamicModelCallback`` and 
     % ``controllerCallbacks`` must be defined, as described below.
     %
+    % Arguments:
+    %     baseFolder (optional string):
+    %         Path to parent of data storage folder. If supplied, 
+    %         automatic file cleanup on object descruction is disabled.
+    % 
     % Attributes:
+    %     folder (string): path to data storage folder
     %     geometryCallbacks (struct of function handles):
     %         (ABSTRACT) A struct of function handles where each function 
     %         should take a folder path as the first input argument, an 
-    %         arbitrary number of additional inputs and return a Hydro 
-    %         object. For instance, to include the following function::
+    %         arbitrary number of additional inputs and return a 
+    %         :mat:class:`+WecOptTool.+types.Hydro` object. For instance, 
+    %         to include the following function,::
     %
     %             function hydro = myGeom(folder, sizeA, sizeB)
     %                 ...
-    %                 hydro = WecOptTool.types("Hydro", vars)
+    %                 hydro = WecOptTool.types("Hydro", varsStruct)
     %             end
     %
     %         and use one pre-defined callback for an existing NEMOH 
-    %         solution, geometryCallbacks is then defined::
+    %         solution, the geometryCallbacks property should be defined
+    %         as::
     %
     %             geometryCallbacks = ...
     %               struct('existing', @WecOptTool.callbacks.geometry.existingNEMOH, ...
@@ -34,29 +42,38 @@ classdef (Abstract) Blueprint < WecOptTool.base.AutoFolder
     %
     %     staticModelCallback (function handle):
     %         (ABSTRACT) A function handle for a function that takes a 
-    %         Hydro object and returns an intermediate struct that will be 
-    %         passed to the input of dynamicModelCallback. The signature 
-    %         of the callback function is as follows::
+    %         Hydro object, an arbitrary number of additional inputs, and 
+    %         returns an intermediate struct that will be passed to the 
+    %         input of dynamicModelCallback. The signature of the callback 
+    %         function is as follows::
     %
-    %             static = myStaticModel(hydro)
+    %             static = myStaticModel(hydro, arg1, arg2)
     %
+    %         Note, the additional arguments to the staticModelCallback and
+    %         dynamicModelCallback functions should be the same (even if
+    %         they go unused).
     %
     %     dynamicModelCallback (function handle):
     %         (ABSTRACT) A function handle for a function that takes the 
-    %         result of staticModelCallback, a Hydro object and a SeaState 
-    %         object and returns a Motion object. An example of the 
-    %         callback function is as follows::
+    %         result of staticModelCallback, a Hydro object, SeaState 
+    %         object, an arbitrary number of additional inputs, and 
+    %         returns a :mat:class:`+WecOptTool.+types.Motion` object. An 
+    %         example of the callback function is as follows::
     %
-    %             function motion = myDynamicModel(static, hydro, seaState)
+    %             function motion = myDynamicModel(static, hydro, seaState, arg1, arg2)
     %                 ...
-    %                 motion = WecOptTool.types("Motion", vars)
+    %                 motion = WecOptTool.types("Motion", varsStruct)
     %             end
     %           
+    %         Note, the additional arguments to the staticModelCallback and
+    %         dynamicModelCallback functions should be the same (even if
+    %         they go unused).
     %
     %     controllerCallbacks (struct of function handles): 
     %         (ABSTRACT) A struct of function handles where each function 
-    %         should take a Motion object and return a Perfomance object. 
-    %         For instance, to apply the following function::
+    %         should take a Motion object and return a 
+    %         :mat:class:`+WecOptTool.+types.Perfomance` object. For 
+    %         instance, to apply the following function::
     %
     %             function performace = myController(motion)
     %                 ...
@@ -69,18 +86,45 @@ classdef (Abstract) Blueprint < WecOptTool.base.AutoFolder
     %
     %     aggregationHook (function handle): 
     %         (OPTIONAL) A function handle for a function which aggregates
-    %         the outputs from multiple sea-states. It takes all of the
-    %         properties of the DefaultDevice class and the given SeaState
-    %         object as input and the result will be added to the 
-    %         aggregation property of DefaultDevice. An example function 
-    %         with the required signature is shown below::
+    %         the outputs from multiple sea-states. It takes the
+    %         :mat:class:`+WecOptTool.+types.SeaState` object, 
+    %         :mat:class:`+WecOptTool.+types.Hydro` object, array of
+    %         :mat:class:`+WecOptTool.+types.Motion` objects and array of
+    %         :mat:class:`+WecOptTool.+types.Performance` objects, which
+    %         relate to the outputs of the last call to 
+    %         :mat:func:`+WecOptTool.Device.simulate`. The result of the
+    %         given callback will be added to the aggregation property of 
+    %         Device. An example function with the required signature is 
+    %         shown below::
     %
     %             function out = aggregate(seastate, hydro, motions, performances)
     %                 p = performances.toStruct()
     %                 out.pow = sum([p.pow])
     %             end
     %
+    % --
     %
+    % Blueprint Properties:
+    %     geometryCallbacks - struct of functions which make Hydro objects
+    %     staticModelCallback - callback for creating equations of motion
+    %                           not dependent on the sea-state.
+    %     dynamicModelCallback - callback for creating equations of motion
+    %                            which are dependent on the sea-state and
+    %                             produce a Motion object
+    %     controllerCallbacks - struct of functions which make Performance
+    %                           objects
+    %
+    % Blueprint Methods:
+    %     makeDevices - Create an m x n X l array of Device objects for a 
+    %                   given set of geometry, model and controller 
+    %                   configurations.
+    %     recoverDevices - Recover all simulations from devices assosiated 
+    %                      to the blueprint.
+    %     saveFolder - Save the data folder and contents
+    %
+    % See also WecOptTool.Device, WecOptTool.types
+    %
+    % --
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -108,7 +152,6 @@ classdef (Abstract) Blueprint < WecOptTool.base.AutoFolder
         staticModelCallback
         dynamicModelCallback
         controllerCallbacks
-        % aggregationHook (optional)
         
     end
     
@@ -117,16 +160,34 @@ classdef (Abstract) Blueprint < WecOptTool.base.AutoFolder
         function devices = makeDevices(obj, geomParams,          ...
                                             controlParams,       ...
                                             modelParams)
-            % Create an m x n array of DefaultDevice objects for a given
-            % set of geometry and controller configurations.
+            % Create an m x n X l array of Device objects for a given set 
+            % of geometry, model and controller configurations.
+            %
+            % All arguments accept a struct array with the fields type and
+            % params, with the following meaning:
+            %
+            %     * type: the name of the geometry algorith to use. Only
+            %             required for geomParams and modelParams and
+            %             should match the field names used in the 
+            %             geometryCallbacks and controllerCallbacks
+            %             properties.
+            %     * params: params to pass to the algorithms in a cell 
+            %               array. Required for the modelParams argument,
+            %               optional otherwise. All given parameters 
+            %               should match the additional arguments given
+            %               in the callbacks.
             %
             % Arguments:
-            %     geomParams (array of struct)
-            %     controlParams (array of struct)
-            %     modelParams (optional array of struct)
+            %     geomParams (array of struct):
+            %          Selected geometry algorithms and parameters to pass 
+            %     controlParams (array of struct):
+            %          Selected controller algorithms and parameters to 
+            %          pass 
+            %     modelParams (optional array of struct):
+            %          Parameters to pass to the motion model
             %
             % Returns:
-            %    array of :mat:class:`+WecOptLib.+experimental.Device`:
+            %    array of :mat:class:`+WecOptTool.Device`:
             %        An array of Device objects with chosen geometries 
             %        along the first dimension, the chosen controllers 
             %        along the second and chosen model parameters along
@@ -173,14 +234,14 @@ classdef (Abstract) Blueprint < WecOptTool.base.AutoFolder
         end
         
         function devices = recoverDevices(obj)
-            % Recover all simulations from devices assosiated to this
+            % Recover all simulations from devices assosiated to the
             % blueprint.
             %
             % This can be useful if an optimisation has been run in 
             % parallel mode, where any new devices will not be stored.
             %
             % Returns:
-            %    array of :mat:class:`+WecOptLib.+experimental.Device`:
+            %    array of :mat:class:`+WecOptTool.Device`:
             %        An array of Device objects
             %
             
