@@ -322,10 +322,12 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             
             fid = fopen(path, 'w');
             fprintf(fid, ' %20i %10i\n', [2, mesh.xzSymmetric]);
-            nodefmt = ' %13i %23.7f %23.7f %23.7f\n';
+            nodefmti = ' %13i';
+            nodefmtf = ' %23.7f %23.7f %23.7f\n';
             
             for i = 1:height(mesh.nodes)
-                fprintf(fid, nodefmt, mesh.nodes{i, :});
+                fprintf(fid, nodefmti, mesh.nodes{i, 1});
+                fprintf(fid, nodefmtf, mesh.nodes{i, 2:4});
             end
             
             fprintf(fid, ' %13i %13.2f %13.2f %13.2f\n', [0, 0, 0, 0]);

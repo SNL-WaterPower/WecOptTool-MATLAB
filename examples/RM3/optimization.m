@@ -8,7 +8,12 @@ blueprint = RM3();
 S = WecOptLib.tests.data.example8Spectra();
 SS = WecOptTool.types("SeaState", S);
 
-%% Solve
+%% Brute force solution
+
+lambdas = 0.25:0.25:2;
+mcres = arrayfun(@(x) myWaveBotObjFun(x,blueprint,SS), lambdas);
+
+%% Optimization
 
 x0 = 1;
 A = [];
