@@ -1,10 +1,10 @@
-.. _user-example:
+.. _optimization:
 
-*******
-Example
-*******
+********************************
+Optimizing an Existing WEC Model
+********************************
 
-This section explains and expands upon the |example.m|_ example file provided
+This section explains and expands upon the |optimization.m| example file provided
 in the root directory of the WecOptTool source code. This example considers the 
 DOE Reference Model 3 (RM3_) device.
 
@@ -12,7 +12,7 @@ DOE Reference Model 3 (RM3_) device.
 
    <details><summary><a>See the entire example file</a></summary></br>
 
-.. literalinclude:: /../example.m
+.. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
     :linenos:
 
@@ -46,7 +46,7 @@ simulation to their specifications. Once instantiated, an RM3Study object can
 be modified using other classes (as described below), and once prepared is
 passed to the main functions of the toolbox.
 
-.. literalinclude:: /../example.m
+.. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
     :lines: 24-26
     :linenos:
@@ -57,10 +57,10 @@ Define a Sea-State
 
 WecOptTool can simulate single or multiple spectra sea states, where weightings
 can be provided to indicate the relative likelihood of each spectra. The 
-following lines from |example.m|_ provide means of using the WAFO_ MATLAB 
+following lines from |optimization.m| provide means of using the WAFO_ MATLAB 
 toolbox or preset spectra from WecOptTool.
 
-.. literalinclude:: /../example.m
+.. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
     :lines: 27-35
     :linenos:
@@ -86,7 +86,7 @@ structure includes the ``S.S``, ``S.w``, and ``S.phi`` fields.
         note: 'Bretschneider, Hm0 = 4, Tp = 5'
         date: '25-Mar-2020 13:08:28'
 
-In the active code above from |example.m|_, there are eight spectra loaded into 
+In the active code above from |optimization.m|, there are eight spectra loaded into 
 a |struct array|_. These can be plotted using standard MATLAB commands.
 
 .. code:: matlab
@@ -105,7 +105,7 @@ a |struct array|_. These can be plotted using standard MATLAB commands.
 
 The desired spectrum or spectra can then be added to the study object.
 
-.. literalinclude:: /../example.m
+.. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
     :lines: 36-38
     :linenos:
@@ -151,7 +151,7 @@ WecOptTool allows for three types of controllers:
 The controllers are defined as classes in the :mat:mod:`~+WecOptTool.+control` 
 sub-package.
 
-.. literalinclude:: /../example.m
+.. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
     :lines: 39-42
     :linenos:
@@ -160,7 +160,7 @@ sub-package.
 Define design variables
 =======================
 
-As shown in the diagram below, for RM3 study considered in |example.m|_ the design 
+As shown in the diagram below, for RM3 study considered in |optimization.m| the design 
 variables are the radius of the surface float, ``r1``, the radius of the heave 
 plate, ``r2``, the draft of the surface float, ``d1``, and the depth of the 
 heave plate, ``d2``, such that ``x = [r1, r2, d1, d2]``. The optimization 
@@ -168,7 +168,7 @@ algorithm will attempt to find the values of ``x`` that minimize the objective
 function. 
 
 .. note::
-    **Objective function:** The built-in objective function of |example.m|_ is
+    **Objective function:** The built-in objective function of |optimization.m| is
     set to maximize absorbed power. This function can be altered better 
     approximate a more meaningful objective (e.g., levelized cost of energy).
 
@@ -179,7 +179,7 @@ function.
 The initial values,``x0``, lower bounds, ``lb``, and upper bounds, 
 ``ub`` of the design variables can be set as follows.
 
-.. literalinclude:: /../example.m
+.. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
     :lines: 43-50
     :linenos:
@@ -189,7 +189,7 @@ Alternatively, a simpler study with a single scalar design variable can be
 employed. In this case, instead of scaling various dimensions of the device 
 individually, the entire device is scaled based on a single design variable. 
 
-.. literalinclude:: /../example.m
+.. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
     :lines: 51-58
     :linenos:
@@ -201,10 +201,10 @@ The options for design variables are defined as classes in the
 Set optimization solver and options
 ===================================
 
-MATLAB's ``fmincon`` optimization solver is used in |example.m|_.
+MATLAB's ``fmincon`` optimization solver is used in |optimization.m|.
 
 .. note::
-    The ``MaxFunctionEvaluations`` is set to 5 in |example.m|_ to permit 
+    The ``MaxFunctionEvaluations`` is set to 5 in |optimization.m| to permit 
     relatively quick runs, but can be increased to allow for a potentially 
     better solution (with the other options left as-is, this should require 150 
     function evaluations).
@@ -214,7 +214,7 @@ MATLAB's ``fmincon`` optimization solver is used in |example.m|_.
    :alt: Progression of objective function value for RM3 example
 
 
-.. literalinclude:: /../example.m
+.. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
     :lines: 59-63
     :linenos:
@@ -227,9 +227,9 @@ The study can be :mat:func:`~+WecOptTool.run` and reviewed
 (with :mat:func:`~+WecOptTool.result` and :mat:func:`~+WecOptTool.plot`) as 
 follows:
 
-.. literalinclude:: /../example.m
+.. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 64-72
+    :lines: 64-68
     :linenos:
     :lineno-start: 64
 
@@ -260,8 +260,8 @@ energy absorbed by the resulting design for each of the eight sea states.
        of wave energy converters." IEEE Transactions on Sustainable Energy 6.2 
        (2014): 294-302.
 
-.. |example.m| replace:: ``example.m``
-.. _example.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m
+.. |optimization.m| replace:: ``optimization.m``
+.. _example.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m
 .. _WAFO: http://www.maths.lth.se/matstat/wafo/
 .. _RM3: https://tethys-engineering.pnnl.gov/signature-projects/rm3-wave-point-absorber
 .. _Nemoh: https://github.com/LHEEA/Nemoh
