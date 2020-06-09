@@ -4,7 +4,7 @@
 Optimizing an Existing WEC Model
 ********************************
 
-This section explains and expands upon the |optimization.m| example file provided
+This section explains and expands upon the |optimization.m|_ example file provided
 in the root directory of the WecOptTool source code. This example considers the 
 DOE Reference Model 3 (RM3_) device.
 
@@ -57,7 +57,7 @@ Define a Sea-State
 
 WecOptTool can simulate single or multiple spectra sea states, where weightings
 can be provided to indicate the relative likelihood of each spectra. The 
-following lines from |optimization.m| provide means of using the WAFO_ MATLAB 
+following lines from |optimization.m|_ provide means of using the WAFO_ MATLAB 
 toolbox or preset spectra from WecOptTool.
 
 .. literalinclude:: /../examples/RM3/optimization.m
@@ -86,7 +86,7 @@ structure includes the ``S.S``, ``S.w``, and ``S.phi`` fields.
         note: 'Bretschneider, Hm0 = 4, Tp = 5'
         date: '25-Mar-2020 13:08:28'
 
-In the active code above from |optimization.m|, there are eight spectra loaded into 
+In the active code above from |optimization.m|_, there are eight spectra loaded into 
 a |struct array|_. These can be plotted using standard MATLAB commands.
 
 .. code:: matlab
@@ -160,7 +160,7 @@ sub-package.
 Define design variables
 =======================
 
-As shown in the diagram below, for RM3 study considered in |optimization.m| the design 
+As shown in the diagram below, for RM3 study considered in |optimization.m|_ the design 
 variables are the radius of the surface float, ``r1``, the radius of the heave 
 plate, ``r2``, the draft of the surface float, ``d1``, and the depth of the 
 heave plate, ``d2``, such that ``x = [r1, r2, d1, d2]``. The optimization 
@@ -168,7 +168,7 @@ algorithm will attempt to find the values of ``x`` that minimize the objective
 function. 
 
 .. note::
-    **Objective function:** The built-in objective function of |optimization.m| is
+    **Objective function:** The built-in objective function of |optimization.m|_ is
     set to maximize absorbed power. This function can be altered better 
     approximate a more meaningful objective (e.g., levelized cost of energy).
 
@@ -201,10 +201,10 @@ The options for design variables are defined as classes in the
 Set optimization solver and options
 ===================================
 
-MATLAB's ``fmincon`` optimization solver is used in |optimization.m|.
+MATLAB's ``fmincon`` optimization solver is used in |optimization.m|_.
 
 .. note::
-    The ``MaxFunctionEvaluations`` is set to 5 in |optimization.m| to permit 
+    The ``MaxFunctionEvaluations`` is set to 5 in |optimization.m|_ to permit 
     relatively quick runs, but can be increased to allow for a potentially 
     better solution (with the other options left as-is, this should require 150 
     function evaluations).
@@ -261,7 +261,7 @@ energy absorbed by the resulting design for each of the eight sea states.
        (2014): 294-302.
 
 .. |optimization.m| replace:: ``optimization.m``
-.. _example.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m
+.. _optimization.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m
 .. _WAFO: http://www.maths.lth.se/matstat/wafo/
 .. _RM3: https://tethys-engineering.pnnl.gov/signature-projects/rm3-wave-point-absorber
 .. _Nemoh: https://github.com/LHEEA/Nemoh
