@@ -373,7 +373,7 @@ classdef WaveBot < matlab.mixin.Copyable
             % with w(1) = w0
             w0 = obj.dw;                    % fundamental frequency
             T = 2 * pi/w0;                  % '' period
-            W = obj.w(1) + w0 * (0:Nf-1)';
+            W = w0 * (1:Nf)';
             
             % Building cost function component
             % we will form the cost function as transpose(x) * H x, where x
@@ -498,7 +498,8 @@ classdef WaveBot < matlab.mixin.Copyable
             velFreq = ps2spec(x1hat);                   % TODO - make these complex
             posFreq = velFreq ./ obj.w;
             uFreq = ps.m_scale * ps2spec(uhat);
-            powFreq = 1/2 * uFreq .* conj(velFreq);
+%             powFreq = 1/2 * uFreq .* conj(velFreq);
+            powFreq = 0.5*ps.m_scale*(uhat'*x1hat);
             zFreq = uFreq ./ velFreq;
 
             % find time histories
