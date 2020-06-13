@@ -12,7 +12,7 @@ close all
 
 geomMode = 'scalar';
 lambda = 1;
-w = 2*pi*linspace(0.05, 2, 50)';
+w = 2*pi*[0.05:0.05:2.05]';
 a = WecOptLib.models.WaveBot('CC',geomMode,w);
 a.runHydro(lambda);
 
@@ -35,7 +35,7 @@ b(3).delta_Zmax = [-0.01, 0.1];
 %% define sea state of interest
 
 Hm0 = 0.125;
-Tp = 5;
+Tp = 1/0.3300;
 gamma = 3.3;
 S = jonswap(a(1).w,[Hm0, Tp, gamma],0);
 

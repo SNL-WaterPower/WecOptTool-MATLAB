@@ -82,8 +82,16 @@ classdef WaveBot < matlab.mixin.Copyable
             
             obj.controlType = controlType;
             obj.geomType = geomType;
+            
+            % TODO - move these to general function
+            assert(issorted(w));
+            dw = diff(w);
+            assert(all(dw - dw(1) < eps*10)); % TODO - not sure why == won't work
+            assert(w(1) == dw(1));
+            assert(iscolumn(w));
+            
             obj.w = w;
-            obj.dw = w(2) - w(1);
+            obj.dw = dw(1);
             obj.makeStudyDir();
         end
         
@@ -307,7 +315,7 @@ classdef WaveBot < matlab.mixin.Copyable
                     ph_mat = [ph, rand(length(ps.w), n_ph-1)];
                     
                     
-                    freq = ps.W;
+                    freq = obj.w;
                     n_freqs = length(freq);
                     phasePowMat = zeros(n_ph, 1);
                     powPerFreqMat = zeros(n_freqs, n_ph);
@@ -373,7 +381,6 @@ classdef WaveBot < matlab.mixin.Copyable
             % with w(1) = w0
             w0 = obj.dw;                    % fundamental frequency
             T = 2 * pi/w0;                  % '' period
-            W = w0 * (1:Nf)';
             
             % Building cost function component
             % we will form the cost function as transpose(x) * H x, where x
@@ -386,7 +393,7 @@ classdef WaveBot < matlab.mixin.Copyable
             Adiag33 = zeros(2*Nf-1,1);
             Bdiag33 = zeros(2*Nf,1);
             
-            Adiag33(1:2:end) = W.* obj.hydro.A;
+            Adiag33(1:2:end) = obj.w.* obj.hydro.A;
             Bdiag33(1:2:end) = obj.hydro.B;
             Bdiag33(2:2:end) = Bdiag33(1:2:end);
             
@@ -401,7 +408,7 @@ classdef WaveBot < matlab.mixin.Copyable
             M = blkdiag(obj.hydro.m * eye(2*Nf));
             
             % Building derivative matrix
-            d = [W(:)'; zeros(1, length(W))];
+            d = [obj.w(:)'; zeros(1, length(obj.w))];
             Dphi1 = diag(d(1:end-1), 1);
             Dphi1 = (Dphi1 - Dphi1');
             Dphi = blkdiag(Dphi1);
@@ -416,7 +423,7 @@ classdef WaveBot < matlab.mixin.Copyable
             % Calculating collocation points for constraints
             tkp = linspace(0, T, 4*(Nc));
             tkp = tkp(1:end);
-            Wtkp = W*tkp;
+            Wtkp = obj.w*tkp;
             Phip1 = zeros(2*size(Wtkp,1),size(Wtkp,2));
             Phip1(1:2:end,:) = cos(Wtkp);
             Phip1(2:2:end,:) = sin(Wtkp);
@@ -446,7 +453,6 @@ classdef WaveBot < matlab.mixin.Copyable
              
             motion.Nf = Nf;
             motion.T = T;
-            motion.W = W;                   % TODO: not sure should be carrying around another omega
             motion.w = obj.hydro.w;
             motion.H_mat = H_mat;
             motion.tkp = tkp;
@@ -461,7 +467,7 @@ classdef WaveBot < matlab.mixin.Copyable
         end
         
         function [powTot, fRes, tRes] = getPSPhasePower(obj, ps, ph)
-            %Calculates power using the pseudospectral method given a phase and
+            % getPSPhasePower   calculates power using the pseudospectral method given a phase and
             % a descrption of the body movement. Returns total phase power and
             % power per frequency
             
