@@ -29,13 +29,13 @@ b(2).controlType = 'P';
 
 % device with pseudo-spectral control
 b(3).controlType = 'PS';
-b(3).delta_Fmax = 1000;
-b(3).delta_Zmax = 0.9;
+b(3).delta_Fmax = 100000;
+b(3).delta_Zmax = [-0.01, 0.1];
 
 %% define sea state of interest
 
 Hm0 = 0.125;
-Tp = 2;
+Tp = 5;
 gamma = 3.3;
 S = jonswap(a(1).w,[Hm0, Tp, gamma],0);
 

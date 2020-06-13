@@ -47,8 +47,8 @@ classdef WaveBot < matlab.mixin.Copyable
         studyDir        % TODO
         hydro           % TODO
         geom            % TODO
-        delta_Zmax (1,1)  double {mustBePositive} = 0.7 % max PTO travel
-        delta_Fmax (1,1)  double {mustBePositive} = 5e3 % max PTO force
+        delta_Zmax   double = 0.7 % max PTO travel
+        delta_Fmax   double = 5e3 % max PTO force
         N (1,1) double {mustBePositive} = 12.47 % gear ratio
         Kt (1,1) double {mustBePositive} = 6.17 % torque constant [Nm/A]
         Ke (1,1) double {mustBePositive} = 4.12 % elec. constant [Vs/rad]
@@ -424,13 +424,23 @@ classdef WaveBot < matlab.mixin.Copyable
             Phip = blkdiag(Phip1);
             
             A_ineq = kron([1 0], Phip1' / Dphi1);
-            B_ineq = ones(size(A_ineq, 1),1) * obj.delta_Zmax;
+            A_ineq = [A_ineq; -A_ineq];
+            if length(obj.delta_Zmax)==1
+                B_ineq = [ones(size(A_ineq, 1),1) * obj.delta_Zmax];
+            else
+                B_ineq = [ones(size(A_ineq, 1)/2,1) * max(obj.delta_Zmax);
+                         -ones(size(A_ineq, 1)/2,1) * min(obj.delta_Zmax)];
+            end
             
             %force constraint section
             siz = size(A_ineq);
-            forc =  Phip1';
-            
-            B_ineq = [B_ineq; ones(siz(1),1) * obj.delta_Fmax/m_scale];
+            forc =  [Phip, -Phip1]';
+            if length(obj.delta_Fmax)==1
+                B_ineq = [B_ineq; ones(siz(1),1) * obj.delta_Fmax/m_scale];
+            else
+                B_ineq = [B_ineq; ones(siz(1)/2,1) * max(obj.delta_Fmax)/m_scale;
+                                 -ones(siz(1)/2,1) * min(obj.delta_Fmax)/m_scale];
+            end
             A_ineq = [A_ineq; kron([0 1], forc)];
             
              
@@ -473,7 +483,7 @@ classdef WaveBot < matlab.mixin.Copyable
                 'MaxIterations', 1e3,             ...
                 'MaxFunctionEvaluations', 1e5,    ...
                 'OptimalityTolerance', 1e-8,      ...
-                'StepTolerance', 1e-6);
+                'StepTolerance', 1e-8);
             
             siz = size(ps.A_ineq);
             X0 = zeros(siz(2),1);
