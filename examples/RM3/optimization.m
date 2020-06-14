@@ -1,53 +1,55 @@
 
-%% Setup
+%% Create RM3 blueprint.
+RM3Blueprint = RM3();
 
-% Create RM3 blueprint.
-blueprint = RM3();
+%% Define and store sea state of interest
 
-% Define and store sea state of interest
+% Create Bretschnider spectrum from WAFO
+% S = bretschneider([],[8,10],0);
+
+% Alternatively load a single example spectrum
+% S = WecOptLib.tests.data.exampleSpectrum();
+
+% Or load an example with multiple sea-states (8 differing spectra)
 S = WecOptLib.tests.data.example8Spectra();
+
+% Now store the sea-state in a SeaState data type
 SS = WecOptTool.types("SeaState", S);
-
-%% Brute force solution
-
-lambdas = 0.25:0.25:2;
-mcres = arrayfun(@(x) myWaveBotObjFun(x,blueprint,SS), lambdas);
 
 %% Optimization
 
-x0 = 1;
+% Create simple objective function handle
+objFun = @(x) myWaveBotObjFun(x, RM3Blueprint, SS);
+
+% Add geometry design variables (parametric)
+x0 = [5, 7.5, 1.125, 42];
+lb = [4.5, 7, 1.00, 41];
+ub = [5.5, 8, 1.25, 43];
+
+% Define optimisation options
+opts = optimoptions('fmincon');
+opts.UseParallel = true;
+opts.MaxFunctionEvaluations = 5; % set artificial low for fast running
+opts.Display = 'iter';
+
+% Enable dynamic plotting
+% opts.PlotFcn = {@optimplotx,@optimplotfval};
+
+% Define unused parameters
 A = [];
 B = [];
 Aeq = [];
 Beq = [];
-LB = 0.25;
-UB = 2;
 NONLCON = [];
-opts = optimoptions('fmincon');
-opts.UseParallel = true;
-opts.Display = 'iter';
-% opts.PlotFcn = {@optimplotx,@optimplotfval};
-% opts.OptimalityTolerance = 1e-8;
-[x, fval] = fmincon(@(x) myWaveBotObjFun(x,blueprint,SS),   ...
-    x0,A,B,Aeq,Beq,LB,UB,NONLCON,opts);
 
-%% Compare results
-
-figure
-hold on
-grid on
-bar(lambdas,mcres)
-plot(x * ones(2,1), ylim, 'r--', 'LineWidth', 5)
-legend('MC','fmincon','location','southeast')
-xlabel('Lambda')
-ylabel('Power')
+% Call the solver
+[x, fval] = fmincon(objFun, x0, A, B, Aeq, Beq, lb, ub, NONLCON, opts);
 
 %% Recover device object of best simulation and plot its power per freq
-devices = blueprint.recoverDevices();
+devices = RM3Blueprint.recoverDevices();
     
 for device = devices
-
-    if isequal(device.geomParams, {x})
+    if isequal(device.geomParams(1:4), num2cell(x))
         bestDevice = device;
         break
     end
@@ -60,15 +62,15 @@ WecOptTool.plot.powerPerFreq(bestDevice);
 % This can take any form that complies with the requirements of the MATLAB
 % optimization functions
 
-function [fval] = myWaveBotObjFun(x, bp, S)
+function [fval] = myWaveBotObjFun(x, blueprint, seastate)
     
-    geomMode.type = 'scalar';
-    geomMode.params = {x};
+    geomMode.type = 'parametric';
+    geomMode.params = [num2cell(x) {seastate 0.5}];
     cntrlMode.type = 'CC';
 
-    device = bp.makeDevices(geomMode, cntrlMode);
-    device.simulate(S);
-    fval = -sum(device.aggregation.pow);
+    device = blueprint.makeDevices(geomMode, cntrlMode);
+    device.simulate(seastate);
+    fval = -1 * device.aggregation.pow;
     
 end
 
