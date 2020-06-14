@@ -53,7 +53,7 @@ clear Sn
 
 for ii = 1:length(b)
     rng(3) % run same wave phasing for each case
-    r(ii) = b(ii).simPerformance(S);
+    r(ii) = b(ii).simPerformance(S,'nearest');
 end
 
 %% plot results
