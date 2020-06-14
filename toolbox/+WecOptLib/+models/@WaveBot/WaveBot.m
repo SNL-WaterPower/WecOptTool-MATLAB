@@ -144,7 +144,7 @@ classdef WaveBot < matlab.mixin.Copyable
             
             % create a substructure for the raw output from Read_Nemoh
             obj.hydro.raw = WecOptLib.nemoh.getNemoh(obj.geom.r, ...
-                obj.geom.z, obj.w,obj.studyDir);
+                obj.geom.z, obj.w, obj.studyDir);
             
             obj.hydro.w = obj.hydro.raw.w(:);
             obj.hydro.T = obj.hydro.raw.T(:);
@@ -212,7 +212,7 @@ classdef WaveBot < matlab.mixin.Copyable
         end
         
         
-        function simResults = simPerformance(obj, Spect)
+        function simResults = simPerformance(obj, Spect, interpMethod)
             % simPerformance    simulates the performance of the design
             %   finds the maximum power possible for the given design in
             %   the specified conditions
@@ -226,6 +226,10 @@ classdef WaveBot < matlab.mixin.Copyable
             %
             % See also jonswap, bretschneider, WecOptLib.simResults
             
+            if nargin < 3
+                interpMethod = 'linear';
+            end
+            
             % check spectrum for validity
             WecOptLib.utils.checkSpectrum(Spect)
             
@@ -238,7 +242,7 @@ classdef WaveBot < matlab.mixin.Copyable
             end
             
             % interpolate wave spectrum onto BEM        % TODO subsample
-            S = interp1(Spect.w,Spect.S,obj.hydro.w,'linear',0);
+            S = interp1(Spect.w,Spect.S,obj.hydro.w,interpMethod,0);
             S = S(:);
             
             % get wave elevation spectrum
