@@ -12,7 +12,9 @@ close all
 
 geomMode = 'scalar';
 lambda = 1;
-w = 2*pi*[0.05:0.05:2.05]';
+dw = 0.3142;
+nf = 50;
+w = dw * (1:nf)';
 a = WecOptLib.models.WaveBot('CC',geomMode,w);
 a.runHydro(lambda);
 
