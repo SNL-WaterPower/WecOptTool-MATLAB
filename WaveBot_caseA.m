@@ -58,11 +58,8 @@ end
 
 %% plot results
 
-for ii = 1:length(r)
-    r(ii).plotFreq
-    title(b(ii).controlType)
-end
-r.plotTime(0:0.01:100)
+r(ii).plotFreq(fig)
+r.plotTime(0:0.01:10)
 legend('CC','P','PS')
 
 %% report results

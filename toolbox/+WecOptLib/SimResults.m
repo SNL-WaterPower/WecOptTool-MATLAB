@@ -96,37 +96,48 @@ classdef SimResults
             
         end
         
-        function plotFreq(obj)
+        function plotFreq(obj,fig)
             
-            if length(obj) > 1
-                error('Not implemented') % TODO
+            if nargin < 2 || isempty(fig)
+                fig = figure;
             end
+            set(fig,'Name','SimRes.plotFreq');
             
-            figure('Name','SimRes.plotFreq')
-            ax(1) = subplot(2,1,1);
-            hold on
-            grid on
-            ax(2) = subplot(2,1,2);
-            hold on
-            grid on
-            
-            fns = {'eta','Fe','u','Fpto'};
+            fns = {'Fe','u','Fpto'};
             mrks = {'o','.','+','s'};
             
-            for ii = 1:length(fns)
+            n = length(obj);
+            for jj = 1:n
                 
-                stem(ax(1),obj.w, abs(obj.(fns{ii})),mrks{ii},...
-                    'DisplayName',fns{ii})
-                stem(ax(2),obj.w, angle(obj.(fns{ii})),mrks{ii},...
-                    'DisplayName',fns{ii})
+                
+                
+                for ii = 1:length(fns)
+                    
+                    ax(jj,1) = subplot(2,n,sub2ind([n,2],jj,1));
+                    title(obj(jj).name,'interpreter','none')
+                    hold on
+                    grid on
+                    ax(jj,2) = subplot(2,n,sub2ind([n,2],jj,2));
+                    hold on
+                    grid on
+                    
+                    stem(ax(jj,1),obj(jj).w, mag2db(abs(obj(jj).(fns{ii}))),mrks{ii},...
+                        'DisplayName',fns{ii},'MarkerSize',8,'Color','b')
+                    stem(ax(jj,2),obj(jj).w, angle(obj(jj).(fns{ii})),mrks{ii},...
+                        'DisplayName',fns{ii},'MarkerSize',8,'Color','b')
+                    
+                    ylim(ax(jj,2),[-pi,pi])
+                end
+                
+                
+                xlabel(ax(jj,2),'Frequency [rad/s]')
+
             end
-            
-            ylabel(ax(1),'Magnitude')
-            ylabel(ax(2),'Angle [rad]')
-            xlabel('Frequency [rad/s]')
-            
-            legend(ax(1))
+            ylabel(ax(1,1),'Magnitude [dB]')
+            ylabel(ax(1,2),'Angle [rad]')
+            legend(ax(n,1))
             linkaxes(ax,'x')
+            linkaxes(ax(:,1),'y')
             
         end
         
