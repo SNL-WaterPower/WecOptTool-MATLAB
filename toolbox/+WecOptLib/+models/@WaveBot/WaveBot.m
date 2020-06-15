@@ -511,15 +511,14 @@ classdef WaveBot < matlab.mixin.Copyable
             tmp = reshape(y,[],2);
             x1hat = tmp(:,1);
             uhat = tmp(:,2);
-%             Phat = 1/2 * transpose(x1hat) * uhat;
             
             % find the spectra
             ps2spec = @(x) (x(1:2:end) - 1i * x(2:2:end));  % TODO - probably make this a global function
             velFreq = ps2spec(x1hat);                   % TODO - make these complex
             posFreq = velFreq ./ obj.w;
             uFreq = ps.m_scale * ps2spec(uhat);
-%             powFreq = 1/2 * uFreq .* conj(velFreq);
-            powFreq = 0.5*ps.m_scale*(uhat'*x1hat);
+            powFreq = 1/2 * uFreq .* conj(velFreq);
+%             powFreq = 0.5*ps.m_scale*(uhat'*x1hat);
             zFreq = uFreq ./ velFreq;
 
             % find time histories
@@ -530,7 +529,8 @@ classdef WaveBot < matlab.mixin.Copyable
             powT = 1 * velT .* uT;
             
             powTot = trapz(ps.tkp, powT) / (ps.tkp(end) - ps.tkp(1));
-            assert(WecOptLib.utils.isClose(powTot, sum(real(powFreq)), 'rtol', 0.10))
+            assert(WecOptLib.utils.isClose(powTot, sum(real(powFreq)),...
+                'rtol', eps*1e2))
             
             % assemble outputs
             fRes.pos = posFreq;
