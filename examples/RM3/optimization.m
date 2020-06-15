@@ -1,3 +1,6 @@
+%% optimization.m
+% Example of an optimization study, utilizing the RM3 blueprint defined in
+% the RM3.m file.
 
 %% Create RM3 blueprint.
 RM3Blueprint = RM3();
@@ -16,10 +19,7 @@ S = WecOptLib.tests.data.example8Spectra();
 % Now store the sea-state in a SeaState data type
 SS = WecOptTool.types("SeaState", S);
 
-%% Optimization
-
-% Create simple objective function handle
-objFun = @(x) myWaveBotObjFun(x, RM3Blueprint, SS);
+%% Optimization Setup
 
 % Add geometry design variables (parametric)
 x0 = [5, 7.5, 1.125, 42];
@@ -42,6 +42,11 @@ Aeq = [];
 Beq = [];
 NONLCON = [];
 
+%% Optimization Execution
+
+% Create simple objective function handle
+objFun = @(x) myWaveBotObjFun(x, RM3Blueprint, SS);
+
 % Call the solver
 [x, fval] = fmincon(objFun, x0, A, B, Aeq, Beq, lb, ub, NONLCON, opts);
 
@@ -53,7 +58,6 @@ for device = devices
         bestDevice = device;
         break
     end
-
 end
 
 WecOptTool.plot.powerPerFreq(bestDevice);
