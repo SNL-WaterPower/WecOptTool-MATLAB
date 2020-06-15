@@ -31,15 +31,15 @@ b(2).controlType = 'P';
 
 % device with pseudo-spectral control
 b(3).controlType = 'PS';
-b(3).delta_Fmax = 100000;
-b(3).delta_Zmax = [-0.01, 0.1];
+b(3).delta_Fmax = 1e3;
+b(3).delta_Zmax = 1e4;
 
 %% define sea state of interest
 
 Hm0 = 0.125;
-Tp = 1/0.3300;
+Tp = (2*pi)/dw/6;
 gamma = 3.3;
-S = jonswap(a(1).w,[Hm0, Tp, gamma],0);
+S = jonswap(b(1).w,[Hm0, Tp, gamma],0);
 
 % make this a regular wave instead
 [~,idx] = min(abs(S.w - 2*pi/Tp));
@@ -58,7 +58,7 @@ end
 
 %% plot results
 
-r(ii).plotFreq(fig)
+r(ii).plotFreq()
 r.plotTime(0:0.01:10)
 legend('CC','P','PS')
 
