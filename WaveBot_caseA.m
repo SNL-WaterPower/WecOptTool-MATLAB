@@ -31,7 +31,7 @@ b(2).controlType = 'P';
 
 % device with pseudo-spectral control
 b(3).controlType = 'PS';
-b(3).delta_Fmax = 1e3;
+b(3).delta_Fmax = [0,1e3];
 b(3).delta_Zmax = 1e4;
 
 %% define sea state of interest

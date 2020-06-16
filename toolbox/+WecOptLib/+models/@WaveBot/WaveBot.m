@@ -423,7 +423,9 @@ classdef WaveBot < matlab.mixin.Copyable
             % equality constraints for EOM
             P =  (M*Dphi + B + G + (C / Dphi)) / m_scale;
             Aeq = [P, -eye(2*Nf) ];
-            
+            Aeq = [Aeq,            zeros(2*Nf,2); 
+                   zeros(1,4*Nf), obj.hydro.K / m_scale, -1];
+               
             % Calculating collocation points for constraints
             tkp = linspace(0, T, 4*(Nc));
             tkp = tkp(1:end);
@@ -434,7 +436,7 @@ classdef WaveBot < matlab.mixin.Copyable
             
             Phip = blkdiag(Phip1);
             
-            A_ineq = kron([1 0], Phip1' / Dphi1);
+            A_ineq =  [kron([1 0], Phip1' / Dphi1), ones(4*Nc,1), zeros(4*Nc,1)];
             A_ineq = [A_ineq; -A_ineq];
             if length(obj.delta_Zmax)==1
                 B_ineq = [ones(size(A_ineq, 1),1) * obj.delta_Zmax];
@@ -443,16 +445,16 @@ classdef WaveBot < matlab.mixin.Copyable
                          -ones(size(A_ineq, 1)/2,1) * min(obj.delta_Zmax)];
             end
             
-            %force constraint section
+            %vforce constraint section
             siz = size(A_ineq);
-            forc =  [Phip, -Phip1]';
+            forc =  [kron([0 1], Phip'), zeros(4*Nc,1), ones(4*Nc,1)];
             if length(obj.delta_Fmax)==1
                 B_ineq = [B_ineq; ones(siz(1),1) * obj.delta_Fmax/m_scale];
             else
                 B_ineq = [B_ineq; ones(siz(1)/2,1) * max(obj.delta_Fmax)/m_scale;
                                  -ones(siz(1)/2,1) * min(obj.delta_Fmax)/m_scale];
             end
-            A_ineq = [A_ineq; kron([0 1], forc)];
+            A_ineq = [A_ineq; forc; -forc];
             
              
             motion.Nf = Nf;
@@ -484,7 +486,7 @@ classdef WaveBot < matlab.mixin.Copyable
             fef3(1:2:end) =  real(E3);
             fef3(2:2:end) = -imag(E3);
             
-            Beq = [fef3] / ps.m_scale;
+            Beq = [fef3; 0] / ps.m_scale;
             
             % constrained optimiztion
             qp_options = optimoptions('fmincon',  ...
@@ -508,7 +510,7 @@ classdef WaveBot < matlab.mixin.Copyable
             
             % y is a column vector containing [vel; u] of the
             % pseudospectral coefficients
-            tmp = reshape(y,[],2);
+            tmp = reshape(y(1:end-2),[],2);
             x1hat = tmp(:,1);
             uhat = tmp(:,2);
             
@@ -524,8 +526,8 @@ classdef WaveBot < matlab.mixin.Copyable
             % find time histories
             spec2time = @(x) ps.Phip' * x;              % TODO - probably make this a global function
             velT = spec2time(x1hat);
-            posT = (ps.Phip' / ps.Dphi) * x1hat;
-            uT = ps.m_scale * spec2time(uhat);
+            posT = y(end-1) + (ps.Phip' / ps.Dphi) * x1hat;
+            uT = ps.m_scale * (y(end) + spec2time(uhat));
             powT = 1 * velT .* uT;
             
             powTot = trapz(ps.tkp, powT) / (ps.tkp(end) - ps.tkp(1));
@@ -545,7 +547,7 @@ classdef WaveBot < matlab.mixin.Copyable
             tRes.pow = powT;
             
             function P = pow_calc(X)
-                P = X' * ps.H_mat * X;
+                P = X(1:end-2)' * ps.H_mat * X(1:end-2);
             end
             
         end
