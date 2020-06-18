@@ -153,7 +153,18 @@ classdef SimResults < handle
         function T = summary(obj)
             
             avgpow = arrayfun(@(x) sum(real(x.pow)), obj);
-            T = table(avgpow','VariableNames',{'AvgPow'},'RowNames', {obj.name});
+            
+            if any(strcmp(obj(1).name, {obj(2:end).name}))
+                for ii = 1:length(obj)
+                    rnames{ii} = [obj(ii).name, '_', num2str(ii)];
+                end
+            else
+                rnames = {obj.name};
+            end
+            rnames = reshape(rnames,[],1);
+            
+            T = table(avgpow(:),'VariableNames',{'AvgPow'},...
+                'RowNames', rnames);
             % TODO add more columns
             
         end
