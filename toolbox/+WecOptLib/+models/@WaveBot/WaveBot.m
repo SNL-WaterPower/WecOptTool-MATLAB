@@ -197,19 +197,24 @@ classdef WaveBot < matlab.mixin.Copyable
             if nargin < 2
                 figure('name','WaveBot Geometry')
                 ax = gca;
-                plot(ax,[0, 0.88, 0.88, 0.35, 0],...
+            end
+            plot(ax,[0, 0.88, 0.88, 0.35, 0],...
                     [0.2, 0.2, -0.16, -0.53, -0.53],'.--',...
                     'DisplayName','original')
-            end
             
             hold on
             grid on
-            plot(ax,obj.geom.r, obj.geom.z,'o-')
+            
+            for ii = 1:length(obj)
+                plot(ax,obj(ii).geom.r, obj(ii).geom.z,...
+                    'o-','DisplayName',num2str(ii))
+            end
             
             legend('location','southeast')
-            xlabel('r [m]')
-            ylabel('z [m]')
+            xlabel('$r$ [m]','interpreter','latex')
+            ylabel('$z$ [m]','interpreter','latex')
             ylim([-Inf, 0])
+            axis equal
         end
         
         
