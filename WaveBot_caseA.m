@@ -58,7 +58,7 @@ end
 
 %% plot results
 
-r(ii).plotFreq()
+r.plotFreq()
 r.plotTime(0:0.01:10)
 legend('CC','P','PS')
 
