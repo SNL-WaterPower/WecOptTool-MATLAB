@@ -1,4 +1,4 @@
-classdef SimResults
+classdef SimResults < handle
     % SimResults   simulation results class for WecOptTool
     % TODO
     %
@@ -57,7 +57,12 @@ classdef SimResults
     end
     methods
         function obj = SimResults(name)
-            obj.name = name;
+            
+            if nargin > 1
+                obj.name = name;
+            else
+                obj.name = 'tmp';
+            end
             obj.date = now;
         end
         
