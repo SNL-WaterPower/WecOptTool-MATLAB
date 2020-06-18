@@ -554,10 +554,10 @@ classdef WaveBot < matlab.mixin.Copyable
         
         function obj = makeStudyDir(obj)
             
-            if obj.studyDir
-                errStr = "studyDir is already defined";
-                error('WecOptTool:StudyDirDefined', errStr)
-            end
+%             if obj.studyDir % TODO - turned this off temporarily
+%                 errStr = "studyDir is already defined";
+%                 error('WecOptTool:StudyDirDefined', errStr)
+%             end
             
             % Try to ensure folder is unique and reserved
             obj.studyDir = tempname;
@@ -577,9 +577,9 @@ classdef WaveBot < matlab.mixin.Copyable
         end
         
         function delete(obj)
-            if ~WecOptLib.utils.isParallel()
-                obj.rmStudyDir();
-            end
+%             if ~WecOptLib.utils.isParallel() % TODO - turned this off temporarily
+%                 obj.rmStudyDir();
+%             end
         end
     end
 end
