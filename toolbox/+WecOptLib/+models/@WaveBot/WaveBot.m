@@ -92,7 +92,6 @@ classdef WaveBot < matlab.mixin.Copyable
             
             obj.w = w;
             obj.dw = dw(1);
-            obj.makeStudyDir();
         end
         
         function runHydro(obj, geomDef)
@@ -118,6 +117,8 @@ classdef WaveBot < matlab.mixin.Copyable
             %                   r2 = 0.35 m
             %                   d1 = 0.16 m
             %                   d2 = 0.53 m
+            
+            obj.makeStudyDir();
             
             switch obj.geomType
                 case 'parametric'
