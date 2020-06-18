@@ -358,6 +358,8 @@ classdef WaveBot < matlab.mixin.Copyable
             simResults.Fpto = Fpto;
             simResults.pow = pow;
             
+            simResults.wec = obj;
+            
         end
     end
     

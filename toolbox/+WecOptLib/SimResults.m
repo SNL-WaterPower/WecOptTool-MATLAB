@@ -51,10 +51,14 @@ classdef SimResults
         Fpto
         pow
         name
+        date
+        Vo
+        wec
     end
     methods
         function obj = SimResults(name)
             obj.name = name;
+            obj.date = now;
         end
         
         function plotTime(obj ,t)
