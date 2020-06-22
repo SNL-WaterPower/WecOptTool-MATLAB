@@ -351,7 +351,7 @@ classdef WaveBot < matlab.mixin.Copyable
             end
             
             % assembly output
-            nm = sprintf('WaveBot_%s',obj.controlType); % TODO add datetime?
+            nm = sprintf('WaveBot_%s',obj.controlType);
             simResults = WecOptLib.SimResults(nm);
             simResults.ph = ph;
             simResults.w = obj.hydro.w;
@@ -453,7 +453,7 @@ classdef WaveBot < matlab.mixin.Copyable
                          -ones(size(A_ineq, 1)/2,1) * min(obj.delta_Zmax)];
             end
             
-            %vforce constraint section
+            % force constraint section
             siz = size(A_ineq);
             forc =  [kron([0 1], Phip'), zeros(4*Nc,1), ones(4*Nc,1)];
             if length(obj.delta_Fmax)==1
@@ -481,9 +481,9 @@ classdef WaveBot < matlab.mixin.Copyable
         end
         
         function [powTot, fRes, tRes] = getPSPhasePower(obj, ps, ph)
-            % getPSPhasePower   calculates power using the pseudospectral method given a phase and
-            % a descrption of the body movement. Returns total phase power and
-            % power per frequency
+            % getPSPhasePower   calculates power using the pseudospectral
+            % method given a phase and a descrption of the body movement.
+            % Returns total phase power and power per frequency
             
             eta_fd = ps.wave_amp .* exp(1i*ph);
             
@@ -524,7 +524,7 @@ classdef WaveBot < matlab.mixin.Copyable
             
             % find the spectra
             ps2spec = @(x) (x(1:2:end) - 1i * x(2:2:end));  % TODO - probably make this a global function
-            velFreq = ps2spec(x1hat);                   % TODO - make these complex
+            velFreq = ps2spec(x1hat);
             posFreq = velFreq ./ obj.w;
             uFreq = ps.m_scale * ps2spec(uhat);
             powFreq = 1/2 * uFreq .* conj(velFreq);
@@ -555,7 +555,7 @@ classdef WaveBot < matlab.mixin.Copyable
             tRes.pow = powT;
             
             function P = pow_calc(X)
-                P = X(1:end-2)' * ps.H_mat * X(1:end-2);
+                P = X(1:end-2)' * ps.H_mat * X(1:end-2); % note that 1/2 factor is dropped for simplicity
             end
             
         end
