@@ -1,10 +1,17 @@
-function installNemoh(nemohPath)
-    % Adds Nemoh executables path to WecOptTool
+classdef (Abstract) Solver < WecOptTool.base.AutoFolder
+    % Abstract class for creating new solver classes
     %
-    % Args:
-    %     nemohPath (string):
-    %         path to (platform dependent) NEMOH executables
+    % A single method should be implemented, called ``getHydro`` that
+    % takes an array of :mat:class:`+WecOptTool.+types.Mesh` objects and 
+    % an arbitrary number of additional inputs, solves the hydrodynamics 
+    % for the meshes and return a :mat:class:`+WecOptTool.+types.Hydro` 
+    % object.
     %
+    % --
+    %
+    % See also WecOptTool.types.Mesh,  WecOptTool.types.Hydro
+    %
+    % --
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -26,33 +33,8 @@ function installNemoh(nemohPath)
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    % Check if the a current path is set
-    try
-        oldNemohPath = WecOptLib.utils.readConfig('nemohPath');
-    catch
-        oldNemohPath = "";
+    methods (Abstract)
+       hydro = getHydro(obj, meshes, varagin)
     end
     
-    % Update the config file
-    WecOptLib.utils.writeConfig('nemohPath', nemohPath)
-    
-    % Check installation
-    nemohExistFlag = WecOptTool.base.NEMOH.isNemohInPath();
-
-    if nemohExistFlag
-        
-        fprintf('Successfully Installed Nemoh\n');
-        
-    else
-        
-        msg = ['Nemoh not found. Please check the specified path ' ...
-               'and try again. \n'];
-        fprintf(msg);
-        
-        % Revert back to the old config
-        WecOptLib.utils.writeConfig('nemohPath', oldNemohPath)
-        
-    end
-
 end
-

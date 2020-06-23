@@ -1,10 +1,9 @@
-function installNemoh(nemohPath)
-    % Adds Nemoh executables path to WecOptTool
+classdef (Abstract) Blueprint
+    % Abstract class for creating new Blueprint structures (using the
+    % Abstract Factory Pattern).
     %
-    % Args:
-    %     nemohPath (string):
-    %         path to (platform dependent) NEMOH executables
-    %
+    % One method must be implemented, ``makeDevices``, which should 
+    % generate an array of :mat:class:`+WecOptTool.+base.Device` objects.
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -26,33 +25,8 @@ function installNemoh(nemohPath)
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    % Check if the a current path is set
-    try
-        oldNemohPath = WecOptLib.utils.readConfig('nemohPath');
-    catch
-        oldNemohPath = "";
+    methods (Abstract)
+        devices = makeDevices(obj, varagin)
     end
     
-    % Update the config file
-    WecOptLib.utils.writeConfig('nemohPath', nemohPath)
-    
-    % Check installation
-    nemohExistFlag = WecOptTool.base.NEMOH.isNemohInPath();
-
-    if nemohExistFlag
-        
-        fprintf('Successfully Installed Nemoh\n');
-        
-    else
-        
-        msg = ['Nemoh not found. Please check the specified path ' ...
-               'and try again. \n'];
-        fprintf(msg);
-        
-        % Revert back to the old config
-        WecOptLib.utils.writeConfig('nemohPath', oldNemohPath)
-        
-    end
-
 end
-

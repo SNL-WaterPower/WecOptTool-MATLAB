@@ -4,6 +4,7 @@
    :caption: User Guide
 
    user/setup
-   user/example
+   user/optimization
+   user/model
    user/api
    user/license

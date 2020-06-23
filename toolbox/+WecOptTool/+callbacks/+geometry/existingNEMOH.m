@@ -1,10 +1,21 @@
-function installNemoh(nemohPath)
-    % Adds Nemoh executables path to WecOptTool
+function hydro = existingNEMOH(folder, nemohFolder)
+    % A predefined geometry callback for reading an existing NEMOH
+    % solution.
     %
-    % Args:
-    %     nemohPath (string):
-    %         path to (platform dependent) NEMOH executables
+    % Arguments:
+    %     folder (string):
+    %         folder to store resources (unused)
+    %     nemohFolder (string):
+    %         Path to the folder containing existing NEMOH output files
     %
+    % Returns:
+    %    :mat:class:`+WecOptTool.+types.Hydro`: A populated Hydro object
+    %
+    % --
+    %
+    % See also WecOptTool.Blueprint
+    %
+    % --
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -24,35 +35,11 @@ function installNemoh(nemohPath)
     % 
     %     You should have received a copy of the GNU General Public 
     %     License along with WecOptTool.  If not, see 
-    %     <https://www.gnu.org/licenses/>.
+    %     <https://www.gnu.org/licenses/>. 
     
-    % Check if the a current path is set
-    try
-        oldNemohPath = WecOptLib.utils.readConfig('nemohPath');
-    catch
-        oldNemohPath = "";
-    end
+    hydro = struct();
+    hydro = WecOptLib.vendor.WEC_Sim.Read_NEMOH(hydro,          ...
+                                                nemohFolder);
+    hydro = WecOptTool.types.Hydro(hydro);
     
-    % Update the config file
-    WecOptLib.utils.writeConfig('nemohPath', nemohPath)
-    
-    % Check installation
-    nemohExistFlag = WecOptTool.base.NEMOH.isNemohInPath();
-
-    if nemohExistFlag
-        
-        fprintf('Successfully Installed Nemoh\n');
-        
-    else
-        
-        msg = ['Nemoh not found. Please check the specified path ' ...
-               'and try again. \n'];
-        fprintf(msg);
-        
-        % Revert back to the old config
-        WecOptLib.utils.writeConfig('nemohPath', oldNemohPath)
-        
-    end
-
 end
-
