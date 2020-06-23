@@ -34,35 +34,24 @@ Nemoh_ is used to compute the linear wave-body interaction properties using the
 boundary element method (BEM). Next, using these properties and some set of sea 
 states, one of three controllers (``ProportionalDamping``, 
 ``ComplexConjugate``, ``PseudoSpectral``) are used to compute the resulting 
-dynamics. From on these dynamics and some model for cost (e.g., based on the 
-size dimensions and the capabilities of the PTO) can be combine to produce an 
+dynamics. These dynamics and some model for cost (e.g., based on the size 
+dimensions and the capabilities of the PTO) can be combined to produce an 
 objective function, which is returned to the optimization solver. 
 
 .. image:: /_static/WecOptTool_algorithmDiagram.svg
    :alt: Conceptual illustration of WecOptTool functionality
 
-The WecOptTool framework encapsulates the above process using two key classes. 
-The :mat:class:`~+WecOptTool.Blueprint` class is used to describe the potential 
-forms (e.g. shape, control type, etc.) that a WEC device might take. The user 
-of WecOptTool must create a `concrete subclass 
-<https://uk.mathworks.com/help/matlab/matlab_oop/abstract-classes-and-interface 
-s.html>`_ of the :mat:class:`~+WecOptTool.Blueprint` class that describes the 
-potential geometry, motion and control options for their chosen WEC design. 
-For this example, the subclass is already prepared in the |RM3.m|_ file and 
-details regarding how this file was created is available in the :ref:`model` 
-page. 
+In WecOptTool, this process is executed by applying the following steps:
 
-The :mat:class:`~+WecOptTool.Device` class represents a device with a chosen 
-set of design parameters, created from a Blueprint subclass. Subsequently, the 
-performance of Device objects can be tested against any seastate of choice. 
-In summary, the general process is:
-
-#. Create a Blueprint subclass object
-#. Create one or many Device objects using the Blueprint
+#. Select a WEC Blueprint (RM3, in this case)
+#. Create one or many Devices using the Blueprint
 #. Examine the performance each Device object for a given seastate
 
 The remainder of this page will illustrate (using the |optimization.m|_ 
-example) how this process is applied to a co-optimisation problem.
+example) how this process is applied to a co-optimisation problem. For more 
+information about the :mat:class:`~+WecOptTool.Blueprint` and 
+:mat:class:`~+WecOptTool.Device` classes see the :ref:`model` and :ref:`api` 
+sections. 
 
 Create an RM3 object
 ====================

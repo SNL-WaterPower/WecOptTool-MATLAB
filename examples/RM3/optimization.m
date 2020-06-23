@@ -31,6 +31,7 @@ opts = optimoptions('fmincon');
 opts.UseParallel = true;
 opts.MaxFunctionEvaluations = 5; % set artificial low for fast running
 opts.Display = 'iter';
+opts.FiniteDifferenceType = 'central';
 
 % Enable dynamic plotting
 % opts.PlotFcn = {@optimplotx,@optimplotfval};

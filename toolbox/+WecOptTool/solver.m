@@ -1,6 +1,6 @@
 function hydro = solver(solverName, folder, varargin)
     % Solve a mesh using shortcuts to the ``getHydro`` method of the 
-    % defined Solver concrete classes in the:mat:mod:`+WecOptTool.+solver` 
+    % defined Solver concrete classes in the :mat:mod:`+WecOptTool.+solver` 
     % package.
     %
     % Arguments:
