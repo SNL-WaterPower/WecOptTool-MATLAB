@@ -144,7 +144,7 @@ it above. The full function is as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 65-79
+    :lines: 65-80
     :linenos:
     :lineno-start: 65
 
@@ -190,9 +190,9 @@ follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 71-72
+    :lines: 72-73
     :linenos:
-    :lineno-start: 71
+    :lineno-start: 72
 
 Add a controller
 ----------------
@@ -236,9 +236,9 @@ requires no additional arguments:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 73
+    :lines: 74
     :linenos:
-    :lineno-start: 73
+    :lineno-start: 74
 
 Create and evaluate the device
 ------------------------------
@@ -250,9 +250,9 @@ is used with the defined geometry and controller options:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 75
+    :lines: 76
     :linenos:
-    :lineno-start: 75
+    :lineno-start: 76
 
 To evaluate the device's performance, the 
 :mat:meth:`~+WecOptTool.Device.simulate` method is called on the created
@@ -260,9 +260,9 @@ device with the given :mat:class:`~+WecOptTool.+types.SeaState` object.
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 76
+    :lines: 77
     :linenos:
-    :lineno-start: 76
+    :lineno-start: 77
 
 Define the objective function value
 -----------------------------------
@@ -278,9 +278,9 @@ value is taken:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 77
+    :lines: 78
     :linenos:
-    :lineno-start: 77
+    :lineno-start: 78
 
 .. note::
     **Objective function:** The chosen objective function in|optimization.m|_ 
@@ -306,7 +306,7 @@ Options can also be supplied for fmincon:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 29-36
+    :lines: 29-37
     :linenos:
     :lineno-start: 29
 
@@ -324,9 +324,9 @@ other arguments required by fmincon:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 38-43
+    :lines: 39-44
     :linenos:
-    :lineno-start: 38
+    :lineno-start: 39
 
 Run study and view results
 ==========================
@@ -339,17 +339,17 @@ the Blueprint and SeaState object inputs:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 47-48
+    :lines: 48-49
     :linenos:
-    :lineno-start: 47
+    :lineno-start: 48
 
 The study can be executed by calling fmincon:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 50-51
+    :lines: 51-52
     :linenos:
-    :lineno-start: 50
+    :lineno-start: 51
 
 Once the calculation is complete, the ``x`` and ``fval`` variables show that 
 the study has produced the following design: 
@@ -374,9 +374,9 @@ objects:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 53-54
+    :lines: 54-55
     :linenos:
-    :lineno-start: 53
+    :lineno-start: 54
 
 .. warning::
     Once recovered, ownership of the files containing the stored data for
@@ -390,9 +390,9 @@ parameter of the devices, until a match is found, as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 56-61
+    :lines: 57-62
     :linenos:
-    :lineno-start: 56
+    :lineno-start: 57
 
 Finally, by using the :mat:func:`+WecOptTool.+plot.powerPerFreq` function, the 
 spectral distribution of energy absorbed by the resulting design for each of 
@@ -400,9 +400,9 @@ the eight sea states can be shown.
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 63
+    :lines: 64
     :linenos:
-    :lineno-start: 63
+    :lineno-start: 64
 
 .. image:: /_static/example_spectralPowerPlot.svg
    :width: 400pt

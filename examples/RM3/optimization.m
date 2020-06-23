@@ -28,10 +28,10 @@ ub = [5.5, 8, 1.25, 43];
 
 % Define optimisation options
 opts = optimoptions('fmincon');
+opts.FiniteDifferenceType = 'central';
 opts.UseParallel = true;
 opts.MaxFunctionEvaluations = 5; % set artificial low for fast running
 opts.Display = 'iter';
-opts.FiniteDifferenceType = 'central';
 
 % Enable dynamic plotting
 % opts.PlotFcn = {@optimplotx,@optimplotfval};
