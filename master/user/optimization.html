@@ -321,10 +321,10 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 
 <span class="c">% Define optimisation options</span>
 <span class="n">opts</span> <span class="p">=</span> <span class="n">optimoptions</span><span class="p">(</span><span class="s">&#39;fmincon&#39;</span><span class="p">);</span>
+<span class="n">opts</span><span class="p">.</span><span class="n">FiniteDifferenceType</span> <span class="p">=</span> <span class="s">&#39;central&#39;</span><span class="p">;</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">MaxFunctionEvaluations</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c">% set artificial low for fast running</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">Display</span> <span class="p">=</span> <span class="s">&#39;iter&#39;</span><span class="p">;</span>
-<span class="n">opts</span><span class="p">.</span><span class="n">FiniteDifferenceType</span> <span class="p">=</span> <span class="s">&#39;central&#39;</span><span class="p">;</span>
 
 <span class="c">% Enable dynamic plotting</span>
 <span class="c">% opts.PlotFcn = {@optimplotx,@optimplotfval};</span>
@@ -520,7 +520,8 @@ it above. The full function is as follows:</p>
 75
 76
 77
-78</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Define objective function</span>
+78
+79</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Define objective function</span>
 <span class="c">% This can take any form that complies with the requirements of the MATLAB</span>
 <span class="c">% optimization functions</span>
 
@@ -534,6 +535,7 @@ it above. The full function is as follows:</p>
     <span class="n">device</span><span class="p">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">seastate</span><span class="p">);</span>
     <span class="n">fval</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">device</span><span class="p">.</span><span class="n">aggregation</span><span class="p">.</span><span class="n">pow</span><span class="p">;</span>
     
+<span class="n">end</span>
 </pre></div>
 </td></tr></table></div>
 <p>The following subsections will describe each stage of setting up the objective
@@ -568,9 +570,9 @@ variables, <code class="docutils literal notranslate"><span class="pre">r1,</spa
 to be used for the NEMOH calculations. The design variables will be passed by
 the optimisation routine, so we add the seastate and the frequency step as
 follows:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>71
-72</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    
-    <span class="n">geomMode</span><span class="p">.</span><span class="n">type</span> <span class="p">=</span> <span class="s">&#39;parametric&#39;</span><span class="p">;</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>72
+73</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">geomMode</span><span class="p">.</span><span class="n">type</span> <span class="p">=</span> <span class="s">&#39;parametric&#39;</span><span class="p">;</span>
+    <span class="n">geomMode</span><span class="p">.</span><span class="n">params</span> <span class="p">=</span> <span class="p">[</span><span class="n">num2cell</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span><span class="n">seastate</span> <span class="mf">0.5</span><span class="p">}];</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -609,7 +611,7 @@ with both constraints and nonlinear dynamics. This approach is based on
 </div></blockquote>
 <p>For the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> example we choose the Complex Conjugate option, which
 requires no additional arguments:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>73</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">geomMode</span><span class="p">.</span><span class="n">params</span> <span class="p">=</span> <span class="p">[</span><span class="n">num2cell</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span><span class="n">seastate</span> <span class="mf">0.5</span><span class="p">}];</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>74</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">cntrlMode</span><span class="p">.</span><span class="n">type</span> <span class="p">=</span> <span class="s">&#39;CC&#39;</span><span class="p">;</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -619,13 +621,13 @@ requires no additional arguments:</p>
 performance evaluated for a given seastate. To create the device, the
 <a class="reference internal" href="api.html#+WecOptTool.Blueprint.makeDevices" title="+WecOptTool.Blueprint.makeDevices"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">makeDevices()</span></code></a> method of the <code class="docutils literal notranslate"><span class="pre">RM3</span></code> object
 is used with the defined geometry and controller options:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>75</pre></div></td><td class="code"><div class="highlight"><pre><span></span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>76</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">device</span> <span class="p">=</span> <span class="n">blueprint</span><span class="p">.</span><span class="n">makeDevices</span><span class="p">(</span><span class="n">geomMode</span><span class="p">,</span> <span class="n">cntrlMode</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <p>To evaluate the device’s performance, the
 <a class="reference internal" href="api.html#+WecOptTool.Device.simulate" title="+WecOptTool.Device.simulate"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">simulate()</span></code></a> method is called on the created
 device with the given <a class="reference internal" href="api.html#+WecOptTool.+types.SeaState" title="+WecOptTool.+types.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a> object.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>76</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">device</span> <span class="p">=</span> <span class="n">blueprint</span><span class="p">.</span><span class="n">makeDevices</span><span class="p">(</span><span class="n">geomMode</span><span class="p">,</span> <span class="n">cntrlMode</span><span class="p">);</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>77</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">device</span><span class="p">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">seastate</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -639,7 +641,7 @@ results’ found in the <code class="xref mat mat-attr docutils literal notransl
 maximum absorbed power across all spectra in the given seastate is calculated
 and added as <code class="docutils literal notranslate"><span class="pre">pow</span></code>. To make a minimisation problem, the negation of this
 value is taken:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>77</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">device</span><span class="p">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">seastate</span><span class="p">);</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>78</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">fval</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">device</span><span class="p">.</span><span class="n">aggregation</span><span class="p">.</span><span class="n">pow</span><span class="p">;</span>
 </pre></div>
 </td></tr></table></div>
 <div class="admonition note">
@@ -673,14 +675,16 @@ optimization solver is used in <a class="reference external" href="https://githu
 33
 34
 35
-36</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Define optimisation options</span>
+36
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Define optimisation options</span>
 <span class="n">opts</span> <span class="p">=</span> <span class="n">optimoptions</span><span class="p">(</span><span class="s">&#39;fmincon&#39;</span><span class="p">);</span>
+<span class="n">opts</span><span class="p">.</span><span class="n">FiniteDifferenceType</span> <span class="p">=</span> <span class="s">&#39;central&#39;</span><span class="p">;</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">MaxFunctionEvaluations</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c">% set artificial low for fast running</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">Display</span> <span class="p">=</span> <span class="s">&#39;iter&#39;</span><span class="p">;</span>
-<span class="n">opts</span><span class="p">.</span><span class="n">FiniteDifferenceType</span> <span class="p">=</span> <span class="s">&#39;central&#39;</span><span class="p">;</span>
 
 <span class="c">% Enable dynamic plotting</span>
+<span class="c">% opts.PlotFcn = {@optimplotx,@optimplotfval};</span>
 </pre></div>
 </td></tr></table></div>
 <div class="admonition note">
@@ -692,15 +696,17 @@ function evaluations).</p>
 </div>
 <img alt="Progression of objective function value for RM3 example" src="../_images/example_optimplotfval.svg" /><p>In order to pass the above options, some dummy values must also be supplied for
 other arguments required by fmincon:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>38
-39
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>39
 40
 41
-42</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Define unused parameters</span>
+42
+43
+44</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Define unused parameters</span>
 <span class="n">A</span> <span class="p">=</span> <span class="p">[];</span>
 <span class="n">B</span> <span class="p">=</span> <span class="p">[];</span>
 <span class="n">Aeq</span> <span class="p">=</span> <span class="p">[];</span>
 <span class="n">Beq</span> <span class="p">=</span> <span class="p">[];</span>
+<span class="n">NONLCON</span> <span class="p">=</span> <span class="p">[];</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -710,11 +716,15 @@ other arguments required by fmincon:</p>
 fmincon to just pass the design variables. To do this an <a class="reference external" href="https://uk.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html">anonymous function</a>
 is defined, which requires the design variables as input and fixes the value of
 the Blueprint and SeaState object inputs:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>47</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Create simple objective function handle</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>48
+49</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Create simple objective function handle</span>
+<span class="n">objFun</span> <span class="p">=</span> <span class="p">@(</span><span class="n">x</span><span class="p">)</span> <span class="n">myWaveBotObjFun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">RM3Blueprint</span><span class="p">,</span> <span class="n">SS</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <p>The study can be executed by calling fmincon:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>50</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Call the solver</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>51
+52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Call the solver</span>
+<span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">fval</span><span class="p">]</span> <span class="p">=</span> <span class="n">fmincon</span><span class="p">(</span><span class="n">objFun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">Aeq</span><span class="p">,</span> <span class="n">Beq</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">NONLCON</span><span class="p">,</span> <span class="n">opts</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <p>Once the calculation is complete, the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">fval</span></code> variables show that
@@ -737,7 +747,9 @@ later if desired. To recover the devices, the
 <a class="reference internal" href="api.html#+WecOptTool.Blueprint.recoverDevices" title="+WecOptTool.Blueprint.recoverDevices"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">recoverDevices()</span></code></a> method of the Blueprint
 subclass is called, which returns an array of <a class="reference internal" href="api.html#+WecOptTool.Device" title="+WecOptTool.Device"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Device</span></code></a>
 objects:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>53</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Recover device object of best simulation and plot its power per freq</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>54
+55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Recover device object of best simulation and plot its power per freq</span>
+<span class="n">devices</span> <span class="p">=</span> <span class="n">RM3Blueprint</span><span class="p">.</span><span class="n">recoverDevices</span><span class="p">();</span>
 </pre></div>
 </td></tr></table></div>
 <div class="admonition warning">
@@ -750,23 +762,23 @@ files.</p>
 <p>Next, the device that matches the best solution returned by fmincon must
 be found. To do this, compare the <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">geomParams</span></code>
 parameter of the devices, until a match is found, as follows:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>56
-57
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>57
 58
 59
 60
-61</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    
-<span class="n">for</span> <span class="s">device</span> <span class="s">=</span> <span class="s">devices</span>
+61
+62</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">device</span> <span class="p">=</span> <span class="n">devices</span>
     <span class="n">if</span> <span class="s">isequal(device.geomParams(1:4),</span> <span class="s">num2cell(x))</span>
         <span class="n">bestDevice</span> <span class="p">=</span> <span class="n">device</span><span class="p">;</span>
         <span class="n">break</span>
     <span class="s">end</span>
+<span class="k">end</span>
 </pre></div>
 </td></tr></table></div>
 <p>Finally, by using the <a class="reference internal" href="api.html#+WecOptTool.+plot.powerPerFreq" title="+WecOptTool.+plot.powerPerFreq"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">WecOptTool.plot.powerPerFreq()</span></code></a> function, the
 spectral distribution of energy absorbed by the resulting design for each of
 the eight sea states can be shown.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>63</pre></div></td><td class="code"><div class="highlight"><pre><span></span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>64</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">WecOptTool</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">powerPerFreq</span><span class="p">(</span><span class="n">bestDevice</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <a class="reference internal image-reference" href="../_images/example_spectralPowerPlot.svg"><img alt="Absorbed Spectral power distribution for each sea state" src="../_images/example_spectralPowerPlot.svg" width="400pt" /></a>
