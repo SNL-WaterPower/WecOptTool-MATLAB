@@ -16,16 +16,41 @@ RM3Blueprint = RM3();
 % Or load an example with multiple sea-states (8 differing spectra)
 S = WecOptLib.tests.data.example8Spectra();
 
-%% Pre-process  spectra to reduce the number of frequency bins
-tailTolerence = 1;
-minBins = 10;
-noTailsS = WecOptLib.utils.removeSpectraTails(S, tailTolerence, minBins);
+%% Pre-process spectra to optimize the number of frequency bins
 
+% Find meaningful part of the Spectra by removing tails of the spectra
+% Set a percentage tolerence 
+tailTolerence = 1;
+% Specify a minimum number of frequency Bins
+minBins = 10;
+% Remove the tails
+noTailsS = WecOptLib.utils.removeSpectraTails(S, tailTolerence, minBins);
+% Plot a comparison of the original and resultant spectra
+%WecOptLib.plots.compareNoTailsSS(S, noTailsS)
+
+% Resample the spectra based on frequency step size
+% Set a frequency step size manually 
+dw=0.33;
+[noTailsS(:).dw]  = deal(dw);
+%resampledS = WecOptLib.utils.resampleSpectra(noTailsS);
+
+% NOT IMPLEMENTED
+% p=inputParser;
+% addParameter(p,'dw',0.5)
+% addParameter(p,'wMin',0.11)
+% addParameter(p,'wMax',4.1)
+
+% Automatically downsample the set dw based on down-sampled spectrum
 maxError=1;
 downSampledS = WecOptLib.utils.downSampleSpectra(noTailsS, maxError, minBins);
+WecOptLib.plots.compareSpectra(noTailsS, downSampledS, 'downSampleError');
+downSampledS = WecOptLib.utils.getMeanDw(downSampledS);
+% Create spectrum using S.dw and S.w
+resampledS = WecOptLib.utils.resampleSpectra(downSampledS);
+%WecOptLib.plots.compareSpectra(downSampledS, resampledS, 'resampleError');
 
 % Now store the sea-state in a SeaState data type
-SS = WecOptTool.types("SeaState", S);
+SS = WecOptTool.types("SeaState", resampledS);
 
 %% Optimization Setup
 
