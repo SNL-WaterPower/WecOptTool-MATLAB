@@ -97,7 +97,7 @@ WecOptTool.plot.powerPerFreq(bestDevice);
 function [fval] = myWaveBotObjFun(x, blueprint, seastate)
     
     geomMode.type = 'parametric';
-    geomMode.params = [num2cell(x) {seastate 0.5}];
+    geomMode.params = [num2cell(x) {seastate.w}];
     cntrlMode.type = 'CC';
 
     device = blueprint.makeDevices(geomMode, cntrlMode);

@@ -34,7 +34,7 @@ classdef SeaState < WecOptTool.base.Data
     %    struct(): convert to struct
     %
     % Note:
-    %    To create an array of Performance objects see the
+    %    To create an array of SeaState objects see the
     %    :mat:func:`+WecOptTool.types` function.
     %
     % --
@@ -71,6 +71,11 @@ classdef SeaState < WecOptTool.base.Data
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
+    properties
+        baseS
+        basew
+    end
+    
     properties (GetAccess=protected)
         meta = struct("name", {"S",     ...
                                "w"},    ...
@@ -79,6 +84,26 @@ classdef SeaState < WecOptTool.base.Data
     end
     
     methods
+        
+        function obj = SeaState(input, varargin)
+            
+            obj = obj@WecOptTool.base.Data(input);
+            
+            p = inputParser;
+            addParameter(p, 'tailTolerence', -1);
+            parse(p, varargin{:});
+            
+            % Copy original data and then reassign S and w.
+            obj.baseS = obj.S;
+            obj.basew = obj.w;
+            
+            if p.Results.tailTolerence > 0
+                [obj.S, obj.w] = obj.removeTails(obj.basew,     ...
+                                                 obj.baseS,     ...
+                                                 p.Results.tailTolerence);
+            end
+            
+        end
         
         function validateArray(obj)
             makeMu(obj)
@@ -112,5 +137,45 @@ classdef SeaState < WecOptTool.base.Data
         
     end
     
+    methods (Static)
+        
+        function [noTailW, noTailS] = removeTails(w, S, tailTolerence)
+            % Removes Spectra less than tol % of max(S)
+
+            % Parameters
+            %-----------
+            % w: vector
+            %    angular frequencies
+            % S: vector
+            %    Spectral densities
+            % tailTolerence: float
+            %    Percentage of maximum to include in spectrum
+            %
+            % Returns
+            %--------
+            % noTailW : vector
+            %    w less tails outside toerance
+            % noTailS: vector
+            %    S less tails outside toerance
+
+            % Remove tails of the spectra; return indicies of the vals>tol% of max
+            specGreaterThanTolerence = find(S > max(S)*tailTolerence);
+
+            iStart = min(specGreaterThanTolerence);
+            iEnd   = max(specGreaterThanTolerence);
+            iSkip  = 1;
+            disp(iStart)
+            disp(iEnd)
+
+            mustBeGreaterThanOrEqual(iEnd, iStart)
+
+            noTailW = w(iStart:iSkip:iEnd);
+            noTailS = S(iStart:iSkip:iEnd);    
+
+        end
+
+    end
+
 end
+
 
