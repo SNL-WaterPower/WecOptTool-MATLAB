@@ -40,14 +40,22 @@ function maape = MAAPError(actual, predicted)
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>
     
     arguments
-        actual    {mustBeNumeric, mustBeFinite, mustBeNonzero}
-        predicted {mustBeNumeric, mustBeFinite, WecOptLib.errorCheck.assertEqualLength(actual, predicted) }
+        actual    {mustBeNumeric, mustBeFinite}
+        predicted {mustBeNumeric,   ...
+                   mustBeFinite,    ...
+                   WecOptLib.errorCheck.assertEqualLength(actual,   ...
+                                                          predicted)}
     end
-            
-    N = length(actual);
     
-    L1 = (1 - predicted ./ actual );
+    nonZeroIdx = actual > eps;
+    filterActual = actual(nonZeroIdx);
+    filterPredicted = predicted(nonZeroIdx);
+    
+    N = length(filterActual);
+    
+    L1 = (1 - filterPredicted ./ filterActual );
     absL1 = abs(L1);
     atanAbsL1 = atan(absL1);
     maape =  1/N * sum(atanAbsL1);
+    
 end

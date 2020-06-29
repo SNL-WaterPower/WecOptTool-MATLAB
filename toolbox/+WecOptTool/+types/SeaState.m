@@ -139,8 +139,87 @@ classdef SeaState < WecOptTool.base.Data
     
     methods (Static)
         
-        function [noTailW, noTailS] = removeTails(w, S, tailTolerence)
-            % Removes Spectra less than tol % of max(S)
+        function checkSpectrum(S)
+            % Checks whether the input S is a valid spectrum structure 
+            % (following WAFO).
+            %
+            % Inputs
+            %   S           spectrum structure (can be arrary) in the 
+            %               style of WAFO with the fields:
+            %
+            %       S.w     column vector of frequencies in [rad/s]
+            %       S.S     column vector of spectral density in 
+            %               [m^2 rad/ s]
+            %
+            % Example
+            %   Hm0 = 5;
+            %   Tp = 8;
+            %   S = bretschneider([],[Hm0,Tp]);
+            %   WecOptLib.utils.checkSpectrum(S)
+            %
+
+            rootError = 'SeaState:checkSpectrum:';
+            
+            function [] = checkFields(S, idx)
+                fns = {'S','w'};
+                msg = ['Spectrum #%i in array does not contain '        ...
+                       'required S.S and S.w fields'];
+                ID = [rootError 'missingFields'];
+                try
+                    assert(all(isfield(S, fns)), ID, msg, idx)
+                catch ME
+                    throw(ME)
+                end
+            end
+
+            function [] = checkLengths(S, idx)
+                msg = ['Spectrum #%i in array S.S and S.w fields are '  ...
+                       'not same length'];
+                ID = [rootError 'mismatchedLengths'];
+                try
+                    assert(length(S.S) == length(S.w), ID, msg, idx)
+                catch ME
+                    throw(ME)
+                end
+            end
+
+            function [] = checkCol(S, idx)
+                msg = ['Spectrum #%i in array S.S and S.w fields are '  ...
+                       'not column vectors'];
+                ID = [rootError 'notColumnVectors'];
+                try
+                    assert(iscolumn(S.S) && iscolumn(S.w), ID, msg, idx)
+                catch ME
+                    throw(ME)
+                end
+            end
+
+            function [] = checkPositive(S, idx)
+                msg = ['Frequency in Spectrum #%i contains negative '   ...
+                       'values. Frequency values must be positive'];
+                ID = [rootError 'negativeFrequencies'];
+                try
+                    assert(all(S.w >=0), ID, msg, idx)
+                catch ME
+                    throw(ME)
+                end
+            end
+            
+            inds = 1:length(S);
+
+            try
+                arrayfun(@(Spect,idx) checkFields(Spect, idx), S, inds);
+                arrayfun(@(Spect,idx) checkLengths(Spect, idx), S, inds);
+                arrayfun(@(Spect,idx) checkCol(Spect, idx), S, inds);
+                arrayfun(@(Spect,idx) checkPositive(Spect, idx), S, inds);
+            catch MEs
+                throw(MEs)
+            end
+            
+        end
+
+        function S = trimFrequencies(S, densityTolerence)
+            % Removes Spectra less than densityTolerence % of max(S)
 
             % Parameters
             %-----------
@@ -148,34 +227,201 @@ classdef SeaState < WecOptTool.base.Data
             %    angular frequencies
             % S: vector
             %    Spectral densities
-            % tailTolerence: float
+            % densityTolerence: float
             %    Percentage of maximum to include in spectrum
             %
             % Returns
             %--------
-            % noTailW : vector
+            % wNew : vector
             %    w less tails outside toerance
-            % noTailS: vector
+            % SNew: vector
             %    S less tails outside toerance
 
-            % Remove tails of the spectra; return indicies of the vals>tol% of max
-            specGreaterThanTolerence = find(S > max(S)*tailTolerence);
+            % Remove tails of the spectra; return indicies of the 
+            % vals > tol% of max
+            
+            arguments
+                S {WecOptTool.types.SeaState.checkSpectrum(S)};
+                densityTolerence {mustBeNumeric,    ...
+                                  mustBePositive,   ...
+                                  mustBeFinite,     ...
+                                  mustBeNonzero};
+            end
+            
+            
+            
+            for k = 1:length(S)
+                i = find(S(k).S > max(S(k).S) * densityTolerence);
+                iStart = min(i);
+                iEnd = max(i);
+                S(k).w = S(k).w(iStart:iEnd);
+                S(k).S = S(k).S(iStart:iEnd);
+            end
+            
+        end
+        
+        function  S = extendFrequencies(S, nMaxFreq)
+            
+            arguments
+                S {WecOptTool.types.SeaState.checkSpectrum(S)};
+                nMaxFreq {mustBeInteger,    ...
+                          mustBePositive,   ...
+                          mustBeFinite,     ...
+                          mustBeNonzero};
+            end
+            
+            for i = 1:length(S)
+                endW = S(i).w(end, :) * nMaxFreq;
+                S(i).w(end+1) = endW(i);
+                S(i).S(end+1) = 0;
+            end
+            
+        end
+        
+        function [S, dw] = resampleByError(S,           ...
+                                           maxError,    ... 
+                                           dw,          ...
+                                           reductionFactor)
+            
+            arguments
+                S {WecOptTool.types.SeaState.checkSpectrum(S)};
+                maxError {mustBeNumeric,    ...
+                          mustBePositive,   ...
+                          mustBeFinite,     ...
+                          mustBeNonzero};
+                dw {mustBeNumeric,   ...
+                    mustBePositive,  ...
+                    mustBeFinite,    ...
+                    mustBeNonzero} = ...
+                                max(WecOptTool.types.SeaState.meanDw(S));
+                reductionFactor {mustBeNumeric,    ...
+                                 mustBePositive,   ...
+                                 mustBeFinite,     ...
+                                 mustBeNonzero} = 0.05;
+            end
+            
+            import WecOptTool.types.SeaState
+            
+            while true
+                
+                dw = dw * (1 - reductionFactor);
+                [postS, errors] = SeaState.resampleByStep(S, dw);
+                
+                if max(errors) < maxError
+                    S = postS;
+                    break
+                end
+                
+            end
+            
+        end
+        
+        function [S, errors] = resampleByStep(S, dw)
+            
+            arguments
+                S {WecOptTool.types.SeaState.checkSpectrum(S)};
+                dw {mustBeNumeric,  ...
+                    mustBePositive, ...
+                    mustBeFinite,   ...
+                    mustBeNonzero};
+            end
+            
+            import WecOptTool.types.SeaState
+            
+            N = length(S);
+            baseS = S;
+            
+            for i = 1:N
+                
+                wMin = min(S(i).w);
+                wMax = max(S(i).w);
+                
+                wIntegerStepMin = floor(wMin / dw) * dw;
+                wIntegerStepMax = ceil(wMax / dw) * dw;                    
 
-            iStart = min(specGreaterThanTolerence);
-            iEnd   = max(specGreaterThanTolerence);
-            iSkip  = 1;
-            disp(iStart)
-            disp(iEnd)
+                wResampled = wIntegerStepMin:dw:wIntegerStepMax;
+                wResampled = wResampled';
 
-            mustBeGreaterThanOrEqual(iEnd, iStart)
+                WecOptLib.errorCheck.checkMinMaxStepRange(  ...
+                                min(wResampled), max(wResampled), dw)
 
-            noTailW = w(iStart:iSkip:iEnd);
-            noTailS = S(iStart:iSkip:iEnd);    
+                SResampled = interp1(S(i).w,        ...
+                                     S(i).S,        ...
+                                     wResampled,    ...
+                                     'linear',      ...
+                                     0);      
 
+                S(i).w = wResampled;
+                S(i).S = SResampled;
+                
+            end
+            
+            errors = SeaState.sampleError(baseS, S);
+            
+        end
+        
+        function errors = sampleError(baseS, S)
+            
+            arguments
+                baseS {WecOptTool.types.SeaState.checkSpectrum(baseS)};
+                S {WecOptTool.types.SeaState.checkSpectrum(S),  ...
+                   mustBeEqualLengthSpectra(baseS, S)};
+            end
+            
+            N = length(baseS);
+            errors = zeros(1, N);
+            
+            for i = 1:N
+                
+                wOrig = baseS(i).w;
+                SOrig = baseS(i).S;
+                wResampled = S(i).w;
+                SResampled = S(i).S;
+                
+                SNoExtrapOrigInterpolated = interp1(wResampled, ...
+                                                    SResampled, ...
+                                                    wOrig,      ...
+                                                    'linear',   ...
+                                                    0);
+                
+                errorNoExtrap = WecOptLib.utils.MAAPError(  ...
+                                        SOrig, SNoExtrapOrigInterpolated);
+                errors(i) = errorNoExtrap;
+                
+            end
+            
+        end
+        
+        function dw = meanDw(S)
+            % Returns the mean of the frequency discrtization 
+            %
+            % Parameters
+            % ----------
+            % S: struct
+            %     seastate must have S.w and S.S
+            %
+            % Returns
+            % -------
+            % dw: array
+            %     mean difference
+
+            arguments
+                S {WecOptTool.types.SeaState.checkSpectrum(S)};
+            end
+            
+            dw = zeros(1, length(S));
+            
+            for i = 1:length(S)    
+                dw(i) = mean(diff(S(i).w));
+            end
         end
 
     end
 
 end
 
-
+function mustBeEqualLengthSpectra(baseS, S)
+    msg = 'Spectra must be of equal length';
+    ID = 'WecOptTool:assertEqualLengthSpectra:incorrectLength';
+    assert(length(baseS) == length(S), ID, msg);
+end
