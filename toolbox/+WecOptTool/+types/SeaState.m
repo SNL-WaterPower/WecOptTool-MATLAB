@@ -12,8 +12,9 @@ classdef SeaState < WecOptTool.base.Data
     %     * S
     %     * w
     %
-    % The following parameters are optional, and if not given will be 
-    % given a default upon instantiation of the object:
+    % The values of S and w will be validated by the checkSpectrum method 
+    % of this class. The following parameters are optional, and if not 
+    % given will be given a default upon instantiation of the object:
     %
     %     * mu
     %
@@ -74,6 +75,8 @@ classdef SeaState < WecOptTool.base.Data
     properties
         baseS
         basew
+        meanFreqStep
+        sampleError
     end
     
     properties (GetAccess=protected)
@@ -85,23 +88,84 @@ classdef SeaState < WecOptTool.base.Data
     
     methods
         
-        function obj = SeaState(input, varargin)
+        function obj = SeaState(S, options)
             
-            obj = obj@WecOptTool.base.Data(input);
+            arguments
+                S {WecOptTool.types.SeaState.checkSpectrum(S)};
+                options.trimFrequencies {mustBeNumeric,     ...
+                                         mustBePositive,    ...
+                                         mustBeFinite,      ...
+                                         mustBeNonzero};
+                options.extendFrequencies {mustBeInteger,   ...
+                                           mustBePositive,  ...
+                                           mustBeFinite,    ...
+                                           mustBeNonzero};
+                options.resampleByError {mustBeNumeric,     ...
+                                         mustBePositive,    ...
+                                         mustBeFinite,      ...
+                                         mustBeNonzero};
+                options.resampleByStep {mustBeNumeric,      ...
+                                        mustBePositive,     ...
+                                        mustBeFinite,       ...
+                                        mustBeNonzero};
+            end
             
-            p = inputParser;
-            addParameter(p, 'tailTolerence', -1);
-            parse(p, varargin{:});
+            obj = obj@WecOptTool.base.Data(S);
             
             % Copy original data and then reassign S and w.
-            obj.baseS = obj.S;
             obj.basew = obj.w;
+            obj.baseS = obj.S;
+            obj.meanFreqStep = obj.getMeanFreqStep(S);
+            obj.sampleError = 0;
             
-            if p.Results.tailTolerence > 0
-                [obj.S, obj.w] = obj.removeTails(obj.basew,     ...
-                                                 obj.baseS,     ...
-                                                 p.Results.tailTolerence);
+            if isfield(options, "trimFrequencies")
+                S = obj.trimFrequencies(S, options.trimFrequencies);
             end
+            
+            if isfield(options, "extendFrequencies")
+                S = obj.extendFrequencies(S, options.extendFrequencies);
+            end
+            
+            if isfield(options, "resampleByError")
+                [S, dw] = obj.resampleByError(S, options.resampleByError);
+                obj.meanFreqStep = dw;
+                obj.sampleError = options.resampleByError;
+            end
+            
+            if isfield(options, "resampleByStep")
+                [S, error] = obj.resampleByStep(S, options.resampleByStep);
+                obj.meanFreqStep = options.resampleByStep;
+                obj.sampleError = error;
+            end
+            
+            obj.w = S.w;
+            obj.S = S.S;
+            
+        end
+        
+        function allFreqs = getAllFrequencies(obj)
+            
+            allFreqs = [];
+            
+            for i = 1:length(obj)
+                allFreqs = cat(1, allFreqs, obj(i).w);
+            end
+            
+            allFreqs = unique(allFreqs);
+            
+        end
+        
+        function freqs = resampleAllFrequencies(obj, dw)
+            
+            allFreqs = obj.getAllFrequencies();
+            wMin = min(allFreqs);
+            wMax = max(allFreqs);
+            
+            wIntegerStepMin = floor(wMin / dw) * dw;
+            wIntegerStepMax = ceil(wMax / dw) * dw;                                
+
+            freqs = wIntegerStepMin:dw:wIntegerStepMax;
+            freqs = freqs';
             
         end
         
@@ -217,28 +281,77 @@ classdef SeaState < WecOptTool.base.Data
             end
             
         end
+                
+        function dw = getMeanFreqStep(S)
+            % Returns the mean of the frequency discrtization 
+            %
+            % Parameters
+            % ----------
+            % S: struct
+            %     seastate must have S.w and S.S
+            %
+            % Returns
+            % -------
+            % dw: array
+            %     mean difference
+
+            arguments
+                S {WecOptTool.types.SeaState.checkSpectrum(S)};
+            end
+            
+            dw = zeros(1, length(S));
+            
+            for i = 1:length(S)
+                dw(i) = mean(diff(S(i).w));
+            end
+            
+        end
+                
+        function errors = getSampleError(baseS, S)
+            
+            arguments
+                baseS {WecOptTool.types.SeaState.checkSpectrum(baseS)};
+                S {WecOptTool.types.SeaState.checkSpectrum(S),  ...
+                   mustBeEqualLengthSpectra(baseS, S)};
+            end
+            
+            N = length(baseS);
+            errors = zeros(1, N);
+            
+            for i = 1:N
+                
+                wOrig = baseS(i).w;
+                SOrig = baseS(i).S;
+                wResampled = S(i).w;
+                SResampled = S(i).S;
+                
+                SNoExtrapOrigInterpolated = interp1(wResampled, ...
+                                                    SResampled, ...
+                                                    wOrig,      ...
+                                                    'linear',   ...
+                                                    'extrap');
+                
+                errors(i) = sum(abs(SNoExtrapOrigInterpolated - ...
+                                                SOrig)) / length(SOrig);
+                
+            end
+            
+        end
 
         function S = trimFrequencies(S, densityTolerence)
-            % Removes Spectra less than densityTolerence % of max(S)
+            % Removes spectra with less than densityTolerence % of max(S)
 
             % Parameters
             %-----------
-            % w: vector
-            %    angular frequencies
-            % S: vector
-            %    Spectral densities
+            % S: struct
+            %    Sea state struct which conforms to checkSpectrum
             % densityTolerence: float
-            %    Percentage of maximum to include in spectrum
+            %    Percentage of maximum to remove from spectrum
             %
             % Returns
             %--------
-            % wNew : vector
-            %    w less tails outside toerance
-            % SNew: vector
-            %    S less tails outside toerance
-
-            % Remove tails of the spectra; return indicies of the 
-            % vals > tol% of max
+            % S: struct
+            %    Sea state struct which conforms to checkSpectrum
             
             arguments
                 S {WecOptTool.types.SeaState.checkSpectrum(S)};
@@ -260,18 +373,18 @@ classdef SeaState < WecOptTool.base.Data
             
         end
         
-        function  S = extendFrequencies(S, nMaxFreq)
+        function  S = extendFrequencies(S, nRepeats)
             
             arguments
                 S {WecOptTool.types.SeaState.checkSpectrum(S)};
-                nMaxFreq {mustBeInteger,    ...
+                nRepeats {mustBeInteger,    ...
                           mustBePositive,   ...
                           mustBeFinite,     ...
                           mustBeNonzero};
             end
             
             for i = 1:length(S)
-                endW = S(i).w(end, :) * nMaxFreq;
+                endW = S(i).w(end, :) * nRepeats;
                 S(i).w(end+1) = endW(i);
                 S(i).S(end+1) = 0;
             end
@@ -279,40 +392,34 @@ classdef SeaState < WecOptTool.base.Data
         end
         
         function [S, dw] = resampleByError(S,           ...
-                                           maxError,    ... 
-                                           dw,          ...
-                                           reductionFactor)
+                                           targetError, ...
+                                           min_dw)
             
             arguments
                 S {WecOptTool.types.SeaState.checkSpectrum(S)};
-                maxError {mustBeNumeric,    ...
-                          mustBePositive,   ...
-                          mustBeFinite,     ...
-                          mustBeNonzero};
-                dw {mustBeNumeric,   ...
-                    mustBePositive,  ...
-                    mustBeFinite,    ...
-                    mustBeNonzero} = ...
-                                max(WecOptTool.types.SeaState.meanDw(S));
-                reductionFactor {mustBeNumeric,    ...
-                                 mustBePositive,   ...
-                                 mustBeFinite,     ...
-                                 mustBeNonzero} = 0.05;
+                targetError {mustBeNumeric,    ...
+                             mustBePositive,   ...
+                             mustBeFinite,     ...
+                             mustBeNonzero};
+                min_dw  {mustBeNumeric,    ...
+                         mustBePositive,   ...
+                         mustBeFinite,     ...
+                         mustBeNonzero} = 1e-4;
             end
             
             import WecOptTool.types.SeaState
+            oldS = [S.S];
             
-            while true
-                
-                dw = dw * (1 - reductionFactor);
-                [postS, errors] = SeaState.resampleByStep(S, dw);
-                
-                if max(errors) < maxError
-                    S = postS;
-                    break
-                end
-                
+            function residual = ObjFun(dw) 
+                [~, errors] = SeaState.resampleByStep(S, dw);
+                residual = max(errors) - targetError;
             end
+            
+            assert(isequaln(oldS,[S.S]))
+            
+            w = [S.w];
+            dw = bisection(@ObjFun, min_dw, max(w(:)));
+            [S, errors] = SeaState.resampleByStep(S, dw);
             
         end
         
@@ -336,10 +443,10 @@ classdef SeaState < WecOptTool.base.Data
                 wMin = min(S(i).w);
                 wMax = max(S(i).w);
                 
-                wIntegerStepMin = floor(wMin / dw) * dw;
-                wIntegerStepMax = ceil(wMax / dw) * dw;                    
+                wRange = wMax - wMin;
+                wIntegerStepMax = wMin + ceil(wRange / dw) * dw;                    
 
-                wResampled = wIntegerStepMin:dw:wIntegerStepMax;
+                wResampled = wMin:dw:wIntegerStepMax;
                 wResampled = wResampled';
 
                 WecOptLib.errorCheck.checkMinMaxStepRange(  ...
@@ -349,71 +456,15 @@ classdef SeaState < WecOptTool.base.Data
                                      S(i).S,        ...
                                      wResampled,    ...
                                      'linear',      ...
-                                     0);      
+                                     'extrap');      
 
                 S(i).w = wResampled;
                 S(i).S = SResampled;
                 
             end
             
-            errors = SeaState.sampleError(baseS, S);
+            errors = SeaState.getSampleError(baseS, S);
             
-        end
-        
-        function errors = sampleError(baseS, S)
-            
-            arguments
-                baseS {WecOptTool.types.SeaState.checkSpectrum(baseS)};
-                S {WecOptTool.types.SeaState.checkSpectrum(S),  ...
-                   mustBeEqualLengthSpectra(baseS, S)};
-            end
-            
-            N = length(baseS);
-            errors = zeros(1, N);
-            
-            for i = 1:N
-                
-                wOrig = baseS(i).w;
-                SOrig = baseS(i).S;
-                wResampled = S(i).w;
-                SResampled = S(i).S;
-                
-                SNoExtrapOrigInterpolated = interp1(wResampled, ...
-                                                    SResampled, ...
-                                                    wOrig,      ...
-                                                    'linear',   ...
-                                                    0);
-                
-                errorNoExtrap = WecOptLib.utils.MAAPError(  ...
-                                        SOrig, SNoExtrapOrigInterpolated);
-                errors(i) = errorNoExtrap;
-                
-            end
-            
-        end
-        
-        function dw = meanDw(S)
-            % Returns the mean of the frequency discrtization 
-            %
-            % Parameters
-            % ----------
-            % S: struct
-            %     seastate must have S.w and S.S
-            %
-            % Returns
-            % -------
-            % dw: array
-            %     mean difference
-
-            arguments
-                S {WecOptTool.types.SeaState.checkSpectrum(S)};
-            end
-            
-            dw = zeros(1, length(S));
-            
-            for i = 1:length(S)    
-                dw(i) = mean(diff(S(i).w));
-            end
         end
 
     end
@@ -425,3 +476,53 @@ function mustBeEqualLengthSpectra(baseS, S)
     ID = 'WecOptTool:assertEqualLengthSpectra:incorrectLength';
     assert(length(baseS) == length(S), ID, msg);
 end
+
+function c = bisection(f, a, b, tol, nmax)
+
+    arguments
+        f {mustBeFunctionHandle};
+        a {mustBeNumeric, mustBeFinite};
+        b {mustBeNumeric, mustBeFinite, mustBeGreaterThan(b, a)};
+        tol {mustBeNumeric,     ...
+             mustBePositive,    ...
+             mustBeFinite,      ...
+             mustBeNonzero} = eps;
+         nmax  {mustBeInteger,     ...
+                mustBePositive,    ...
+                mustBeFinite,      ...
+                mustBeNonzero} = 1000;
+    end
+
+    n = 1;
+    
+    while n < nmax
+        
+        c = (a + b) / 2;
+        
+        if abs(f(c)) < eps
+            return
+        elseif (b - a) / 2 < tol
+            error('Search space closed before finding a solution')
+        end
+        
+        n = n + 1;
+        
+        if sign(f(c)) == sign(f(a))
+            a = c;
+        else
+            b = c;
+        end
+        
+    end
+    
+    error('Number of iterations exceeded')
+    
+end
+
+function mustBeFunctionHandle(input)
+    % Test for specific class
+    if ~isa(input, 'function_handle')
+        error('Input must be a function handle.')
+    end
+end
+        
