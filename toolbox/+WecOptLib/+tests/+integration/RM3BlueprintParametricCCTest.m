@@ -21,11 +21,12 @@ classdef RM3BlueprintParametricCCTest < matlab.unittest.TestCase
             S.ph = rand(length(S.w),1)* 2 * pi;
             [S.w, S.S] = WecOptLib.utils.subSampleFreqs(S);
             testCase.SS = WecOptTool.types("SeaState", S);
+            w = testCase.SS.getRegularFrequencies(0.5);
 
             testCase.blueprint = RM3();
             
             geomMode.type = 'parametric';
-            geomMode.params = {10, 15, 3, 42, S, 0.5};
+            geomMode.params = {10, 15, 3, 42, w};
             cntrlMode.type = 'CC';
 
             testCase.device = makeDevices(testCase.blueprint,   ...

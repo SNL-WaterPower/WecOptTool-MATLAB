@@ -16,35 +16,9 @@ RM3Blueprint = RM3();
 % Or load an example with multiple sea-states (8 differing spectra)
 S = WecOptLib.tests.data.example8Spectra();
 
-%% Pre-process spectra to optimize the number of frequency bins
-
-% Find meaningful part of the Spectra by removing tails of the spectra
-% Set a percentage tolerence 
-tailTolerence = 0.01;
-% Specify a minimum number of frequency Bins
-minBins = 10;
-% Remove the tails
-noTailsS = WecOptLib.utils.removeSpectraTails(S, tailTolerence, minBins);
-% Plot a comparison of the original and resultant spectra
-%WecOptLib.plots.compareNoTailsSS(S, noTailsS)
-
-% Resample the spectra based on frequency step size
-% Set a frequency step size manually 
-dw=0.33;
-%resampledS = WecOptLib.utils.resampleSpectra(noTailsS);
-
-% Automatically downsample the set dw based on down-sampled spectrum
-maxError=0.01;
-downSampledS = WecOptLib.utils.downSampleSpectra(noTailsS, maxError, minBins);
-%WecOptLib.plots.compareSpectra(noTailsS, downSampledS, 'downSampleError');
-downSampledS = WecOptLib.utils.getMeanDw(downSampledS);
-% Create spectrum using S.dw and S.w
-NSuperHarmonics = 6;
-resampledS = WecOptLib.utils.resampleSpectra(downSampledS, dw, NSuperHarmonics);
-WecOptLib.plots.compareSpectra(downSampledS, resampledS, 'resampleError');
-
-% Now store the sea-state in a SeaState data type
-SS = WecOptTool.types("SeaState", resampledS);
+% Now store the sea-state in a SeaState data type and trim off frequencies
+% that have less that 1% of the max spectral density
+SS = WecOptTool.types("SeaState", S, "trimFrequencies", 0.01);
 
 %% Optimization Setup
 
@@ -94,10 +68,13 @@ WecOptTool.plot.powerPerFreq(bestDevice);
 % This can take any form that complies with the requirements of the MATLAB
 % optimization functions
 
-function [fval] = myWaveBotObjFun(x, blueprint, seastate)
+function [fval, device] = myWaveBotObjFun(x, blueprint, seastate)
     
+    % Get frequencies for NEMOH
+    w = seastate.getRegularFrequencies(0.5);
+
     geomMode.type = 'parametric';
-    geomMode.params = [num2cell(x) {seastate.w}];
+    geomMode.params = [num2cell(x) {w}];
     cntrlMode.type = 'CC';
 
     device = blueprint.makeDevices(geomMode, cntrlMode);

@@ -75,7 +75,7 @@ classdef SeaState < WecOptTool.base.Data
     properties
         baseS
         basew
-        meanFreqStep
+        dw
         sampleError
     end
     
@@ -115,7 +115,7 @@ classdef SeaState < WecOptTool.base.Data
             % Copy original data and then reassign S and w.
             obj.basew = obj.w;
             obj.baseS = obj.S;
-            obj.meanFreqStep = obj.getMeanFreqStep(S);
+            obj.dw = obj.w(2) - obj.w(1);
             obj.sampleError = 0;
             
             if isfield(options, "trimFrequencies")
@@ -126,16 +126,25 @@ classdef SeaState < WecOptTool.base.Data
                 S = obj.extendFrequencies(S, options.extendFrequencies);
             end
             
+            if isfield(options, "resampleByError") && ...
+               isfield(options, "resampleByStep")
+           
+               msg = ['Only one of options "resampleByError" or '    ...
+                      '"resampleByStep" may be given'];
+               error("WecOptTool:SeaState:BadOptions", msg)
+               
+            end
+                  
             if isfield(options, "resampleByError")
-                [S, dw] = obj.resampleByError(S, options.resampleByError);
-                obj.meanFreqStep = dw;
+                [S, obj.dw] = obj.resampleByError(S,    ...
+                                                  options.resampleByError);
                 obj.sampleError = options.resampleByError;
             end
             
             if isfield(options, "resampleByStep")
-                [S, error] = obj.resampleByStep(S, options.resampleByStep);
-                obj.meanFreqStep = options.resampleByStep;
-                obj.sampleError = error;
+                [S, err] = obj.resampleByStep(S, options.resampleByStep);
+                obj.dw = options.resampleByStep;
+                obj.sampleError = err;
             end
             
             obj.w = S.w;
@@ -155,7 +164,7 @@ classdef SeaState < WecOptTool.base.Data
             
         end
         
-        function freqs = resampleAllFrequencies(obj, dw)
+        function freqs = getRegularFrequencies(obj, dw)
             
             allFreqs = obj.getAllFrequencies();
             wMin = min(allFreqs);
@@ -221,63 +230,106 @@ classdef SeaState < WecOptTool.base.Data
             %   S = bretschneider([],[Hm0,Tp]);
             %   WecOptLib.utils.checkSpectrum(S)
             %
-
-            rootError = 'SeaState:checkSpectrum:';
             
-            function [] = checkFields(S, idx)
+            arguments
+                S struct;
+            end
+            
+            function result = checkFields(S, idx)
                 fns = {'S','w'};
                 msg = ['Spectrum #%i in array does not contain '        ...
                        'required S.S and S.w fields'];
-                ID = [rootError 'missingFields'];
+                result = all(isfield(S, fns));
+                if ~result
+                    warning(msg, idx)
+                end
+            end
+        
+            function result = checkLengths(S, idx)
                 try
-                    assert(all(isfield(S, fns)), ID, msg, idx)
-                catch ME
-                    throw(ME)
+                    result = length(S.S) == length(S.w);
+                    if ~result
+                        msg = ['Spectrum #%i in array S.S and S.w ' ...
+                               'fields are not same length'];
+                        warning(msg, idx)
+                    end
+                catch
+                    result = 0;
                 end
             end
 
-            function [] = checkLengths(S, idx)
-                msg = ['Spectrum #%i in array S.S and S.w fields are '  ...
-                       'not same length'];
-                ID = [rootError 'mismatchedLengths'];
+            function result = checkCol(S, idx)
                 try
-                    assert(length(S.S) == length(S.w), ID, msg, idx)
-                catch ME
-                    throw(ME)
+                    result = iscolumn(S.S) && iscolumn(S.w);
+                    if ~result
+                        msg = ['Spectrum #%i in array S.S and S.w ' ...
+                               'fields are not column vectors'];
+                        warning(msg, idx)
+                    end
+                catch
+                    result = 0;
                 end
             end
 
-            function [] = checkCol(S, idx)
-                msg = ['Spectrum #%i in array S.S and S.w fields are '  ...
-                       'not column vectors'];
-                ID = [rootError 'notColumnVectors'];
+            function result = checkPositive(S, idx)
                 try
-                    assert(iscolumn(S.S) && iscolumn(S.w), ID, msg, idx)
-                catch ME
-                    throw(ME)
+                    result = all(S.w >=0);
+                    if ~result
+                        msg = ['Frequency in Spectrum #%i contains '    ...
+                               'negative values. Frequency values must' ...
+                               'be positive'];
+                        warning(msg, idx)
+                    end
+                catch
+                    result = 0;
                 end
             end
-
-            function [] = checkPositive(S, idx)
-                msg = ['Frequency in Spectrum #%i contains negative '   ...
-                       'values. Frequency values must be positive'];
-                ID = [rootError 'negativeFrequencies'];
+            
+            function result = checkMonotonic(S, idx)
                 try
-                    assert(all(S.w >=0), ID, msg, idx)
-                catch ME
-                    throw(ME)
+                    result = all(diff(S.w));
+                    if ~result
+                        msg = 'Frequency in Spectrum #%i is not monotonic';
+                        warning(msg, idx)
+                    end
+                catch
+                    result = 0;
+                end
+            end
+            
+            function result = checkRegular(S, idx)
+                try
+                    result = length(uniquetol(diff(S.w), 1e9)) == 1;
+                    if ~result
+                        msg = 'Frequency in Spectrum #%i is not regular';
+                        warning(msg, idx)
+                    end
+                catch
+                    result = 0;
                 end
             end
             
             inds = 1:length(S);
-
-            try
-                arrayfun(@(Spect,idx) checkFields(Spect, idx), S, inds);
-                arrayfun(@(Spect,idx) checkLengths(Spect, idx), S, inds);
-                arrayfun(@(Spect,idx) checkCol(Spect, idx), S, inds);
-                arrayfun(@(Spect,idx) checkPositive(Spect, idx), S, inds);
-            catch MEs
-                throw(MEs)
+            pass = 1;
+            
+            check1 = @(Spect,idx) checkFields(Spect, idx);
+            check2 = @(Spect,idx) checkLengths(Spect, idx);
+            check3 = @(Spect,idx) checkCol(Spect, idx);
+            check4 = @(Spect,idx) checkPositive(Spect, idx);
+            check5 = @(Spect,idx) checkMonotonic(Spect, idx);
+            check6 = @(Spect,idx) checkRegular(Spect, idx);
+            
+            pass = pass * sum(arrayfun(check1, S, inds));
+            pass = pass * sum(arrayfun(check2, S, inds));
+            pass = pass * sum(arrayfun(check3, S, inds));
+            pass = pass * sum(arrayfun(check4, S, inds));
+            pass = pass * sum(arrayfun(check5, S, inds));
+            pass = pass * sum(arrayfun(check6, S, inds));
+            
+            if ~pass
+                msg = ['Given spectrum is incorrectly defined. See '    ...
+                       'warnings for details.'];
+                error("WecOptTool:SeaState:checkSpectrum", msg)
             end
             
         end
@@ -443,9 +495,13 @@ classdef SeaState < WecOptTool.base.Data
                 wMin = min(S(i).w);
                 wMax = max(S(i).w);
                 
+                % This approach allows zero error at matching 
+                % discretisation
                 wRange = wMax - wMin;
-                wIntegerStepMax = wMin + ceil(wRange / dw) * dw;                    
-
+                wIntegerStepMax = wMin + ceil(wRange / dw) * dw;
+                
+                % This approach generates errors at matching discretisation
+                % as samples are shifted
                 wResampled = wMin:dw:wIntegerStepMax;
                 wResampled = wResampled';
 

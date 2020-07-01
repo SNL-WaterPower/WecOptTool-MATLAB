@@ -51,13 +51,7 @@ function hydro = getHydroScalar(folder, lambda)
 end
 
 
-function hydro = getHydroParametric(folder, r1, r2, d1, d2, S, freqStep)
-    
-    w = WecOptLib.utils.seaStatesGlobalW(struct(S), freqStep);
-               
-    if w(1) == 0
-        w = w(2:end);
-    end
+function hydro = getHydroParametric(folder, r1, r2, d1, d2, w)
     
     % Float
     
@@ -136,23 +130,17 @@ function motion = getDynamicModel(static, hydro, S)
 
     end
     
-    % Ignore tails of the spectra; return indicies of the vals>1% of max
-    iSpec = find(S.S > 0.01*max(S.S));
-    % Return column vector of all w between first/last indicies
-    iStart = min(iSpec);
-    iEnd   = max(iSpec);
-    iSkip  = 1;
-    w = S.w(iStart:iSkip:iEnd);
-    % Calculate w step-size
-    if length(iSpec) == 1
-        dw = wStep;    
-    else    
-        dw = mean(diff(S.w))*iSkip;   
+    % Don't allow zero freqs
+    if S.w(1) < eps
+        iStart = 2;
+    else
+        iStart = 1;
     end
+    
+    w = S.w(iStart:end);
+    s = S.S(iStart:end);
+    dw = S.dw;
 
-    % Get column vector S at same indicies as w (Removed interpolation). 
-    s = S.S(iStart:iSkip:iEnd);
-    % TODO: is interp needed? %s = interp1(S.w(:), S.S, w,'linear',0);
     % Calculate wave amplitude
     waveAmp = sqrt(2 * dw * s);
 

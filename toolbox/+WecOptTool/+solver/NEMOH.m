@@ -138,6 +138,10 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
                 singleBody = false;
             end
             
+            if w(1) < eps
+                w = w(2:end);
+            end
+            
             for imesh = meshes
                 obj.makeHydrostatics(imesh, singleBody);
                 meshFileName = string(imesh.name) + ".dat";
