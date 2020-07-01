@@ -73,7 +73,7 @@ scatter3(-fval(:,1),fval(:,2),fval(:,3),fval(:,3)*50)
 grid on
 xlabel('Neg. avg. power, $ - \bar{P}$ [W]', 'interpreter','latex')
 ylabel('Vol. fun, $(r_0 + r)^3$ [m$^3$]', 'interpreter','latex')
-zlabel('Pos. mag., $x^{max}$ [m]', 'interpreter','latex')
+zlabel('Pos. mag., $z^{\textrm{max}}$ [m]', 'interpreter','latex')
 set(gca,'Zscale','log')
 set(gca,'Xscale','log')
 
@@ -87,7 +87,7 @@ export_fig('../gfx/WaveBot_caseC_results_powVsVol.pdf','-transparent')
 
 %%
 
-rlbs = {'$\bar{P}$','$(r_0 + r)^3$','$x^{max}$'};
+rlbs = {'$\bar{P}$','$(r_0 + r)^3$','$z^{\textrm{max}}$'};
 xlbs = {'Outer radius, $r$ [m]','Max. PTO force, $F_u^{max}$ [N]'};
 
 figure
