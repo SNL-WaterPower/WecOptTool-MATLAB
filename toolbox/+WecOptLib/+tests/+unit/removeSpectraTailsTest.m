@@ -23,23 +23,7 @@ function tests = removeSpectraTailsTest()
 end
 
 
-function testCheck_generatedSpectra(testCase)
-    S=struct();
-    wMin=1;
-    wMax=100;
-    w=linspace(wMin,wMax)';
-    S.w = w;
-    spectra = zeros(length(w),1);
-    oneThird = floor(length(spectra)/3);
-    spectra(oneThird:2*oneThird, 1) = 1;
-    expectedLength= length(spectra(oneThird:2*oneThird,1));        
-    S.S = spectra;
-    
-    % Remove the tails
-    noTailsS = WecOptLib.utils.removeSpectraTails(S);
-    lengthS = length(noTailsS.S);
-    verifyTrue(testCase, expectedLength==lengthS);
-end
+
 
 
 

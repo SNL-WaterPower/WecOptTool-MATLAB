@@ -76,6 +76,7 @@ classdef SeaState < WecOptTool.base.Data
         baseS
         basew
         dw
+        trimLoss
         sampleError
     end
     
@@ -116,10 +117,12 @@ classdef SeaState < WecOptTool.base.Data
             obj.basew = obj.w;
             obj.baseS = obj.S;
             obj.dw = obj.w(2) - obj.w(1);
+            obj.trimLoss = 0;
             obj.sampleError = 0;
             
             if isfield(options, "trimFrequencies")
                 S = obj.trimFrequencies(S, options.trimFrequencies);
+                obj.trimLoss = options.trimFrequencies;
             end
             
             if isfield(options, "extendFrequencies")
@@ -182,6 +185,66 @@ classdef SeaState < WecOptTool.base.Data
             makeMu(obj)
         end
         
+        function plot(obj)
+            
+            h =  findobj('type', 'figure');
+            nfigs = length(h);
+            
+            for i=1:length(obj)
+                
+                figure(nfigs + i)
+                hold on;
+
+                wOrig = obj(i).basew;
+                SOrig = obj(i).baseS;
+                wMod = obj(i).w;
+                SMod = obj(i).S;
+                titleChar = '';
+
+                labelOrig = sprintf('Original (Samples=%d)',    ...
+                                    length(wOrig));
+                labelMod = sprintf('Modified (Samples=%d)', length(wMod));
+
+                plot(wOrig, SOrig, 'DisplayName', labelOrig)
+                
+                if obj(i).trimLoss > eps
+                    
+                    xline(min(wMod), '--',  ...
+                          'DisplayName', 'Modified Lower Bound')
+                    xline(max(wMod), '-.',  ...
+                          'DisplayName', 'Modified Upper Bound')
+                                        
+                    addTitle = sprintf('Trim Losses: %.2f%%',  ...
+                                       obj(i).trimLoss * 100);
+                    titleChar = [titleChar addTitle];
+                              
+                end
+                
+                if obj(i).sampleError > eps
+                    
+                    if titleChar
+                        titleChar = [titleChar '; '];
+                    end
+                    
+                    plot(wMod, SMod, '-o', 'DisplayName', labelMod)
+                    addTitle = sprintf('Resampling Error: %.2f%%',  ...
+                                       obj(i).sampleError * 100);
+                    titleChar = [titleChar addTitle];
+                    
+                end
+
+                if titleChar, title(titleChar), end
+                xlabel('Frequency [$\omega$]','Interpreter','latex')
+                ylabel('Spectral Density','Interpreter','latex')
+                legend()
+                grid
+                
+                hold off; 
+                
+            end
+                        
+        end
+        
     end
     
     methods (Access=private)
@@ -237,11 +300,12 @@ classdef SeaState < WecOptTool.base.Data
             
             function result = checkFields(S, idx)
                 fns = {'S','w'};
+                wID = 'SeaState:checkSpectrum:missingFields';
                 msg = ['Spectrum #%i in array does not contain '        ...
                        'required S.S and S.w fields'];
                 result = all(isfield(S, fns));
                 if ~result
-                    warning(msg, idx)
+                    warning(wID, msg, idx)
                 end
             end
         
@@ -249,9 +313,10 @@ classdef SeaState < WecOptTool.base.Data
                 try
                     result = length(S.S) == length(S.w);
                     if ~result
+                        wID = 'SeaState:checkSpectrum:mismatchedLengths';
                         msg = ['Spectrum #%i in array S.S and S.w ' ...
                                'fields are not same length'];
-                        warning(msg, idx)
+                        warning(wID, msg, idx)
                     end
                 catch
                     result = 0;
@@ -262,9 +327,10 @@ classdef SeaState < WecOptTool.base.Data
                 try
                     result = iscolumn(S.S) && iscolumn(S.w);
                     if ~result
+                        wID = 'SeaState:checkSpectrum:notColumnVectors';
                         msg = ['Spectrum #%i in array S.S and S.w ' ...
                                'fields are not column vectors'];
-                        warning(msg, idx)
+                        warning(wID, msg, idx)
                     end
                 catch
                     result = 0;
@@ -274,11 +340,12 @@ classdef SeaState < WecOptTool.base.Data
             function result = checkPositive(S, idx)
                 try
                     result = all(S.w >=0);
-                    if ~result
+                    if ~result 
+                        wID = 'SeaState:checkSpectrum:negativeFrequencies';
                         msg = ['Frequency in Spectrum #%i contains '    ...
                                'negative values. Frequency values must' ...
                                'be positive'];
-                        warning(msg, idx)
+                        warning(wID, msg, idx)
                     end
                 catch
                     result = 0;
@@ -287,10 +354,11 @@ classdef SeaState < WecOptTool.base.Data
             
             function result = checkMonotonic(S, idx)
                 try
-                    result = all(diff(S.w));
+                    result = all(diff(S.w) >= 0);
                     if ~result
+                        wID = 'SeaState:checkSpectrum:notMonotonic';
                         msg = 'Frequency in Spectrum #%i is not monotonic';
-                        warning(msg, idx)
+                        warning(wID, msg, idx)
                     end
                 catch
                     result = 0;
@@ -299,10 +367,11 @@ classdef SeaState < WecOptTool.base.Data
             
             function result = checkRegular(S, idx)
                 try
-                    result = length(uniquetol(diff(S.w), 1e9)) == 1;
+                    result = length(uniquetol(diff(S.w), 1e-9)) == 1;
                     if ~result
+                        wID = 'SeaState:checkSpectrum:notRegular';
                         msg = 'Frequency in Spectrum #%i is not regular';
-                        warning(msg, idx)
+                        warning(wID, msg, idx)
                     end
                 catch
                     result = 0;
@@ -364,7 +433,7 @@ classdef SeaState < WecOptTool.base.Data
             arguments
                 baseS {WecOptTool.types.SeaState.checkSpectrum(baseS)};
                 S {WecOptTool.types.SeaState.checkSpectrum(S),  ...
-                   mustBeEqualLengthSpectra(baseS, S)};
+                   WecOptLib.validation.mustBeEqualLength(baseS, S)};
             end
             
             N = length(baseS);
@@ -413,8 +482,6 @@ classdef SeaState < WecOptTool.base.Data
                                   mustBeNonzero};
             end
             
-            
-            
             for k = 1:length(S)
                 i = find(S(k).S > max(S(k).S) * densityTolerence);
                 iStart = min(i);
@@ -436,9 +503,12 @@ classdef SeaState < WecOptTool.base.Data
             end
             
             for i = 1:length(S)
-                endW = S(i).w(end, :) * nRepeats;
-                S(i).w(end+1) = endW(i);
-                S(i).S(end+1) = 0;
+                dw = S(i).w(2) - S(i).w(1);
+                startw = S(i).w(end) + dw;
+                endw = S(i).w(end) * nRepeats;
+                extendw = startw:dw:endw;
+                S(i).w = [S(i).w; extendw'];
+                S(i).S = [S(i).S; extendw' * 0.];
             end
             
         end
@@ -470,7 +540,7 @@ classdef SeaState < WecOptTool.base.Data
             assert(isequaln(oldS,[S.S]))
             
             w = [S.w];
-            dw = bisection(@ObjFun, min_dw, max(w(:)));
+            dw = WecOptLib.utils.bisection(@ObjFun, min_dw, max(w(:)));
             [S, errors] = SeaState.resampleByStep(S, dw);
             
         end
@@ -505,9 +575,6 @@ classdef SeaState < WecOptTool.base.Data
                 wResampled = wMin:dw:wIntegerStepMax;
                 wResampled = wResampled';
 
-                WecOptLib.errorCheck.checkMinMaxStepRange(  ...
-                                min(wResampled), max(wResampled), dw)
-
                 SResampled = interp1(S(i).w,        ...
                                      S(i).S,        ...
                                      wResampled,    ...
@@ -522,63 +589,9 @@ classdef SeaState < WecOptTool.base.Data
             errors = SeaState.getSampleError(baseS, S);
             
         end
-
+        
     end
 
 end
 
-function mustBeEqualLengthSpectra(baseS, S)
-    msg = 'Spectra must be of equal length';
-    ID = 'WecOptTool:assertEqualLengthSpectra:incorrectLength';
-    assert(length(baseS) == length(S), ID, msg);
-end
 
-function c = bisection(f, a, b, tol, nmax)
-
-    arguments
-        f {mustBeFunctionHandle};
-        a {mustBeNumeric, mustBeFinite};
-        b {mustBeNumeric, mustBeFinite, mustBeGreaterThan(b, a)};
-        tol {mustBeNumeric,     ...
-             mustBePositive,    ...
-             mustBeFinite,      ...
-             mustBeNonzero} = eps;
-         nmax  {mustBeInteger,     ...
-                mustBePositive,    ...
-                mustBeFinite,      ...
-                mustBeNonzero} = 1000;
-    end
-
-    n = 1;
-    
-    while n < nmax
-        
-        c = (a + b) / 2;
-        
-        if abs(f(c)) < eps
-            return
-        elseif (b - a) / 2 < tol
-            error('Search space closed before finding a solution')
-        end
-        
-        n = n + 1;
-        
-        if sign(f(c)) == sign(f(a))
-            a = c;
-        else
-            b = c;
-        end
-        
-    end
-    
-    error('Number of iterations exceeded')
-    
-end
-
-function mustBeFunctionHandle(input)
-    % Test for specific class
-    if ~isa(input, 'function_handle')
-        error('Input must be a function handle.')
-    end
-end
-        

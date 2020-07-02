@@ -23,43 +23,4 @@ function tests = resampleSpectraTest()
 end
 
 
-function testCheck_dw(testCase)
-    S=struct();
-    wMin=0.001;
-    wMax=2*pi;
-    w=linspace(wMin,wMax)';
-    S.w = w;       
-    S.S = sin(w);
-    
-    dw=0.3;
-    
-    resampledS = WecOptLib.utils.resampleSpectra(S, dw);    
-    
-    verifyTrue(testCase, all(round(diff(resampledS.w),2)==dw));    
-    
-end
 
-function testCheck_minMaxW(testCase)
-    S=struct();
-    wMin=0.001;
-    wMax=2*pi;
-    w=linspace(wMin,wMax)';
-    S.w = w;       
-    S.S = sin(w);
-    
-    dw=0.3;
-    NSuperHarmonics =1;
-    
-    resampledS = WecOptLib.utils.resampleSpectra(S, dw, NSuperHarmonics );    
-    
-    resampledMin = min(resampledS.w);
-    resampledMax = max(resampledS.w);
-    
-    verifyTrue(testCase, and( resampledMin <= wMin , ...
-                              resampledMin >  wMin-dw ...
-                             ));    
-    verifyTrue(testCase, and( resampledMax >= wMax , ...
-                              resampledMax <  wMax*NSuperHarmonics + dw ...
-                             ));  
-    
-end
