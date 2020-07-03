@@ -72,12 +72,12 @@ classdef SeaState < WecOptTool.base.Data
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    properties
+    properties (SetAccess=private)
         baseS
         basew
         dw
-        trimLoss
         sampleError
+        trimLoss
     end
     
     properties (GetAccess=protected)
@@ -120,15 +120,6 @@ classdef SeaState < WecOptTool.base.Data
             obj.trimLoss = 0;
             obj.sampleError = 0;
             
-            if isfield(options, "trimFrequencies")
-                S = obj.trimFrequencies(S, options.trimFrequencies);
-                obj.trimLoss = options.trimFrequencies;
-            end
-            
-            if isfield(options, "extendFrequencies")
-                S = obj.extendFrequencies(S, options.extendFrequencies);
-            end
-            
             if isfield(options, "resampleByError") && ...
                isfield(options, "resampleByStep")
            
@@ -149,6 +140,17 @@ classdef SeaState < WecOptTool.base.Data
                 obj.dw = options.resampleByStep;
                 obj.sampleError = err;
             end
+            
+            if isfield(options, "trimFrequencies")
+                S = obj.trimFrequencies(S, options.trimFrequencies);
+                obj.trimLoss = options.trimFrequencies;
+            end
+            
+            if isfield(options, "extendFrequencies")
+                S = obj.extendFrequencies(S, options.extendFrequencies);
+            end
+            
+            obj.checkSpectrum(S)
             
             obj.w = S.w;
             obj.S = S.S;
@@ -181,10 +183,6 @@ classdef SeaState < WecOptTool.base.Data
             
         end
         
-        function validateArray(obj)
-            makeMu(obj)
-        end
-        
         function plot(obj)
             
             h =  findobj('type', 'figure');
@@ -207,6 +205,19 @@ classdef SeaState < WecOptTool.base.Data
 
                 plot(wOrig, SOrig, 'DisplayName', labelOrig)
                 
+                if obj(i).sampleError > eps
+                    
+                    if titleChar
+                        titleChar = [titleChar '; '];
+                    end
+                    
+                    plot(wMod, SMod, '-o', 'DisplayName', labelMod)
+                    addTitle = sprintf('Max Density Error: %.2f%%', ...
+                                       obj(i).sampleError * 100);
+                    titleChar = [titleChar addTitle];
+                    
+                end
+                
                 if obj(i).trimLoss > eps
                     
                     xline(min(wMod), '--',  ...
@@ -219,19 +230,6 @@ classdef SeaState < WecOptTool.base.Data
                     titleChar = [titleChar addTitle];
                               
                 end
-                
-                if obj(i).sampleError > eps
-                    
-                    if titleChar
-                        titleChar = [titleChar '; '];
-                    end
-                    
-                    plot(wMod, SMod, '-o', 'DisplayName', labelMod)
-                    addTitle = sprintf('Resampling Error: %.2f%%',  ...
-                                       obj(i).sampleError * 100);
-                    titleChar = [titleChar addTitle];
-                    
-                end
 
                 if titleChar, title(titleChar), end
                 xlabel('Frequency [$\omega$]','Interpreter','latex')
@@ -243,6 +241,10 @@ classdef SeaState < WecOptTool.base.Data
                 
             end
                         
+        end
+                
+        function validateArray(obj)
+            makeMu(obj)
         end
         
     end
@@ -343,7 +345,7 @@ classdef SeaState < WecOptTool.base.Data
                     if ~result 
                         wID = 'SeaState:checkSpectrum:negativeFrequencies';
                         msg = ['Frequency in Spectrum #%i contains '    ...
-                               'negative values. Frequency values must' ...
+                               'negative values. Frequency values must '...
                                'be positive'];
                         warning(wID, msg, idx)
                     end
@@ -402,60 +404,82 @@ classdef SeaState < WecOptTool.base.Data
             end
             
         end
-                
-        function dw = getMeanFreqStep(S)
-            % Returns the mean of the frequency discrtization 
-            %
-            % Parameters
-            % ----------
-            % S: struct
-            %     seastate must have S.w and S.S
-            %
-            % Returns
-            % -------
-            % dw: array
-            %     mean difference
-
+        
+        function energies = getSpecificEnergy(S, options)
+            
             arguments
                 S {WecOptTool.types.SeaState.checkSpectrum(S)};
+                options.g {mustBeNumeric} = 9.81;
+                options.rho {mustBeNumeric, mustBePositive} = 1028;
             end
             
-            dw = zeros(1, length(S));
+            N = length(S);
+            energies = zeros(1, N);
             
-            for i = 1:length(S)
-                dw(i) = mean(diff(S(i).w));
+            for i = 1:N
+                energies(i) = options.g * options.rho *     ...
+                                                trapz(S(i).w, S(i).S);
             end
             
         end
-                
-        function errors = getSampleError(baseS, S)
+        
+        function errors = getMaxAbsoluteDensityError(trueS, measuredS)
             
             arguments
-                baseS {WecOptTool.types.SeaState.checkSpectrum(baseS)};
-                S {WecOptTool.types.SeaState.checkSpectrum(S),  ...
-                   WecOptLib.validation.mustBeEqualLength(baseS, S)};
+                trueS {WecOptTool.types.SeaState.checkSpectrum(trueS)};
+                measuredS                                               ...
+                  {WecOptTool.types.SeaState.checkSpectrum(measuredS),  ...
+                   WecOptLib.validation.mustBeEqualLength(trueS,        ...
+                                                          measuredS)};
             end
             
-            N = length(baseS);
+            import WecOptTool.types.SeaState
+            
+            N = length(trueS);
             errors = zeros(1, N);
             
             for i = 1:N
                 
-                wOrig = baseS(i).w;
-                SOrig = baseS(i).S;
-                wResampled = S(i).w;
-                SResampled = S(i).S;
+                interpS = interp1(measuredS(i).w,   ...
+                                  measuredS(i).S,   ...
+                                  trueS(i).w,       ...
+                                  'linear',         ...
+                                  'extrap');
                 
-                SNoExtrapOrigInterpolated = interp1(wResampled, ...
-                                                    SResampled, ...
-                                                    wOrig,      ...
-                                                    'linear',   ...
-                                                    'extrap');
-                
-                errors(i) = sum(abs(SNoExtrapOrigInterpolated - ...
-                                                SOrig)) / length(SOrig);
+                absoluteDensityError = abs(interpS - trueS(i).S);
+                errors(i) = max(absoluteDensityError);
                 
             end
+            
+        end
+                
+        function errors = getRelativeEnergyError(trueS, measuredS)
+            
+            arguments
+                trueS {WecOptTool.types.SeaState.checkSpectrum(trueS)};
+                measuredS                                               ...
+                  {WecOptTool.types.SeaState.checkSpectrum(measuredS),  ...
+                   WecOptLib.validation.mustBeEqualLength(trueS,        ...
+                                                          measuredS)};
+            end
+            
+            import WecOptTool.types.SeaState
+            
+            for i = 1:length(trueS)
+                
+                interpS(i).w = trueS(i).w;
+                interpS(i).S = interp1(measuredS(i).w, ...
+                                       measuredS(i).S, ...
+                                       trueS(i).w,     ...
+                                       'linear',       ...
+                                       'extrap');
+                                   
+            end
+                  
+            baseEnergy = SeaState.getSpecificEnergy(trueS);
+            interpEnergy = SeaState.getSpecificEnergy(interpS);
+
+            errors = abs(interpEnergy ./ baseEnergy - 1);
             
         end
 
@@ -552,7 +576,7 @@ classdef SeaState < WecOptTool.base.Data
                 dw {mustBeNumeric,  ...
                     mustBePositive, ...
                     mustBeFinite,   ...
-                    mustBeNonzero};
+                    mustBeNonzero}
             end
             
             import WecOptTool.types.SeaState
@@ -586,7 +610,8 @@ classdef SeaState < WecOptTool.base.Data
                 
             end
             
-            errors = SeaState.getSampleError(baseS, S);
+            abserrors = SeaState.getMaxAbsoluteDensityError(baseS, S);
+            errors = abserrors ./ max([baseS.S]);
             
         end
         

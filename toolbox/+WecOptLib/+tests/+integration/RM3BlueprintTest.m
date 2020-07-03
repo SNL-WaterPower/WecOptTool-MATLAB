@@ -81,7 +81,7 @@ function testVerify_PS(testCase)
     testCase.applyFixture(PathFixture(addFolder));
 
     S = WecOptLib.tests.data.exampleSpectrum();
-    SS = WecOptTool.types("SeaState", S, "resampleByError", 0.04);
+    SS = WecOptTool.types("SeaState", S, "resampleByError", 0.08);
     
     blueprint = RM3();
             

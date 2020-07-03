@@ -1,3 +1,19 @@
+function tests = mustBeFunctionHandleTest()
+   tests = functiontests(localfunctions);
+end
+
+function testIsFunctionHandle(~)
+    a = @(x) x^2;
+    WecOptLib.validation.mustBeFunctionHandle(a)
+end
+
+function testIsNotFunctionHandle(testCase)
+    a = 1;
+    eID = 'WecOptLib:Validation:NotFunctionHandle';
+    verifyError(testCase,                                           ...
+                @() WecOptLib.validation.mustBeFunctionHandle(a),   ...
+                eID)
+end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
 % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -17,22 +33,3 @@
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
-
-function tests = removeSpectraTailsTest()
-   tests = functiontests(localfunctions);
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

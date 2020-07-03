@@ -1,31 +1,42 @@
-function c = bisection(f, a, b, tol, nmax)
-    %BISECTION Summary of this function goes here
-    %   Detailed explanation goes here
+function c = bisection(f, a, b, options)
+    % Bisection method
+    %
+    % Args:
+    %   f real valued function
+    %   a,b interval boundaries (float) with the property f(a) * f(b) <= 0
+    %   tol tolerance (float)
+    %   nmax maximum number of operations
     
     arguments
         f {WecOptLib.validation.mustBeFunctionHandle};
         a {mustBeNumeric, mustBeFinite};
         b {mustBeNumeric, mustBeFinite, mustBeGreaterThan(b, a)};
-        tol {mustBeNumeric,     ...
-             mustBePositive,    ...
-             mustBeFinite,      ...
-             mustBeNonzero} = eps;
-         nmax  {mustBeInteger,     ...
-                mustBePositive,    ...
-                mustBeFinite,      ...
-                mustBeNonzero} = 1000;
+        options.tol {mustBeNumeric,     ...
+                     mustBePositive,    ...
+                     mustBeFinite,      ...
+                     mustBeNonzero} = 1e-10;
+        options.nmax  {mustBeInteger,   ...
+                       mustBePositive,  ...
+                       mustBeFinite,    ...
+                       mustBeNonzero} = 1000;
+    end
+    
+    if f(a) * f(b) > 0
+        eID = "WecOptLib:bisection:badInterval";
+        error(eID, "Incorrect initial interval [a, b]")
     end
 
     n = 1;
     
-    while n < nmax
+    while n < options.nmax
         
         c = (a + b) / 2;
         
-        if abs(f(c)) < eps
+        if abs(f(c)) < options.tol
             return
-        elseif (b - a) / 2 < tol
-            error('Search space closed before finding a solution')
+        elseif (b - a) / 2 < eps
+            eID = "WecOptLib:bisection:searchSpaceClosed";
+            error(eID, 'Search space closed before finding a solution')
         end
         
         n = n + 1;
@@ -38,6 +49,7 @@ function c = bisection(f, a, b, tol, nmax)
         
     end
     
-    error('Number of iterations exceeded')
+    eID = "WecOptLib:bisection:tooManyIterations";
+    error(eID, 'Number of iterations exceeded')
     
 end

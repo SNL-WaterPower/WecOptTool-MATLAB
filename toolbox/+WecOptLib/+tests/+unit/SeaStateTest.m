@@ -16,8 +16,9 @@ classdef SeaStateTest < matlab.unittest.TestCase
             
             testCase.S = WecOptLib.tests.data.example8Spectra();
             testCase.SS = WecOptTool.types("SeaState", testCase.S,      ...
+                                           "resampleByError", 0.01,     ...
                                            "trimFrequencies", 0.01,     ...
-                                           "resampleByError", 0.01);
+                                           "extendFrequencies", 2);
             
         end
         
@@ -43,12 +44,69 @@ classdef SeaStateTest < matlab.unittest.TestCase
     end
     
     methods(Test)
+
+        function testSampleError(testCase)
+            verifyTrue(testCase, all([testCase.SS.sampleError] == 0.01))
+        end
         
-        function testCheck_multiSeaStates(testCase)
+        function testTrimLoss(testCase)
+            verifyTrue(testCase, all([testCase.SS.trimLoss] == 0.01))
+        end
+        
+        function testFrequencies(testCase)
+            l = max(testCase.SS(1).w);
+            lbase = max(testCase.SS(1).basew);
+            verifyTrue(testCase, 2 * lbase > l && l > lbase)
+        end
+        
+        function testGetAllFrequencies(testCase)
+            
+            freqs = testCase.SS.getAllFrequencies();
+            verifyTrue(testCase, all(freqs >=0))
+            verifyTrue(testCase, all(diff(freqs) >= 0))
+            verifyTrue(testCase, length(freqs) == length(unique(freqs)))
+            
+            maxFreqs = 0;
+            
+            for i = 1:length(testCase.SS)
+                maxFreqs = maxFreqs + length(testCase.SS(i).w);
+            end
+            
+            verifyTrue(testCase, length(freqs) <= maxFreqs) 
+            
+        end
+        
+        function testGetRegularFrequencies(testCase)
+            
+            import matlab.unittest.constraints.IsEqualTo
+            import matlab.unittest.constraints.RelativeTolerance
+            
+            dw = 0.1;
+            freqs = testCase.SS.getRegularFrequencies(dw);
+            verifyTrue(testCase, all(freqs >=0))
+            verifyTrue(testCase, all(diff(freqs) >= 0))
+            verifyTrue(testCase, length(freqs) == length(unique(freqs)))
+            verifyTrue(testCase, length(uniquetol(diff(freqs), 1e-9)) == 1)
+            
+            dwTest = uniquetol(diff(freqs), 1e-9);
+            testCase.assertThat(dwTest,     ...
+                    IsEqualTo(dw, 'Within', RelativeTolerance(1e-9)))
+            
+            allFreqs = testCase.SS.getAllFrequencies();
+            verifyTrue(testCase, min(freqs) <= min(allFreqs));
+            verifyTrue(testCase, max(freqs) >= max(allFreqs));
+            
+        end
+        
+        function testPlot(testCase)
+            verifyWarningFree(testCase, @() testCase.SS.plot())
+        end
+        
+        function testcheckSpectruMultiSeaStates(testCase)
             testCase.SS.checkSpectrum(testCase.S)
         end
         
-        function test_checkSpectrum_missingFields(testCase)
+        function testCheckSpectrumMissingFields(testCase)
             S1 = WecOptLib.tests.data.exampleSpectrum();
             S1 = rmfield(S1,'w');
             eID = "WecOptTool:SeaState:checkSpectrum";
@@ -60,7 +118,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             verifyWarning(testCase, fError, wID);
         end
 
-        function testCheck_mismatchedLengths(testCase)
+        function testCheckSpectrumMismatchedLengths(testCase)
             S1 = WecOptLib.tests.data.exampleSpectrum();
             S1.w = [];
             eID = "WecOptTool:SeaState:checkSpectrum";
@@ -72,7 +130,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             verifyWarning(testCase, fError, wID);
         end
 
-        function testCheck_notColumnVectors(testCase)
+        function testCheckSpectrumNotColumnVectors(testCase)
             S1 = WecOptLib.tests.data.exampleSpectrum();
             S1.w = S1.w';
             eID = "WecOptTool:SeaState:checkSpectrum";
@@ -84,7 +142,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             verifyWarning(testCase, fError, wID);
         end
 
-        function testCheck_Positive(testCase)
+        function testCheckSpectrumNegativeFrequencies(testCase)
             S1 = WecOptLib.tests.data.exampleSpectrum();
             S1.w(1) = -1.0;
             eID = "WecOptTool:SeaState:checkSpectrum";
@@ -96,7 +154,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             verifyWarning(testCase, fError, wID);
         end
         
-        function testCheck_Monotonic(testCase)
+        function testCheckSpectrumNotMonotonic(testCase)
             S1 = WecOptLib.tests.data.exampleSpectrum();
             S1.w(1) = max(S1.w) + 1;
             eID = "WecOptTool:SeaState:checkSpectrum";
@@ -108,7 +166,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             verifyWarning(testCase, fError, wID);
         end
         
-        function testcheckRegular(testCase)
+        function testCheckSpectrumNotRegular(testCase)
             S1 = WecOptLib.tests.data.exampleSpectrum();
             S1.w(2) = 0.9 * S1.w(2);
             eID = "WecOptTool:SeaState:checkSpectrum";
@@ -120,32 +178,101 @@ classdef SeaStateTest < matlab.unittest.TestCase
             verifyWarning(testCase, fError, wID);
         end
         
+        function testGetSpecificEnergy(testCase)
+            
+            import matlab.unittest.constraints.IsEqualTo
+            import matlab.unittest.constraints.RelativeTolerance
+           
+            f = @(x) -1 * (x - 2) .^ 2 + 1;
+            S1.w = linspace(1, 3)';
+            S1.S = f(S1.w);
+            
+            result = testCase.SS.getSpecificEnergy(S1, "g", 1, "rho", 1);
+            expected = 4 / 3;
+            
+            testCase.assertThat(result,     ...
+                IsEqualTo(expected, 'Within', RelativeTolerance(0.001)))
+            
+        end
+        
+        function testGetMaxAbsoluteDensityError(testCase)
+            
+            import matlab.unittest.constraints.IsEqualTo
+            import matlab.unittest.constraints.RelativeTolerance
+            
+            f = @(x) -1 * (x - 2) .^ 2 + 1;
+            S1.w = linspace(1, 3)';
+            S1.S = f(S1.w);
+            
+            S2.w = S1.w;
+            S2.S = S1.S - 0.1;
+            
+            result = testCase.SS.getMaxAbsoluteDensityError(S1, S2);
+            
+            testCase.assertThat(result,     ...
+                    IsEqualTo(0.1, 'Within', RelativeTolerance(1e-9)))
+            
+        end
+        
+        function testGetRelativeEnergyError(testCase)
+            
+            import matlab.unittest.constraints.IsEqualTo
+            import matlab.unittest.constraints.RelativeTolerance
+            
+            f = @(x) -1 * (x - 2) .^ 2 + 1;
+            S1.w = linspace(1, 3)';
+            S1.S = f(S1.w);
+            
+            S2.w = S1.w;
+            S2.S = S1.S .* 0. + 0.5;
+            
+            result = testCase.SS.getRelativeEnergyError(S1, S2);
+            expected = 1 / 4;
+            
+            testCase.assertThat(result,     ...
+                IsEqualTo(expected, 'Within', RelativeTolerance(0.001)))
+            
+        end
+            
         function testTrimFrequencies(testCase)
             
-            wMin=1;
-            wMax=100;
-            w=linspace(wMin,wMax)';
+            wMin = 1;
+            wMax = 100;
+            w = linspace(wMin, wMax)';
             S1.w = w;
             
             spectra = zeros(length(w),1);
             oneThird = floor(length(spectra)/3);
             spectra(oneThird:2*oneThird, 1) = 1;
-            expectedLength= length(spectra(oneThird:2*oneThird,1));        
+            expectedLength = length(spectra(oneThird:2*oneThird,1));        
             S1.S = spectra;
 
             % Remove the tails
             noTailsS = testCase.SS.trimFrequencies(S1, 0.01);
             testCase.SS.checkSpectrum(noTailsS);
             lengthS = length(noTailsS.S);
-            verifyTrue(testCase, expectedLength==lengthS);
+            verifyTrue(testCase, expectedLength == lengthS);
+            
+        end
+        
+        function testExtendFrequencies(testCase)
+            
+            wMin = 1;
+            wMax = 100;
+            w = linspace(wMin, wMax)';
+            S1.w = w;
+            S1.S = w .* 0;
+            
+            S2 = testCase.SS.extendFrequencies(S1, 2);
+            verifyEqual(testCase, length(S2.w), 200);
             
         end
         
         function testResampleByStep(testCase)
             
-            wMin=0.001;
-            wMax=2*pi;
-            w=linspace(wMin,wMax)';
+            wMin = 0.001;
+            wMax = 2*pi;
+            w = linspace(wMin, wMax)';
             S1.w = w;       
             S1.S = sin(w);
 
@@ -153,12 +280,33 @@ classdef SeaStateTest < matlab.unittest.TestCase
 
             resampledS = testCase.SS.resampleByStep(S1, dw);
             testCase.SS.checkSpectrum(resampledS);
-            verifyTrue(testCase, all(round(diff(resampledS.w),2)==dw));
+            verifyTrue(testCase,    ...
+                       all(round(diff(resampledS.w), 2) == dw));
 
         end
         
-        function testPlot(testCase)
-            verifyWarningFree(testCase, @() testCase.SS.plot())
+        function testResampleByError(testCase)
+            
+            f = @(x) -1 * (x - 2) .^ 2 + 1;
+            S1.w = linspace(1, 3)';
+            S1.S = f(S1.w);
+            
+            S2 = testCase.SS.resampleByError(S1, 0.01);
+            
+            E1 = testCase.SS.getSpecificEnergy(S1, "g", 1, "rho", 1);
+            E2 = testCase.SS.getSpecificEnergy(S2, "g", 1, "rho", 1);
+            
+            verifyTrue(testCase, E2 < E1)
+            
+            interpS = interp1(S2.w,             ...
+                              S2.S,             ...
+                              S1.w,             ...
+                              'linear',         ...
+                              'extrap');
+            
+            checkError = abs(S1.S - interpS) / max(S1.S);
+            verifyTrue(testCase, all(checkError <= 0.01 + 1e-9))
+                          
         end
         
     end
