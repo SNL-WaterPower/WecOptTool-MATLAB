@@ -22,14 +22,41 @@ classdef SeaState < WecOptTool.base.Data
     % object can be converted to a struct, and then modified.
     %
     % Arguments:
-    %    input (struct):
+    %    S (struct):
     %        A struct (not array) whose fields represent the parameters
     %        to be stored.
+    %    options: name-value pair options. See below.
+    %
+    % The following options are supported:
+    %
+    %    resampleByError (float):
+    %        Resample the given spectra such that the error with respect
+    %        to the original spectral density is less than the given
+    %        percentage of the maximum spectral density (per spectrum).
+    %    resampleByStep (float):
+    %        Resample the spectra with the given angular frequency step.
+    %    trimFrequencies (float):
+    %        Remove frequencies with spectral density less than the
+    %        given percentage of the maximum (per spectrum).
+    %    extendFrequencies (int):
+    %        Add addition frequencies such that the largest value is
+    %        extendFrequencies times the maximum (i.e. max(w)).
+    %
+    % Note:
+    %    The order of operations (if required) is to resample first, then
+    %    trim the frequencies then extend, finally.
     %
     % Attributes:
-    %     S (array of float): Spectral density
+    %     S (array of float): spectral density
     %     w (array of float): angular frequency
-    %     mu (float): spectrum weighting (defaults to 1)
+    %     baseS (array of float): unmodified spectral density
+    %     basew (array of float): unmodified angular frequency
+    %     dw (float): angular frequency step
+    %     sampleError (float): 
+    %         maximum sampling error as percentage of max(S) 
+    %     trimLoss (float):
+    %         error due to range trimming as percentage of max(S) 
+    %     mu (float): spectrum weighting, for arrays only  (defaults to 1)
     %
     % Methods:
     %    struct(): convert to struct
@@ -41,12 +68,39 @@ classdef SeaState < WecOptTool.base.Data
     % --
     %
     %  SeaState Properties:
-    %     S - Spectral density
+    %     S - spectral density
     %     w - angular frequency
-    %     mu - spectrum weighting (defaults to 1)
+    %     baseS - unmodified spectral density
+    %     basew - unmodified angular frequency
+    %     dw - angular frequency step
+    %     sampleError - maximum sampling error as percentage of max(S) 
+    %     trimLoss - error due to range trimming as percentage of max(S) 
+    %     mu - spectrum weighting, for arrays only (defaults to 1)
     %
     %  SeaState Methods:
+    %    getAllFrequencies - return unique frequencies over all sea-states
+    %    getRegularFrequencies - return regularly spaced frequencies
+    %                            covering all sea-states
+    %    plot - plot spectrum and comparison to base spectrum, if different
+    %    validateArray - object array validation
     %    struct - convert to struct
+    %    checkSpectrum - validate a struct array representing spectra
+    %    getSpecificEnergy - calculate the specific energy of spectra
+    %                        struct array
+    %    getMaxAbsoluteDensityError - return the maximum absolute error in
+    %                                 spectral density between two spectra
+    %                                 struct arrays
+    %    getRelativeEnergyError - return the relative error in specific
+    %                             energy between two spectra struct arrays
+    %    trimFrequencies - removes frequencies below a freshold of spectral
+    %                      density from a spectra struct array
+    %    extendFrequencies - Add multiples of the maximum frequency to a
+    %                        spectra struct array
+    %    resampleByError - Generate new frequencies within a maximum error
+    %                      of the maximum spectral density for a spectra
+    %                      struct array.
+    %    resampleByStep - Generate new frequencies with a given step value
+    %                     for a spectra struct array
     %
     % See also WecOptTool.types
     %
@@ -212,7 +266,7 @@ classdef SeaState < WecOptTool.base.Data
                     end
                     
                     plot(wMod, SMod, '-o', 'DisplayName', labelMod)
-                    addTitle = sprintf('Max Density Error: %.2f%%', ...
+                    addTitle = sprintf('Max Resampling Error: %.2f%%', ...
                                        obj(i).sampleError * 100);
                     titleChar = [titleChar addTitle];
                     
@@ -232,8 +286,9 @@ classdef SeaState < WecOptTool.base.Data
                 end
 
                 if titleChar, title(titleChar), end
-                xlabel('Frequency [$\omega$]','Interpreter','latex')
-                ylabel('Spectral Density','Interpreter','latex')
+                xlabel('Angular frequency [rad / s]','Interpreter','latex')
+                ylabel('Spectral Density [m$^2$ s / rad]',  ...
+                       'Interpreter','latex')
                 legend()
                 grid
                 
