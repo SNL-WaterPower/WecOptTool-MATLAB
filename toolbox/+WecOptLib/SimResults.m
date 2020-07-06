@@ -69,7 +69,7 @@ classdef SimResults < handle
         function plotTime(obj ,t)
             
             if nargin < 2
-                trep = 2*pi/(obj(1).w(2) - obj(1).w(1));
+                trep = obj(1).getRepeatPer();
                 t = 0:0.05:trep;
             end
             
@@ -172,6 +172,10 @@ classdef SimResults < handle
     end
     
     methods (Access=protected)
+        function [tRep] = getRepeatPer(obj)
+            tRep = 2*pi/(obj.w(2) - obj.w(1));
+        end
+        
         function [timeRes] = getTimeRes(obj, fn, t_vec)
             timeRes = zeros(size(t_vec));
             for ii = 1:length(obj.w) % for each freq. TODO - use IFFT
