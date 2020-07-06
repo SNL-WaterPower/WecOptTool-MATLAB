@@ -73,28 +73,26 @@ classdef SimResults < handle
                 t = 0:0.05:trep;
             end
             
-            figure('Name','SimRes.plotTime')
+            fig = figure('Name','SimRes.plotTime');
+            fig.Position = fig.Position.*[1 1 1 1.5];
             
-            for ii = 1:5
-                ax(ii) = subplot(5, 1, ii);
+            
+             fns = {'eta','Fe','pos','u','Fpto','pow'};
+            
+            for ii = 1:length(fns)
+                ax(ii) = subplot(length(fns), 1, ii);
                 hold on
                 grid on
             end
             
-            
             for jj = 1:length(obj)
-                fns = {'eta','Fe','u','Fpto'};
+                
                 for ii = 1:length(fns)
                     timeRes.(fns{ii}) = getTimeRes(obj(jj),fns{ii}, t);
-                end
-                timeRes.pow = timeRes.u .* timeRes.Fpto;
-                
-                fns = [fns(:)', {'pow'}];
-                
-                for ii = 1:length(fns)
                     plot(ax(ii),t,timeRes.(fns{ii}))
                     ylabel(ax(ii),fns{ii})
                 end
+                
                 for ii = 1:length(ax) - 1
                     set(ax(ii),'XTickLabel',[])
                 end
