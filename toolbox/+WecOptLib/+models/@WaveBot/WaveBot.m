@@ -164,6 +164,8 @@ classdef WaveBot < matlab.mixin.Copyable
             obj.hydro.B = squeeze(obj.hydro.raw.B(3,3,:)) ...
                 * obj.hydro.rho .* obj.hydro.w;
             
+            obj.hydro.B(obj.hydro.B < 0) = 0;               % TODO
+            
             % added mass FRF
             obj.hydro.A = squeeze(obj.hydro.raw.A(3,3,:)) * obj.hydro.rho;
             
