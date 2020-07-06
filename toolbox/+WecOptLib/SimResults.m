@@ -58,7 +58,7 @@ classdef SimResults < handle
     methods
         function obj = SimResults(name)
             
-            if nargin > 1
+            if nargin > 0
                 obj.name = name;
             else
                 obj.name = 'tmp';
