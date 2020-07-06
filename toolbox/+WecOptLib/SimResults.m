@@ -152,8 +152,28 @@ classdef SimResults < handle
         
         function T = summary(obj)
             
-            avgpow = arrayfun(@(x) sum(real(x.pow)), obj);
+            trep = obj(1).getRepeatPer();
+            t = linspace(0,trep,1e3);
             
+            for ii = 1:length(obj)
+            
+                pow_avg(ii) = sum(real(obj(ii).pow));
+                
+                pow_t = getTimeRes(obj(ii), 'pow', t);
+                pow_max(ii) = max(abs(pow_t));
+                pow_thd(ii) = thd(pow_t);
+                
+                pos_t = getTimeRes(obj(ii), 'pos', t);
+                pos_max(ii) = max(abs(pos_t));
+                
+                vel_t = getTimeRes(obj(ii), 'u', t);
+                vel_max(ii) = max(abs(vel_t));
+                
+                Fpto_t = getTimeRes(obj(ii), 'Fpto', t);
+                Fpto_max(ii) = max(abs(Fpto_t));
+            end
+            
+            % augment names if they are the same
             if any(strcmp(obj(1).name, {obj(2:end).name}))
                 for ii = 1:length(obj)
                     rnames{ii} = [obj(ii).name, '_', num2str(ii)];
@@ -163,8 +183,12 @@ classdef SimResults < handle
             end
             rnames = reshape(rnames,[],1);
             
-            T = table(avgpow(:),'VariableNames',{'AvgPow'},...
-                'RowNames', rnames);
+            T = table(pow_avg(:),pow_max(:),pow_thd(:),pos_max(:),...
+                vel_max(:),Fpto_max(:),...
+                'VariableNames',...
+                {'AvgPow','|MaxPow|','PowTHD_dBc','MaxPos','MaxVel','MaxPTO'},...
+                'RowNames',...
+                rnames);
             % TODO add more columns
             
         end
@@ -177,10 +201,17 @@ classdef SimResults < handle
         end
         
         function [timeRes] = getTimeRes(obj, fn, t_vec)
-            timeRes = zeros(size(t_vec));
-            for ii = 1:length(obj.w) % for each freq. TODO - use IFFT
-                timeRes = timeRes ...
-                    + real(obj.(fn)(ii) * exp(1i * obj.w(ii) * t_vec));
+            
+            if strcmp(fn,'pow')
+                vel = obj.getTimeRes('u',t_vec);
+                f = obj.getTimeRes('Fpto',t_vec);
+                timeRes = vel .* f;
+            else
+                timeRes = zeros(size(t_vec));
+                for ii = 1:length(obj.w) % for each freq. TODO - use IFFT
+                    timeRes = timeRes ...
+                        + real(obj.(fn)(ii) * exp(1i * obj.w(ii) * t_vec));
+                end
             end
         end
     end
