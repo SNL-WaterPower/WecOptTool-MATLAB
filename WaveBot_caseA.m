@@ -59,8 +59,14 @@ end
 %% plot results
 
 r.plotFreq()
+delete(findobj(gcf, 'Type', 'Legend'))
+ax = findobj(gcf, 'Type', 'axes');
+legend(ax(end))
+export_fig('../gfx/WaveBot_caseA_freq.pdf','-transparent')
+
 r.plotTime(0:0.01:10)
-legend('CC','P','PS')
+legend(subplot(6,1,1),'CC','P','PS')
+export_fig('../gfx/WaveBot_caseA_time.pdf','-transparent')
 
 %% report results
 
