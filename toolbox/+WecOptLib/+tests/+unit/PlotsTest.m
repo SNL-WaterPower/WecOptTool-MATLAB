@@ -83,45 +83,7 @@ classdef PlotsTest < matlab.unittest.TestCase
             verifyWarningFree(testCase, testHandle)
                               
         end
-    
-        function testRemoveTails(testCase)
-            % Fake some inputs
-            S=struct();
-            wMin=1;
-            wMax=100;
-            w=linspace(wMin,wMax)';
-            S.w = w;
-            spectra = zeros(length(w),1);
-            oneThird = floor(length(spectra)/3);
-            spectra(oneThird:2*oneThird, 1) = 1;   
-            S.S = spectra;
-
-            % Remove the tails
-            noTailsS = WecOptLib.utils.removeSpectraTails(S);
-            testHandle = @() WecOptLib.plots.compareNoTailsSS(S, noTailsS);
-            
-            verifyWarningFree(testCase, testHandle)
-                              
-        end
         
-        function testCompareSpectra(testCase)
-            % Fake some inputs
-            S=struct();
-            wMin=0.001;
-            wMax=2*pi;
-            w=linspace(wMin,wMax)';
-            S.w = w;       
-            S.S = sin(w);
-
-            minBins=22;
-            maxError=0.01;
-
-            downSampledS = WecOptLib.utils.downSampleSpectra(S,maxError, minBins); 
-            testHandle = @() WecOptLib.plots.compareSpectra(S, downSampledS);
-            
-            verifyWarningFree(testCase, testHandle)
-                              
-        end
     end
     
 end
