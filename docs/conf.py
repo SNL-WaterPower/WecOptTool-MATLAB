@@ -15,6 +15,13 @@
 import os
 import sys
 import datetime
+from sphinx.ext.autodoc import between
+
+def setup(app):
+    # Register a sphinx.ext.autodoc.between listener to ignore everything
+    # between lines that contain the marker '--'
+    app.connect('autodoc-process-docstring', between('^.*--.*$', exclude=True))
+    return app
 
 now = datetime.datetime.now()
 

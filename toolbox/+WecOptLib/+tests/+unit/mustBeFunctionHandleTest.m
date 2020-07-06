@@ -1,32 +1,18 @@
-function results = runTests()
+function tests = mustBeFunctionHandleTest()
+   tests = functiontests(localfunctions);
+end
 
-    import matlab.unittest.TestRunner;
-    import matlab.unittest.TestSuite;
-    import matlab.unittest.plugins.TestReportPlugin;
+function testIsFunctionHandle(~)
+    a = @(x) x^2;
+    WecOptLib.validation.mustBeFunctionHandle(a)
+end
 
-    % Define test suite
-    suite = TestSuite.fromPackage('WecOptLib.tests',    ...
-                                  'IncludingSubpackages', true);
-    
-    % Build the runner
-    runner = TestRunner.withTextOutput;
-    
-    p = mfilename('fullpath');
-    [filepath, ~, ~] = fileparts(p);
-    
-    % Add HTML plugin
-    htmlFolder = fullfile(filepath,'test_results');
-    plugin = TestReportPlugin.producingHTML(htmlFolder);
-    runner.addPlugin(plugin);
-
-    % Add PDF
-    pdfFile = fullfile(filepath,'test_results.pdf');
-    plugin = TestReportPlugin.producingPDF(pdfFile);
-    runner.addPlugin(plugin);
-
-    % Run the tests
-    results = runner.run(suite);
-
+function testIsNotFunctionHandle(testCase)
+    a = 1;
+    eID = 'WecOptLib:Validation:NotFunctionHandle';
+    verifyError(testCase,                                           ...
+                @() WecOptLib.validation.mustBeFunctionHandle(a),   ...
+                eID)
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
@@ -47,4 +33,3 @@ end
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
-

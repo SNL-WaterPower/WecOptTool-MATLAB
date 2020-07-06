@@ -1,31 +1,36 @@
-function results = runTests()
+function plotFreq(device)
+            
+    % Look at first sea state only
 
-    import matlab.unittest.TestRunner;
-    import matlab.unittest.TestSuite;
-    import matlab.unittest.plugins.TestReportPlugin;
+    figure('Name','SimRes.plotFreq')
+    ax(1) = subplot(2,1,1);
+    hold on
+    grid on
+    ax(2) = subplot(2,1,2);
+    hold on
+    grid on
 
-    % Define test suite
-    suite = TestSuite.fromPackage('WecOptLib.tests',    ...
-                                  'IncludingSubpackages', true);
-    
-    % Build the runner
-    runner = TestRunner.withTextOutput;
-    
-    p = mfilename('fullpath');
-    [filepath, ~, ~] = fileparts(p);
-    
-    % Add HTML plugin
-    htmlFolder = fullfile(filepath,'test_results');
-    plugin = TestReportPlugin.producingHTML(htmlFolder);
-    runner.addPlugin(plugin);
+    fns = ["eta", "F0", "u", "Fpto"];
+    vrs = {device.motions(1).eta_fd    ...
+           device.motions(1).F0        ...
+           device.performances(1).u    ...
+           device.performances(1).Fpto};
+    mrks = {'o','.','+','s'};
 
-    % Add PDF
-    pdfFile = fullfile(filepath,'test_results.pdf');
-    plugin = TestReportPlugin.producingPDF(pdfFile);
-    runner.addPlugin(plugin);
+    for ii = 1:length(fns)
 
-    % Run the tests
-    results = runner.run(suite);
+        stem(ax(1),device.motions(1).w, abs(vrs{ii}), mrks{ii},...
+            'DisplayName', fns{ii})
+        stem(ax(2),device.motions(1).w, angle(vrs{ii}), mrks{ii},...
+            'DisplayName', fns{ii})
+    end
+
+    ylabel(ax(1),'Magnitude')
+    ylabel(ax(2),'Angle [rad]')
+    xlabel('Frequency [rad/s]')
+
+    legend(ax(1))
+    linkaxes(ax,'x')
 
 end
 
@@ -47,4 +52,3 @@ end
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
-

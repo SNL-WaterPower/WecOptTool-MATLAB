@@ -1,11 +1,6 @@
-function installNemoh(nemohPath)
-    % Adds Nemoh executables path to WecOptTool
-    %
-    % Args:
-    %     nemohPath (string):
-    %         path to (platform dependent) NEMOH executables
-    %
-    
+function mustBeFunctionHandle(input)
+    % Returns an error if input is not a function handle
+
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
     % U.S. Government retains certain rights in this software.
@@ -26,33 +21,9 @@ function installNemoh(nemohPath)
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    % Check if the a current path is set
-    try
-        oldNemohPath = WecOptLib.utils.readConfig('nemohPath');
-    catch
-        oldNemohPath = "";
+    if ~isa(input, 'function_handle')
+        error('WecOptLib:Validation:NotFunctionHandle',     ...
+              'Input must be a function handle')
     end
     
-    % Update the config file
-    WecOptLib.utils.writeConfig('nemohPath', nemohPath)
-    
-    % Check installation
-    nemohExistFlag = WecOptTool.base.NEMOH.isNemohInPath();
-
-    if nemohExistFlag
-        
-        fprintf('Successfully Installed Nemoh\n');
-        
-    else
-        
-        msg = ['Nemoh not found. Please check the specified path ' ...
-               'and try again. \n'];
-        fprintf(msg);
-        
-        % Revert back to the old config
-        WecOptLib.utils.writeConfig('nemohPath', oldNemohPath)
-        
-    end
-
 end
-

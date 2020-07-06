@@ -11,7 +11,7 @@ find the best possible power capture performance within the system constraints
 (e.g., maximum power take-off force).
 
 The initial release of WecOptTool allows the user to perform design optimization
-studies on the `RM3 point absorber`_ (see the :ref:`user-example` section for 
+studies on the `RM3 point absorber`_ (see the :ref:`optimization` section for 
 further details). Subsequent releases will provide a generalized framework 
 allowing users to consider arbitrary devices of their choosing.
 
