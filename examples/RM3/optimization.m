@@ -70,10 +70,8 @@ WecOptTool.plot.powerPerFreq(bestDevice);
 
 function [fval, device] = myWaveBotObjFun(x, blueprint, seastate)
     
-    % Get frequencies for NEMOH
-    w = seastate.getRegularFrequencies(0.5);
-
     geomMode.type = 'parametric';
+    w = seastate.getRegularFrequencies(0.5);
     geomMode.params = [num2cell(x) {w}];
     cntrlMode.type = 'CC';
 

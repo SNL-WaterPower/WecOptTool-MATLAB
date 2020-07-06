@@ -43,8 +43,27 @@ classdef SeaState < WecOptTool.base.Data
     %        extendFrequencies times the maximum (i.e. max(w)).
     %
     % Note:
-    %    The order of operations (if required) is to resample first, then
-    %    trim the frequencies then extend, finally.
+    %    The order of operations (if required) is to trim the frequencies 
+    %    first, then resample then, finally, extend the frequencies.
+    %
+    % Example:
+    %    Create an array of SeaState objects, with spectra:
+    %
+    %      #. trimmed to include all frequencies containing 99% of the max 
+    %         spectral density
+    %      #. resampled to 5% maximum error in max spectral density
+    %      #. extended so that the maximum frequency is 4 times the 
+    %         trimmed maximum
+    %
+    %    >>> S = WecOptLib.tests.data.example8Spectra();
+    %    >>> SS = WecOptTool.types("SeaState", S,           ...
+    %    ...                       "resampleByError", 0.05, ...
+    %    ...                       "trimFrequencies", 0.01, ...
+    %    ...                       "extendFrequencies", 4);
+    %
+    % Note:
+    %    To create an array of SeaState objects use the
+    %    :mat:func:`+WecOptTool.types` function.
     %
     % Attributes:
     %     S (array of float): spectral density
@@ -60,10 +79,6 @@ classdef SeaState < WecOptTool.base.Data
     %
     % Methods:
     %    struct(): convert to struct
-    %
-    % Note:
-    %    To create an array of SeaState objects see the
-    %    :mat:func:`+WecOptTool.types` function.
     %
     % --
     %
@@ -183,6 +198,11 @@ classdef SeaState < WecOptTool.base.Data
                
             end
                   
+            if isfield(options, "trimFrequencies")
+                S = obj.trimFrequencies(S, options.trimFrequencies);
+                obj.trimLoss = options.trimFrequencies;
+            end
+            
             if isfield(options, "resampleByError")
                 [S, obj.dw] = obj.resampleByError(S,    ...
                                                   options.resampleByError);
@@ -193,11 +213,6 @@ classdef SeaState < WecOptTool.base.Data
                 [S, err] = obj.resampleByStep(S, options.resampleByStep);
                 obj.dw = options.resampleByStep;
                 obj.sampleError = err;
-            end
-            
-            if isfield(options, "trimFrequencies")
-                S = obj.trimFrequencies(S, options.trimFrequencies);
-                obj.trimLoss = options.trimFrequencies;
             end
             
             if isfield(options, "extendFrequencies")
@@ -215,7 +230,7 @@ classdef SeaState < WecOptTool.base.Data
             % Returns all unique frequencies over all sea-states
             %
             % Returns:
-            %     array: sorted unique angular frequencies 
+            %     array: sorted unique angular frequencies [rad / s]
             
             allFreqs = [];
             
@@ -235,7 +250,7 @@ classdef SeaState < WecOptTool.base.Data
             %     dw (float): angular frequency step
             %
             % Returns:
-            %     array: regular angular frequencies 
+            %     array: regular angular frequencies [rad / s]
             
             arguments
                 obj
@@ -284,10 +299,6 @@ classdef SeaState < WecOptTool.base.Data
                 
                 if obj(i).sampleError > eps
                     
-                    if titleChar
-                        titleChar = [titleChar '; '];
-                    end
-                    
                     plot(wMod, SMod, '-o', 'DisplayName', labelMod)
                     addTitle = sprintf('Max Resampling Error: %.2f%%', ...
                                        obj(i).sampleError * 100);
@@ -296,6 +307,10 @@ classdef SeaState < WecOptTool.base.Data
                 end
                 
                 if obj(i).trimLoss > eps
+                                        
+                    if titleChar
+                        titleChar = [titleChar '; '];
+                    end
                     
                     xline(min(wMod), '--',  ...
                           'DisplayName', 'Modified Lower Bound')
@@ -635,9 +650,8 @@ classdef SeaState < WecOptTool.base.Data
             %         Percentage of maximum spectral density
             %
             % Returns:
-            %     S: struct:
-            %         Sea-state struct which conforms to 
-            %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %     struct: Sea-state struct which conforms to 
+            %     :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
             %
             % Example:
             %     Remove frequencies containing less than 1% of the maximum
@@ -679,9 +693,8 @@ classdef SeaState < WecOptTool.base.Data
             %         Number of repetitions of max frequency
             %
             % Returns:
-            %     S: 
-            %         struct: Sea-state struct which conforms to 
-            %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %     struct: Sea-state struct which conforms to 
+            %     :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
             %
             % Example:
             %     Double the frequency range of the given spectrum
@@ -734,11 +747,10 @@ classdef SeaState < WecOptTool.base.Data
             %         Smallest frequency step to test, default = 1e-4
             %
             % Returns:
-            %     S: struct:
-            %         Sea-state struct which conforms to 
-            %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
-            %     dw: array:
-            %         Frequency spacings per spectrum
+            %      :
+            %     - S (struct): Sea-state struct which conforms to 
+            %       :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %     - dw (array): Frequency spacings per spectrum
             
             arguments
                 S {WecOptTool.types.SeaState.checkSpectrum(S)}
@@ -781,12 +793,12 @@ classdef SeaState < WecOptTool.base.Data
             %         Angular frequency step size
             %
             % Returns:
-            %     S: struct:
-            %         Sea-state struct which conforms to 
-            %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
-            %     errors: array:
-            %         error in spectral density (normalised by the
-            %         maximum) per spectrum
+            %      :
+            %     - S (struct): Sea-state struct which conforms to 
+            %       :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %     - errors (array): error in spectral density (normalised 
+            %       by the maximum) per spectrum
+            %
             
             arguments
                 S {WecOptTool.types.SeaState.checkSpectrum(S)}

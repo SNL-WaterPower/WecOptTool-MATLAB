@@ -2,10 +2,38 @@ function c = bisection(f, a, b, options)
     % Bisection method
     %
     % Args:
-    %   f real valued function
-    %   a,b interval boundaries (float) with the property f(a) * f(b) <= 0
-    %   tol tolerance (float)
-    %   nmax maximum number of operations
+    %   f (float): real valued function
+    %   a (float): search space lower boundary
+    %   b (float): search space upper boundary
+    %   tol (optional, float): solution tolerance, default = 1e-10
+    %   nmax (optional, int): maximum number of operations, default = 1e4
+    %
+    % Returns:
+    %   float: root of f
+    %
+    % Note:
+    %     The given interval boundaries must satisfy f(a) * f(b) <= 0
+    %
+
+    % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
+    % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
+    % U.S. Government retains certain rights in this software.
+    %
+    % This file is part of WecOptTool.
+    % 
+    %     WecOptTool is free software: you can redistribute it and/or 
+    %     modify it under the terms of the GNU General Public License as 
+    %     published by the Free Software Foundation, either version 3 of 
+    %     the License, or (at your option) any later version.
+    % 
+    %     WecOptTool is distributed in the hope that it will be useful,
+    %     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    %     GNU General Public License for more details.
+    % 
+    %     You should have received a copy of the GNU General Public 
+    %     License along with WecOptTool.  If not, see 
+    %     <https://www.gnu.org/licenses/>.
     
     arguments
         f {WecOptLib.validation.mustBeFunctionHandle};
@@ -18,7 +46,7 @@ function c = bisection(f, a, b, options)
         options.nmax  {mustBeInteger,   ...
                        mustBePositive,  ...
                        mustBeFinite,    ...
-                       mustBeNonzero} = 1000;
+                       mustBeNonzero} = 1e4;
     end
     
     if f(a) * f(b) > 0
