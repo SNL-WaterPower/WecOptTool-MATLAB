@@ -822,9 +822,6 @@ classdef SeaState < WecOptTool.base.Data
                 % discretisation
                 wRange = wMax - wMin;
                 wIntegerStepMax = wMin + ceil(wRange / dw) * dw;
-                
-                % This approach generates errors at matching discretisation
-                % as samples are shifted
                 wResampled = wMin:dw:wIntegerStepMax;
                 wResampled = wResampled';
 
