@@ -486,32 +486,6 @@ classdef SeaState < WecOptTool.base.Data
                 end
             end
             
-            function result = checkStart(S, idx)
-                
-                try
-                    
-                    dw = uniquetol(diff(S.w), 1e-9);
-                    
-                    if length(dw) > 1
-                        result = 0;
-                        return
-                    end
-                    
-                    result = abs(mod(S.w(1), dw)) < eps;
-                    
-                    if ~result
-                        wID = 'SeaState:checkSpectrum:badStart';
-                        msg = ['First frequency not integer multiple '  ...
-                               'of frequency step'];
-                        warning(wID, msg, idx)
-                    end
-                    
-                catch
-                    result = 0;
-                end
-                
-            end
-            
             inds = 1:length(S);
             pass = 1;
             
@@ -521,7 +495,6 @@ classdef SeaState < WecOptTool.base.Data
             check4 = @(Spect,idx) checkPositive(Spect, idx);
             check5 = @(Spect,idx) checkMonotonic(Spect, idx);
             check6 = @(Spect,idx) checkRegular(Spect, idx);
-            check7 = @(Spect,idx) checkStart(Spect, idx);
             
             pass = pass * sum(arrayfun(check1, S, inds));
             pass = pass * sum(arrayfun(check2, S, inds));
@@ -529,7 +502,6 @@ classdef SeaState < WecOptTool.base.Data
             pass = pass * sum(arrayfun(check4, S, inds));
             pass = pass * sum(arrayfun(check5, S, inds));
             pass = pass * sum(arrayfun(check6, S, inds));
-            pass = pass * sum(arrayfun(check7, S, inds));
             
             if ~pass
                 msg = ['Given spectrum is incorrectly defined. See '    ...
@@ -846,18 +818,19 @@ classdef SeaState < WecOptTool.base.Data
                 wMin = min(S(i).w);
                 wMax = max(S(i).w);
                 
-                % Ensure w is at integer intervals of the step
-                wIntegerStepMin = floor(wMin / dw) * dw;
-                wIntegerStepMax = ceil(wMax / dw) * dw;
-                wResampled = wIntegerStepMin:dw:wIntegerStepMax;
+                % This approach allows zero error at matching 
+                % discretisation
+                wRange = wMax - wMin;
+                wIntegerStepMax = wMin + ceil(wRange / dw) * dw;
+                wResampled = wMin:dw:wIntegerStepMax;
                 wResampled = wResampled';
-                
+
                 SResampled = interp1(S(i).w,        ...
                                      S(i).S,        ...
                                      wResampled,    ...
                                      'linear',      ...
-                                     'extrap');
-                
+                                     'extrap');      
+
                 S(i).w = wResampled;
                 S(i).S = SResampled;
                 
