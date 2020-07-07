@@ -47,19 +47,14 @@ a.delta_Zmax = 1e10;                                          % TODO
 
 %% define sea state of interest
 
-Hm0 = 0.125;
-Tp = (2*pi)/dw;
-gamma = 3.3;
-S = jonswap(a(1).w,[Hm0, Tp, gamma],0);
 
-% make this a regular wave instead
-[~,idx] = min(abs(S.w - 2*pi/Tp));                  % TODO - remove
-Sn = S;
-Sn.S = Sn.S * 0;
-Sn.S(idx) = S.S(idx);
-S = Sn;
-clear Sn
+%% define sea state of interest
 
+A = 0.125/2;
+wp = a.w(6);
+fp = wp/(2*pi);
+Tp = 1/fp; 
+S = WecOptLib.utils.regularWave(w,[A,Tp],0);
 
 %% set up optimization problem
 
