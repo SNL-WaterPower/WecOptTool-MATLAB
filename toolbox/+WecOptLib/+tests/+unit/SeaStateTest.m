@@ -184,7 +184,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.RelativeTolerance
            
             f = @(x) -1 * (x - 2) .^ 2 + 1;
-            S1.w = linspace(1, 3)';
+            S1.w = (1:0.01:3)';
             S1.S = f(S1.w);
             
             result = testCase.SS.getSpecificEnergy(S1, "g", 1, "rho", 1);
@@ -201,7 +201,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.RelativeTolerance
             
             f = @(x) -1 * (x - 2) .^ 2 + 1;
-            S1.w = linspace(1, 3)';
+            S1.w = (1:0.01:3)';
             S1.S = f(S1.w);
             
             S2.w = S1.w;
@@ -220,7 +220,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             import matlab.unittest.constraints.RelativeTolerance
             
             f = @(x) -1 * (x - 2) .^ 2 + 1;
-            S1.w = linspace(1, 3)';
+            S1.w = (1:0.01:3)';
             S1.S = f(S1.w);
             
             S2.w = S1.w;
@@ -238,7 +238,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             
             wMin = 1;
             wMax = 100;
-            w = linspace(wMin, wMax)';
+            w = (wMin:1:wMax)';
             S1.w = w;
             
             spectra = zeros(length(w),1);
@@ -259,7 +259,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             
             wMin = 1;
             wMax = 100;
-            w = linspace(wMin, wMax)';
+            w = (wMin:1:wMax)';
             S1.w = w;
             S1.S = w .* 0;
             
@@ -270,9 +270,9 @@ classdef SeaStateTest < matlab.unittest.TestCase
         
         function testResampleByStep(testCase)
             
-            wMin = 0.001;
+            wMin = 0;
             wMax = 2*pi;
-            w = linspace(wMin, wMax)';
+            w = (wMin:pi/32:wMax)';
             S1.w = w;       
             S1.S = sin(w);
 
@@ -288,7 +288,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
         function testResampleByError(testCase)
             
             f = @(x) -1 * (x - 2) .^ 2 + 1;
-            S1.w = linspace(1, 3)';
+            S1.w = (1:0.1:3)';
             S1.S = f(S1.w);
             
             S2 = testCase.SS.resampleByError(S1, 0.01);

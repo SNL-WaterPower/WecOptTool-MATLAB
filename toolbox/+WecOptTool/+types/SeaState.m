@@ -475,7 +475,8 @@ classdef SeaState < WecOptTool.base.Data
             
             function result = checkRegular(S, idx)
                 try
-                    result = length(uniquetol(diff(S.w), 1e-9)) == 1;
+                    result = length(uniquetol(diff(S.w),    ...
+                                    eps('single'))) == 1;
                     if ~result
                         wID = 'SeaState:checkSpectrum:notRegular';
                         msg = 'Frequency in Spectrum #%i is not regular';
@@ -490,19 +491,19 @@ classdef SeaState < WecOptTool.base.Data
                 
                 try
                     
-                    dw = uniquetol(diff(S.w), 1e-9);
+                    dw = uniquetol(diff(S.w), eps('single'));
                     
                     if length(dw) > 1
                         result = 0;
                         return
                     end
                     
-                    result = abs(mod(S.w(1), dw)) < eps;
+                    result = abs(mod(S.w(1), dw)) < eps('single');
                     
                     if ~result
                         wID = 'SeaState:checkSpectrum:badStart';
-                        msg = ['First frequency not integer multiple '  ...
-                               'of frequency step'];
+                        msg = ['First frequency in Spectrum #%i is not '...
+                               'integer multiple of frequency step'];
                         warning(wID, msg, idx)
                     end
                     
