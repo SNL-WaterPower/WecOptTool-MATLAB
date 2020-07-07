@@ -86,7 +86,7 @@ classdef WaveBot < matlab.mixin.Copyable
             % TODO - move these to general function
             assert(issorted(w));
             dw = diff(w);
-            assert(all(dw - dw(1) < eps*10)); % TODO - not sure why == won't work
+            assert(all(dw - dw(1) < eps*1e3)); % TODO - not sure why == won't work
             assert(w(1) == dw(1));
             assert(iscolumn(w));
             
@@ -315,7 +315,6 @@ classdef WaveBot < matlab.mixin.Copyable
                     pow = 0.5 * Fpto .* conj(u);
                     
                 case 'PS' % -----------------------------------------------
-                    %                     error('not yet implemented') % TODO
                     
                     ps = obj.getPSCoefficients;
                     ps.wave_amp = waveAmp; % TODO
@@ -518,6 +517,11 @@ classdef WaveBot < matlab.mixin.Copyable
                 [], [], [],...
                 qp_options);
             
+%             if exitflag ~= 1      % for debugging
+%                 disp(exitflag)
+%                 disp(output)
+%             end
+            
             % y is a column vector containing [vel; u] of the
             % pseudospectral coefficients
             tmp = reshape(y(1:end-2),[],2);
@@ -530,7 +534,6 @@ classdef WaveBot < matlab.mixin.Copyable
             posFreq = velFreq ./ (1i * obj.w);
             uFreq = ps.m_scale * ps2spec(uhat);
             powFreq = 1/2 * uFreq .* conj(velFreq);
-%             powFreq = 0.5*ps.m_scale*(uhat'*x1hat);
             zFreq = uFreq ./ velFreq;
 
             % find time histories

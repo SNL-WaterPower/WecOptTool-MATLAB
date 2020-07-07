@@ -4,6 +4,17 @@
 % ratio of average power and a polynomial of submerged hull volume. The
 % goal behind this study is to illustrate how the different control types
 % result in different optimal designs.
+%
+% This case study is detailed in the following paper:
+% 
+% @Article{WecDesignOptimizationTool,
+%   author       = {Ryan G. Coe and Giorgio Bacelli and Sterling Olson and 
+%                   Vincent S. Neary and Matthew B. R. Topper},
+%   title        = {A WEC design optimization tool},
+%   date         = {2020-07-07},
+%   journaltitle = {submitted to Journal of Ocean Engineering and Marine 
+%                   Energy},
+% }
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC
 % (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S.
@@ -32,7 +43,7 @@ close all
 
 geomMode = 'parametric';
 dw = 0.3142;
-nf = 2;
+nf = 50;
 w = dw * (1:nf)';
 a = WecOptLib.models.WaveBot('CC',geomMode,w);
 
@@ -44,10 +55,11 @@ fp = wp/(2*pi);
 Tp = 1/fp; 
 S = WecOptLib.utils.regularWave(w,[A,Tp],0);
 
-%%
+%% create set of devices (running hydrodynamics)
 
-rmax = 3;
-x = linspace(0.35,rmax,20);
+rmin = 0.25;
+rmax = 2;
+x = sort([linspace(rmin,rmax,19), 0.88]);
 
 c = repmat(a,[size(x,2),3]);
 
@@ -57,7 +69,7 @@ for jj = 1:length(x)
     c(jj,1).runHydro(y);
 end
 
-%%
+%% replicate devices for different controllers
 
 % P
 c(:,2) = copy(c(:,1));
@@ -69,13 +81,14 @@ end
 c(:,3) = copy(c(:,1));
 for jj = 1:size(c,1)
     c(jj,3).controlType = 'PS';
-    c(jj,3).delta_Fmax = 10e3;
+    c(jj,3).delta_Fmax = 3e10;
+    c(jj,3).delta_Zmax = 0.6;
 end
 
-%%
+%% simulate performance
 
-for ii = 1:size(c,2)
-    for jj = 1:size(c,1)
+for ii = 1:size(c,2)        % for each control type
+    for jj = 1:size(c,1)    % for each geometry
         rng(3)
         r(jj,ii) = c(jj,ii).simPerformance(S);
         r(jj,ii).name = [c(jj,ii).controlType, '_', num2str(x(jj))];
@@ -93,18 +106,13 @@ LB = min(x);
 UB = max(x);
 NONLCON = [];
 opts = optimset('fminbnd');
-opts.UseParallel = false;
+opts.UseParallel = true;
 opts.Display = 'iter';
 opts.PlotFcn = {@optimplotx,@optimplotfval};
-% opts.MaxFunctionEvaluations = 50;
-% opts.OptimalityTolerance = 1e-8;
 
 %% run optimization solver (for each control type)
 
 for ii = 1:size(c,2)
-%     [x_opt(ii), fval(ii), exitflag(ii), output(ii)] = ...
-%         fminbnd(@(x) myWaveBotObjFun(x,c(1,ii),S),...
-%         x0,A,B,Aeq,Beq,LB,UB,NONLCON,opts);
     [x_opt(ii), fval(ii), exitflag(ii), output(ii)] = ...
         fminbnd(@(x) myWaveBotObjFun(x,c(1,ii),S),...
         LB,UB,opts);
@@ -112,49 +120,38 @@ end
 
 %%
 
-figure('position',[0,0,50,100]*10)
+fig = figure('Name','WaveBot_caseB');
+fig.Position = fig.Position .* [1, 1, 1, 1.5];
 
-ax(1) = subplot(4,1,1);
-set(ax(1),'Yscale','log')
-hold on
-grid on
-
-ax(2) = subplot(4,1,2);
-set(ax(2),'Yscale','linear')
-hold on
-grid on
-
-ax(3) = subplot(4,1,3);
-set(ax(3),'Yscale','log')
-hold on
-grid on
-
-ax(4) = subplot(4,1,4);
-set(ax(4),'Yscale','linear')
-hold on
-grid on
+mys = {'log','linear','log','log'};
+for ii = 1:4
+    ax(ii) = subplot(4,1,ii);
+    set(ax(ii),'yscale',mys{ii})
+    grid on
+    hold on
+end
 
 mkrs = {'.','o','s'};
 
 for ii = 1:size(r,2)
-    pow = abs(summary(r(:,ii)).AvgPow);
-    semilogy(ax(1), x, abs(summary(r(:,ii)).AvgPow), 'Marker', mkrs{ii})
     
+    SMRY = summary(r(:,ii));
+    pow = abs(SMRY.AvgPow);
     vol = arrayfun(@(x) r(x,ii).wec.hydro.Vo, 1:length(x))';
-    plot(ax(2), x, vol, 'Marker', mkrs{ii})
-    
-    vel = abs(arrayfun(@(x) r(x,ii).pos(1), 1:length(x)))';
-    semilogy(ax(3), x, vel, 'Marker', mkrs{ii})
-    
+    pos = SMRY.MaxPos;
     obfn = pow ./ (0.88 + x(:)).^3;
-    obfn = obfn / max(obfn);
-    plot(ax(4), x, obfn, 'Marker', mkrs{ii})
+    obfn = obfn;
+    
+    semilogy(ax(1), x, pow, 'Marker', mkrs{ii})
+    plot(ax(2), x, vol, 'Marker', mkrs{ii})
+    semilogy(ax(3), x, pos, 'Marker', mkrs{ii})
+    semilogy(ax(4), x, obfn, 'Marker', mkrs{ii})
 end
 
+% plot vertical lines for optimal designs
 for ii = 1:length(ax)
     set(ax(ii),'ColorOrderIndex',1)
     for jj = 1:length(x_opt)
-        
         plot(ax(ii),x_opt(jj)*ones(2,1),ylim(ax(ii)),'-.')
     end
 end
@@ -162,7 +159,7 @@ end
 ylabel(ax(1),'Avg. pow [W]')
 ylabel(ax(2),'Vol. [m^3]')
 ylabel(ax(3),'Pos. amp. [m]')
-ylabel(ax(4),'Obj. fun. (normalized)')
+ylabel(ax(4),'Obj. fun. [W/m^3]')
 
 set(ax(1:3),'XTickLabel',[])
 
@@ -170,12 +167,14 @@ l1 = legend(ax(1),'CC','P','PS');
 set(l1,'location','southeast')
 xlabel('Outer radius, $r_1$ [m]', 'interpreter','latex')
 linkaxes(ax,'x')
-xlim([0.25,max(x)])
+xlim([0.25, max(x)])
+
 export_fig('../gfx/WaveBot_caseB_results.pdf','-transparent')
 
 %%
 
-figure('position',[0,0,100,14]*10)
+fig = figure('name','WaveBot_caseB_geometrities');
+fig.Position = fig.Position .*[1,1,1.5,0.75];
 ax = gca;
 c(:,1).plot(ax)
 delete(get(gca,'legend'));
@@ -195,7 +194,7 @@ function [fval] = myWaveBotObjFun(x,wecDevice,S)
     simRes = localWec.simPerformance(S);
     
     % objective function value
-    p_bar = sum(real(simRes.pow));      % average power
+    p_bar = sum(real(simRes.pow));     % average power
     fval = 1 * p_bar ./ (0.88 + x).^3; % r1 = 0.88 is the as-built WaveBot
     
 end

@@ -1,6 +1,7 @@
-% Case C This case performs a singke multiobjective optimization study
-% using a PS controller with a constrained maximum force. The free design
-% variables are:
+% Case C
+% This case performs a singke multiobjective optimization study using a PS
+% controller with a constrained maximum force. The free design variables
+% are:
 %
 % r 		outer radius of the hull
 % FuMax 	maximum PTO force
@@ -11,6 +12,17 @@
 % Pbar      average absorbed power
 % volFun    (r_0 + r)^3, where r_0 = 0.88
 % xMax      maximum displacement
+%
+% This case study is detailed in the following paper:
+% 
+% @Article{WecDesignOptimizationTool,
+%   author       = {Ryan G. Coe and Giorgio Bacelli and Sterling Olson and 
+%                   Vincent S. Neary and Matthew B. R. Topper},
+%   title        = {A WEC design optimization tool},
+%   date         = {2020-07-07},
+%   journaltitle = {submitted to Journal of Ocean Engineering and Marine 
+%                   Energy},
+% }
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC
 % (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S.
@@ -39,13 +51,10 @@ close all
 
 geomMode = 'parametric';
 dw = 0.3142;
-nf = 2;
+nf = 50;
 w = dw * (1:nf)';
 a = WecOptLib.models.WaveBot('PS',geomMode,w);
-a.delta_Fmax = 10e3;                                          % TODO
-a.delta_Zmax = 1e10;                                          % TODO
-
-%% define sea state of interest
+a.delta_Zmax = 1e4;
 
 
 %% define sea state of interest
@@ -58,16 +67,16 @@ S = WecOptLib.utils.regularWave(w,[A,Tp],0);
 
 %% set up optimization problem
 
-x0 = 2;
+nvars = 2;
 A = [];
 B = [];
 Aeq = [];
 Beq = [];
-LB = [0.35, 0.5e3];
-UB = [3, 50e3];
+LB = [0.25, 1e2];
+UB = [2, 1e3];
 NONLCON = [];
 opts = optimoptions('paretosearch');
-opts.UseParallel = false;
+opts.UseParallel = true;
 opts.Display = 'iter';
 opts.PlotFcn = @psplotparetof;
 % opts.MaxFunctionEvaluations = 50;
@@ -75,7 +84,6 @@ opts.PlotFcn = @psplotparetof;
 
 %% run optimization solver
 
-nvars = 2;
 rng(3)
 [x,fval,exitflag,output,residuals] = paretosearch(@(x) myWaveBotObjFun(x,a,S),nvars,...
     A,B,Aeq,Beq,LB,UB,NONLCON,opts);
@@ -138,13 +146,14 @@ function [fval] = myWaveBotObjFun(x,wecDevice,S)
     % [r1, r2, d1, d2] (all positive); here we specify only r1
     localWec.runHydro([x(1), 0.35, 0.16, 0.53]);
     
-    localWec.delta_Fmax = x(2);                                          % TODO
-    simRes = localWec.simPerformance(S);
+    localWec.delta_Fmax = x(2);
+    r = localWec.simPerformance(S);
     
     % objective function value
-    p_bar = sum(real(simRes.pow));      % average power
+    SMRY = summary(r);
+    p_bar = SMRY.AvgPow;      % average power
     fval(1) = 1 * p_bar;
     fval(2) = (0.88 + x(1)).^3;
-    fval(3) = sum(abs(simRes.pos(1)));
+    fval(3) = SMRY.MaxPos;
     
 end
