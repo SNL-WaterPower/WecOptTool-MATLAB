@@ -293,7 +293,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             fid = fopen(filePath, 'w');
             
             for line = fileStrings
-                fprintf(fid, line);
+                fprintf(fid, '%s', line);
             end
             
             status=fclose(fid);
