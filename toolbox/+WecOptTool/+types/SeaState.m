@@ -93,7 +93,7 @@ classdef SeaState < WecOptTool.base.Data
     %     mu - spectrum weighting, for arrays only (defaults to 1)
     %
     %  SeaState Methods:
-    %    getAllFrequencies - return unique frequencies overall sea-states
+    %    getAllFrequencies - return unique frequencies over all sea-states
     %    getRegularFrequencies - return regularly spaced frequencies
     %                            covering all sea-states
     %    plot - plot spectra with comparison to base spectra, if different
