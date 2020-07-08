@@ -93,7 +93,7 @@ classdef SeaState < WecOptTool.base.Data
     %     mu - spectrum weighting, for arrays only (defaults to 1)
     %
     %  SeaState Methods:
-    %    getAllFrequencies - return unique frequencies over all sea-states
+    %    getAllFrequencies - return unique frequencies overall sea-states
     %    getRegularFrequencies - return regularly spaced frequencies
     %                            covering all sea-states
     %    plot - plot spectra with comparison to base spectra, if different
@@ -107,12 +107,12 @@ classdef SeaState < WecOptTool.base.Data
     %                                 struct arrays
     %    getRelativeEnergyError - return the relative error in specific
     %                             energy between two spectra struct arrays
-    %    trimFrequencies - removes frequencies below a freshold of spectral
-    %                      density from a spectra struct array
+    %    trimFrequencies - removes frequencies below a threshold of 
+    %                      spectral density from a spectra struct array
     %    extendFrequencies - Add multiples of the maximum frequency to a
     %                        spectra struct array
     %    resampleByError - Resample the given seastate struct based on the 
-    %                      error in spectral density normalised by the 
+    %                      error in spectral density normalized by the 
     %                      maximum per spectrum.
     %    resampleByStep - Resample the given seastate struct using a given 
     %                     frequency step
@@ -546,7 +546,7 @@ classdef SeaState < WecOptTool.base.Data
             %
             % Arguments:
             %    S (struct):
-            %        struct array that satifies the
+            %        struct array that satisfies the
             %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
             %        method
             %    options: name-value pair options. See below.
@@ -584,11 +584,11 @@ classdef SeaState < WecOptTool.base.Data
             %
             % Arguments:
             %    trueS (struct):
-            %        struct array representing the true value and satifies
+            %        struct array representing the true value and satisfies
             %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
             %    approxS (struct):
             %        struct array representing the approximate value and 
-            %        satifies 
+            %        satisfies 
             %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
             %
             % Returns:
@@ -628,11 +628,11 @@ classdef SeaState < WecOptTool.base.Data
             %
             % Arguments:
             %    trueS (struct):
-            %        struct array representing the true value and satifies
+            %        struct array representing the true value and satisfies
             %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
             %    approxS (struct):
             %        struct array representing the approximate value and 
-            %        satifies 
+            %        satisfies 
             %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
             %
             % Returns:
@@ -667,12 +667,12 @@ classdef SeaState < WecOptTool.base.Data
         end
 
         function S = trimFrequencies(S, densityTolerence)
-            % Removes frequencies below a freshold of the maximum spectral 
+            % Removes frequencies below a threshold of the maximum spectral 
             % density, per spectra, of a spectra struct array.
             %
             % Arguments:
             %     S (struct):
-            %         struct array that satifies the
+            %         struct array that satisfies the
             %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
             %         method
             %     densityTolerence (float):
@@ -715,7 +715,7 @@ classdef SeaState < WecOptTool.base.Data
             %
             % Arguments:
             %     S (struct):
-            %         struct array that satifies the
+            %         struct array that satisfies the
             %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
             %         method
             %     nRepeats (int):
@@ -761,17 +761,17 @@ classdef SeaState < WecOptTool.base.Data
                                            targetError, ...
                                            min_dw)
             % Resample the given seastate struct based on the error in
-            % spectral density normalised by the maximum per spectrum.
+            % spectral density normalized by the maximum per spectrum.
             % a maximum error of the maximum spectral density for a spectra
             % struct array.
             %
             % Arguments:
             %     S (struct):
-            %         struct array that satifies the
+            %         struct array that satisfies the
             %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
             %         method
             %     targetError (float):
-            %         Target maximum error in normalised spectral density 
+            %         Target maximum error in normalized spectral density 
             %     min_dw (optional, float):
             %         Smallest frequency step to test, default = 1e-4
             %
@@ -815,7 +815,7 @@ classdef SeaState < WecOptTool.base.Data
             %
             % Arguments:
             %     S (struct):
-            %         struct array that satifies the
+            %         struct array that satisfies the
             %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
             %         method
             %     dw (float):
@@ -825,7 +825,7 @@ classdef SeaState < WecOptTool.base.Data
             %      :
             %     - S (struct): Sea-state struct which conforms to 
             %       :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
-            %     - errors (array): error in spectral density (normalised 
+            %     - errors (array): error in spectral density (normalized 
             %       by the maximum) per spectrum
             %
             
