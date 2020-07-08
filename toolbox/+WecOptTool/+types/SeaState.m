@@ -391,6 +391,8 @@ classdef SeaState < WecOptTool.base.Data
             %      #. Field w is positive
             %      #. Field w is monotonic
             %      #. Field w is regular
+            %      #. The first entry of field w is an integer multiple of 
+            %         the freqency step
             %
             %
             % Example:

@@ -294,7 +294,7 @@ value is taken:
     :lineno-start: 80
 
 .. note::
-    **Objective function:** The chosen objective function in|optimization.m|_ 
+    **Objective function:** The chosen objective function in |optimization.m|_ 
     can be altered to better approximate a more meaningful objective (e.g., 
     levelized cost of energy).
 

@@ -202,28 +202,16 @@ replace slashes (`/`) in paths with backslashes (`\ `).
 
 1. Install [Anaconda Python](https://www.anaconda.com/distribution/).
 
-2. Download sphixcontrib-versioning (from [H0R5E](
-   https://github.com/H0R5E/sphinxcontrib-versioning)):
-   
-   ```
-   > git clone --single-branch --branch v1.8.5_support https://github.com/H0R5E/sphinxcontrib-versioning.git <path/to/sphinxcontrib-versioning>
-   ```
-   Replace `<path/to/sphinxcontrib-versioning>` with a path of your choosing.
-
-3. Create the Sphinx environment:
+2. Create the Sphinx environment:
    
    ```
    > conda create -c conda-forge -n _sphinx click colorama colorclass future pip "sphinx=1.8.5" sphinx_rtd_theme 
    > activate _sphinx
-   (_sphinx) > pip install sphinxcontrib-matlabdomain
-   (_sphinx) > cd path/to/sphinxcontrib-versioning
-   (_sphinx) > pip install -e .
+   (_sphinx) > pip install https://github.com/H0R5E/sphinxcontrib-versioning/archive/v1.8.5_support.zip
+   (_sphinx) > pip install git+https://github.com/H0R5E/matlabdomain.git/@function_arguments#egg=matlabdomain
    (_sphinx) > conda deactivate
    >
    ```
-
-> :warning: sphinxcontrib-versioning is installed in development mode, so 
-  **do not delete** the folder where it is stored.
 
 #### Testing the Current Branch
 
