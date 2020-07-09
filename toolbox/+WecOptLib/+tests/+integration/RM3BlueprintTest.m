@@ -41,7 +41,6 @@ function testVerify_damping(testCase)
     testCase.applyFixture(PathFixture(addFolder));
 
     S = WecOptLib.tests.data.exampleSpectrum();
-    [S.w, S.S] = WecOptLib.utils.subSampleFreqs(S);
     SS = WecOptTool.types("SeaState", S);
     
     blueprint = RM3();
@@ -66,7 +65,6 @@ end
 % SS = load('Y:\WecOptTool\toolbox\+WecOptLib\+tests\+data\sea-states.mat');
 % 
 % %S.ph = rand(length(S.w),1)* 2 * pi;
-% %[S.w, S.S] = WecOptLib.utils.subSampleFreqs(S);
 % RM3Device = WecOptLib.models.RM3DeviceModel();
 % WECpow = RM3Device.getPower(S,'P','scalar',1);
 % expSol = -1.349990052717686e+06;
@@ -83,8 +81,7 @@ function testVerify_PS(testCase)
     testCase.applyFixture(PathFixture(addFolder));
 
     S = WecOptLib.tests.data.exampleSpectrum();
-    [S.w, S.S] = WecOptLib.utils.subSampleFreqs(S);
-    SS = WecOptTool.types("SeaState", S);
+    SS = WecOptTool.types("SeaState", S, "resampleByError", 0.08);
     
     blueprint = RM3();
             

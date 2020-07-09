@@ -16,8 +16,9 @@ RM3Blueprint = RM3();
 % Or load an example with multiple sea-states (8 differing spectra)
 S = WecOptLib.tests.data.example8Spectra();
 
-% Now store the sea-state in a SeaState data type
-SS = WecOptTool.types("SeaState", S);
+% Now store the sea-state in a SeaState data type and trim off frequencies
+% that have less that 1% of the max spectral density
+SS = WecOptTool.types("SeaState", S, "trimFrequencies", 0.01);
 
 %% Optimization Setup
 
@@ -67,10 +68,11 @@ WecOptTool.plot.powerPerFreq(bestDevice);
 % This can take any form that complies with the requirements of the MATLAB
 % optimization functions
 
-function [fval] = myWaveBotObjFun(x, blueprint, seastate)
+function [fval, device] = myWaveBotObjFun(x, blueprint, seastate)
     
     geomMode.type = 'parametric';
-    geomMode.params = [num2cell(x) {seastate 0.5}];
+    w = seastate.getRegularFrequencies(0.5);
+    geomMode.params = [num2cell(x) {w}];
     cntrlMode.type = 'CC';
 
     device = blueprint.makeDevices(geomMode, cntrlMode);
