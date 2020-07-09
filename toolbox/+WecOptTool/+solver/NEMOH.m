@@ -278,7 +278,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             for i = 1:nBody
                 imesh = meshes(i);
                 meshFileName = string(imesh.name) + ".dat";
-                meshFilePath = ".\\mesh\\" + meshFileName;
+                meshFilePath = fullfile('.','mesh',meshFileName);
                 bodyStrings = obj.getCalBody(i,                         ...
                                              meshFilePath,              ...
                                              height(imesh.nodes),       ...
@@ -293,7 +293,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             fid = fopen(filePath, 'w');
             
             for line = fileStrings
-                fprintf(fid, line);
+                fprintf(fid, '%s', line);
             end
             
             status=fclose(fid);

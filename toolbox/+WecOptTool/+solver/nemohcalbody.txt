@@ -1,5 +1,5 @@
 --- Body %i ------------------------------------------------------------------
-%s ! Name of mesh file
+'%s' ! Name of mesh file
 %-12i %-12i  ! Number of points and number of panels
 6                          ! Number of degrees of freedom
 1 1. 0. 0. 0. 0. 0.        ! Surge
