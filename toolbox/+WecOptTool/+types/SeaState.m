@@ -66,15 +66,18 @@ classdef SeaState < WecOptTool.base.Data
     %    :mat:func:`+WecOptTool.types` function.
     %
     % Attributes:
-    %     S (array of float): spectral density
-    %     w (array of float): angular frequency
-    %     baseS (array of float): unmodified spectral density
-    %     basew (array of float): unmodified angular frequency
-    %     dw (float): angular frequency step
+    %     S (array of float): spectral density [m\ :sup:`2` s/rad]
+    %     w (array of float): angular frequency [rad / s]
+    %     baseS (array of float):
+    %         unmodified spectral density [m\ :sup:`2` s/rad]
+    %     basew (array of float): unmodified angular frequency [rad / s]
+    %     dw (float): angular frequency step [rad / s]
     %     sampleError (float): 
     %         maximum sampling error as percentage of max(S) 
     %     trimLoss (float):
-    %         error due to range trimming as percentage of max(S) 
+    %         error due to range trimming as percentage of max(S)
+    %     specificEnergy (float):
+    %         the specific energy of the spectra [J / m\ :sup:`2`]
     %     mu (float): spectrum weighting, for arrays only  (defaults to 1)
     %
     % Methods:
@@ -89,7 +92,8 @@ classdef SeaState < WecOptTool.base.Data
     %     basew - unmodified angular frequency
     %     dw - angular frequency step
     %     sampleError - maximum sampling error as percentage of max(S) 
-    %     trimLoss - error due to range trimming as percentage of max(S) 
+    %     trimLoss - error due to range trimming as percentage of max(S)
+    %     specificEnergy - the specific energy of the spectra
     %     mu - spectrum weighting, for arrays only (defaults to 1)
     %
     %  SeaState Methods:
@@ -147,6 +151,7 @@ classdef SeaState < WecOptTool.base.Data
         dw
         sampleError
         trimLoss
+        specificEnergy
     end
     
     properties (GetAccess=protected)
@@ -223,6 +228,7 @@ classdef SeaState < WecOptTool.base.Data
             
             obj.w = S.w;
             obj.S = S.S;
+            obj.specificEnergy = obj.getSpecificEnergy(S);
             
         end
         
@@ -392,7 +398,7 @@ classdef SeaState < WecOptTool.base.Data
             %      #. Field w is monotonic
             %      #. Field w is regular
             %      #. The first entry of field w is an integer multiple of 
-            %         the freqency step
+            %         the frequency step
             %
             %
             % Example:
@@ -563,6 +569,15 @@ classdef SeaState < WecOptTool.base.Data
             %
             % Returns:
             %     array: specify energy per spectra [J / m\ :sup:`2`]
+            %
+            % Example:
+            %
+            %     >>> import WecOptTool.types.SeaState
+            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> e = SeaState.getSpecificEnergy(S);
+            %     >>> disp(e)
+            %        4.0264e+04
+            %
             
             arguments
                 S {WecOptTool.types.SeaState.checkSpectrum(S)}
@@ -595,6 +610,18 @@ classdef SeaState < WecOptTool.base.Data
             %
             % Returns:
             %     array: absolute error per spectrum [m\ :sup:`2` s/rad]
+            %
+            % Example:
+            %     Find the maximum absolute error in spectral density
+            %     in a spectrum after resampling
+            %
+            %     >>> import WecOptTool.types.SeaState
+            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> newS = SeaState.resampleByStep(S, 0.2);
+            %     >>> error = SeaState.getMaxAbsoluteDensityError(S, newS);
+            %     >>> disp(error)
+            %         0.9136
+            %
             
             arguments
                 trueS {WecOptTool.types.SeaState.checkSpectrum(trueS)}
@@ -639,6 +666,18 @@ classdef SeaState < WecOptTool.base.Data
             %
             % Returns:
             %     array: relative error per spectrum
+            %
+            % Example:
+            %     Find the relative error in specific energy of a spectrum 
+            %     after resampling
+            %
+            %     >>> import WecOptTool.types.SeaState
+            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> newS = SeaState.resampleByStep(S, 0.2);
+            %     >>> error = SeaState.getRelativeEnergyError(S, newS);
+            %     >>> disp(error)
+            %         0.0010
+            %
             
             arguments
                 trueS {WecOptTool.types.SeaState.checkSpectrum(trueS)}
@@ -650,19 +689,8 @@ classdef SeaState < WecOptTool.base.Data
             
             import WecOptTool.types.SeaState
             
-            for i = 1:length(trueS)
-                
-                interpS(i).w = trueS(i).w;
-                interpS(i).S = interp1(approxS(i).w, ...
-                                       approxS(i).S, ...
-                                       trueS(i).w,     ...
-                                       'linear',       ...
-                                       'extrap');
-                                   
-            end
-                  
             baseEnergy = SeaState.getSpecificEnergy(trueS);
-            interpEnergy = SeaState.getSpecificEnergy(interpS);
+            interpEnergy = SeaState.getSpecificEnergy(approxS);
 
             errors = abs(interpEnergy ./ baseEnergy - 1);
             
@@ -782,6 +810,19 @@ classdef SeaState < WecOptTool.base.Data
             %     - S (struct): Sea-state struct which conforms to 
             %       :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
             %     - dw (array): Frequency spacings per spectrum
+            %
+            % Example:
+            %     Resample such that the maximum absolute error in 
+            %     spectral density is less that 5% of it's original
+            %     maximum
+            %
+            %     >>> import WecOptTool.types.SeaState
+            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> newS = SeaState.resampleByError(S, 0.05);
+            %     >>> error = SeaState.getMaxAbsoluteDensityError(S, newS);
+            %     >>> disp(error / max(S.S))
+            %         0.0500
+            %
             
             arguments
                 S {WecOptTool.types.SeaState.checkSpectrum(S)}
@@ -829,6 +870,16 @@ classdef SeaState < WecOptTool.base.Data
             %       :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
             %     - errors (array): error in spectral density (normalized 
             %       by the maximum) per spectrum
+            %
+            % Example:
+            %     Resample using a fixed angular frequency step of 0.2
+            %
+            %     >>> import WecOptTool.types.SeaState
+            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> newS = SeaState.resampleByStep(S, 0.2);
+            %     >>> dw = uniquetol(diff(newS.w), eps('single'));
+            %     >>> disp(dw)
+            %         0.2000
             %
             
             arguments
