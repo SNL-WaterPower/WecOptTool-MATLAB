@@ -23,22 +23,20 @@ example considers the DOE Reference Model 3 (RM3_) device.
 
    </details></br>
 
-The general concept of WecOptTool is illustrated in the diagram below. In the 
-upper left-hand corner, an optimization algorithm controls the selection of a 
-set of design variables. In this diagram, some geometric design variables, 
-:math:`r_1, r_2, d_1, d_2`, are considered along with constraints on the power 
-take-off (PTO) max force, :math:`F_{max}`, and max stroke :math:`\Delta 
-x_{max}` and an operational constraint, :math:`H_{s,max}`. The device defined 
-by these design variables is passed to the grey *evaluation* block. Here, 
-Nemoh_ is used to compute the linear wave-body interaction properties using the 
-boundary element method (BEM). Next, using these properties and some set of sea 
-states, one of three controllers (``ProportionalDamping``, 
-``ComplexConjugate``, ``PseudoSpectral``) are used to compute the resulting 
-dynamics. These dynamics and some model for cost (e.g., based on the size 
-dimensions and the capabilities of the PTO) can be combined to produce an 
-objective function, which is returned to the optimization solver. 
+The general concept of WecOptTool is illustrated in the diagram below organized into three columns. 
 
-.. image:: /_static/WecOptTool_algorithmDiagram.svg
+    * **User Inputs** (Green) - aspects of the tool that the user can interact with
+    * **Data Classes** (Blue) - objects used to store and transfer information within a study
+    * **Solvers** (Yellow) - physics models and optimization algorithms that process data
+	
+To run WecOptTool the user will need to define each of the six input blocks in the User Inputs column. For the RM3 the Geometry will be defined by a mesh and design variables (:math:`r_1, r_2, d_1, d_2`) which refer to the spar/ float radius and distance between the surface water level and the distance between the two boides. In the Power Take Off (PTO) input the user will define constraints on the PTO such as max force, :math:`F_{max}`, and max stroke :math:`\Delta 
+x_{max}` and an operational constraint, :math:`H_{s,max}`.). Lastly, the kinematics will define how the two bodies of the RM3 move relative to the resource and relative degrees of freedom. 
+
+Next, the user will choose one of three controllers to compute the resulting dynamics(``ProportionalDamping``, ``ComplexConjugate``, ``PseudoSpectral``). The Sea States input block for the RM3 may made up of a single spctrum or multiple spectra. Lastly, the user will need to determine some objective function of interest for the device being studied.
+
+WecOptTool will use the User inputs to build the Data Classes and pass the information to the Solvers. The Hydrodynamics Solver uses Nemoh_ to compute the linear wave-body interaction properties using the boundary element method (BEM). The Optimal Control Solver will take the Data Classes to return device results for the given controller and sea state. This output paired with some cost proxy from the device can be used to evalute the objective function inside the Optimization Routine.
+
+.. image:: /_static/WecOptToolFlowChart.svg
    :alt: Conceptual illustration of WecOptTool functionality
 
 In WecOptTool, this process is executed by applying the following steps:
