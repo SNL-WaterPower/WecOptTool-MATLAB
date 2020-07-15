@@ -29,19 +29,19 @@ The general concept of WecOptTool is illustrated in the diagram below organized 
     * **Solvers** (Yellow) - physics models and optimization algorithms that process data
 	
 To run WecOptTool the user will need to define each of the six input blocks in the User Inputs column.
-For the RM3 the Geometry will be defined by a mesh and design variables (:math:`r_1, r_2, d_1, d_2`) which refer to the spar/ float radius and distance between the surface water level and the distance between the two boides.
-In the Power Take Off (PTO) input the user will define constraints on the PTO such as max force, :math:`F_{max}`, and max stroke :math:`\Delta 
+For the RM3, the Geometry will be defined by a mesh and design variables (:math:`r_1, r_2, d_1, d_2`), which refer to the spar/float radius and distance between the surface water level and the distance between the two boides.
+In the Power Take Off (PTO) input, the user will define constraints on the PTO such as max force, :math:`F_{max}`, and max stroke :math:`\Delta 
 x_{max}` and an operational constraint, :math:`H_{s,max}`.).
 Lastly, the kinematics will define how the two bodies of the RM3 move relative to the resource and relative degrees of freedom. 
 
 Next, the user will choose one of three controllers to compute the resulting dynamics(``ProportionalDamping``, ``ComplexConjugate``, ``PseudoSpectral``).
 The Sea States input block for the RM3 may made up of a single spctrum or multiple spectra.
-Lastly, the user will need to determine some objective function of interest for the device being studied.
+Finally, the user will need to determine some objective function of interest for the device being studied.
 
-WecOptTool will use the User inputs to build the Data Classes and pass the information to the Solvers.
-The Hydrodynamics Solver uses Nemoh_ to compute the linear wave-body interaction properties using the boundary element method (BEM).
+WecOptTool will use the User inputs to build a set of Data Classes and pass the information to the Solvers.
+The Hydrodynamics Solver currently uses Nemoh_ to compute the linear wave-body interaction properties using the boundary element method (BEM).
 The Optimal Control Solver will take the Data Classes to return device results for the given controller and sea state.
-This output paired with some cost proxy from the device can be used to evalute the objective function inside the Optimization Routine.
+This output, paired with some cost proxy from the device, can be used to evaluate the objective function inside the Optimization Routine.
 
 .. image:: /_static/WecOptToolFlowChart.svg
    :alt: Conceptual illustration of WecOptTool functionality
