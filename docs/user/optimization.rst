@@ -7,9 +7,8 @@ Optimizing an Existing WEC Model
 Overview
 ========
 
-This section explains and expands upon the |optimization.m|_ example file 
-provided in the ``examples/RM3`` directory of the WecOptTool source code. This 
-example considers the DOE Reference Model 3 (RM3_) device. 
+This section explains and expands upon the |optimization.m|_ example file provided in the ``examples/RM3`` directory of the WecOptTool source code.
+This example considers the DOE Reference Model 3 (RM3_) device. 
 
 .. raw:: html
 
@@ -29,12 +28,20 @@ The general concept of WecOptTool is illustrated in the diagram below organized 
     * **Data Classes** (Blue) - objects used to store and transfer information within a study
     * **Solvers** (Yellow) - physics models and optimization algorithms that process data
 	
-To run WecOptTool the user will need to define each of the six input blocks in the User Inputs column. For the RM3 the Geometry will be defined by a mesh and design variables (:math:`r_1, r_2, d_1, d_2`) which refer to the spar/ float radius and distance between the surface water level and the distance between the two boides. In the Power Take Off (PTO) input the user will define constraints on the PTO such as max force, :math:`F_{max}`, and max stroke :math:`\Delta 
-x_{max}` and an operational constraint, :math:`H_{s,max}`.). Lastly, the kinematics will define how the two bodies of the RM3 move relative to the resource and relative degrees of freedom. 
+To run WecOptTool the user will need to define each of the six input blocks in the User Inputs column.
+For the RM3 the Geometry will be defined by a mesh and design variables (:math:`r_1, r_2, d_1, d_2`) which refer to the spar/ float radius and distance between the surface water level and the distance between the two boides.
+In the Power Take Off (PTO) input the user will define constraints on the PTO such as max force, :math:`F_{max}`, and max stroke :math:`\Delta 
+x_{max}` and an operational constraint, :math:`H_{s,max}`.).
+Lastly, the kinematics will define how the two bodies of the RM3 move relative to the resource and relative degrees of freedom. 
 
-Next, the user will choose one of three controllers to compute the resulting dynamics(``ProportionalDamping``, ``ComplexConjugate``, ``PseudoSpectral``). The Sea States input block for the RM3 may made up of a single spctrum or multiple spectra. Lastly, the user will need to determine some objective function of interest for the device being studied.
+Next, the user will choose one of three controllers to compute the resulting dynamics(``ProportionalDamping``, ``ComplexConjugate``, ``PseudoSpectral``).
+The Sea States input block for the RM3 may made up of a single spctrum or multiple spectra.
+Lastly, the user will need to determine some objective function of interest for the device being studied.
 
-WecOptTool will use the User inputs to build the Data Classes and pass the information to the Solvers. The Hydrodynamics Solver uses Nemoh_ to compute the linear wave-body interaction properties using the boundary element method (BEM). The Optimal Control Solver will take the Data Classes to return device results for the given controller and sea state. This output paired with some cost proxy from the device can be used to evalute the objective function inside the Optimization Routine.
+WecOptTool will use the User inputs to build the Data Classes and pass the information to the Solvers.
+The Hydrodynamics Solver uses Nemoh_ to compute the linear wave-body interaction properties using the boundary element method (BEM).
+The Optimal Control Solver will take the Data Classes to return device results for the given controller and sea state.
+This output paired with some cost proxy from the device can be used to evalute the objective function inside the Optimization Routine.
 
 .. image:: /_static/WecOptToolFlowChart.svg
    :alt: Conceptual illustration of WecOptTool functionality
@@ -45,10 +52,8 @@ In WecOptTool, this process is executed by applying the following steps:
 #. Create one or many Devices using the Blueprint
 #. Examine the performance each Device object for a given seastate
 
-The remainder of this page will illustrate (using the |optimization.m|_ 
-example) how this process is applied to a co-optimisation problem. For more 
-information about the :mat:class:`~+WecOptTool.Blueprint` and 
-:mat:class:`~+WecOptTool.Device` classes see the :ref:`model` and :ref:`api` 
+The remainder of this page will illustrate (using the |optimization.m|_ example) how this process is applied to a co-optimisation problem.
+For more information about the :mat:class:`~+WecOptTool.Blueprint` and :mat:class:`~+WecOptTool.Device` classes see the :ref:`model` and :ref:`api` 
 sections. 
 
 Create an RM3 object
@@ -66,10 +71,8 @@ initialize:
 Define a seastate
 =================
 
-WecOptTool can simulate single or multiple spectra sea states, where weightings
-can be provided to indicate the relative likelihood of each spectra. The 
-following lines from |optimization.m|_ provide means of using the WAFO_ MATLAB 
-toolbox or preset spectra from WecOptTool.
+WecOptTool can simulate single or multiple spectra sea states, where weightings can be provided to indicate the relative likelihood of each spectra.
+The following lines from |optimization.m|_ provide means of using the WAFO_ MATLAB toolbox or preset spectra from WecOptTool.
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -77,8 +80,7 @@ toolbox or preset spectra from WecOptTool.
     :linenos:
     :lineno-start: 8
 
-Spectra are formatted following the convention of the WAFO_ MATLAB toolbox, but 
-can be generated in via any means (e.g., from buoy measurements) as long as the 
+Spectra are formatted following the convention of the WAFO_ MATLAB toolbox, but can be generated in via any means (e.g., from buoy measurements) as long as the 
 structure includes the ``S.S``, ``S.w``, and ``S.phi`` fields.
 
 .. code:: matlab
@@ -97,8 +99,8 @@ structure includes the ``S.S``, ``S.w``, and ``S.phi`` fields.
         note: 'Bretschneider, Hm0 = 4, Tp = 5'
         date: '25-Mar-2020 13:08:28'
 
-In the active code above from |optimization.m|_, there are eight spectra loaded into 
-a |struct array|_. These can be plotted using standard MATLAB commands.
+In the active code above from |optimization.m|_, there are eight spectra loaded into a |struct array|_.
+These can be plotted using standard MATLAB commands.
 
 .. code:: matlab
 
@@ -123,23 +125,19 @@ The desired spectrum or spectra must now be converted into a
     :linenos:
     :lineno-start: 19
 
-The :mat:func:`+WecOptTool.types` function is the preferred method for creating 
-data type object arrays. The :mat:class:`~+WecOptTool.+types.SeaState` class 
-allows the user to manipulate the given spectra to the requirements of the 
-experiment. Automatically, the weighting parameter ``mu`` will be set to unity 
-when multiple sea-states are given with ``mu`` undefined. In this example, 
-frequencies that have less than 1% of the maximum spectral density are also 
-removed, (using the ``"trimFrequencies"`` option) to increase the speed of 
-computation with minimal loss of accuracy. See the 
-:mat:class:`~+WecOptTool.+types.SeaState` documentation for all available 
-options.
+The :mat:func:`+WecOptTool.types` function is the preferred method for creating data type object arrays.
+The :mat:class:`~+WecOptTool.+types.
+SeaState` class allows the user to manipulate the given spectra to the requirements of the experiment. Automatically, the weighting parameter ``mu`` will be set to unity when multiple sea-states are given with ``mu`` undefined.
+In this example, frequencies that have less than 1% of the maximum spectral density are also removed, (using the ``"trimFrequencies"`` option) to increase the speed of computation with minimal loss of accuracy.
+See the :mat:class:`~+WecOptTool.+types.SeaState` documentation for all available options.
 
 Create an objective function
 ============================
 
-Next, we create the objective function we wish to minimise. Note, this
-function must be defined at the bottom of the script, although we will use
-it above. The full function is as follows:
+Next, we create the objective function we wish to minimise.
+Note, this function must be defined at the bottom of the script, although we will use
+it above.
+The full function is as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -158,30 +156,23 @@ going to take the form::
 
     function result = myObjFun(x, blueprint, seastate)
 
-where ``x`` is the solution to be tested, ``blueprint`` is a Blueprint subclass
-object and ``seastate`` is a SeaState data type object. Although in most cases
-only ``x`` will vary, the other inputs will be required within the optimization
+where ``x`` is the solution to be tested, ``blueprint`` is a Blueprint subclass object and ``seastate`` is a SeaState data type object.
+Although in most cases only ``x`` will vary, the other inputs will be required within the optimization
 function and can't be accessed through the global workspace.
 
 Define design variables
 -----------------------
 
-As shown in the diagram below, for RM3 study considered in |optimization.m|_ 
-the design variables are the radius of the surface float, ``r1``, the radius of 
-the heave plate, ``r2``, the draft of the surface float, ``d1``, and the depth 
-of the heave plate, ``d2``, such that ``x = [r1, r2, d1, d2]``. The 
-optimization algorithm will attempt to find the values of ``x`` that minimize 
-the objective function. 
+As shown in the diagram below, for RM3 study considered in |optimization.m|_ the design variables are the radius of the surface float, ``r1``, the radius of 
+the heave plate, ``r2``, the draft of the surface float, ``d1``, and the depth of the heave plate, ``d2``, such that ``x = [r1, r2, d1, d2]``.
+The optimization algorithm will attempt to find the values of ``x`` that minimize the objective function. 
 
 .. image:: /_static/example_rm3Parametric.svg
    :width: 400pt
    :alt: RM3 device parametric dimensions
 
-In WecOptTool, design options for geometry and controllers are supplied in 
-`struct arrays <https://uk.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html>`_ 
-using the field ``type`` to define which option is desired and ``params`` to 
-supply the chosen option with it's required parameters, in a cell array. The 
-``'parametric'`` option is defined as follows:
+In WecOptTool, design options for geometry and controllers are supplied in `struct arrays <https://uk.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html>`_ using the field ``type`` to define which option is desired and ``params`` to supply the chosen option with it's required parameters, in a cell array.
+The ``'parametric'`` option is defined as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -189,13 +180,8 @@ supply the chosen option with it's required parameters, in a cell array. The
     :linenos:
     :lineno-start: 73
 
-The parametric option requires 5 arguments, the geometry design variables, 
-``r1, r2, d1, d2``, and a representative set of angular frequencies to be 
-calculated by NEMOH. The design variables will be passed by the optimisation 
-routine, while the frequencies can be extracted from the given 
-:mat:class:`~+WecOptTool.+types.SeaState` object using its 
-:mat:meth:`~+WecOptTool.+types.SeaState.getRegularFrequencies` method, which 
-provides regularly spaced frequencies covering all spectra in the object array. 
+The parametric option requires 5 arguments, the geometry design variables, ``r1, r2, d1, d2``, and a representative set of angular frequencies to be calculated by NEMOH.
+The design variables will be passed by the optimisation routine, while the frequencies can be extracted from the given :mat:class:`~+WecOptTool.+types.SeaState` object using its :mat:meth:`~+WecOptTool.+types.SeaState.getRegularFrequencies` method, which provides regularly spaced frequencies covering all spectra in the object array. 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -208,18 +194,14 @@ Add a controller
 
 In the RM3 example, three types of controllers are defined:
 
- - **Proportional Damping** (``'P'``): Resistive damping (i.e., a proportional 
-   feedback on velocity) (see, e.g., [Falnes]_). Here, the power take-off (PTO) 
-   force is set as
+ - **Proportional Damping** (``'P'``): Resistive damping (i.e., a proportional feedback on velocity) (see, e.g., [Falnes]_). Here, the power take-off (PTO) force is set as
 
    .. math::
      F_u(\omega) = -B_{PTO}(\omega)u(\omega)
 
-   where :math:`B_{PTO}` is a constant chosen to maximize absorbed power and 
-   :math:`u(\omega)` is the velocity. |br| |br|
+   where :math:`B_{PTO}` is a constant chosen to maximize absorbed power and :math:`u(\omega)` is the velocity. |br| |br|
    
- - **Complex Conjugate** (``'CC'``): Optimal power absorption through impedance 
-   matching (see, e.g., [Falnes]_). The intrinsic impedance is given by 
+ - **Complex Conjugate** (``'CC'``): Optimal power absorption through impedance matching (see, e.g., [Falnes]_). The intrinsic impedance is given by 
 
    .. math::
     Z_i(\omega) = B(\omega) + i \left( \omega{}(m + A(\omega)) - \frac{K_{HS}}{\omega}\right) ,
@@ -276,14 +258,10 @@ device with the given :mat:class:`~+WecOptTool.+types.SeaState` object.
 Define the objective function value
 -----------------------------------
 
-The final step is to use data stored in the device to define the objective 
-function value. The :mat:class:`~+WecOptTool.Device` definition gives a full 
-list of the data available in the device, but for this case 'aggregated 
-results' found in the :mat:attr:`~+WecOptTool.Device.aggregation` property 
-(which is populated by a user defined callback) are used. In |RM3.m|_ the 
-maximum absorbed power across all spectra in the given seastate is calculated 
-and added as ``pow``. To make a minimisation problem, the negation of this 
-value is taken: 
+The final step is to use data stored in the device to define the objective function value.
+The :mat:class:`~+WecOptTool.Device` definition gives a full list of the data available in the device, but for this case 'aggregated results' found in the :mat:attr:`~+WecOptTool.Device.aggregation` property (which is populated by a user defined callback) are used.
+In |RM3.m|_ the maximum absorbed power across all spectra in the given seastate is calculated and added as ``pow``.
+To make a minimisation problem, the negation of this value is taken: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -299,11 +277,9 @@ value is taken:
 Set optimization solver
 =======================
 
-MATLAB's `fmincon <https://uk.mathworks.com/help/optim/ug/fmincon.html>`_ 
-optimization solver is used in |optimization.m|_.
+MATLAB's `fmincon <https://uk.mathworks.com/help/optim/ug/fmincon.html>`_ optimization solver is used in |optimization.m|_.
 
-The initial values, ``x0``, lower bounds, ``lb``, and upper bounds, 
-``ub`` of the design variables can be set as follows.
+The initial values, ``x0``, lower bounds, ``lb``, and upper bounds, ``ub`` of the design variables can be set as follows.
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -320,16 +296,12 @@ Options can also be supplied for fmincon:
     :lineno-start: 30
 
 .. note::
-    The ``MaxFunctionEvaluations`` is set to 5 in |optimization.m|_ to permit 
-    relatively quick runs, but can be increased to allow for a potentially 
-    better solution (with the other options left as-is, this should require 150 
-    function evaluations).
+    The ``MaxFunctionEvaluations`` is set to 5 in |optimization.m|_ to permit relatively quick runs, but can be increased to allow for a potentially better solution (with the other options left as-is, this should require 150 function evaluations).
 
 .. image:: /_static/example_optimplotfval.svg
    :alt: Progression of objective function value for RM3 example
 
-In order to pass the above options, some dummy values must also be supplied for
-other arguments required by fmincon:
+In order to pass the above options, some dummy values must also be supplied for other arguments required by fmincon:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -340,11 +312,8 @@ other arguments required by fmincon:
 Run study and view results
 ==========================
 
-Before using the objective function, the inputs must be simplified to allow 
-fmincon to just pass the design variables. To do this an `anonymous function 
-<https://uk.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html>`_ 
-is defined, which requires the design variables as input and fixes the value of 
-the Blueprint and SeaState object inputs: 
+Before using the objective function, the inputs must be simplified to allow fmincon to just pass the design variables.
+To do this an `anonymous function <https://uk.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html>`_ is defined, which requires the design variables as input and fixes the value of the Blueprint and SeaState object inputs: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -360,8 +329,7 @@ The study can be executed by calling fmincon:
     :linenos:
     :lineno-start: 52
 
-Once the calculation is complete, the ``x`` and ``fval`` variables show that 
-the study has produced the following design: 
+Once the calculation is complete, the ``x`` and ``fval`` variables show that the study has produced the following design: 
 
 * r1: 5 [m]
 * r2: 7.5 [m]
@@ -372,14 +340,10 @@ the study has produced the following design:
 Examine optimum device
 ======================
 
-When MATLAB is executed in parallel, objects are copied to the parallel 
-workers, executed and then destroyed. Therefore only the function value of each 
-iteration remains in the MATLAB workspace. To allow the created devices to be 
-recovered, WecOptTool stores their data in files, so that it can be retrieved 
-later if desired. To recover the devices, the 
-:mat:meth:`~+WecOptTool.Blueprint.recoverDevices` method of the Blueprint 
-subclass is called, which returns an array of :mat:class:`~+WecOptTool.Device` 
-objects: 
+When MATLAB is executed in parallel, objects are copied to the parallel workers, executed and then destroyed.
+Therefore only the function value of each iteration remains in the MATLAB workspace.
+To allow the created devices to be recovered, WecOptTool stores their data in files, so that it can be retrieved later if desired.
+To recover the devices, the :mat:meth:`~+WecOptTool.Blueprint.recoverDevices` method of the Blueprint subclass is called, which returns an array of :mat:class:`~+WecOptTool.Device` objects: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -393,9 +357,8 @@ objects:
     Therefore, when the Device objects are deleted, so are the associated 
     files.
 
-Next, the device that matches the best solution returned by fmincon must
-be found. To do this, compare the :mat:attr:`~+WecOptTool.Device.geomParams`
-parameter of the devices, until a match is found, as follows:
+Next, the device that matches the best solution returned by fmincon must be found.
+To do this, compare the :mat:attr:`~+WecOptTool.Device.geomParams` parameter of the devices, until a match is found, as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -403,9 +366,7 @@ parameter of the devices, until a match is found, as follows:
     :linenos:
     :lineno-start: 58
 
-Finally, by using the :mat:func:`+WecOptTool.+plot.powerPerFreq` function, the 
-spectral distribution of energy absorbed by the resulting design for each of 
-the eight sea states can be shown. 
+Finally, by using the :mat:func:`+WecOptTool.+plot.powerPerFreq` function, the spectral distribution of energy absorbed by the resulting design for each of the eight sea states can be shown. 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
