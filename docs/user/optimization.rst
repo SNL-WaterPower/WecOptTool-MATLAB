@@ -331,10 +331,10 @@ The study can be executed by calling fmincon:
 
 Once the calculation is complete, the ``x`` and ``fval`` variables show that the study has produced the following design: 
 
-* r1: 5 [m]
-* r2: 7.5 [m]
-* d1: 1.125 [m]
-* d2: 42 [m]
+* :math:`r_1`: 5 [m]
+* :math:`r_2`: 7.5 [m]
+* :math:`d_1`: 1.125 [m]
+* :math:`d_2`: 42 [m]
 * Maximum absorbed power: 2357934.25081 [W]
 
 Examine optimum device
