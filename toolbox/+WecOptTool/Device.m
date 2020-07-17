@@ -145,7 +145,7 @@ classdef Device < WecOptTool.base.AutoFolder
     
     methods
         
-        function simulate(obj, seaState)
+        function out = simulate(obj, seaState)
             % Determine the performace of the WEC device
             %
             % Arguments:
@@ -199,16 +199,20 @@ classdef Device < WecOptTool.base.AutoFolder
             obj.performances = myperformances;
             
             % Run the aggregation hook if given
-            if ~isempty(obj.aggregationCB)
-                obj.aggregation = obj.aggregationCB(seaState,       ...
-                                                    obj.hydro,      ...
-                                                    obj.motions,    ...
-                                                    obj.performances);
-            end
+%             if ~isempty(obj.aggregationCB)
+%                 obj.aggregation = obj.aggregationCB(seaState,       ...
+%                                                     obj.hydro,      ...
+%                                                     obj.motions,    ...
+%                                                     obj.performances);
+%             end
             
             % Store the device for this run
             etcPath = fullfile(obj.folder, "device.mat");
             save(etcPath, 'obj');
+            
+            if nargout
+                out = myperformances;
+            end
            
         end
     
