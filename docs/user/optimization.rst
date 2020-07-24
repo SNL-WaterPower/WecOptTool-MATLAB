@@ -27,7 +27,7 @@ The general concept of WecOptTool is illustrated in the diagram below organized 
     * **User Inputs** (Green) - aspects of the tool that the user can interact with
     * **Data Classes** (Blue) - objects used to store and transfer information within a study
     * **Solvers** (Yellow) - physics models and optimization algorithms that process data
-	
+
 To run WecOptTool the user will need to define each of the six input blocks in the User Inputs column.
 For the RM3, the Geometry will be defined by a mesh and design variables (:math:`r_1, r_2, d_1, d_2`), which refer to the spar/float radius and distance between the surface water level and the distance between the two boides.
 In the Power Take Off (PTO) input, the user will define constraints on the PTO such as max force, :math:`F_{max}`, and max stroke :math:`\Delta 
@@ -126,8 +126,7 @@ The desired spectrum or spectra must now be converted into a
     :lineno-start: 19
 
 The :mat:func:`+WecOptTool.types` function is the preferred method for creating data type object arrays.
-The :mat:class:`~+WecOptTool.+types.
-SeaState` class allows the user to manipulate the given spectra to the requirements of the experiment. Automatically, the weighting parameter ``mu`` will be set to unity when multiple sea-states are given with ``mu`` undefined.
+The :mat:class:`~+WecOptTool.+types.SeaState` class allows the user to manipulate the given spectra to the requirements of the experiment. Automatically, the weighting parameter ``mu`` will be set to unity when multiple sea-states are given with ``mu`` undefined.
 In this example, frequencies that have less than 1% of the maximum spectral density are also removed, (using the ``"trimFrequencies"`` option) to increase the speed of computation with minimal loss of accuracy.
 See the :mat:class:`~+WecOptTool.+types.SeaState` documentation for all available options.
 
