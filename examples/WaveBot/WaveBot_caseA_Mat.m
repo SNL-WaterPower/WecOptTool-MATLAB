@@ -64,20 +64,19 @@ controlParams(2).type = 'P';
 controlParams(3).type = 'PS';
 controlParams(3).params = {1e10 1e9}; % {zmax, Fmax}
 
-blueprint = WaveBot();
+blueprint = WaveBotMat();
 myWaveBots = blueprint.makeDevices(geomParams,controlParams);
 
 %%
 
 for ii = 1:length(myWaveBots)
     rng(3) % run same wave phasing for each case
-    r(ii) = myWaveBots(ii).simulate(SS);
-    r(ii).name = myWaveBots(ii).controlType;
+    myWaveBots(ii).simulate(SS);
 end
 
 %% plot results
 
-r.plotFreq()
+plotFreq2(myWaveBots)
 delete(findobj(gcf, 'Type', 'Legend'))
 ax = findobj(gcf, 'Type', 'axes');
 legend(ax(end))

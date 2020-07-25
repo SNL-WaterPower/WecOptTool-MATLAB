@@ -4,29 +4,31 @@ clear
 close all
 
 % define sea state of interest
-Hm0 = 0.125;
-Tp = 2;
-gamma = 3.3;
-dw = 0.1;
-w = 2 + dw * (1:50)';
-S = jonswap(w,[Hm0, Tp, gamma],0);
+% Hm0 = 0.125;
+% Tp = 2;
+% gamma = 3.3;
+% dw = 0.1;
+% w = 2 + dw * (1:50)';
+% S = jonswap(w,[Hm0, Tp, gamma],0);
+S = WecOptLib.tests.data.example8Spectra();
 SS = WecOptTool.types("SeaState", S);
 
-figure
-plot(SS.w,SS.S)
+% figure
+% plot(SS.w,SS.S)
 
 %%
 
 % make devices from blueprint. All arguments given as struct arrays
 % arrays with type and params field. 
 geomParams.type = 'scalar';
-geomParams.params = {1, S, 0.5};
-controlParams.type = 'CC';
-controlParams(2).type = 'P';
+w = SS.getRegularFrequencies(0.5);
+geomParams.params = {1, w};
+controlParams.type = 'P';
+controlParams(2).type = 'CC';
 controlParams(3).type = 'PS';
 controlParams(3).params = {10 1e9}; % {zmax, Fmax}
 
-blueprint = WaveBot();
+blueprint = WaveBotMat();
 devices = blueprint.makeDevices(geomParams,controlParams);
 
 % Create a SeaState object before optimisation to avoid warnings.
@@ -39,6 +41,8 @@ for i = 1:m
         disp("Simulation " + (i + j - 1) + " of " + (m * n))
         simulate(devices(i, j), SS);
         % The device stores the results as properties
+        devices(i, j)
+        devices(i, j).aggregation
         r(i, j) = sum(devices(i, j).aggregation.pow);
     end
 end

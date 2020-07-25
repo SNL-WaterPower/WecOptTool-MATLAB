@@ -162,7 +162,7 @@ classdef Device < WecOptTool.base.AutoFolder
             NSS = length(seaState);
             
             mymotions(1:NSS) =  WecOptTool.types.Motion();
-            myperformances(1:NSS) = WecOptTool.types.Performance();
+            %myperformances(1:NSS) = WecOptTool.types.Performance();
             
             for iSS = 1:NSS
                 
@@ -182,13 +182,13 @@ classdef Device < WecOptTool.base.AutoFolder
                 sperformance = obj.controllerCB(smotion,    ...
                                                 obj.controlParams{:});
                 
-                if ~isa(sperformance, "WecOptTool.types.Performance")
-                    
-                    errStr = "Controllers must return a " +   ...
-                             "Performance object";
-                    error("WecOptTool:Device:NotPerformance", errStr)
-                    
-                end
+%                 if ~isa(sperformance, "WecOptTool.types.Performance")
+%                     
+%                     errStr = "Controllers must return a " +   ...
+%                              "Performance object";
+%                     error("WecOptTool:Device:NotPerformance", errStr)
+%                     
+%                 end
                 
                 mymotions(iSS) = smotion;
                 myperformances(iSS) = sperformance;
@@ -199,12 +199,12 @@ classdef Device < WecOptTool.base.AutoFolder
             obj.performances = myperformances;
             
             % Run the aggregation hook if given
-%             if ~isempty(obj.aggregationCB)
-%                 obj.aggregation = obj.aggregationCB(seaState,       ...
-%                                                     obj.hydro,      ...
-%                                                     obj.motions,    ...
-%                                                     obj.performances);
-%             end
+            if ~isempty(obj.aggregationCB)
+                obj.aggregation = obj.aggregationCB(seaState,       ...
+                                                    obj.hydro,      ...
+                                                    obj.motions,    ...
+                                                    obj.performances);
+            end
             
             % Store the device for this run
             etcPath = fullfile(obj.folder, "device.mat");

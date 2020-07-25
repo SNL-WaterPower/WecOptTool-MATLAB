@@ -6,7 +6,7 @@ close all
 %% setup
 
 % Create RM3 blueprint.
-blueprint = WaveBot();
+blueprint = WaveBotMat();
 
 % define sea state of interest
 % Hm0 = 0.125;
@@ -74,12 +74,13 @@ WecOptTool.plot.powerPerFreq(bestDevice);
 function [fval] = myWaveBotObjFun(x, bp, S)
     
     geomMode.type = 'scalar';
-    geomMode.params = {x, S, 0.5};
+    w = S.getRegularFrequencies(0.5);
+    geomMode.params = {x, w};
     cntrlMode.type = 'CC';
 
     device = bp.makeDevices(geomMode, cntrlMode);
     device.simulate(S);
-    fval = -sum(device.aggregation.pow);
+    fval = real(sum(device.aggregation.pow));
     
 end
 

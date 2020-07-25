@@ -1,4 +1,4 @@
-classdef WaveBot < WecOptTool.Blueprint
+classdef WaveBotMat < WecOptTool.Blueprint
     % WaveBot   WEC based on the Sandia "WaveBot" device.
     %
     % The WaveBot is a model-scale wave energy converter (WEC) tested in
@@ -18,7 +18,9 @@ classdef WaveBot < WecOptTool.Blueprint
         controllerCallbacks = struct('CC', @complexCongugateControl,...
                                      'P',  @dampingControl,...
                                      'PS', @psControl)
-                                         
+                                 
+        aggregationHook = @aggregate
+        
     end
     
 end
@@ -175,10 +177,8 @@ function motion = getDynamicModel(staticModel, hydro, SS)
 
 end
 
-function myPerf = complexCongugateControl(motion)
-    
-    myPerf = WecOptTool.types.Performance();
-            
+function performance = complexCongugateControl(motion)
+                
     myPerf.Zpto = conj(motion.Zi);
     
     % velocity
@@ -191,19 +191,14 @@ function myPerf = complexCongugateControl(motion)
     myPerf.Fpto = -1 * myPerf.Zpto .* myPerf.u;
     
     % power
-    myPerf.pow = 0.5 * myPerf.Fpto .* conj(myPerf.u);
+    myPerf.powPerFreq = 0.5 * myPerf.Fpto .* conj(myPerf.u);
     
-    myPerf.ph = motion.ph;
-    myPerf.w = motion.w;
-    myPerf.eta = motion.eta_fd;
-    myPerf.F0 = motion.F0;
+    performance = WecOptTool.types("OldPerformance", myPerf);
 
 end
 
-function myPerf = dampingControl(motion)
-    
-    myPerf = WecOptTool.types.Performance(); % TODO - move this up to Device?
-            
+function performance = dampingControl(motion)
+                
     P_max = @(b) -0.5*b*sum(abs(motion.F0 ./ ...
                                 (motion.Zi + b)).^2);
                             
@@ -227,16 +222,13 @@ function myPerf = dampingControl(motion)
     myPerf.Fpto = -1 * myPerf.Zpto .* myPerf.u;
     
     % power
-    myPerf.pow = 0.5 * myPerf.Fpto .* conj(myPerf.u);
+    myPerf.powPerFreq = 0.5 * myPerf.Fpto .* conj(myPerf.u);
     
-    myPerf.ph = motion.ph;
-    myPerf.w = motion.w;
-    myPerf.eta = motion.eta_fd;
-    myPerf.F0 = motion.F0;
+    performance = WecOptTool.types("OldPerformance", myPerf);
 
 end
 
-function myPerf = psControl(motion,delta_Zmax,delta_Fmax)
+function performance = psControl(motion,delta_Zmax,delta_Fmax)
 %     motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);
 %     ps.wave_amp = waveAmp; % TODO
 %     
@@ -293,16 +285,14 @@ function myPerf = psControl(motion,delta_Zmax,delta_Fmax)
     end
     
     % assemble results
-    myPerf = WecOptTool.types.Performance();
-    myPerf.w = motion.w;
-    myPerf.eta = motion.eta_fd;
-    myPerf.F0 = motion.F0;
     myPerf.ph = ph_mat;
     myPerf.u = u;
     myPerf.pos = pos;
     myPerf.Zpto = Zpto;
     myPerf.Fpto = Fpto;
-    myPerf.pow = pow;
+    myPerf.powPerFreq = pow;
+    
+    performance = WecOptTool.types("OldPerformance", myPerf);
     
 end
 
@@ -501,11 +491,15 @@ function [powTot, fRes, tRes] = getPSPhasePower(motion, ph)
 end
 
 function out = aggregate(seastate, hydro, motions, performances)
-    "Hello"
-    performances
+
     s = struct(seastate);
     p = struct(performances);
-    out.pow = dot([p.pow], [s.mu]) / sum([s.mu]);
+    
+    for i = 1:length(performances)
+        meanpow(i) = mean(p(i).pow);
+    end
+    
+    out.pow = dot(meanpow, [s.mu]) / sum([s.mu]);
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
