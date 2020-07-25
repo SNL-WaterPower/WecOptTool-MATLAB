@@ -1,3 +1,19 @@
+function tests = mustBeFunctionHandleTest()
+   tests = functiontests(localfunctions);
+end
+
+function testIsFunctionHandle(~)
+    a = @(x) x^2;
+    WecOptLib.validation.mustBeFunctionHandle(a)
+end
+
+function testIsNotFunctionHandle(testCase)
+    a = 1;
+    eID = 'WecOptLib:Validation:NotFunctionHandle';
+    verifyError(testCase,                                           ...
+                @() WecOptLib.validation.mustBeFunctionHandle(a),   ...
+                eID)
+end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
 % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -17,23 +33,3 @@
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
-
-function [new_w, new_S] = subSampleFreqs(S, npoints)
-%subSampleFreq - subsamples sea state and interpolates to three harmonics
-%    gets a subsampling of a given seastate by linear interpolation
-%    Inputs:
-%        S = seastate.  must have S.S and S.w
-%        npoints = number of points to subsample
-%    Outputs:
-%        newS = new density values
-%        neww = new frequency values
-
-if(nargin < 2)
-    npoints = 120;
-end
-ind_sp = find(S.S > 0.01 * max(S.S),1,'last');
-
-new_w = linspace(S.w(1), S.w(ind_sp) * 3, npoints)';
-new_S = interp1(S.w, S.S, new_w,'linear',0);
-
-end

@@ -17,7 +17,7 @@ blueprint = RM3();
 devices = makeDevices(blueprint, geomParams, controlParams);
 
 % Create a SeaState object before optimisation to avoid warnings.
-SS = WecOptTool.types("SeaState", S);
+SS = WecOptTool.types("SeaState", S, "resampleByError", 0.1);
 
 [m,n] = size(devices);
 

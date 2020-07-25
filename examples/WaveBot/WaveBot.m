@@ -29,11 +29,8 @@ end
 % The following functions are defined here and referenced by the
 % handles/callbacks within the Blueprint class
 
-function hydro = getHydroScalar(folder, lambda, S, freqStep)
-    
-    S = struct(S);
-    w = WecOptLib.utils.seaStatesGlobalW(S, freqStep);
-               
+function hydro = getHydroScalar(folder, lambda, w)
+                   
     if w(1) == 0
         w = w(2:end);
     end

@@ -83,7 +83,7 @@ classdef PlotsTest < matlab.unittest.TestCase
             verifyWarningFree(testCase, testHandle)
                               
         end
-    
+        
     end
     
 end

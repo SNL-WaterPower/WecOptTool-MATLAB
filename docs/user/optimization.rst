@@ -121,19 +121,20 @@ The desired spectrum or spectra must now be converted into a
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 19-20
+    :lines: 19-21
     :linenos:
     :lineno-start: 19
 
-The purpose of data type classes is to validate that the required parameters 
-for the different stages of the design process have been provided, to give the 
-user a clear method to understand and access the data used in WecOptTool and, 
-in some circumstances, to add additional data that is automatically generated 
-from the given variables. For instances, for the 
-:mat:class:`~+WecOptTool.+types.SeaState` class, the weighting parameter ``mu`` 
-will be set to unity when multiple seastates are given with ``mu`` left
-undefined. The :mat:func:`+WecOptTool.types` function is the preferred method 
-for creating data type object arrays. 
+The :mat:func:`+WecOptTool.types` function is the preferred method for creating 
+data type object arrays. The :mat:class:`~+WecOptTool.+types.SeaState` class 
+allows the user to manipulate the given spectra to the requirements of the 
+experiment. Automatically, the weighting parameter ``mu`` will be set to unity 
+when multiple sea-states are given with ``mu`` undefined. In this example, 
+frequencies that have less than 1% of the maximum spectral density are also 
+removed, (using the ``"trimFrequencies"`` option) to increase the speed of 
+computation with minimal loss of accuracy. See the 
+:mat:class:`~+WecOptTool.+types.SeaState` documentation for all available 
+options.
 
 Create an objective function
 ============================
@@ -144,9 +145,9 @@ it above. The full function is as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 65-80
+    :lines: 67-84
     :linenos:
-    :lineno-start: 65
+    :lineno-start: 67
 
 The following subsections will describe each stage of setting up the objective
 function.
@@ -181,18 +182,28 @@ the objective function.
 In WecOptTool, design options for geometry and controllers are supplied in 
 `struct arrays <https://uk.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html>`_ 
 using the field ``type`` to define which option is desired and ``params`` to 
-supply the chosen option with it's required parameters, in a cell array. For 
-the ``'parametric'`` option, 6 arguments must be supplied, the geometry design 
-variables, ``r1, r2, d1, d2``, a representative seastate and the frequency step 
-to be used for the NEMOH calculations. The design variables will be passed by 
-the optimisation routine, so we add the seastate and the frequency step as 
-follows: 
+supply the chosen option with it's required parameters, in a cell array. The 
+``'parametric'`` option is defined as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 72-73
+    :lines: 73
     :linenos:
-    :lineno-start: 72
+    :lineno-start: 73
+
+The parametric option requires 5 arguments, the geometry design variables, 
+``r1, r2, d1, d2``, and a representative set of angular frequencies to be 
+calculated by NEMOH. The design variables will be passed by the optimisation 
+routine, while the frequencies can be extracted from the given 
+:mat:class:`~+WecOptTool.+types.SeaState` object using its 
+:mat:meth:`~+WecOptTool.+types.SeaState.getRegularFrequencies` method, which 
+provides regularly spaced frequencies covering all spectra in the object array. 
+
+.. literalinclude:: /../examples/RM3/optimization.m
+    :language: matlab
+    :lines: 74-75
+    :linenos:
+    :lineno-start: 74
 
 Add a controller
 ----------------
@@ -236,9 +247,9 @@ requires no additional arguments:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 74
+    :lines: 76
     :linenos:
-    :lineno-start: 74
+    :lineno-start: 76
 
 Create and evaluate the device
 ------------------------------
@@ -250,9 +261,9 @@ is used with the defined geometry and controller options:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 76
+    :lines: 78
     :linenos:
-    :lineno-start: 76
+    :lineno-start: 78
 
 To evaluate the device's performance, the 
 :mat:meth:`~+WecOptTool.Device.simulate` method is called on the created
@@ -260,9 +271,9 @@ device with the given :mat:class:`~+WecOptTool.+types.SeaState` object.
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 77
+    :lines: 79
     :linenos:
-    :lineno-start: 77
+    :lineno-start: 79
 
 Define the objective function value
 -----------------------------------
@@ -278,12 +289,12 @@ value is taken:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 78
+    :lines: 80
     :linenos:
-    :lineno-start: 78
+    :lineno-start: 80
 
 .. note::
-    **Objective function:** The chosen objective function in|optimization.m|_ 
+    **Objective function:** The chosen objective function in |optimization.m|_ 
     can be altered to better approximate a more meaningful objective (e.g., 
     levelized cost of energy).
 
@@ -298,17 +309,17 @@ The initial values, ``x0``, lower bounds, ``lb``, and upper bounds,
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 24-27
+    :lines: 25-28
     :linenos:
-    :lineno-start: 24
+    :lineno-start: 25
 
 Options can also be supplied for fmincon:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 29-37
+    :lines: 30-38
     :linenos:
-    :lineno-start: 29
+    :lineno-start: 30
 
 .. note::
     The ``MaxFunctionEvaluations`` is set to 5 in |optimization.m|_ to permit 
@@ -324,9 +335,9 @@ other arguments required by fmincon:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 39-44
+    :lines: 40-45
     :linenos:
-    :lineno-start: 39
+    :lineno-start: 40
 
 Run study and view results
 ==========================
@@ -339,17 +350,17 @@ the Blueprint and SeaState object inputs:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 48-49
+    :lines: 49-50
     :linenos:
-    :lineno-start: 48
+    :lineno-start: 49
 
 The study can be executed by calling fmincon:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 51-52
+    :lines: 52-53
     :linenos:
-    :lineno-start: 51
+    :lineno-start: 52
 
 Once the calculation is complete, the ``x`` and ``fval`` variables show that 
 the study has produced the following design: 
@@ -374,9 +385,9 @@ objects:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 54-55
+    :lines: 55-56
     :linenos:
-    :lineno-start: 54
+    :lineno-start: 55
 
 .. warning::
     Once recovered, ownership of the files containing the stored data for
@@ -390,9 +401,9 @@ parameter of the devices, until a match is found, as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 57-62
+    :lines: 58-63
     :linenos:
-    :lineno-start: 57
+    :lineno-start: 58
 
 Finally, by using the :mat:func:`+WecOptTool.+plot.powerPerFreq` function, the 
 spectral distribution of energy absorbed by the resulting design for each of 
@@ -400,9 +411,9 @@ the eight sea states can be shown.
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 64
+    :lines: 65
     :linenos:
-    :lineno-start: 64
+    :lineno-start: 65
 
 .. image:: /_static/example_spectralPowerPlot.svg
    :width: 400pt

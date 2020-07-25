@@ -1,4 +1,4 @@
-classdef (Abstract) Data < dynamicprops
+classdef (Abstract) Data < dynamicprops & matlab.mixin.CustomDisplay
     % Abstract class for creating new types.
     %
     % WecOptLib types act like structs with added required fields and
@@ -108,6 +108,19 @@ classdef (Abstract) Data < dynamicprops
             % instatiation of an array
         end
             
+    end
+        
+    methods (Access = protected)
+        
+       function propgrp = getPropertyGroups(obj)
+           
+          required = [obj(1).meta.name];
+          all = properties(obj(1));
+          proplist = unique([required all'], 'stable');
+          propgrp = matlab.mixin.util.PropertyGroup(proplist);
+          
+       end
+       
     end
 
     methods (Access=private)

@@ -1,4 +1,4 @@
-function result = types(typeName, input)
+function result = types(typeName, input, varargin)
     % Create an array of a given type using shortcuts to defined Data 
     % concrete classes in the :mat:mod:`+WecOptTool.+types` package.
     %
@@ -57,7 +57,7 @@ function result = types(typeName, input)
     typeHandle = str2func(fullQName);
     
     for i = 1:length(input)
-        result(i) = typeHandle(input(i));
+        result(i) = typeHandle(input(i), varargin{:});
     end
     
     result.validateArray()
