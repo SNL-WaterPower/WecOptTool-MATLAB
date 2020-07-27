@@ -1,96 +1,21 @@
-classdef RM3 < WecOptTool.Blueprint
+function performance = simulateDevice(hydro, seastate, controlType, varargin)
     
-    properties
-        
-        geometryCallbacks = struct(                                     ...
-            'existing', @WecOptTool.callbacks.geometry.existingNEMOH,   ...
-            'scalar', @getHydroScalar,                                  ...
-            'parametric', @getHydroParametric)
-        
-        staticModelCallback = @getStaticModel
-        dynamicModelCallback = @getDynamicModel
-        
-        controllerCallbacks = struct('CC', @complexCongugateControl,    ...
-                                     'P',  @dampingControl,             ...
-                                     'PS', @pseudoSpectralControl)
-                                 
-        aggregationHook = @aggregate
-        
+    static = getStaticModel(hydro);
+    motion = getDynamicModel(static, hydro, seastate);
+    
+    switch controlType
+    
+        case 'CC'
+            performance = complexCongugateControl(motion, varargin{:});
+        case 'P'
+            performance = dampingControl(motion, varargin{:});
+        case 'PS'
+            performance = pseudoSpectralControl(motion, varargin{:});
+            
     end
-    
+        
 end
-
-function hydro = getHydroScalar(folder, lambda)
-                    
-    % Get data file path
-    p = mfilename('fullpath');
-    [filepath, ~, ~] = fileparts(p);
-    dataPath = fullfile(filepath, 'RM3_BEM.mat');
-
-    load(dataPath, 'hydro');
-
-    % dimensionalize w/ WEC-Sim built-in function
-    hydro.rho = 1025;
-    hydro.g = 9.81;
-%         hydro = Normalize(hydro); % TODO - this doesn't work for our data
-%         that was produced w/ WAMIT...
-
-    % scale by scaling factor lambda
-    hydro.Vo = hydro.Vo .* lambda^3;
-    hydro.C = hydro.C .* lambda^2;
-    hydro.B = hydro.B .* lambda^2.5;
-    hydro.A = hydro.A .* lambda^3;
-    hydro.ex = complex(hydro.ex_re,hydro.ex_im) .* lambda^2;
-    hydro.ex_ma = abs(hydro.ex);
-    hydro.ex_ph = angle(hydro.ex);
-    hydro.ex_re = real(hydro.ex);
-    hydro.ex_im = imag(hydro.ex);
-    
-    hydro = WecOptTool.types("Hydro", hydro);
-           
-end
-
-
-function hydro = getHydroParametric(folder, r1, r2, d1, d2, w)
-    
-    % Float
-    
-    rf = [0 r1 r1 0];
-    zf = [0 0 -d1 -d1];
-
-    % Heave plate
-
-    thk = 1;
-    rs = [0 r2 r2 0];
-    zs = [-d2 -d2 -d2-thk -d2-thk];
-
-    % Mesh
-    ntheta = 20;
-    nfobj = 200;
-    zG = 0;
-    
-    meshes = WecOptTool.mesh("AxiMesh",    ...
-                             folder,       ...
-                             rf,           ...
-                             zf,           ...
-                             ntheta,       ...
-                             nfobj,        ...
-                             zG,           ...
-                             1);
-    meshes(2) = WecOptTool.mesh("AxiMesh",  ...
-                                folder,     ...
-                                rs,         ...
-                                zs,         ...
-                                ntheta,     ...
-                                nfobj,      ...
-                                zG,         ...
-                                2);
-    
-    hydro = WecOptTool.solver("NEMOH", folder, meshes, w);
-           
-end
-
-
+  
 function static = getStaticModel(hydro)
             
     % Mass
@@ -103,7 +28,7 @@ function static = getStaticModel(hydro)
 
 end
         
-function motion = getDynamicModel(static, hydro, S)
+function dynamic = getDynamicModel(static, hydro, S)
 
     function result = interp_mass(hydro, dof1, dof2, w)
         result = interp1(hydro.w,                           ...
@@ -225,22 +150,18 @@ function motion = getDynamicModel(static, hydro, S)
        dynamic.(fn{i}) = static.(fn{i});
     end
     
-    motion = WecOptTool.types("Motion", dynamic);
-
 end
 
 
-function performance = complexCongugateControl(motion)
+function out = complexCongugateControl(motion)
             
     % Maximum absorbed power
     % Note: Re{Zi} = Radiation Damping Coeffcient
     out.powPerFreq = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
     
-    performance = WecOptTool.types("Performance", out);
-
 end
 
-function performance = dampingControl(motion)
+function out = dampingControl(motion)
             
     % Max Power for a given Damping Coeffcient [Falnes 2002 
     % (p.51-52)]
@@ -253,14 +174,10 @@ function performance = dampingControl(motion)
     % Power per frequency at optimial damping?
     out.powPerFreq = 0.5 * B_opt * ...
                     (abs(motion.F0 ./ (motion.Zi + B_opt)) .^ 2);
-                
-    performance = WecOptTool.types("Performance", out);
-
+    
 end
 
-function performance = pseudoSpectralControl(motion,        ...
-                                             delta_Zmax,    ...
-                                             delta_Fmax)
+function out = pseudoSpectralControl(motion, delta_Zmax, delta_Fmax)
 
     % PSEUDOSPECTRAL Pseudo spectral control
     %   Returns power per frequency and frequency bins
@@ -294,7 +211,6 @@ function performance = pseudoSpectralControl(motion,        ...
     end
     
     out.powPerFreq = mean(powPerFreqMat);
-    performance = WecOptTool.types("Performance", out);
     
 end
 
@@ -493,12 +409,6 @@ function [pow, powPerFreq] = getPSPhasePower(motion, ph)
     pow = trapz(motion.tkp, Pt) / (motion.tkp(end) - motion.tkp(1));
     assert(WecOptLib.utils.isClose(pow, sum(powPerFreq)))
     
-end
-
-function out = aggregate(seastate, hydro, motions, performances)
-    s = struct(seastate);
-    p = struct(performances);
-    out.pow = dot([p.pow], [s.mu]) / sum([s.mu]);
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 

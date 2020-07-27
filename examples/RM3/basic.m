@@ -5,29 +5,40 @@ clear geomParams controlParams
 S = WecOptLib.tests.data.exampleSpectrum();
 
 % make devices from blueprint. All arguments given as struct arrays
-% arrays with type and params field. 
-geomParams.type = 'scalar';
-geomParams.params = {1};
+% arrays with type and params field.
 controlParams.type = 'CC';
 controlParams(2).type = 'P';
 controlParams(3).type = 'PS';
 controlParams(3).params = {10 1e9};
 
-blueprint = RM3();
-devices = makeDevices(blueprint, geomParams, controlParams);
+deviceHydro = designDevice('scalar', 1);
 
 % Create a SeaState object before optimisation to avoid warnings.
 SS = WecOptTool.types("SeaState", S, "resampleByError", 0.1);
 
-[m,n] = size(devices);
-
-for i = 1:m
-    for j = 1:n
-        disp("Simulation " + (i + j - 1) + " of " + (m * n))
-        simulate(devices(i, j), SS);
-        % The device stores the results as properties
-        r(i, j) = sum(devices(i, j).aggregation.pow);
+for i = 1:length(controlParams)
+    
+    disp("Simulation " + (i) + " of " + length(controlParams))
+    
+    for j = 1:length(SS)
+        
+        if ~isempty(controlParams(i).params)
+            performances(j) = simulateDevice(deviceHydro, SS(j), controlParams(i).type, controlParams(i).params{:});
+        else
+            performances(j) = simulateDevice(deviceHydro, SS(j), controlParams(i).type);
+        end
+        
     end
+        
+    % The device stores the results as properties
+    r(i) = sum(aggregate(SS, performances));
+    
+end
+
+function out = aggregate(seastate, performances)
+    s = struct(seastate);
+    pow = sum(performances.powPerFreq);
+    out = dot(pow, [s.mu]) / sum([s.mu]);
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
