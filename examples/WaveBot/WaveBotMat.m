@@ -192,6 +192,7 @@ function performance = complexCongugateControl(motion)
     
     % power
     myPerf.powPerFreq = 0.5 * myPerf.Fpto .* conj(myPerf.u);
+    myPerf.ph = 1;
     
     performance = WecOptTool.types("OldPerformance", myPerf);
 
@@ -223,6 +224,7 @@ function performance = dampingControl(motion)
     
     % power
     myPerf.powPerFreq = 0.5 * myPerf.Fpto .* conj(myPerf.u);
+    myPerf.ph = 1;
     
     performance = WecOptTool.types("OldPerformance", myPerf);
 

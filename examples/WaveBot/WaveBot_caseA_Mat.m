@@ -82,10 +82,10 @@ ax = findobj(gcf, 'Type', 'axes');
 legend(ax(end))
 % export_fig('../gfx/WaveBot_caseA_freq.pdf','-transparent')
 
-r.plotTime(0:0.01:10)
+plotTime2(myWaveBots, 0:0.01:10)
 legend(subplot(6,1,1),'CC','P','PS')
 % export_fig('../gfx/WaveBot_caseA_time.pdf','-transparent')
 
 %% report results
 
-summary(r)
+summary(myWaveBots)
