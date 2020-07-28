@@ -1,9 +1,5 @@
 %% optimization.m
-% Example of an optimization study, utilizing the RM3 blueprint defined in
-% the RM3.m file.
-
-%% Create RM3 blueprint.
-RM3Blueprint = RM3();
+% Example of an optimization study
 
 %% Define and store sea state of interest
 
@@ -18,7 +14,7 @@ S = WecOptLib.tests.data.example8Spectra();
 
 % Now store the sea-state in a SeaState data type and trim off frequencies
 % that have less that 1% of the max spectral density
-SS = WecOptTool.types("SeaState", S, "trimFrequencies", 0.01);
+SS = WecOptTool.SeaState(S, "trimFrequencies", 0.01);
 
 %% Optimization Setup
 
@@ -44,41 +40,80 @@ Aeq = [];
 Beq = [];
 NONLCON = [];
 
+folder = WecOptTool.AutoFolder();
+
 %% Optimization Execution
 
 % Create simple objective function handle
-objFun = @(x) myWaveBotObjFun(x, RM3Blueprint, SS);
+objFun = @(x) myWaveBotObjFun(x, SS, folder.folder);
 
 % Call the solver
 [x, fval] = fmincon(objFun, x0, A, B, Aeq, Beq, lb, ub, NONLCON, opts);
 
 %% Recover device object of best simulation and plot its power per freq
-devices = RM3Blueprint.recoverDevices();
+performances = recoverPerformances(folder.folder);
     
-for device = devices
-    if isequal(device.geomParams(1:4), num2cell(x))
-        bestDevice = device;
+for testCell = performances
+    test = testCell{1};
+    if isequal(test(1).x, x)
+        bestPerformances = test;
         break
     end
 end
 
-WecOptTool.plot.powerPerFreq(bestDevice);
+WecOptTool.plot.powerPerFreq(bestPerformances);
 
 %% Define objective function
 % This can take any form that complies with the requirements of the MATLAB
 % optimization functions
 
-function [fval, device] = myWaveBotObjFun(x, blueprint, seastate)
+function fval = myWaveBotObjFun(x, seastate, folder)
     
-    geomMode.type = 'parametric';
     w = seastate.getRegularFrequencies(0.5);
-    geomMode.params = [num2cell(x) {w}];
-    cntrlMode.type = 'CC';
+    geomParams = [folder, num2cell(x) {w}];
 
-    device = blueprint.makeDevices(geomMode, cntrlMode);
-    device.simulate(seastate);
-    fval = -1 * device.aggregation.pow;
+    deviceHydro = designDevice('parametric', geomParams{:});
     
+    for j = 1:length(seastate)
+        performances(j) = simulateDevice(deviceHydro,   ...
+                                         seastate(j),   ...
+                                         'CC');
+    end
+    
+    for j = 1:length(seastate)
+        performances(j).w = seastate(j).w;
+    end
+     
+    fval = -1 * sum(aggregateSeaStates(seastate, performances));
+    
+    performances(1).x = x;
+    resultsFolder = tempname(folder);
+    mkdir(resultsFolder);
+    etcPath = fullfile(resultsFolder, "performances.mat");
+    save(etcPath, 'performances');
+    
+end
+
+function out = aggregateSeaStates(seastate, performances)
+    pow = sum([performances.powPerFreq]);
+    out = dot(pow, [seastate.mu]) / sum([seastate.mu]);
+end
+
+function performances = recoverPerformances(folder)
+
+    pDirs = WecOptLib.utils.getFolders(folder,  ...
+                                            "absPath", true);
+    nDirs = length(pDirs);
+    performances = {};
+
+    for i = 1:nDirs
+        dir = pDirs{i};
+        fileName = fullfile(dir, 'performances.mat');
+        if isfile(fileName)
+            performances = [performances, {load(fileName).performances}];
+        end
+    end
+
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 

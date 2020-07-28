@@ -1,4 +1,4 @@
-classdef (Abstract) Mesher < WecOptTool.base.AutoFolder
+classdef (Abstract) Mesher < WecOptTool.AutoFolder
     % Abstract class for creating new mesher classes
     %
     % A single method should be implemented, called ``makeMesh`` that

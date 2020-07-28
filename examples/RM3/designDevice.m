@@ -3,7 +3,7 @@ function hydro = designDevice(type, varargin)
     switch type
         
         case 'existing'
-            hydro = WecOptTool.callbacks.geometry.existingNEMOH(varargin{:});
+            hydro = WecOptTool.geometry.existingNEMOH(varargin{:});
         case 'scalar'
             hydro = getHydroScalar(varargin{:});
         case 'parametric'
@@ -42,7 +42,7 @@ function hydro = getHydroScalar(lambda)
 end
 
 
-function hydro = getHydroParametric(r1, r2, d1, d2, w)
+function hydro = getHydroParametric(folder, r1, r2, d1, d2, w)
     
     % Float
     

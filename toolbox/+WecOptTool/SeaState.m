@@ -1,4 +1,4 @@
-classdef SeaState < WecOptTool.base.Data
+classdef SeaState
     % Data type for storage of sea state information.
     %
     % This data type defines a set of parameters that are common to 
@@ -146,6 +146,9 @@ classdef SeaState < WecOptTool.base.Data
     %     <https://www.gnu.org/licenses/>.
     
     properties (SetAccess=private)
+        S
+        w
+        mu
         baseS
         basew
         dw
@@ -154,19 +157,12 @@ classdef SeaState < WecOptTool.base.Data
         specificEnergy
     end
     
-    properties (GetAccess=protected)
-        meta = struct("name", {"S",     ...
-                               "w"},    ...
-                      "validation", {@isnumeric,    ...
-                                     @isnumeric});
-    end
-    
     methods
         
         function obj = SeaState(S, options)
             
             arguments
-                S {WecOptTool.types.SeaState.checkSpectrum(S)};
+                S = [];
                 options.trimFrequencies {mustBeNumeric,     ...
                                          mustBePositive,    ...
                                          mustBeFinite,      ...
@@ -185,50 +181,67 @@ classdef SeaState < WecOptTool.base.Data
                                         mustBeNonzero}
             end
             
-            obj = obj@WecOptTool.base.Data(S);
-            
-            % Copy original data and then reassign S and w.
-            obj.basew = obj.w;
-            obj.baseS = obj.S;
-            obj.dw = obj.w(2) - obj.w(1);
-            obj.trimLoss = 0;
-            obj.sampleError = 0;
-            
-            if isfield(options, "resampleByError") && ...
-               isfield(options, "resampleByStep")
-           
-               msg = ['Only one of options "resampleByError" or '    ...
-                      '"resampleByStep" may be given'];
-               error("WecOptTool:SeaState:BadOptions", msg)
-               
+            if isempty(S)
+                return
+            else
+                obj.checkSpectrum(S);
             end
-                  
-            if isfield(options, "trimFrequencies")
-                S = obj.trimFrequencies(S, options.trimFrequencies);
-                obj.trimLoss = options.trimFrequencies;
-            end
-            
-            if isfield(options, "resampleByError")
-                [S, obj.dw] = obj.resampleByError(S,    ...
+                        
+            for i = 1:length(S)
+                
+                obj(i).w = S(i).w;
+                obj(i).S = S(i).S;
+                obj(i).basew = obj(i).w;
+                obj(i).baseS = obj(i).S;
+                obj(i).dw = obj(i).w(2) - obj(i).w(1);
+                obj(i).trimLoss = 0;
+                obj(i).sampleError = 0;
+
+                if isfield(S, "mu")
+                    obj(i).mu = S(i).mu;
+                end
+
+                if isfield(options, "resampleByError") && ...
+                   isfield(options, "resampleByStep")
+
+                   msg = ['Only one of options "resampleByError" or '    ...
+                          '"resampleByStep" may be given'];
+                   error("WecOptTool:SeaState:BadOptions", msg)
+
+                end
+
+                if isfield(options, "trimFrequencies")
+                    S = obj.trimFrequencies(S, options.trimFrequencies);
+                    obj(i).trimLoss = options.trimFrequencies;
+                end
+
+                if isfield(options, "resampleByError")
+                    [S, obj(i).dw] = obj.resampleByError(S,    ...
                                                   options.resampleByError);
-                obj.sampleError = options.resampleByError;
+                    obj(i).sampleError = options.resampleByError;
+                end
+
+                if isfield(options, "resampleByStep")
+                    [S, err] = obj.resampleByStep(S,   ...
+                                                  options.resampleByStep);
+                    obj(i).dw = options.resampleByStep;
+                    obj(i).sampleError = err;
+                end
+
+                if isfield(options, "extendFrequencies")
+                    S = obj.extendFrequencies(S,   ...
+                                              options.extendFrequencies);
+                end
+
+                obj.checkSpectrum(S)
+
+                obj(i).w = S(i).w;
+                obj(i).S = S(i).S;
+                obj(i).specificEnergy = obj.getSpecificEnergy(S);
+                
             end
             
-            if isfield(options, "resampleByStep")
-                [S, err] = obj.resampleByStep(S, options.resampleByStep);
-                obj.dw = options.resampleByStep;
-                obj.sampleError = err;
-            end
-            
-            if isfield(options, "extendFrequencies")
-                S = obj.extendFrequencies(S, options.extendFrequencies);
-            end
-            
-            obj.checkSpectrum(S)
-            
-            obj.w = S.w;
-            obj.S = S.S;
-            obj.specificEnergy = obj.getSpecificEnergy(S);
+            obj = obj.makeMu(obj);
             
         end
         
@@ -341,18 +354,22 @@ classdef SeaState < WecOptTool.base.Data
             end
                         
         end
-                
-        function validateArray(obj)
-            makeMu(obj)
-        end
-        
+                        
     end
     
-    methods (Access=private)
+    methods (Static, Access=private)
+       
+        function obj = initSeaState(obj, index, S, options)
+            
+            import WecOptTool.SeaState
+            
+            
+            
+        end
         
-        function makeMu(obj)
+        function obj = makeMu(obj)
                         
-            if isprop(obj(1), "mu")
+            if ~isempty(obj(1).mu)
                 return
             end
             
@@ -365,9 +382,7 @@ classdef SeaState < WecOptTool.base.Data
             end
 
             for iSS = 1:NSS
-                Prop = obj(iSS).addprop("mu");
                 obj(iSS).mu = 1;
-                Prop.SetAccess = "private";
             end
 
         end
@@ -580,7 +595,7 @@ classdef SeaState < WecOptTool.base.Data
             %
             
             arguments
-                S {WecOptTool.types.SeaState.checkSpectrum(S)}
+                S {WecOptTool.SeaState.checkSpectrum(S)}
                 options.g {mustBeNumeric} = 9.81
                 options.rho {mustBeNumeric, mustBePositive} = 1028
             end
@@ -624,14 +639,14 @@ classdef SeaState < WecOptTool.base.Data
             %
             
             arguments
-                trueS {WecOptTool.types.SeaState.checkSpectrum(trueS)}
+                trueS {WecOptTool.SeaState.checkSpectrum(trueS)}
                 approxS                                                 ...
-                  {WecOptTool.types.SeaState.checkSpectrum(approxS),    ...
+                  {WecOptTool.SeaState.checkSpectrum(approxS),    ...
                    WecOptLib.validation.mustBeEqualLength(trueS,        ...
                                                           approxS)}
             end
             
-            import WecOptTool.types.SeaState
+            import WecOptTool.SeaState
             
             N = length(trueS);
             errors = zeros(1, N);
@@ -680,14 +695,14 @@ classdef SeaState < WecOptTool.base.Data
             %
             
             arguments
-                trueS {WecOptTool.types.SeaState.checkSpectrum(trueS)}
+                trueS {WecOptTool.SeaState.checkSpectrum(trueS)}
                 approxS                                                 ...
-                  {WecOptTool.types.SeaState.checkSpectrum(approxS),    ...
+                  {WecOptTool.SeaState.checkSpectrum(approxS),    ...
                    WecOptLib.validation.mustBeEqualLength(trueS,        ...
                                                           approxS)}
             end
             
-            import WecOptTool.types.SeaState
+            import WecOptTool.SeaState
             
             baseEnergy = SeaState.getSpecificEnergy(trueS);
             interpEnergy = SeaState.getSpecificEnergy(approxS);
@@ -722,7 +737,7 @@ classdef SeaState < WecOptTool.base.Data
             %     
             
             arguments
-                S {WecOptTool.types.SeaState.checkSpectrum(S)}
+                S {WecOptTool.SeaState.checkSpectrum(S)}
                 densityTolerence {mustBeNumeric,    ...
                                   mustBePositive,   ...
                                   mustBeFinite,     ...
@@ -769,7 +784,7 @@ classdef SeaState < WecOptTool.base.Data
             %
             
             arguments
-                S {WecOptTool.types.SeaState.checkSpectrum(S)}
+                S {WecOptTool.SeaState.checkSpectrum(S)}
                 nRepeats {mustBeInteger,    ...
                           mustBePositive,   ...
                           mustBeFinite,     ...
@@ -825,7 +840,7 @@ classdef SeaState < WecOptTool.base.Data
             %
             
             arguments
-                S {WecOptTool.types.SeaState.checkSpectrum(S)}
+                S {WecOptTool.SeaState.checkSpectrum(S)}
                 targetError {mustBeNumeric,    ...
                              mustBePositive,   ...
                              mustBeFinite,     ...
@@ -836,7 +851,7 @@ classdef SeaState < WecOptTool.base.Data
                          mustBeNonzero} = 1e-4
             end
             
-            import WecOptTool.types.SeaState
+            import WecOptTool.SeaState
             oldS = [S.S];
             
             function residual = ObjFun(dw) 
@@ -883,14 +898,14 @@ classdef SeaState < WecOptTool.base.Data
             %
             
             arguments
-                S {WecOptTool.types.SeaState.checkSpectrum(S)}
+                S {WecOptTool.SeaState.checkSpectrum(S)}
                 dw {mustBeNumeric,  ...
                     mustBePositive, ...
                     mustBeFinite,   ...
                     mustBeNonzero}
             end
             
-            import WecOptTool.types.SeaState
+            import WecOptTool.SeaState
             
             N = length(S);
             baseS = S;

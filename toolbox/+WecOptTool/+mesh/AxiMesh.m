@@ -52,7 +52,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
     
     methods
         
-        function mesh = makeMesh(obj, r, z, ntheta, nfobj, zG, bodyNum)
+        function meshData = makeMesh(obj, r, z, ntheta, nfobj, zG, bodyNum)
             % Mesh generation of an axisymmetric body.
             %
             % All coordinates are measured from the undisturbed sea
@@ -92,8 +92,6 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             % See also WecOptTool.types.Mesh
             %
             % --
-
-            import WecOptTool.types.Mesh
             
             % Throwing error message if Nemoh could not be found.
             nemohExistFlag = obj.isNemohInPath();
@@ -232,7 +230,6 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             meshData.name = mname;
             meshData.zG = zG;
             meshData.bodyNum = bodyNum;
-            mesh = Mesh(meshData);
             
             cd(startdir);
         

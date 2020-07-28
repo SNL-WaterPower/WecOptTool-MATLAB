@@ -170,7 +170,6 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             hydro = struct();
             hydro = WecOptLib.vendor.WEC_Sim.Read_NEMOH(hydro, rundir);
             hydro.rundir = obj.folder;
-            hydro = WecOptTool.types.Hydro(hydro);
 
             cd(startdir)
 

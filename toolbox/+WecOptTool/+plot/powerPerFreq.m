@@ -1,4 +1,4 @@
-function powerPerFreq(device)
+function powerPerFreq(input)
     % Plots power per frequency for a simulated device.
     %
     % Arguments:
@@ -35,12 +35,8 @@ function powerPerFreq(device)
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    if isempty(device.seaState)
-        return
-    end
-    
     % Number of Sea-States
-    NSS = length(device.seaState);
+    NSS = length(input);
     
     multiSeaState = false;
     if NSS>1
@@ -55,8 +51,8 @@ function powerPerFreq(device)
 
         for i = 1 : NSS
             
-            freq = device.motions(i).w;
-            powPerFreq = device.performances(i).powPerFreq;
+            freq = input(i).w;
+            powPerFreq = input(i).powPerFreq;
             plot(freq, powPerFreq,'DisplayName',int2str(i))
 
         end
@@ -65,8 +61,8 @@ function powerPerFreq(device)
         
     else
         
-        freq = device.motions(1).w;
-        powPerFreq = device.performances(1).powPerFreq;
+        freq = input(1).w;
+        powPerFreq = input(1).powPerFreq;
         plot(freq, powPerFreq)
         
     end

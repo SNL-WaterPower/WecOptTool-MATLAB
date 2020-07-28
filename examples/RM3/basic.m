@@ -4,17 +4,15 @@ clear geomParams controlParams
 % define sea state of interest
 S = WecOptLib.tests.data.exampleSpectrum();
 
-% make devices from blueprint. All arguments given as struct arrays
-% arrays with type and params field.
+% Create a SeaState object before optimisation to avoid repeated warnings.
+SS = WecOptTool.SeaState(S, "resampleByError", 0.1);
+
 controlParams.type = 'CC';
 controlParams(2).type = 'P';
 controlParams(3).type = 'PS';
 controlParams(3).params = {10 1e9};
 
 deviceHydro = designDevice('scalar', 1);
-
-% Create a SeaState object before optimisation to avoid warnings.
-SS = WecOptTool.types("SeaState", S, "resampleByError", 0.1);
 
 for i = 1:length(controlParams)
     
@@ -23,22 +21,25 @@ for i = 1:length(controlParams)
     for j = 1:length(SS)
         
         if ~isempty(controlParams(i).params)
-            performances(j) = simulateDevice(deviceHydro, SS(j), controlParams(i).type, controlParams(i).params{:});
+            performances(j) = simulateDevice(deviceHydro,               ...
+                                             SS(j),                     ...
+                                             controlParams(i).type,     ...
+                                             controlParams(i).params{:});
         else
-            performances(j) = simulateDevice(deviceHydro, SS(j), controlParams(i).type);
+            performances(j) = simulateDevice(deviceHydro,               ...
+                                             SS(j),                     ...
+                                             controlParams(i).type);
         end
         
     end
         
-    % The device stores the results as properties
-    r(i) = sum(aggregate(SS, performances));
+    r(i) = sum(aggregateSeaStates(SS, performances));
     
 end
 
-function out = aggregate(seastate, performances)
-    s = struct(seastate);
+function out = aggregateSeaStates(seastate, performances)
     pow = sum(performances.powPerFreq);
-    out = dot(pow, [s.mu]) / sum([s.mu]);
+    out = dot(pow, [seastate.mu]) / sum([seastate.mu]);
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
