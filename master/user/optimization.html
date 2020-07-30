@@ -190,9 +190,8 @@
 <span id="optimization"></span><h1>2. Optimizing an Existing WEC Model<a class="headerlink" href="#optimizing-an-existing-wec-model" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="overview">
 <h2>2.1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>This section explains and expands upon the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> example file
-provided in the <code class="docutils literal notranslate"><span class="pre">examples/RM3</span></code> directory of the WecOptTool source code. This
-example considers the DOE Reference Model 3 (<a class="reference external" href="https://tethys-engineering.pnnl.gov/signature-projects/rm3-wave-point-absorber">RM3</a>) device.</p>
+<p>This section explains and expands upon the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> example file provided in the <code class="docutils literal notranslate"><span class="pre">examples/RM3</span></code> directory of the WecOptTool source code.
+This example considers the DOE Reference Model 3 (<a class="reference external" href="https://tethys-engineering.pnnl.gov/signature-projects/rm3-wave-point-absorber">RM3</a>) device.</p>
 <details><summary><a>See the entire example file</a></summary></br><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -396,30 +395,34 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 <span class="c">%     along with WecOptTool.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
 </pre></div>
 </td></tr></table></div>
-</details></br><p>The general concept of WecOptTool is illustrated in the diagram below. In the
-upper left-hand corner, an optimization algorithm controls the selection of a
-set of design variables. In this diagram, some geometric design variables,
-<span class="math notranslate nohighlight">\(r_1, r_2, d_1, d_2\)</span>, are considered along with constraints on the power
-take-off (PTO) max force, <span class="math notranslate nohighlight">\(F_{max}\)</span>, and max stroke <span class="math notranslate nohighlight">\(\Delta
-x_{max}\)</span> and an operational constraint, <span class="math notranslate nohighlight">\(H_{s,max}\)</span>. The device defined
-by these design variables is passed to the grey <em>evaluation</em> block. Here,
-<a class="reference external" href="https://github.com/LHEEA/Nemoh">Nemoh</a> is used to compute the linear wave-body interaction properties using the
-boundary element method (BEM). Next, using these properties and some set of sea
-states, one of three controllers (<code class="docutils literal notranslate"><span class="pre">ProportionalDamping</span></code>,
-<code class="docutils literal notranslate"><span class="pre">ComplexConjugate</span></code>, <code class="docutils literal notranslate"><span class="pre">PseudoSpectral</span></code>) are used to compute the resulting
-dynamics. These dynamics and some model for cost (e.g., based on the size
-dimensions and the capabilities of the PTO) can be combined to produce an
-objective function, which is returned to the optimization solver.</p>
-<img alt="Conceptual illustration of WecOptTool functionality" src="../_images/WecOptTool_algorithmDiagram.svg" /><p>In WecOptTool, this process is executed by applying the following steps:</p>
+</details></br><p>The general concept of WecOptTool is illustrated in the diagram below organized into three columns.</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>User Inputs</strong> (Green) - aspects of the tool that the user can interact with</li>
+<li><strong>Data Classes</strong> (Blue) - objects used to store and transfer information within a study</li>
+<li><strong>Solvers</strong> (Yellow) - physics models and optimization algorithms that process data</li>
+</ul>
+</div></blockquote>
+<p>To run WecOptTool the user will need to define each of the six input blocks in the User Inputs column.
+For the RM3, the Geometry will be defined by a mesh and design variables (<span class="math notranslate nohighlight">\(r_1, r_2, d_1, d_2\)</span>), which refer to the spar/float radius and distance between the surface water level and the distance between the two boides.
+In the Power Take Off (PTO) input, the user will define constraints on the PTO such as max force, <span class="math notranslate nohighlight">\(F_{max}\)</span>, and max stroke <span class="math notranslate nohighlight">\(\Delta
+x_{max}\)</span> and an operational constraint, <span class="math notranslate nohighlight">\(H_{s,max}\)</span>.).
+Lastly, the kinematics will define how the two bodies of the RM3 move relative to the resource and relative degrees of freedom.</p>
+<p>Next, the user will choose one of three controllers to compute the resulting dynamics(<code class="docutils literal notranslate"><span class="pre">ProportionalDamping</span></code>, <code class="docutils literal notranslate"><span class="pre">ComplexConjugate</span></code>, <code class="docutils literal notranslate"><span class="pre">PseudoSpectral</span></code>).
+The Sea States input block for the RM3 may made up of a single spctrum or multiple spectra.
+Finally, the user will need to determine some objective function of interest for the device being studied.</p>
+<p>WecOptTool will use the User inputs to build a set of Data Classes and pass the information to the Solvers.
+The Hydrodynamics Solver currently uses <a class="reference external" href="https://github.com/LHEEA/Nemoh">Nemoh</a> to compute the linear wave-body interaction properties using the boundary element method (BEM).
+The Optimal Control Solver will take the Data Classes to return device results for the given controller and sea state.
+This output, paired with some cost proxy from the device, can be used to evaluate the objective function inside the Optimization Routine.</p>
+<img alt="Conceptual illustration of WecOptTool functionality" src="../_images/WecOptToolFlowChart.svg" /><p>In WecOptTool, this process is executed by applying the following steps:</p>
 <ol class="arabic simple">
 <li>Select a WEC Blueprint (RM3, in this case)</li>
 <li>Create one or many Devices using the Blueprint</li>
 <li>Examine the performance each Device object for a given seastate</li>
 </ol>
-<p>The remainder of this page will illustrate (using the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a>
-example) how this process is applied to a co-optimisation problem. For more
-information about the <a class="reference internal" href="api.html#+WecOptTool.Blueprint" title="+WecOptTool.Blueprint"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Blueprint</span></code></a> and
-<a class="reference internal" href="api.html#+WecOptTool.Device" title="+WecOptTool.Device"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Device</span></code></a> classes see the <a class="reference internal" href="model.html#model"><span class="std std-ref">Creating a New WEC Model</span></a> and <a class="reference internal" href="api.html#api"><span class="std std-ref">API</span></a>
+<p>The remainder of this page will illustrate (using the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> example) how this process is applied to a co-optimisation problem.
+For more information about the <a class="reference internal" href="api.html#+WecOptTool.Blueprint" title="+WecOptTool.Blueprint"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Blueprint</span></code></a> and <a class="reference internal" href="api.html#+WecOptTool.Device" title="+WecOptTool.Device"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Device</span></code></a> classes see the <a class="reference internal" href="model.html#model"><span class="std std-ref">Creating a New WEC Model</span></a> and <a class="reference internal" href="api.html#api"><span class="std std-ref">API</span></a>
 sections.</p>
 </div>
 <div class="section" id="create-an-rm3-object">
@@ -434,10 +437,8 @@ initialize:</p>
 </div>
 <div class="section" id="define-a-seastate">
 <h2>2.3. Define a seastate<a class="headerlink" href="#define-a-seastate" title="Permalink to this headline">¶</a></h2>
-<p>WecOptTool can simulate single or multiple spectra sea states, where weightings
-can be provided to indicate the relative likelihood of each spectra. The
-following lines from <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> provide means of using the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO</a> MATLAB
-toolbox or preset spectra from WecOptTool.</p>
+<p>WecOptTool can simulate single or multiple spectra sea states, where weightings can be provided to indicate the relative likelihood of each spectra.
+The following lines from <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> provide means of using the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO</a> MATLAB toolbox or preset spectra from WecOptTool.</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 8
  9
 10
@@ -459,8 +460,7 @@ toolbox or preset spectra from WecOptTool.</p>
 <span class="n">S</span> <span class="p">=</span> <span class="n">WecOptLib</span><span class="p">.</span><span class="n">tests</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="n">example8Spectra</span><span class="p">();</span>
 </pre></div>
 </td></tr></table></div>
-<p>Spectra are formatted following the convention of the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO</a> MATLAB toolbox, but
-can be generated in via any means (e.g., from buoy measurements) as long as the
+<p>Spectra are formatted following the convention of the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO</a> MATLAB toolbox, but can be generated in via any means (e.g., from buoy measurements) as long as the
 structure includes the <code class="docutils literal notranslate"><span class="pre">S.S</span></code>, <code class="docutils literal notranslate"><span class="pre">S.w</span></code>, and <code class="docutils literal notranslate"><span class="pre">S.phi</span></code> fields.</p>
 <div class="code matlab highlight-default notranslate"><div class="highlight"><pre><span></span>S =
 
@@ -477,8 +477,8 @@ structure includes the <code class="docutils literal notranslate"><span class="p
     date: &#39;25-Mar-2020 13:08:28&#39;
 </pre></div>
 </div>
-<p>In the active code above from <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a>, there are eight spectra loaded into
-a <a class="reference external" href="https://www.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html">struct array</a>. These can be plotted using standard MATLAB commands.</p>
+<p>In the active code above from <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a>, there are eight spectra loaded into a <a class="reference external" href="https://www.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html">struct array</a>.
+These can be plotted using standard MATLAB commands.</p>
 <div class="code matlab highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">figure</span>
 <span class="n">hold</span> <span class="n">on</span>
 <span class="n">grid</span> <span class="n">on</span>
@@ -498,22 +498,17 @@ a <a class="reference external" href="https://www.mathworks.com/help/matlab/matl
 <span class="n">SS</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">types</span><span class="p">(</span><span class="s">&quot;SeaState&quot;</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="s">&quot;trimFrequencies&quot;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
-<p>The <a class="reference internal" href="api.html#+WecOptTool.types" title="+WecOptTool.types"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">WecOptTool.types()</span></code></a> function is the preferred method for creating
-data type object arrays. The <a class="reference internal" href="api.html#+WecOptTool.+types.SeaState" title="+WecOptTool.+types.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a> class
-allows the user to manipulate the given spectra to the requirements of the
-experiment. Automatically, the weighting parameter <code class="docutils literal notranslate"><span class="pre">mu</span></code> will be set to unity
-when multiple sea-states are given with <code class="docutils literal notranslate"><span class="pre">mu</span></code> undefined. In this example,
-frequencies that have less than 1% of the maximum spectral density are also
-removed, (using the <code class="docutils literal notranslate"><span class="pre">&quot;trimFrequencies&quot;</span></code> option) to increase the speed of
-computation with minimal loss of accuracy. See the
-<a class="reference internal" href="api.html#+WecOptTool.+types.SeaState" title="+WecOptTool.+types.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a> documentation for all available
-options.</p>
+<p>The <a class="reference internal" href="api.html#+WecOptTool.types" title="+WecOptTool.types"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">WecOptTool.types()</span></code></a> function is the preferred method for creating data type object arrays.
+The <a class="reference internal" href="api.html#+WecOptTool.+types.SeaState" title="+WecOptTool.+types.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a> class allows the user to manipulate the given spectra to the requirements of the experiment. Automatically, the weighting parameter <code class="docutils literal notranslate"><span class="pre">mu</span></code> will be set to unity when multiple sea-states are given with <code class="docutils literal notranslate"><span class="pre">mu</span></code> undefined.
+In this example, frequencies that have less than 1% of the maximum spectral density are also removed, (using the <code class="docutils literal notranslate"><span class="pre">&quot;trimFrequencies&quot;</span></code> option) to increase the speed of computation with minimal loss of accuracy.
+See the <a class="reference internal" href="api.html#+WecOptTool.+types.SeaState" title="+WecOptTool.+types.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a> documentation for all available options.</p>
 </div>
 <div class="section" id="create-an-objective-function">
 <h2>2.4. Create an objective function<a class="headerlink" href="#create-an-objective-function" title="Permalink to this headline">¶</a></h2>
-<p>Next, we create the objective function we wish to minimise. Note, this
-function must be defined at the bottom of the script, although we will use
-it above. The full function is as follows:</p>
+<p>Next, we create the objective function we wish to minimise.
+Note, this function must be defined at the bottom of the script, although we will use
+it above.
+The full function is as follows:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>67
 68
 69
@@ -560,35 +555,23 @@ going to take the form:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">function</span> <span class="n">result</span> <span class="o">=</span> <span class="n">myObjFun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">blueprint</span><span class="p">,</span> <span class="n">seastate</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">x</span></code> is the solution to be tested, <code class="docutils literal notranslate"><span class="pre">blueprint</span></code> is a Blueprint subclass
-object and <code class="docutils literal notranslate"><span class="pre">seastate</span></code> is a SeaState data type object. Although in most cases
-only <code class="docutils literal notranslate"><span class="pre">x</span></code> will vary, the other inputs will be required within the optimization
+<p>where <code class="docutils literal notranslate"><span class="pre">x</span></code> is the solution to be tested, <code class="docutils literal notranslate"><span class="pre">blueprint</span></code> is a Blueprint subclass object and <code class="docutils literal notranslate"><span class="pre">seastate</span></code> is a SeaState data type object.
+Although in most cases only <code class="docutils literal notranslate"><span class="pre">x</span></code> will vary, the other inputs will be required within the optimization
 function and can’t be accessed through the global workspace.</p>
 </div>
 <div class="section" id="define-design-variables">
 <h3>2.4.2. Define design variables<a class="headerlink" href="#define-design-variables" title="Permalink to this headline">¶</a></h3>
-<p>As shown in the diagram below, for RM3 study considered in <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a>
-the design variables are the radius of the surface float, <code class="docutils literal notranslate"><span class="pre">r1</span></code>, the radius of
-the heave plate, <code class="docutils literal notranslate"><span class="pre">r2</span></code>, the draft of the surface float, <code class="docutils literal notranslate"><span class="pre">d1</span></code>, and the depth
-of the heave plate, <code class="docutils literal notranslate"><span class="pre">d2</span></code>, such that <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">[r1,</span> <span class="pre">r2,</span> <span class="pre">d1,</span> <span class="pre">d2]</span></code>. The
-optimization algorithm will attempt to find the values of <code class="docutils literal notranslate"><span class="pre">x</span></code> that minimize
-the objective function.</p>
+<p>As shown in the diagram below, for RM3 study considered in <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> the design variables are the radius of the surface float, <code class="docutils literal notranslate"><span class="pre">r1</span></code>, the radius of
+the heave plate, <code class="docutils literal notranslate"><span class="pre">r2</span></code>, the draft of the surface float, <code class="docutils literal notranslate"><span class="pre">d1</span></code>, and the depth of the heave plate, <code class="docutils literal notranslate"><span class="pre">d2</span></code>, such that <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">[r1,</span> <span class="pre">r2,</span> <span class="pre">d1,</span> <span class="pre">d2]</span></code>.
+The optimization algorithm will attempt to find the values of <code class="docutils literal notranslate"><span class="pre">x</span></code> that minimize the objective function.</p>
 <a class="reference internal image-reference" href="../_images/example_rm3Parametric.svg"><img alt="RM3 device parametric dimensions" src="../_images/example_rm3Parametric.svg" width="400pt" /></a>
-<p>In WecOptTool, design options for geometry and controllers are supplied in
-<a class="reference external" href="https://uk.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html">struct arrays</a>
-using the field <code class="docutils literal notranslate"><span class="pre">type</span></code> to define which option is desired and <code class="docutils literal notranslate"><span class="pre">params</span></code> to
-supply the chosen option with it’s required parameters, in a cell array. The
-<code class="docutils literal notranslate"><span class="pre">'parametric'</span></code> option is defined as follows:</p>
+<p>In WecOptTool, design options for geometry and controllers are supplied in <a class="reference external" href="https://uk.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html">struct arrays</a> using the field <code class="docutils literal notranslate"><span class="pre">type</span></code> to define which option is desired and <code class="docutils literal notranslate"><span class="pre">params</span></code> to supply the chosen option with it’s required parameters, in a cell array.
+The <code class="docutils literal notranslate"><span class="pre">'parametric'</span></code> option is defined as follows:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>73</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">geomMode</span><span class="p">.</span><span class="n">type</span> <span class="p">=</span> <span class="s">&#39;parametric&#39;</span><span class="p">;</span>
 </pre></div>
 </td></tr></table></div>
-<p>The parametric option requires 5 arguments, the geometry design variables,
-<code class="docutils literal notranslate"><span class="pre">r1,</span> <span class="pre">r2,</span> <span class="pre">d1,</span> <span class="pre">d2</span></code>, and a representative set of angular frequencies to be
-calculated by NEMOH. The design variables will be passed by the optimisation
-routine, while the frequencies can be extracted from the given
-<a class="reference internal" href="api.html#+WecOptTool.+types.SeaState" title="+WecOptTool.+types.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a> object using its
-<a class="reference internal" href="api.html#+WecOptTool.+types.SeaState.getRegularFrequencies" title="+WecOptTool.+types.SeaState.getRegularFrequencies"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">getRegularFrequencies()</span></code></a> method, which
-provides regularly spaced frequencies covering all spectra in the object array.</p>
+<p>The parametric option requires 5 arguments, the geometry design variables, <code class="docutils literal notranslate"><span class="pre">r1,</span> <span class="pre">r2,</span> <span class="pre">d1,</span> <span class="pre">d2</span></code>, and a representative set of angular frequencies to be calculated by NEMOH.
+The design variables will be passed by the optimisation routine, while the frequencies can be extracted from the given <a class="reference internal" href="api.html#+WecOptTool.+types.SeaState" title="+WecOptTool.+types.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a> object using its <a class="reference internal" href="api.html#+WecOptTool.+types.SeaState.getRegularFrequencies" title="+WecOptTool.+types.SeaState.getRegularFrequencies"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">getRegularFrequencies()</span></code></a> method, which provides regularly spaced frequencies covering all spectra in the object array.</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>74
 75</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">w</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">getRegularFrequencies</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
     <span class="n">geomMode</span><span class="p">.</span><span class="n">params</span> <span class="p">=</span> <span class="p">[</span><span class="n">num2cell</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span><span class="n">w</span><span class="p">}];</span>
@@ -600,16 +583,12 @@ provides regularly spaced frequencies covering all spectra in the object array.<
 <p>In the RM3 example, three types of controllers are defined:</p>
 <blockquote>
 <div><ul>
-<li><p class="first"><strong>Proportional Damping</strong> (<code class="docutils literal notranslate"><span class="pre">'P'</span></code>): Resistive damping (i.e., a proportional
-feedback on velocity) (see, e.g., <a class="reference internal" href="#falnes" id="id1">[Falnes]</a>). Here, the power take-off (PTO)
-force is set as</p>
+<li><p class="first"><strong>Proportional Damping</strong> (<code class="docutils literal notranslate"><span class="pre">'P'</span></code>): Resistive damping (i.e., a proportional feedback on velocity) (see, e.g., <a class="reference internal" href="#falnes" id="id1">[Falnes]</a>). Here, the power take-off (PTO) force is set as</p>
 <div class="math notranslate nohighlight">
 \[F_u(\omega) = -B_{PTO}(\omega)u(\omega)\]</div>
-<p>where <span class="math notranslate nohighlight">\(B_{PTO}\)</span> is a constant chosen to maximize absorbed power and
-<span class="math notranslate nohighlight">\(u(\omega)\)</span> is the velocity. <br /> <br /></p>
+<p>where <span class="math notranslate nohighlight">\(B_{PTO}\)</span> is a constant chosen to maximize absorbed power and <span class="math notranslate nohighlight">\(u(\omega)\)</span> is the velocity. <br /> <br /></p>
 </li>
-<li><p class="first"><strong>Complex Conjugate</strong> (<code class="docutils literal notranslate"><span class="pre">'CC'</span></code>): Optimal power absorption through impedance
-matching (see, e.g., <a class="reference internal" href="#falnes" id="id2">[Falnes]</a>). The intrinsic impedance is given by</p>
+<li><p class="first"><strong>Complex Conjugate</strong> (<code class="docutils literal notranslate"><span class="pre">'CC'</span></code>): Optimal power absorption through impedance matching (see, e.g., <a class="reference internal" href="#falnes" id="id2">[Falnes]</a>). The intrinsic impedance is given by</p>
 <div class="math notranslate nohighlight">
 \[Z_i(\omega) = B(\omega) + i \left( \omega{}(m + A(\omega)) - \frac{K_{HS}}{\omega}\right) ,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\omega\)</span> is the radial frequency, <span class="math notranslate nohighlight">\(B(\omega)\)</span> is the
@@ -652,14 +631,10 @@ device with the given <a class="reference internal" href="api.html#+WecOptTool.+
 </div>
 <div class="section" id="define-the-objective-function-value">
 <h3>2.4.5. Define the objective function value<a class="headerlink" href="#define-the-objective-function-value" title="Permalink to this headline">¶</a></h3>
-<p>The final step is to use data stored in the device to define the objective
-function value. The <a class="reference internal" href="api.html#+WecOptTool.Device" title="+WecOptTool.Device"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Device</span></code></a> definition gives a full
-list of the data available in the device, but for this case ‘aggregated
-results’ found in the <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">aggregation</span></code> property
-(which is populated by a user defined callback) are used. In <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/RM3.m"><code class="docutils literal notranslate"><span class="pre">RM3.m</span></code></a> the
-maximum absorbed power across all spectra in the given seastate is calculated
-and added as <code class="docutils literal notranslate"><span class="pre">pow</span></code>. To make a minimisation problem, the negation of this
-value is taken:</p>
+<p>The final step is to use data stored in the device to define the objective function value.
+The <a class="reference internal" href="api.html#+WecOptTool.Device" title="+WecOptTool.Device"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Device</span></code></a> definition gives a full list of the data available in the device, but for this case ‘aggregated results’ found in the <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">aggregation</span></code> property (which is populated by a user defined callback) are used.
+In <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/RM3.m"><code class="docutils literal notranslate"><span class="pre">RM3.m</span></code></a> the maximum absorbed power across all spectra in the given seastate is calculated and added as <code class="docutils literal notranslate"><span class="pre">pow</span></code>.
+To make a minimisation problem, the negation of this value is taken:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>80</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">fval</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">device</span><span class="p">.</span><span class="n">aggregation</span><span class="p">.</span><span class="n">pow</span><span class="p">;</span>
 </pre></div>
 </td></tr></table></div>
@@ -673,10 +648,8 @@ levelized cost of energy).</p>
 </div>
 <div class="section" id="set-optimization-solver">
 <h2>2.5. Set optimization solver<a class="headerlink" href="#set-optimization-solver" title="Permalink to this headline">¶</a></h2>
-<p>MATLAB’s <a class="reference external" href="https://uk.mathworks.com/help/optim/ug/fmincon.html">fmincon</a>
-optimization solver is used in <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a>.</p>
-<p>The initial values, <code class="docutils literal notranslate"><span class="pre">x0</span></code>, lower bounds, <code class="docutils literal notranslate"><span class="pre">lb</span></code>, and upper bounds,
-<code class="docutils literal notranslate"><span class="pre">ub</span></code> of the design variables can be set as follows.</p>
+<p>MATLAB’s <a class="reference external" href="https://uk.mathworks.com/help/optim/ug/fmincon.html">fmincon</a> optimization solver is used in <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a>.</p>
+<p>The initial values, <code class="docutils literal notranslate"><span class="pre">x0</span></code>, lower bounds, <code class="docutils literal notranslate"><span class="pre">lb</span></code>, and upper bounds, <code class="docutils literal notranslate"><span class="pre">ub</span></code> of the design variables can be set as follows.</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>25
 26
 27
@@ -708,13 +681,9 @@ optimization solver is used in <a class="reference external" href="https://githu
 </td></tr></table></div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal notranslate"><span class="pre">MaxFunctionEvaluations</span></code> is set to 5 in <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> to permit
-relatively quick runs, but can be increased to allow for a potentially
-better solution (with the other options left as-is, this should require 150
-function evaluations).</p>
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">MaxFunctionEvaluations</span></code> is set to 5 in <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> to permit relatively quick runs, but can be increased to allow for a potentially better solution (with the other options left as-is, this should require 150 function evaluations).</p>
 </div>
-<img alt="Progression of objective function value for RM3 example" src="../_images/example_optimplotfval.svg" /><p>In order to pass the above options, some dummy values must also be supplied for
-other arguments required by fmincon:</p>
+<img alt="Progression of objective function value for RM3 example" src="../_images/example_optimplotfval.svg" /><p>In order to pass the above options, some dummy values must also be supplied for other arguments required by fmincon:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>40
 41
 42
@@ -731,10 +700,8 @@ other arguments required by fmincon:</p>
 </div>
 <div class="section" id="run-study-and-view-results">
 <h2>2.6. Run study and view results<a class="headerlink" href="#run-study-and-view-results" title="Permalink to this headline">¶</a></h2>
-<p>Before using the objective function, the inputs must be simplified to allow
-fmincon to just pass the design variables. To do this an <a class="reference external" href="https://uk.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html">anonymous function</a>
-is defined, which requires the design variables as input and fixes the value of
-the Blueprint and SeaState object inputs:</p>
+<p>Before using the objective function, the inputs must be simplified to allow fmincon to just pass the design variables.
+To do this an <a class="reference external" href="https://uk.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html">anonymous function</a> is defined, which requires the design variables as input and fixes the value of the Blueprint and SeaState object inputs:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>49
 50</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Create simple objective function handle</span>
 <span class="n">objFun</span> <span class="p">=</span> <span class="p">@(</span><span class="n">x</span><span class="p">)</span> <span class="n">myWaveBotObjFun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">RM3Blueprint</span><span class="p">,</span> <span class="n">SS</span><span class="p">);</span>
@@ -746,26 +713,21 @@ the Blueprint and SeaState object inputs:</p>
 <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">fval</span><span class="p">]</span> <span class="p">=</span> <span class="n">fmincon</span><span class="p">(</span><span class="n">objFun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">Aeq</span><span class="p">,</span> <span class="n">Beq</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">NONLCON</span><span class="p">,</span> <span class="n">opts</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
-<p>Once the calculation is complete, the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">fval</span></code> variables show that
-the study has produced the following design:</p>
+<p>Once the calculation is complete, the <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">fval</span></code> variables show that the study has produced the following design:</p>
 <ul class="simple">
-<li>r1: 5 [m]</li>
-<li>r2: 7.5 [m]</li>
-<li>d1: 1.125 [m]</li>
-<li>d2: 42 [m]</li>
+<li><span class="math notranslate nohighlight">\(r_1\)</span>: 5 [m]</li>
+<li><span class="math notranslate nohighlight">\(r_2\)</span>: 7.5 [m]</li>
+<li><span class="math notranslate nohighlight">\(d_1\)</span>: 1.125 [m]</li>
+<li><span class="math notranslate nohighlight">\(d_2\)</span>: 42 [m]</li>
 <li>Maximum absorbed power: 2357934.25081 [W]</li>
 </ul>
 </div>
 <div class="section" id="examine-optimum-device">
 <h2>2.7. Examine optimum device<a class="headerlink" href="#examine-optimum-device" title="Permalink to this headline">¶</a></h2>
-<p>When MATLAB is executed in parallel, objects are copied to the parallel
-workers, executed and then destroyed. Therefore only the function value of each
-iteration remains in the MATLAB workspace. To allow the created devices to be
-recovered, WecOptTool stores their data in files, so that it can be retrieved
-later if desired. To recover the devices, the
-<a class="reference internal" href="api.html#+WecOptTool.Blueprint.recoverDevices" title="+WecOptTool.Blueprint.recoverDevices"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">recoverDevices()</span></code></a> method of the Blueprint
-subclass is called, which returns an array of <a class="reference internal" href="api.html#+WecOptTool.Device" title="+WecOptTool.Device"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Device</span></code></a>
-objects:</p>
+<p>When MATLAB is executed in parallel, objects are copied to the parallel workers, executed and then destroyed.
+Therefore only the function value of each iteration remains in the MATLAB workspace.
+To allow the created devices to be recovered, WecOptTool stores their data in files, so that it can be retrieved later if desired.
+To recover the devices, the <a class="reference internal" href="api.html#+WecOptTool.Blueprint.recoverDevices" title="+WecOptTool.Blueprint.recoverDevices"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">recoverDevices()</span></code></a> method of the Blueprint subclass is called, which returns an array of <a class="reference internal" href="api.html#+WecOptTool.Device" title="+WecOptTool.Device"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Device</span></code></a> objects:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>55
 56</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Recover device object of best simulation and plot its power per freq</span>
 <span class="n">devices</span> <span class="p">=</span> <span class="n">RM3Blueprint</span><span class="p">.</span><span class="n">recoverDevices</span><span class="p">();</span>
@@ -778,9 +740,8 @@ the devices is transferred from the Blueprint to the Device objects.
 Therefore, when the Device objects are deleted, so are the associated
 files.</p>
 </div>
-<p>Next, the device that matches the best solution returned by fmincon must
-be found. To do this, compare the <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">geomParams</span></code>
-parameter of the devices, until a match is found, as follows:</p>
+<p>Next, the device that matches the best solution returned by fmincon must be found.
+To do this, compare the <code class="xref mat mat-attr docutils literal notranslate"><span class="pre">geomParams</span></code> parameter of the devices, until a match is found, as follows:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>58
 59
 60
@@ -794,9 +755,7 @@ parameter of the devices, until a match is found, as follows:</p>
 <span class="k">end</span>
 </pre></div>
 </td></tr></table></div>
-<p>Finally, by using the <a class="reference internal" href="api.html#+WecOptTool.+plot.powerPerFreq" title="+WecOptTool.+plot.powerPerFreq"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">WecOptTool.plot.powerPerFreq()</span></code></a> function, the
-spectral distribution of energy absorbed by the resulting design for each of
-the eight sea states can be shown.</p>
+<p>Finally, by using the <a class="reference internal" href="api.html#+WecOptTool.+plot.powerPerFreq" title="+WecOptTool.+plot.powerPerFreq"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">WecOptTool.plot.powerPerFreq()</span></code></a> function, the spectral distribution of energy absorbed by the resulting design for each of the eight sea states can be shown.</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>65</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">WecOptTool</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">powerPerFreq</span><span class="p">(</span><span class="n">bestDevice</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>

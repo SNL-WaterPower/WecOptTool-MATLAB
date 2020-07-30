@@ -174,19 +174,14 @@
 <span id="model"></span><h1>3. Creating a New WEC Model<a class="headerlink" href="#creating-a-new-wec-model" title="Permalink to this headline">¶</a></h1>
 <p>This section explains how to create a WecOptTool model for a new WEC and will
 be completed shortly.</p>
-<p>The WecOptTool framework encapsulates the WEC design and control
-co-optimization process using two key classes. The
-<a class="reference internal" href="api.html#+WecOptTool.Blueprint" title="+WecOptTool.Blueprint"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Blueprint</span></code></a> class is used to describe the potential
-forms (e.g. shape, control type, etc.) that a WEC device might take. The user
-of WecOptTool must create a <a class="reference external" href="https://uk.mathworks.com/help/matlab/matlab_oop/abstract-classes-and-interfaces.html">concrete subclass</a> of the <a class="reference internal" href="api.html#+WecOptTool.Blueprint" title="+WecOptTool.Blueprint"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Blueprint</span></code></a> class that describes the
-potential geometry, motion and control options for their chosen WEC design. For
-this example, the subclass is already prepared in the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/RM3.m"><code class="docutils literal notranslate"><span class="pre">RM3.m</span></code></a> file.</p>
-<p>The <a class="reference internal" href="api.html#+WecOptTool.Device" title="+WecOptTool.Device"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Device</span></code></a> class represents a device with a chosen
-set of design parameters, created from a Blueprint subclass. Once the user has
-created a Blueprint subclass, Device objects are created using the Blueprint,
-for a specified design and control system. For more information on how
-Blueprint and Device classes are used see the <a class="reference internal" href="optimization.html#optimization"><span class="std std-ref">Optimizing an Existing WEC Model</span></a> and
-<a class="reference internal" href="api.html#api"><span class="std std-ref">API</span></a> sections.</p>
+<p>The WecOptTool framework encapsulates the WEC design and control co-optimization process using two key classes.
+The <a class="reference internal" href="api.html#+WecOptTool.Blueprint" title="+WecOptTool.Blueprint"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Blueprint</span></code></a> class is used to describe the potential forms (e.g.
+shape, control type, etc.) that a WEC device might take.
+The user of WecOptTool must create a <a class="reference external" href="https://uk.mathworks.com/help/matlab/matlab_oop/abstract-classes-and-interfaces.html">concrete subclass</a> of the <a class="reference internal" href="api.html#+WecOptTool.Blueprint" title="+WecOptTool.Blueprint"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Blueprint</span></code></a> class that describes the potential geometry, motion and control options for their chosen WEC design.
+For this example, the subclass is already prepared in the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/RM3.m"><code class="docutils literal notranslate"><span class="pre">RM3.m</span></code></a> file.</p>
+<p>The <a class="reference internal" href="api.html#+WecOptTool.Device" title="+WecOptTool.Device"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Device</span></code></a> class represents a device with a chosen set of design parameters, created from a Blueprint subclass.
+Once the user has created a Blueprint subclass, Device objects are created using the Blueprint, for a specified design and control system.
+For more information on how Blueprint and Device classes are used see the <a class="reference internal" href="optimization.html#optimization"><span class="std std-ref">Optimizing an Existing WEC Model</span></a> and <a class="reference internal" href="api.html#api"><span class="std std-ref">API</span></a> sections.</p>
 </div>
 
 
