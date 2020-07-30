@@ -21,7 +21,7 @@
 function result = isParallel()
     % Determine if the current process is being run in parallel
     
-    import WecOptLib.utils.hasParallelToolbox
+    import WecOptTool.system.hasParallelToolbox
     
     if ~hasParallelToolbox()
         result = false;

@@ -1,5 +1,5 @@
-function mustBeEqualLength(x, y)
-    % Returns an error if x and y are not of equal lengths
+function mustBeFunctionHandle(input)
+    % Returns an error if input is not a function handle
 
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -21,8 +21,9 @@ function mustBeEqualLength(x, y)
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    msg = 'Inputs must be of equal length';
-    ID = 'WecOptLib:Validation:NotEqualLength';
-    assert(length(x)==length(y),ID,msg);
+    if ~isa(input, 'function_handle')
+        error('WecOptTool:Validation:NotFunctionHandle',     ...
+              'Input must be a function handle')
+    end
     
 end

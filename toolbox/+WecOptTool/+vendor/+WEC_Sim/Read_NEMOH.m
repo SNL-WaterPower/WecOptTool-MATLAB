@@ -17,7 +17,7 @@ function hydro = Read_NEMOH(hydro,filedir)
 % See ‘…\WEC-Sim\tutorials\BEMIO\NEMOH\...’ for examples of usage.
 
 % Import other WEC-Sim functions (Modified for WecOptTool 2020)
-import WecOptLib.vendor.WEC_Sim.*
+import WecOptTool.vendor.WEC_Sim.*
 
 % Ensure filedir is char (Added for WecOptTool 2020)
 filedir = convertStringsToChars(filedir);

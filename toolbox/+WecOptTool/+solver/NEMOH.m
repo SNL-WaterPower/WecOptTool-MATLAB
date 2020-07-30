@@ -81,7 +81,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
                 error(errMsg);
             end
 
-            WOTDataPath = WecOptLib.utils.getUserPath();
+            WOTDataPath = WecOptTool.system.getUserPath();
             configPath = fullfile(WOTDataPath, 'config.json');
             config = jsondecode(fileread(configPath));
             nemohPath = fullfile(config.nemohPath);
@@ -145,13 +145,13 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             for imesh = meshes
                 obj.makeHydrostatics(imesh, singleBody);
                 meshFileName = string(imesh.name) + ".dat";
-                meshFilePath = fullfile(obj.folder, "mesh", meshFileName);
+                meshFilePath = fullfile(obj.path, "mesh", meshFileName);
                 obj.writeMeshFile(imesh, meshFilePath)
             end
             
             obj.writeNemohCal(meshes, w)
             
-            rundir = obj.folder;
+            rundir = obj.path;
             startdir = pwd;
             cd(rundir);
             rundir = '.';
@@ -168,8 +168,8 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             obj.nemohCall(obj.nemoh_postProc_command);
 
             hydro = struct();
-            hydro = WecOptLib.vendor.WEC_Sim.Read_NEMOH(hydro, rundir);
-            hydro.rundir = obj.folder;
+            hydro = WecOptTool.vendor.WEC_Sim.Read_NEMOH(hydro, rundir);
+            hydro.rundir = obj.path;
 
             cd(startdir)
 
@@ -183,7 +183,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             % Originally licensed under the Apache License, Version 2.0
             % Written by A. Babarit, LHEEA Lab.
             
-            rundir = obj.folder;
+            rundir = obj.path;
             startdir = pwd;
             cd(rundir);
             rundir = '.';
@@ -275,7 +275,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
         function writeNemohCal(obj, meshes, w)
             
             nBody = length(meshes);
-            filePath = fullfile(obj.folder, 'Nemoh.cal');
+            filePath = fullfile(obj.path, 'Nemoh.cal');
             fileStrings = obj.getCalHeader(obj.rho, obj.g, nBody);
             
             for i = 1:nBody

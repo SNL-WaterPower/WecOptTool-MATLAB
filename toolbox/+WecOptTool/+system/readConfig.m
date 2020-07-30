@@ -21,7 +21,7 @@ function value = readConfig(key, varargin)
 %READCONFIG Read the value for the given key in the config file
 
     % Default directory for config
-    WOTDataPath = WecOptLib.utils.getUserPath();
+    WOTDataPath = WecOptTool.system.getUserPath();
 
     p = inputParser;
     validText = @(x) isstring(x) || ischar(x);

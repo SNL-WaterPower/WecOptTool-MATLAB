@@ -45,10 +45,7 @@ function hydro = getHydroScalar(folder, lambda, w)
            
 end
 
-function hydro = getHydroParametric(folder, r1, r2, d1, d2, S, freqStep)
-    
-    S = struct(S);
-    w = WecOptLib.utils.seaStatesGlobalW(S, freqStep);
+function hydro = getHydroParametric(folder, r1, r2, d1, d2, w)
                
     if w(1) == 0
         w = w(2:end);

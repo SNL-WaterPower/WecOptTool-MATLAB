@@ -1,5 +1,5 @@
-function mustBeFunctionHandle(input)
-    % Returns an error if input is not a function handle
+function mustBeEqualLength(x, y)
+    % Returns an error if x and y are not of equal lengths
 
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -21,9 +21,8 @@ function mustBeFunctionHandle(input)
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    if ~isa(input, 'function_handle')
-        error('WecOptLib:Validation:NotFunctionHandle',     ...
-              'Input must be a function handle')
-    end
+    msg = 'Inputs must be of equal length';
+    ID = 'WecOptTool:Validation:NotEqualLength';
+    assert(length(x)==length(y),ID,msg);
     
 end

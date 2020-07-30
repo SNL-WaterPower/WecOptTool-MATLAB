@@ -80,7 +80,7 @@ function dependencyCheck()
     
     [parallelToolboxFound,      ...
         parallelToolboxLicensed,   ...
-        parallelToolboxInstalled] = WecOptLib.utils.hasParallelToolbox();
+        parallelToolboxInstalled] = WecOptTool.system.hasParallelToolbox();
     
     if parallelToolboxFound
         fprintf('Parallel Toolbox:              Found\n');

@@ -1,8 +1,8 @@
 
-clear controlParams performances
+clear controlParams performances r
 
 % define sea state of interest
-S = WecOptLib.tests.data.exampleSpectrum();
+S = WecOptTool.tests.data.exampleSpectrum();
 
 % Create a SeaState object before optimisation to avoid repeated warnings.
 SS = WecOptTool.SeaState(S, "resampleByError", 0.1);

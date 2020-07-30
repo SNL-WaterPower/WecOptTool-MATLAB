@@ -1,10 +1,8 @@
-function hydro = existingNEMOH(folder, nemohFolder)
+function hydro = existingNEMOH(nemohFolder)
     % A predefined geometry callback for reading an existing NEMOH
     % solution.
     %
     % Arguments:
-    %     folder (string):
-    %         folder to store resources (unused)
     %     nemohFolder (string):
     %         Path to the folder containing existing NEMOH output files
     %
@@ -38,8 +36,7 @@ function hydro = existingNEMOH(folder, nemohFolder)
     %     <https://www.gnu.org/licenses/>. 
     
     hydro = struct();
-    hydro = WecOptLib.vendor.WEC_Sim.Read_NEMOH(hydro,          ...
-                                                nemohFolder);
-    hydro = WecOptTool.types.Hydro(hydro);
+    hydro = WecOptTool.vendor.WEC_Sim.Read_NEMOH(hydro,     ...
+                                                 nemohFolder);
     
 end

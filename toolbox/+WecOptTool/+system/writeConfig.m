@@ -21,7 +21,7 @@ function writeConfig(key, value, varargin)
 %WRITECONFIG Add given key with given value to config file
     
     % Default directory for config
-    WOTDataPath = WecOptLib.utils.getUserPath();
+    WOTDataPath = WecOptTool.system.getUserPath();
 
     p = inputParser;
     validText = @(x) isstring(x) || ischar(x);

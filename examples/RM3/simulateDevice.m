@@ -407,7 +407,7 @@ function [pow, powPerFreq] = getPSPhasePower(motion, ph)
     uT = motion.m_scale * motion.Phip1' * uhat;
     Pt = (velTBody2 - velTBody1) .* uT;
     pow = trapz(motion.tkp, Pt) / (motion.tkp(end) - motion.tkp(1));
-    assert(WecOptLib.utils.isClose(pow, sum(powPerFreq)))
+    assert(WecOptTool.math.isClose(pow, sum(powPerFreq)))
     
 end
 

@@ -36,7 +36,7 @@ function c = bisection(f, a, b, options)
     %     <https://www.gnu.org/licenses/>.
     
     arguments
-        f {WecOptLib.validation.mustBeFunctionHandle};
+        f {WecOptTool.validation.mustBeFunctionHandle};
         a {mustBeNumeric, mustBeFinite};
         b {mustBeNumeric, mustBeFinite, mustBeGreaterThan(b, a)};
         options.tol {mustBeNumeric,     ...
@@ -50,7 +50,7 @@ function c = bisection(f, a, b, options)
     end
     
     if f(a) * f(b) > 0
-        eID = "WecOptLib:bisection:badInterval";
+        eID = "WecOptTool:bisection:badInterval";
         error(eID, "Incorrect initial interval [a, b]")
     end
 
@@ -63,7 +63,7 @@ function c = bisection(f, a, b, options)
         if abs(f(c)) < options.tol
             return
         elseif (b - a) / 2 < eps
-            eID = "WecOptLib:bisection:searchSpaceClosed";
+            eID = "WecOptTool:bisection:searchSpaceClosed";
             error(eID, 'Search space closed before finding a solution')
         end
         
@@ -77,7 +77,7 @@ function c = bisection(f, a, b, options)
         
     end
     
-    eID = "WecOptLib:bisection:tooManyIterations";
+    eID = "WecOptTool:bisection:tooManyIterations";
     error(eID, 'Number of iterations exceeded')
     
 end

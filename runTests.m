@@ -5,7 +5,7 @@ function results = runTests()
     import matlab.unittest.plugins.TestReportPlugin;
 
     % Define test suite
-    suite = TestSuite.fromPackage('WecOptLib.tests',    ...
+    suite = TestSuite.fromPackage('WecOptTool.tests',    ...
                                   'IncludingSubpackages', true);
     
     % Build the runner

@@ -2,8 +2,9 @@ classdef RM3BlueprintParametricCCTest < matlab.unittest.TestCase
  
     properties
         SS
-        blueprint
-        device
+        performance
+        folder
+        rundir
     end
  
     methods(TestClassSetup)
@@ -12,28 +13,27 @@ classdef RM3BlueprintParametricCCTest < matlab.unittest.TestCase
 
             import matlab.unittest.fixtures.PathFixture
             
-            addFolder = fullfile(WecOptLib.utils.getSrcRootPath(),  ...
-                                 "examples",                        ...
+            addFolder = fullfile(WecOptTool.system.getSrcRootPath(),    ...
+                                 "examples",                            ...
                                  "RM3");
             testCase.applyFixture(PathFixture(addFolder));
             
-            S = WecOptLib.tests.data.exampleSpectrum();
-            S.ph = rand(length(S.w),1)* 2 * pi;
-            testCase.SS = WecOptTool.types("SeaState", S,           ...
-                                           "extendFrequencies", 2,  ...
-                                           "resampleByStep", 0.05);
+            S = WecOptTool.tests.data.exampleSpectrum();
+            testCase.SS = WecOptTool.SeaState(S,                        ...
+                                              "extendFrequencies", 2,   ...
+                                              "resampleByStep", 0.05);
             w = testCase.SS.getRegularFrequencies(0.5);
+            testCase.folder = WecOptTool.AutoFolder();
 
-            testCase.blueprint = RM3();
+            deviceHydro = designDevice('parametric',            ...
+                                       testCase.folder.path,    ...
+                                       10, 15, 3, 42,           ...
+                                       w);
             
-            geomMode.type = 'parametric';
-            geomMode.params = {10, 15, 3, 42, w};
-            cntrlMode.type = 'CC';
-
-            testCase.device = makeDevices(testCase.blueprint,   ...
-                                          geomMode,             ...
-                                          cntrlMode);
-            simulate(testCase.device, testCase.SS);
+            testCase.rundir = deviceHydro.rundir;
+            testCase.performance = simulateDevice(deviceHydro,   ...
+                                                  testCase.SS,   ...
+                                                  'CC');
             
         end
         
@@ -44,19 +44,16 @@ classdef RM3BlueprintParametricCCTest < matlab.unittest.TestCase
         function test_existingRunFiles(testCase)
                         
             tol = 5 * eps;
-            madeFile = testCase.device.hydro.rundir;
-            geomMode.type = 'existing';
-            geomMode.params = {madeFile};
-            cntrlMode.type = 'CC';
+            madeFile = testCase.rundir;
             
-            newDevice = makeDevices(testCase.blueprint,     ...
-                                    geomMode,               ...
-                                    cntrlMode);
-            simulate(newDevice, testCase.SS);
+            deviceHydro = designDevice('existing', madeFile);
+            newPerformance = simulateDevice(deviceHydro,   ...
+                                            testCase.SS,   ...
+                                            'CC');
             
-            verifyEqual(testCase,                           ...
-                        testCase.device.aggregation.pow,    ...
-                        newDevice.aggregation.pow,          ...
+            verifyEqual(testCase,                ...
+                        testCase.performance,    ...
+                        newPerformance,          ...
                         'RelTol', tol);
             
         end

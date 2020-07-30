@@ -7,10 +7,10 @@
 % S = bretschneider([],[8,10],0);
 
 % Alternatively load a single example spectrum
-% S = WecOptLib.tests.data.exampleSpectrum();
+% S = WecOptTool.tests.data.exampleSpectrum();
 
 % Or load an example with multiple sea-states (8 differing spectra)
-S = WecOptLib.tests.data.example8Spectra();
+S = WecOptTool.tests.data.example8Spectra();
 
 % Now store the sea-state in a SeaState data type and trim off frequencies
 % that have less that 1% of the max spectral density
@@ -45,13 +45,13 @@ folder = WecOptTool.AutoFolder();
 %% Optimization Execution
 
 % Create simple objective function handle
-objFun = @(x) myWaveBotObjFun(x, SS, folder.folder);
+objFun = @(x) myWaveBotObjFun(x, SS, folder.path);
 
 % Call the solver
 [x, fval] = fmincon(objFun, x0, A, B, Aeq, Beq, lb, ub, NONLCON, opts);
 
 %% Recover device object of best simulation and plot its power per freq
-performances = recoverPerformances(folder.folder);
+performances = recoverPerformances(folder.path);
     
 for testCell = performances
     test = testCell{1};
@@ -101,8 +101,8 @@ end
 
 function performances = recoverPerformances(folder)
 
-    pDirs = WecOptLib.utils.getFolders(folder,  ...
-                                            "absPath", true);
+    pDirs = WecOptTool.system.getFolders(folder,  ...
+                                         "absPath", true);
     nDirs = length(pDirs);
     performances = {};
 

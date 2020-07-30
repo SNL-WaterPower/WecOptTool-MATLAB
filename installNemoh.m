@@ -28,13 +28,13 @@ function installNemoh(nemohPath)
     
     % Check if the a current path is set
     try
-        oldNemohPath = WecOptLib.utils.readConfig('nemohPath');
+        oldNemohPath = WecOptTool.system.readConfig('nemohPath');
     catch
         oldNemohPath = "";
     end
     
     % Update the config file
-    WecOptLib.utils.writeConfig('nemohPath', nemohPath)
+    WecOptTool.system.writeConfig('nemohPath', nemohPath)
     
     % Check installation
     nemohExistFlag = WecOptTool.base.NEMOH.isNemohInPath();
@@ -50,7 +50,7 @@ function installNemoh(nemohPath)
         fprintf(msg);
         
         % Revert back to the old config
-        WecOptLib.utils.writeConfig('nemohPath', oldNemohPath)
+        WecOptTool.system.writeConfig('nemohPath', oldNemohPath)
         
     end
 

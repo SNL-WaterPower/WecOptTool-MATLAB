@@ -10,7 +10,7 @@ classdef AutoFolder < handle
     %     base (optional string): path of the parent folder.
     %
     % Attributes:
-    %     folder (string): path to unique folder
+    %     path (string): path to unique folder
     %
     % --
     % 
@@ -40,7 +40,7 @@ classdef AutoFolder < handle
     %     <https://www.gnu.org/licenses/>.
     
     properties
-        folder
+        path
     end
     
     properties (Access = private)
@@ -78,11 +78,11 @@ classdef AutoFolder < handle
             %   make the destination folder
             %
             
-            if length(dir(obj.folder)) == 2
+            if length(dir(obj.path)) == 2
                 return
             end
             
-            copyfile(obj.folder, targetPath);
+            copyfile(obj.path, targetPath);
             
         end
         
@@ -92,19 +92,19 @@ classdef AutoFolder < handle
         
         function obj = makeFolder(obj, base)
             
-            if obj.folder
+            if obj.path
                 errStr = "folder is already defined";
                 error('WecOptTool:AutoFolder:FolderDefined', errStr)
             end
             
             % Try to ensure folder is unique and reserved
             if nargin > 1
-                obj.folder = tempname(base);
+                obj.path = tempname(base);
             else
-                obj.folder = tempname;
+                obj.path = tempname;
             end
             
-            [status, ~, message] = mkdir(obj.folder);
+            [status, ~, message] = mkdir(obj.path);
             
             if ~status || strcmp(message, 'MATLAB:MKDIR:DirectoryExists')
                 errStr = "Failed to create unique folder";
@@ -114,13 +114,13 @@ classdef AutoFolder < handle
         end
         
         function obj = rmFolder(obj)
-            if isfolder(obj.folder)
-                WecOptLib.utils.rmdirRetry(obj.folder);
+            if isfolder(obj.path)
+                WecOptTool.system.rmdirRetry(obj.path);
             end
         end
                 
         function delete(obj)
-            if obj.autoRemoveFolder && ~WecOptLib.utils.isParallel()
+            if obj.autoRemoveFolder && ~WecOptTool.system.isParallel()
                 obj.rmFolder();
             end
         end

@@ -107,7 +107,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             end
             
             startdir = pwd;
-            cd(obj.folder);
+            cd(obj.path);
             rundir = '.';
             
             if exist(fullfile(rundir,'input.txt'), 'file') ~= 2
@@ -117,7 +117,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
                 fclose(fip);
             end
 
-            WOTDataPath = WecOptLib.utils.getUserPath();
+            WOTDataPath = WecOptTool.system.getUserPath();
             configPath = fullfile(WOTDataPath, 'config.json');
             config = jsondecode(fileread(configPath));
             nemohPath = fullfile(config.nemohPath);
@@ -172,7 +172,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
                 fprintf('\n --> Number of panels (max 2000) : %g \n',nf);
             end
 
-             % obj.folder;
+             % obj.path;
 
             % If this is a multi-body device the mesh and results 
             % directories will already exist

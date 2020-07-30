@@ -55,7 +55,7 @@ classdef SeaState
     %      #. extended so that the maximum frequency is 4 times the 
     %         trimmed maximum
     %
-    %    >>> S = WecOptLib.tests.data.example8Spectra();
+    %    >>> S = WecOptTool.tests.data.example8Spectra();
     %    >>> SS = WecOptTool.types("SeaState", S,           ...
     %    ...                       "resampleByError", 0.05, ...
     %    ...                       "trimFrequencies", 0.01, ...
@@ -422,7 +422,7 @@ classdef SeaState
             %    >>> Hm0 = 5;
             %    >>> Tp = 8;
             %    >>> S = bretschneider([],[Hm0,Tp]);
-            %    >>> WecOptLib.utils.checkSpectrum(S)
+            %    >>> WecOptTool.utils.checkSpectrum(S)
             %
             
             arguments
@@ -588,7 +588,7 @@ classdef SeaState
             % Example:
             %
             %     >>> import WecOptTool.types.SeaState
-            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> e = SeaState.getSpecificEnergy(S);
             %     >>> disp(e)
             %        4.0264e+04
@@ -631,7 +631,7 @@ classdef SeaState
             %     in a spectrum after resampling
             %
             %     >>> import WecOptTool.types.SeaState
-            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> newS = SeaState.resampleByStep(S, 0.2);
             %     >>> error = SeaState.getMaxAbsoluteDensityError(S, newS);
             %     >>> disp(error)
@@ -640,10 +640,9 @@ classdef SeaState
             
             arguments
                 trueS {WecOptTool.SeaState.checkSpectrum(trueS)}
-                approxS                                                 ...
-                  {WecOptTool.SeaState.checkSpectrum(approxS),    ...
-                   WecOptLib.validation.mustBeEqualLength(trueS,        ...
-                                                          approxS)}
+                approxS {WecOptTool.SeaState.checkSpectrum(approxS),	...
+                         WecOptTool.validation.mustBeEqualLength(trueS, ...
+                                                                 approxS)}
             end
             
             import WecOptTool.SeaState
@@ -687,7 +686,7 @@ classdef SeaState
             %     after resampling
             %
             %     >>> import WecOptTool.types.SeaState
-            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> newS = SeaState.resampleByStep(S, 0.2);
             %     >>> error = SeaState.getRelativeEnergyError(S, newS);
             %     >>> disp(error)
@@ -696,10 +695,9 @@ classdef SeaState
             
             arguments
                 trueS {WecOptTool.SeaState.checkSpectrum(trueS)}
-                approxS                                                 ...
-                  {WecOptTool.SeaState.checkSpectrum(approxS),    ...
-                   WecOptLib.validation.mustBeEqualLength(trueS,        ...
-                                                          approxS)}
+                approxS {WecOptTool.SeaState.checkSpectrum(approxS),    ...
+                         WecOptTool.validation.mustBeEqualLength(trueS, ...
+                                                                 approxS)}
             end
             
             import WecOptTool.SeaState
@@ -732,7 +730,7 @@ classdef SeaState
             %     spectral density
             %
             %     >>> import WecOptTool.types.SeaState
-            %     >>> S = WecOptLib.tests.data.example8Spectra();
+            %     >>> S = WecOptTool.tests.data.example8Spectra();
             %     >>> newS = SeaState.trimFrequencies(S, 0.01);
             %     
             
@@ -774,7 +772,7 @@ classdef SeaState
             %     Double the frequency range of the given spectrum
             %
             %     >>> import WecOptTool.types.SeaState
-            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> disp(max(S.w))
             %         3.2000
             %     <BLANKLINE>
@@ -832,7 +830,7 @@ classdef SeaState
             %     maximum
             %
             %     >>> import WecOptTool.types.SeaState
-            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> newS = SeaState.resampleByError(S, 0.05);
             %     >>> error = SeaState.getMaxAbsoluteDensityError(S, newS);
             %     >>> disp(error / max(S.S))
@@ -862,7 +860,7 @@ classdef SeaState
             assert(isequaln(oldS,[S.S]))
             
             w = [S.w];
-            dw = WecOptLib.utils.bisection(@ObjFun, min_dw, max(w(:)));
+            dw = WecOptTool.math.bisection(@ObjFun, min_dw, max(w(:)));
             [S, errors] = SeaState.resampleByStep(S, dw);
             
         end
@@ -890,7 +888,7 @@ classdef SeaState
             %     Resample using a fixed angular frequency step of 0.2
             %
             %     >>> import WecOptTool.types.SeaState
-            %     >>> S = WecOptLib.tests.data.exampleSpectrum();
+            %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> newS = SeaState.resampleByStep(S, 0.2);
             %     >>> dw = uniquetol(diff(newS.w), eps('single'));
             %     >>> disp(dw)
@@ -935,6 +933,53 @@ classdef SeaState
             abserrors = SeaState.getMaxAbsoluteDensityError(baseS, S);
             errors = abserrors ./ max([baseS.S]);
             
+        end
+        
+        function SS = regularWave(w, sdata)
+            % Returns a regular wave using a WAFO-like struct
+            %
+            % Arguments:
+            %     w (array): frequency vector
+            %     sdata (array):
+            %         [A, T], where A is the amplitude and T is the period
+            %
+            % Returns:
+            %     :mat:class:`+WecOptTool.SeaState`: SeaState object
+            %
+            % See also jonswap
+
+            if isempty(w)
+                error('NOT YET IMPLEMENTED') % TODO - copy what WAFO does
+            end
+
+            assert(issorted(w));
+            dws = diff(w);
+            assert(all(dws - dws(1) < eps*1e3)); % TODO - not sure why == won't work
+            assert(w(1) == dws(1));
+            assert(iscolumn(w));
+
+            S.w = w;
+            dw = dws(1);
+
+            A = sdata(1);
+            T = sdata(2);
+
+            [~,idx] = min(abs(w - 2*pi/T));
+
+            S.S = zeros(size(w));
+            S.S(idx) = A^2/(2*dw);
+
+            S.date = datestr(now);
+            S.note =['Regular wave, A = ' num2str(A)  ', T = ' num2str(T)];
+            S.type = 'freq';
+            S.h = Inf;
+
+            S.tr = [];
+            S.phi = 0;
+            S.norm = 0;
+
+            SS = WecOptTool.SeaState(S);
+
         end
         
     end

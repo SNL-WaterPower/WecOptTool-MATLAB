@@ -52,7 +52,7 @@ A = 0.125/2;
 wp = w(6);
 fp = wp/(2*pi);
 Tp = 1/fp; 
-SS = WecOptLib.utils.regularWave(w,[A,Tp],0);
+SS = WecOptTool.SeaState.regularWave(w,[A,Tp]);
 
 %%
 controlParams.type = 'CC';
@@ -62,7 +62,7 @@ controlParams(3).params = {1e10 1e9}; % {zmax, Fmax}
 
 folder = WecOptTool.AutoFolder();
 w = SS.getRegularFrequencies(0.5);
-deviceHydro = designDevice('scalar', folder.folder, 1, w);
+deviceHydro = designDevice('scalar', folder.path, 1, w);
 
 %%
 
