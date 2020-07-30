@@ -7,8 +7,7 @@ API
 WecOptTool
 ----------
 
-The top-level WecOptTool package provides the main interface for 
-the toolbox.
+The top-level WecOptTool package provides the main interface for the toolbox.
 
 .. mat:autoclass:: +WecOptTool.Blueprint(baseFolder)
     :members:
@@ -29,8 +28,7 @@ the toolbox.
 WecOptTool.callbacks
 --------------------
 
-The mesh callbacks provides callbacks for use with user defined
-blueprints created using the :mat:class:`+WecOptTool.Blueprint` class.
+The mesh callbacks provides callbacks for use with user defined blueprints created using the :mat:class:`+WecOptTool.Blueprint` class.
 This allows reuse of commonly used functionality between blueprints.
 
 WecOptTool.callbacks.geometry
@@ -53,9 +51,7 @@ The plot subpackage provides plots.
 WecOptTool.types
 ----------------
 
-The types subpackage provides data type classes, that contain
-parameters for recording the outputs of, and providing inputs to, the
-various stages of a WecOptTool calculation.
+The types subpackage provides data type classes, that contain parameters for recording the outputs of, and providing inputs to, the various stages of a WecOptTool calculation.
 
 .. mat:automodule:: +WecOptTool.+types
 
@@ -78,8 +74,7 @@ various stages of a WecOptTool calculation.
 WecOptTool.mesh
 ---------------
 
-The mesh subpackage provides mesh generation classes, that provide
-the standard method ``makeMesh``.
+The mesh subpackage provides mesh generation classes, that provide the standard method ``makeMesh``.
 
 .. mat:automodule:: +WecOptTool.+mesh
     :members:
@@ -87,8 +82,7 @@ the standard method ``makeMesh``.
 WecOptTool.solver
 -----------------
 
-The solver subpackage provides hydrodynamic solver classes, that 
-provide the standard method ``getHydro``.
+The solver subpackage provides hydrodynamic solver classes, that provide the standard method ``getHydro``.
 
 .. mat:automodule:: +WecOptTool.+solver
     :members:
