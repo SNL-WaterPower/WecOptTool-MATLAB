@@ -190,7 +190,12 @@ classdef Performance < handle
                     
                     pow_t = getTimeRes(obj(ii), 'pow', t, jj);
                     tmp.pow_max(ii, jj) = max(abs(pow_t));
-                    tmp.pow_thd(ii, jj) = thd(pow_t);
+                    
+                    try
+                        tmp.pow_thd(ii, jj) = thd(pow_t);
+                    catch
+                        tmp.pow_thd(ii, jj) = NaN;
+                    end
                     
                     pos_t = getTimeRes(obj(ii), 'pos', t, jj);
                     tmp.pos_max(ii, jj) = max(abs(pos_t));

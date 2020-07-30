@@ -40,7 +40,7 @@
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
 clc
-clear
+clear controlParams r
 close all
 
 %% define sea state of interest
@@ -55,24 +55,35 @@ Tp = 1/fp;
 SS = WecOptLib.utils.regularWave(w,[A,Tp],0);
 
 %%
-
-geomParams.type = 'scalar';
-w = SS.getRegularFrequencies(0.5);
-geomParams.params = {1, w};
 controlParams.type = 'CC';
 controlParams(2).type = 'P';
 controlParams(3).type = 'PS';
 controlParams(3).params = {1e10 1e9}; % {zmax, Fmax}
 
-blueprint = WaveBot();
-myWaveBots = blueprint.makeDevices(geomParams,controlParams);
+folder = WecOptTool.AutoFolder();
+w = SS.getRegularFrequencies(0.5);
+deviceHydro = designDevice('scalar', folder.folder, 1, w);
 
 %%
 
-for ii = 1:length(myWaveBots)
+for ii = 1:length(controlParams)
+    
+    disp("Simulation " + (ii) + " of " + length(controlParams))
     rng(3) % run same wave phasing for each case
-    r(ii) = myWaveBots(ii).simulate(SS);
-    r(ii).name = myWaveBots(ii).controlType;
+    
+    if ~isempty(controlParams(ii).params)
+        r(ii) = simulateDevice(deviceHydro,                 ...
+                               SS,                          ...
+                               controlParams(ii).type,      ...
+                               controlParams(ii).params{:});
+    else
+        r(ii) = simulateDevice(deviceHydro,                 ...
+                               SS,                          ...
+                               controlParams(ii).type);
+    end
+    
+    r(ii).name = controlParams(ii).type;
+    
 end
 
 %% plot results

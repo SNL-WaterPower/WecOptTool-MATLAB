@@ -1,89 +1,25 @@
-classdef WaveBot < WecOptTool.Blueprint
+function performance = simulateDevice(hydro, seastate, controlType, varargin)
     % WaveBot   WEC based on the Sandia "WaveBot" device.
     %
     % The WaveBot is a model-scale wave energy converter (WEC) tested in
     % the Navy's Manuevering and Sea Keeping (MASK) basin. Reports and
     % papers about the WaveBot are available at advweccntrls.sandia.gov.
     
-    properties
-        
-        geometryCallbacks = struct(                                     ...
-            'existing', @WecOptTool.callbacks.geometry.existingNEMOH,   ...
-            'scalar', @getHydroScalar,                                  ...
-            'parametric', @getHydroParametric)
-        
-        staticModelCallback = @getStaticModel
-        dynamicModelCallback = @getDynamicModel
-        
-        controllerCallbacks = struct('CC', @complexCongugateControl,...
-                                     'P',  @dampingControl,...
-                                     'PS', @psControl)
-                                         
+    static = getStaticModel(hydro);
+    motion = getDynamicModel(static, hydro, seastate);
+    
+    switch controlType
+    
+        case 'CC'
+            performance = complexCongugateControl(motion, varargin{:});
+        case 'P'
+            performance = dampingControl(motion, varargin{:});
+        case 'PS'
+            performance = psControl(motion, varargin{:});
+            
     end
-    
+        
 end
-
-%% Device-specific functions
-% The following functions are defined here and referenced by the
-% handles/callbacks within the Blueprint class
-
-function hydro = getHydroScalar(folder, lambda, w)
-                   
-    if w(1) == 0
-        w = w(2:end);
-    end
-    
-    r = lambda * [0, 0.88, 0.88, 0.35, 0];
-    z = lambda * [0.2, 0.2, -0.16, -0.53, -0.53];
-
-    % Mesh
-    ntheta = 20;
-    nfobj = 200;
-    zG = 0;
-    
-    meshes = WecOptTool.mesh("AxiMesh",    ...
-                             folder,       ...
-                             r,            ...
-                             z,            ...
-                             ntheta,       ...
-                             nfobj,        ...
-                             zG,           ...
-                             1);
-    
-    hydro = WecOptTool.solver("NEMOH", folder, meshes, w);
-           
-end
-
-function hydro = getHydroParametric(folder, r1, r2, d1, d2, S, freqStep)
-    
-    S = struct(S);
-    w = WecOptLib.utils.seaStatesGlobalW(S, freqStep);
-               
-    if w(1) == 0
-        w = w(2:end);
-    end
-    
-    r = [0, r1, r1, r2, 0];
-    z = [0.2, 0.2, -d1, -d2, -d2];
-
-    % Mesh
-    ntheta = 20;
-    nfobj = 200;
-    zG = 0;
-    
-    meshes = WecOptTool.mesh("AxiMesh",    ...
-                                         folder,       ...
-                                         r,            ...
-                                         z,            ...
-                                         ntheta,       ...
-                                         nfobj,        ...
-                                         zG,           ...
-                                         1);
-    
-    hydro = WecOptTool.solver("NEMOH", folder, meshes, w);
-           
-end
-
 
 function staticModel = getStaticModel(hydro)
             
@@ -95,7 +31,7 @@ function staticModel = getStaticModel(hydro)
 
 end
         
-function motion = getDynamicModel(staticModel, hydro, SS)
+function dynamic = getDynamicModel(staticModel, hydro, SS)
 
     function result = interp_mass(hydro, dof1, dof2, w)
         result = interp1(hydro.w,                           ...
@@ -125,7 +61,7 @@ function motion = getDynamicModel(staticModel, hydro, SS)
     w = hydro.w(:);
     dw = w(2) - w(1); % TODO - make dw a property
     
-    SS_struct = SS.struct;
+    SS_struct = struct(SS);
     S = interp1(SS_struct.w,SS_struct.S,hydro.w,...
         'nearest',0); % TODO - allow user to set interp method
     
@@ -171,13 +107,11 @@ function motion = getDynamicModel(staticModel, hydro, SS)
        dynamic.(fn{i}) = staticModel.(fn{i});
     end
     
-    motion = WecOptTool.types("Motion", dynamic);
-
 end
 
 function myPerf = complexCongugateControl(motion)
     
-    myPerf = WecOptTool.types.Performance();
+    myPerf = Performance();
             
     myPerf.Zpto = conj(motion.Zi);
     
@@ -202,7 +136,7 @@ end
 
 function myPerf = dampingControl(motion)
     
-    myPerf = WecOptTool.types.Performance(); % TODO - move this up to Device?
+    myPerf = Performance(); % TODO - move this up to Device?
             
     P_max = @(b) -0.5*b*sum(abs(motion.F0 ./ ...
                                 (motion.Zi + b)).^2);
@@ -293,7 +227,7 @@ function myPerf = psControl(motion,delta_Zmax,delta_Fmax)
     end
     
     % assemble results
-    myPerf = WecOptTool.types.Performance();
+    myPerf = Performance();
     myPerf.w = motion.w;
     myPerf.eta = motion.eta_fd;
     myPerf.F0 = motion.F0;

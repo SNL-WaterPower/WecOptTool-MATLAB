@@ -66,6 +66,6 @@ function SS = regularWave(w,sdata,plotflag)
     S.norm = 0;
     
 %     S = orderfields(S,{'S','w','tr','h','type','phi','norm','note','date'});
-    SS = WecOptTool.types('SeaState',S);
+    SS = WecOptTool.SeaState(S);
     
 end
