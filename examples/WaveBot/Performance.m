@@ -193,6 +193,7 @@ classdef Performance < handle
                     rnames = {obj.name};
                 end
                 
+                Tr.Properties.RowNames = rnames;
                 mT = Tr;
                 
                 if nargout
