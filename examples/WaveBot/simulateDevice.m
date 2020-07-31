@@ -243,13 +243,16 @@ function myPerf = psControl(dynModel,delta_Zmax,delta_Fmax)
         Zpto(:, ind_ph) = fRes(ind_ph).Zpto;
         Fpto(:, ind_ph) = fRes(ind_ph).u;
         pow(:, ind_ph) = fRes(ind_ph).pow;
+        eta(:, ind_ph) = fRes(ind_ph).eta;
+        F0(:, ind_ph) = fRes(ind_ph).F0;
+        
     end
     
     % assemble results
     myPerf = Performance();
     myPerf.w = dynModel.w;
-    myPerf.eta = dynModel.eta_fd;
-    myPerf.F0 = dynModel.F0;
+    myPerf.eta = eta;
+    myPerf.F0 = F0;
     myPerf.ph = ph_mat;
     myPerf.u = u;
     myPerf.pos = pos;
@@ -441,6 +444,8 @@ function [powTot, fRes, tRes] = getPSPhasePower(dynModel, ph)
     fRes.u = uFreq;
     fRes.pow = powFreq;
     fRes.Zpto = zFreq;
+    fRes.eta = eta_fd;
+    fRes.F0 = E3;
     
     tRes.pos = posT;
     tRes.vel = velT;
