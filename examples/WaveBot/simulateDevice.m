@@ -5,33 +5,27 @@ function performance = simulateDevice(hydro, seastate, controlType, varargin)
     % the Navy's Manuevering and Sea Keeping (MASK) basin. Reports and
     % papers about the WaveBot are available at advweccntrls.sandia.gov.
     
-    static = getStaticModel(hydro);
-    motion = getDynamicModel(static, hydro, seastate);
+    dynModel = getDynamicsModel(hydro, seastate);
     
     switch controlType
     
         case 'CC'
-            performance = complexCongugateControl(motion, varargin{:});
+            performance = complexCongugateControl(dynModel, varargin{:});
         case 'P'
-            performance = dampingControl(motion, varargin{:});
+            performance = dampingControl(dynModel, varargin{:});
         case 'PS'
-            performance = psControl(motion, varargin{:});
+            performance = psControl(dynModel, varargin{:});
             
     end
-        
 end
-
-function staticModel = getStaticModel(hydro)
-            
+        
+function dynModel = getDynamicsModel(hydro, SS)
+    
     % Mass
-    staticModel.mass = hydro.Vo * hydro.rho;
+    mass = hydro.Vo * hydro.rho;
 
     % Restoring
-    staticModel.K = hydro.C(3,3) * hydro.g * hydro.rho;
-
-end
-        
-function dynamic = getDynamicModel(staticModel, hydro, SS)
+    K = hydro.C(3,3) * hydro.g * hydro.rho;
 
     function result = interp_mass(hydro, dof1, dof2, w)
         result = interp1(hydro.w,                           ...
@@ -84,42 +78,38 @@ function dynamic = getDynamicModel(staticModel, hydro, SS)
     Bf = max(B) * 0.1;      % TODO - make this adjustable
 
     % intrinsic impedance
-    Zi = B + Bf + 1i * (w .* (staticModel.mass + A) - staticModel.K ./ w);
+    Zi = B + Bf + 1i * (w .* (mass + A) - K ./ w);
 
     % Excitation Forces
     Hex = interp_ex(hydro, 3, w) * hydro.g * hydro.rho;
     F0 = Hex .* eta_fd;
 
-    dynamic.w = w;
-    dynamic.eta_fd = eta_fd;
-    dynamic.dw = dw;
-    dynamic.wave_amp = waveAmp;
-    dynamic.ph = ph;
-    dynamic.B = B;
-    dynamic.A = A;
-    dynamic.Bf = Bf;
-    dynamic.Zi = Zi;
-    dynamic.F0 = F0;
-    
-    % Merge in staticModel
-    fn = fieldnames(staticModel);
-    for i = 1:length(fn)
-       dynamic.(fn{i}) = staticModel.(fn{i});
-    end
+    dynModel.mass = mass;
+    dynModel.K = K;
+    dynModel.w = w;
+    dynModel.eta_fd = eta_fd;
+    dynModel.dw = dw;
+    dynModel.wave_amp = waveAmp;
+    dynModel.ph = ph;
+    dynModel.B = B;
+    dynModel.A = A;
+    dynModel.Bf = Bf;
+    dynModel.Zi = Zi;
+    dynModel.F0 = F0;
     
 end
 
-function myPerf = complexCongugateControl(motion)
+function myPerf = complexCongugateControl(dynModel)
     
     myPerf = Performance();
             
-    myPerf.Zpto = conj(motion.Zi);
+    myPerf.Zpto = conj(dynModel.Zi);
     
     % velocity
-    myPerf.u = motion.F0 ./ (myPerf.Zpto + motion.Zi);
+    myPerf.u = dynModel.F0 ./ (myPerf.Zpto + dynModel.Zi);
     
     % position
-    myPerf.pos = myPerf.u ./ (1i * motion.w);
+    myPerf.pos = myPerf.u ./ (1i * dynModel.w);
     
     % PTO force
     myPerf.Fpto = -1 * myPerf.Zpto .* myPerf.u;
@@ -127,35 +117,35 @@ function myPerf = complexCongugateControl(motion)
     % power
     myPerf.pow = 0.5 * myPerf.Fpto .* conj(myPerf.u);
     
-    myPerf.ph = motion.ph;
-    myPerf.w = motion.w;
-    myPerf.eta = motion.eta_fd;
-    myPerf.F0 = motion.F0;
+    myPerf.ph = dynModel.ph;
+    myPerf.w = dynModel.w;
+    myPerf.eta = dynModel.eta_fd;
+    myPerf.F0 = dynModel.F0;
 
 end
 
-function myPerf = dampingControl(motion)
+function myPerf = dampingControl(dynModel)
     
     myPerf = Performance(); % TODO - move this up to Device?
             
-    P_max = @(b) -0.5*b*sum(abs(motion.F0 ./ ...
-                                (motion.Zi + b)).^2);
+    P_max = @(b) -0.5*b*sum(abs(dynModel.F0 ./ ...
+                                (dynModel.Zi + b)).^2);
                             
     % Solve for damping to produce most power (can do analytically for a
     % single frequency, but must use numerical solution for spectrum). Note
     % that fval is the sum of power absorbed (negative being "good") - the
     % following should be true: -1 * fval = sum(pow), where pow is the
     % frequency dependent array calculated below.
-    [B_opt, ~] = fminsearch(P_max, max(real(motion.Zi)));
+    [B_opt, ~] = fminsearch(P_max, max(real(dynModel.Zi)));
 
     % PTO impedance
-    myPerf.Zpto = complex(B_opt * ones(size(motion.Zi)),0);
+    myPerf.Zpto = complex(B_opt * ones(size(dynModel.Zi)),0);
     
     % velocity
-    myPerf.u = motion.F0 ./ (myPerf.Zpto + motion.Zi);
+    myPerf.u = dynModel.F0 ./ (myPerf.Zpto + dynModel.Zi);
     
     % position
-    myPerf.pos = myPerf.u ./ (1i * motion.w);
+    myPerf.pos = myPerf.u ./ (1i * dynModel.w);
     
     % PTO force
     myPerf.Fpto = -1 * myPerf.Zpto .* myPerf.u;
@@ -163,14 +153,14 @@ function myPerf = dampingControl(motion)
     % power
     myPerf.pow = 0.5 * myPerf.Fpto .* conj(myPerf.u);
     
-    myPerf.ph = motion.ph;
-    myPerf.w = motion.w;
-    myPerf.eta = motion.eta_fd;
-    myPerf.F0 = motion.F0;
+    myPerf.ph = dynModel.ph;
+    myPerf.w = dynModel.w;
+    myPerf.eta = dynModel.eta_fd;
+    myPerf.F0 = dynModel.F0;
 
 end
 
-function myPerf = psControl(motion,delta_Zmax,delta_Fmax)
+function myPerf = psControl(dynModel,delta_Zmax,delta_Fmax)
 %     motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);
 %     ps.wave_amp = waveAmp; % TODO
 %     
@@ -201,22 +191,23 @@ function myPerf = psControl(motion,delta_Zmax,delta_Fmax)
 %     Fpto = fRes(1).u;
 %     pow = powPerFreqMat(:,1);
 
-    motion = struct(motion);
+    dynModel = struct(dynModel);
         
     % Fix random seed <- Do we want this???
     rng(1);
     
     % Reformulate equations of motion
-    motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);
+    dynModel = getPSCoefficients(dynModel, delta_Zmax, delta_Fmax);
     
     % Add phase realizations
     n_ph = 5;
-    ph_mat = [motion.ph, rand(length(motion.w), n_ph-1)];
+    ph_mat = [dynModel.ph, rand(length(dynModel.w), n_ph-1)];
 
     for ind_ph = 1 : n_ph
         
         ph = ph_mat(:, ind_ph);
-        [phasePowMat(ind_ph), fRes(ind_ph), tRes(ind_ph)] = getPSPhasePower(motion, ph);
+        [phasePowMat(ind_ph), fRes(ind_ph), tRes(ind_ph)] = ...
+            getPSPhasePower(dynModel, ph);
         
         
         pos(:, ind_ph) = fRes(ind_ph).pos;
@@ -228,9 +219,9 @@ function myPerf = psControl(motion,delta_Zmax,delta_Fmax)
     
     % assemble results
     myPerf = Performance();
-    myPerf.w = motion.w;
-    myPerf.eta = motion.eta_fd;
-    myPerf.F0 = motion.F0;
+    myPerf.w = dynModel.w;
+    myPerf.eta = dynModel.eta_fd;
+    myPerf.F0 = dynModel.F0;
     myPerf.ph = ph_mat;
     myPerf.u = u;
     myPerf.pos = pos;
@@ -240,7 +231,7 @@ function myPerf = psControl(motion,delta_Zmax,delta_Fmax)
     
 end
 
-function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
+function dynModel = getPSCoefficients(dynModel, delta_Zmax, delta_Fmax)
     % getPSCoefficients   constructs the necessary coefficients and
     % matrices used in the pseudospectral control optimization
     % problem
@@ -252,7 +243,7 @@ function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     % Bacelli 2014: Background Chapter 4.1, 4.2; RM3 in section 6.1
     
     % Number of frequency - half the number of Fourier coefficients
-    Nf = length(motion.w);
+    Nf = length(dynModel.w);
     
     % Collocation points uniformly distributed between 0 and T
     % note that we have 2*Nf collocation points since we will have
@@ -261,7 +252,7 @@ function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     
     % Rebuild frequency vector to ensure monotonically increasing
     % with w(1) = w0
-    w0 = motion.dw;                    % fundamental frequency
+    w0 = dynModel.dw;                    % fundamental frequency
     T = 2 * pi/w0;                  % '' period
     
     % Building cost function component
@@ -275,8 +266,8 @@ function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     Adiag33 = zeros(2*Nf-1,1);
     Bdiag33 = zeros(2*Nf,1);
     
-    Adiag33(1:2:end) = motion.w.* motion.A;
-    Bdiag33(1:2:end) = motion.B;
+    Adiag33(1:2:end) = dynModel.w.* dynModel.A;
+    Bdiag33(1:2:end) = dynModel.B;
     Bdiag33(2:2:end) = Bdiag33(1:2:end);
     
     Bmat = diag(Bdiag33);
@@ -285,29 +276,29 @@ function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     
     G = Amat + Bmat;
     
-    B = motion.Bf * eye(2*Nf);
-    C = blkdiag(motion.K * eye(2*Nf));
-    M = blkdiag(motion.mass * eye(2*Nf));
+    B = dynModel.Bf * eye(2*Nf);
+    C = blkdiag(dynModel.K * eye(2*Nf));
+    M = blkdiag(dynModel.mass * eye(2*Nf));
     
     % Building derivative matrix
-    d = [motion.w(:)'; zeros(1, length(motion.w))];
+    d = [dynModel.w(:)'; zeros(1, length(dynModel.w))];
     Dphi1 = diag(d(1:end-1), 1);
     Dphi1 = (Dphi1 - Dphi1');
     Dphi = blkdiag(Dphi1);
     
     % scaling factor to improve optimization performance
-    m_scale = motion.mass;
+    m_scale = dynModel.mass;
     
     % equality constraints for EOM
     P =  (M*Dphi + B + G + (C / Dphi)) / m_scale;
     Aeq = [P, -eye(2*Nf) ];
     Aeq = [Aeq,            zeros(2*Nf,2);
-        zeros(1,4*Nf), motion.K / m_scale, -1];
+        zeros(1,4*Nf), dynModel.K / m_scale, -1];
     
     % Calculating collocation points for constraints
     tkp = linspace(0, T, 4*(Nc));
     tkp = tkp(1:end);
-    Wtkp = motion.w*tkp;
+    Wtkp = dynModel.w*tkp;
     Phip1 = zeros(2*size(Wtkp,1),size(Wtkp,2));
     Phip1(1:2:end,:) = cos(Wtkp);
     Phip1(2:2:end,:) = sin(Wtkp);
@@ -336,17 +327,17 @@ function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     end
     A_ineq = [A_ineq; forc; -forc];
     
-    motion.Nf = Nf;
-    motion.T = T;
-    motion.H_mat = H_mat;
-    motion.tkp = tkp;
-    motion.Aeq = Aeq;
-    motion.A_ineq = A_ineq;
-    motion.B_ineq = B_ineq;
-    motion.Phip = Phip;
-    motion.Phip1 = Phip1;
-    motion.Dphi = Dphi;
-    motion.mass_scale = m_scale;
+    dynModel.Nf = Nf;
+    dynModel.T = T;
+    dynModel.H_mat = H_mat;
+    dynModel.tkp = tkp;
+    dynModel.Aeq = Aeq;
+    dynModel.A_ineq = A_ineq;
+    dynModel.B_ineq = B_ineq;
+    dynModel.Phip = Phip;
+    dynModel.Phip1 = Phip1;
+    dynModel.Dphi = Dphi;
+    dynModel.mass_scale = m_scale;
 end
 
 function [powTot, fRes, tRes] = getPSPhasePower(motion, ph)
@@ -430,7 +421,7 @@ function [powTot, fRes, tRes] = getPSPhasePower(motion, ph)
     tRes.pow = powT;
     
     function P = pow_calc(X)
-        P = X(1:end-2)' * motion.H_mat * X(1:end-2); % note that 1/2 factor is dropped for simplicity
+        P = X(1:end-2)' * motion.H_mat * X(1:end-2); % 1/2 factor dropped for simplicity
     end
 end
 
