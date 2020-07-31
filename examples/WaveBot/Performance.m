@@ -179,49 +179,66 @@ classdef Performance < handle
         
         function T = summary(obj)
             
-            trep = obj(1).getRepeatPer();
-            t = linspace(0,trep,1e3);
-            
-            for ii = 1:length(obj)
-                
-                for jj = 1:size(obj(ii).ph,2) % for each phase in PS cases
-                
-                    tmp.pow_avg(ii,jj) = sum(real(obj(ii).pow(:,jj)));
-                    
-                    pow_t = getTimeRes(obj(ii), 'pow', t, jj);
-                    tmp.pow_max(ii, jj) = max(abs(pow_t));
-                    
-                    try
-                        tmp.pow_thd(ii, jj) = thd(pow_t);
-                    catch
-                        tmp.pow_thd(ii, jj) = NaN;
-                    end
-                    
-                    pos_t = getTimeRes(obj(ii), 'pos', t, jj);
-                    tmp.pos_max(ii, jj) = max(abs(pos_t));
-                    
-                    vel_t = getTimeRes(obj(ii), 'u', t, jj);
-                    tmp.vel_max(ii, jj) = max(abs(vel_t));
-                    
-                    Fpto_t = getTimeRes(obj(ii), 'Fpto', t, jj);
-                    tmp.Fpto_max(ii, jj) = max(abs(Fpto_t));
-                end
-                
-                fn = fieldnames(tmp);
-                for kk = 1:length(fn)
-                    out.(fn{kk}) = mean(tmp.(fn{kk}), 2);
-                end
-                
-            end
-            
-            % augment names if they are the same
-            if any(strcmp(obj(1).name, {obj(2:end).name}))
+            if length(obj) > 1
                 for ii = 1:length(obj)
-                    rnames{ii} = [obj(ii).name, '_', num2str(ii)];
+                    Tr(ii,:) = summary(obj(ii));
                 end
+                
+                % augment names if they are the same
+                if any(strcmp(obj(1).name, {obj(2:end).name}))
+                    for ii = 1:length(obj)
+                        rnames{ii} = [obj(ii).name, '_', num2str(ii)];
+                    end
+                else
+                    rnames = {obj.name};
+                end
+                
+                mT = Tr;
+                
+                if nargout
+                    T = mT;
+                else
+                    disp(mT)
+                end
+                
+                return
+                
             else
                 rnames = {obj.name};
             end
+            
+            trep = obj.getRepeatPer();
+            t = linspace(0,trep,1e3);
+
+            for jj = 1:size(obj.ph,2) % for each phase in PS cases
+
+                tmp.pow_avg(jj) = sum(real(obj.pow(:,jj)));
+
+                pow_t = getTimeRes(obj, 'pow', t, jj);
+                tmp.pow_max(jj) = max(abs(pow_t));
+
+                try
+                    tmp.pow_thd(jj) = thd(pow_t);
+                catch ME
+                    warning(ME.message)
+                    tmp.pow_thd(jj) = NaN;
+                end
+
+                pos_t = getTimeRes(obj, 'pos', t, jj);
+                tmp.pos_max(jj) = max(abs(pos_t));
+
+                vel_t = getTimeRes(obj, 'u', t, jj);
+                tmp.vel_max(jj) = max(abs(vel_t));
+
+                Fpto_t = getTimeRes(obj, 'Fpto', t, jj);
+                tmp.Fpto_max(jj) = max(abs(Fpto_t));
+            end
+
+            fn = fieldnames(tmp);
+            for kk = 1:length(fn)
+                out.(fn{kk}) = mean(tmp.(fn{kk}), 2);
+            end
+                
             rnames = reshape(rnames,[],1);
             
             mT = table(out.pow_avg(:),out.pow_max(:),out.pow_thd(:),...
@@ -231,7 +248,7 @@ classdef Performance < handle
                 'RowNames',rnames);
             
             if nargout
-                T = mt;
+                T = mT;
             else
                 disp(mT)
             end
