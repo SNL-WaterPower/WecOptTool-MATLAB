@@ -13,7 +13,9 @@ function hydro = designDevice(type, varargin)
             hydro = getHydroScalar(varargin{:});
         case 'parametric'
             hydro = getHydroParametric(varargin{:});
-        
+        otherwise
+            error('WecOptTool:UnknownGeometryType',...
+                'Invalid geometry type')
     end
     
 end

@@ -345,11 +345,10 @@ function [powTot, fRes, tRes] = getPSPhasePower(motion, ph)
     % method given a phase and a descrption of the body movement.
     % Returns total phase power and power per frequency
 
-    eta_fd = motion.wave_amp .* exp(1i*ph);
+    eta_fd = dynModel.wave_amp .* exp(1i*ph);
+    E3 = dynModel.Hex .* eta_fd;
     
-    fef3 = zeros(2*motion.Nf,1);
-    
-    E3 = motion.F0;
+    fef3 = zeros(2*dynModel.Nf,1);
     
     fef3(1:2:end) =  real(E3);
     fef3(2:2:end) = -imag(E3);
