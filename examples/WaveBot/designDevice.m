@@ -21,7 +21,8 @@ end
 function hydro = getHydroScalar(folder, lambda, w)
                    
     if w(1) == 0
-        w = w(2:end);
+    error('WecOptTool:UnknownGeometryType',...
+                'Invalid frequency vector')     % TODO - more checks
     end
     
     r = lambda * [0, 0.88, 0.88, 0.35, 0];

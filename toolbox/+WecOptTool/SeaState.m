@@ -283,7 +283,7 @@ classdef SeaState
             wMin = min(allFreqs);
             wMax = max(allFreqs);
             
-            wIntegerStepMin = floor(wMin / dw) * dw;
+            wIntegerStepMin = wMin;
             wIntegerStepMax = ceil(wMax / dw) * dw;                                
 
             freqs = wIntegerStepMin:dw:wIntegerStepMax;
