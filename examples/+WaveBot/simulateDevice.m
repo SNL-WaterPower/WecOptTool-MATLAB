@@ -123,7 +123,7 @@ end
 
 function myPerf = complexCongugateControl(dynModel,~)
     
-    myPerf = Performance();
+    myPerf = WaveBot.Performance();
             
     myPerf.Zpto = conj(dynModel.Zi);
     
@@ -148,7 +148,7 @@ end
 
 function myPerf = dampingControl(dynModel,~)
     
-    myPerf = Performance();
+    myPerf = WaveBot.Performance();
             
     P_max = @(b) -0.5*b*sum(abs(dynModel.F0 ./ ...
                                 (dynModel.Zi + b)).^2);
@@ -249,7 +249,7 @@ function myPerf = psControl(dynModel,delta_Zmax,delta_Fmax)
     end
     
     % assemble results
-    myPerf = Performance();
+    myPerf = WaveBot.Performance();
     myPerf.w = dynModel.w;
     myPerf.eta = eta;
     myPerf.F0 = F0;

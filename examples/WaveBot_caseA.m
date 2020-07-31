@@ -64,14 +64,14 @@ fmax = 2e3;
 
 folder = WecOptTool.AutoFolder();
 % w = SS.getRegularFrequencies(0.3);
-deviceHydro = designDevice('scalar', folder.path, 1, w);
+wbHydro = WaveBot.designDevice('scalar', folder.path, 1, w);
 
 %%
 
 for ii = 1:length(controlParams) 
     disp("Simulation " + (ii) + " of " + length(controlParams))
     rng(3) % run same wave phasing for each case
-    r(ii) = simulateDevice(deviceHydro,SS,controlType{ii},...
+    r(ii) = WaveBot.simulateDevice(wbHydro,SS,controlType{ii},...
         'interpMethod','nearest','Zmax',zmax,'Fmax',fmax);
     r(ii).name = controlType{ii};
 end
