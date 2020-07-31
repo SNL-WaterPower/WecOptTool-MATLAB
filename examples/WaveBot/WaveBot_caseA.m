@@ -53,13 +53,14 @@ wp = w(6);
 fp = wp/(2*pi);
 Tp = 1/fp; 
 SS = WecOptTool.SeaState.regularWave(w,[A,Tp]);
-w = SS.getRegularFrequencies(0.3);
 
 %%
-controlParams.type = 'CC';
-controlParams(2).type = 'P';
-controlParams(3).type = 'PS';
+controlType{1} = 'CC';
+controlType{2} = 'P';
+controlType{3} = 'PS';
 controlParams(3).params = {1e10 2e3}; % {zmax, Fmax}
+zmax = 1e10;
+fmax = 2e3;
 
 folder = WecOptTool.AutoFolder();
 % w = SS.getRegularFrequencies(0.3);
@@ -67,24 +68,12 @@ deviceHydro = designDevice('scalar', folder.path, 1, w);
 
 %%
 
-for ii = 1:length(controlParams)
-    
+for ii = 1:length(controlParams) 
     disp("Simulation " + (ii) + " of " + length(controlParams))
     rng(3) % run same wave phasing for each case
-    
-    if ~isempty(controlParams(ii).params)
-        r(ii) = simulateDevice(deviceHydro,                 ...
-                               SS,                          ...
-                               controlParams(ii).type,      ...
-                               controlParams(ii).params{:});
-    else
-        r(ii) = simulateDevice(deviceHydro,                 ...
-                               SS,                          ...
-                               controlParams(ii).type);
-    end
-    
-    r(ii).name = controlParams(ii).type;
-    
+    r(ii) = simulateDevice(deviceHydro,SS,controlType{ii},...
+        'interpMethod','nearest','Zmax',zmax,'Fmax',fmax);
+    r(ii).name = controlType{ii};
 end
 
 %% plot results

@@ -1,25 +1,41 @@
-function performance = simulateDevice(hydro, seastate, controlType, varargin)
+function performance = simulateDevice(hydro, seastate, controlType, options)
     % WaveBot   WEC based on the Sandia "WaveBot" device.
     %
     % The WaveBot is a model-scale wave energy converter (WEC) tested in
     % the Navy's Manuevering and Sea Keeping (MASK) basin. Reports and
     % papers about the WaveBot are available at advweccntrls.sandia.gov.
+    %
+    % Arguments:
+    %  hydro        structure containing BEM results
+    %  seastate     sea state object
+    %  controlType  char specif
+    %
+    % See aslo seastate
     
-    dynModel = getDynamicsModel(hydro, seastate);
+    arguments
+        hydro (1,1) struct
+        seastate (1,:) WecOptTool.SeaState
+        controlType (1,1) string
+        options.Zmax (1,:) double  = Inf
+        options.Fmax (1,:) double = Inf
+        options.interpMethod (1,1) string = 'linear'
+    end
+    
+    dynModel = getDynamicsModel(hydro, seastate,...
+        options.interpMethod);
     
     switch controlType
-    
         case 'CC'
-            performance = complexCongugateControl(dynModel, varargin{:});
+            performance = complexCongugateControl(dynModel);
         case 'P'
-            performance = dampingControl(dynModel, varargin{:});
+            performance = dampingControl(dynModel);
         case 'PS'
-            performance = psControl(dynModel, varargin{:});
+            performance = psControl(dynModel,options.Zmax, options.Fmax);
             
     end
 end
         
-function dynModel = getDynamicsModel(hydro, SS)
+function dynModel = getDynamicsModel(hydro, SS, interpMethod)
     
     % Mass
     mass = hydro.Vo * hydro.rho;
@@ -31,7 +47,7 @@ function dynModel = getDynamicsModel(hydro, SS)
         result = interp1(hydro.w,                           ...
                          squeeze(hydro.A(dof1, dof2, :)),   ...
                          w,                                 ...
-                         'linear',                          ...
+                         interpMethod,                          ...
                          0);
     end
 
@@ -39,7 +55,7 @@ function dynModel = getDynamicsModel(hydro, SS)
         result = interp1(hydro.w,                           ...
                          squeeze(hydro.B(dof1, dof2, :)),   ...
                          w,                                 ...
-                         'linear',                          ...
+                         interpMethod,                          ...
                          0);
     end
 
@@ -48,7 +64,7 @@ function dynModel = getDynamicsModel(hydro, SS)
         h = complex(squeeze(hydro.ex_re(dof, 1, :)),   ...
                     squeeze(hydro.ex_im(dof, 1, :)));
 
-        result = interp1(hydro.w, h ,w, 'linear', 0);
+        result = interp1(hydro.w, h ,w, interpMethod, 0);
 
     end
 
@@ -56,7 +72,7 @@ function dynModel = getDynamicsModel(hydro, SS)
     dw = w(2) - w(1);
     
     % Calculate wave amplitude
-    waveAmp = SS.getAmpSpectrum(w,'nearest');
+    waveAmp = SS.getAmpSpectrum(w, interpMethod);
 
     % Row vector of random phases
     ph = rand(size(waveAmp));
@@ -96,7 +112,7 @@ function dynModel = getDynamicsModel(hydro, SS)
     
 end
 
-function myPerf = complexCongugateControl(dynModel)
+function myPerf = complexCongugateControl(dynModel,~)
     
     myPerf = Performance();
             
@@ -121,7 +137,7 @@ function myPerf = complexCongugateControl(dynModel)
 
 end
 
-function myPerf = dampingControl(dynModel)
+function myPerf = dampingControl(dynModel,~)
     
     myPerf = Performance(); % TODO - move this up to Device?
             
@@ -187,6 +203,12 @@ function myPerf = psControl(dynModel,delta_Zmax,delta_Fmax)
 %     Zpto = nan(size(motion.hydro.Zi)); % TODO
 %     Fpto = fRes(1).u;
 %     pow = powPerFreqMat(:,1);
+
+    arguments
+        dynModel
+        delta_Zmax (1,:) double {mustBeFinite,mustBeReal,mustBePositive}
+        delta_Fmax (1,:) double {mustBeFinite,mustBeReal,mustBePositive}
+    end
 
     dynModel = struct(dynModel);
         
