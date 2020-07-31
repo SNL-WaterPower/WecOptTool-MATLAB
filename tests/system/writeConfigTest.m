@@ -31,7 +31,8 @@ function testWriteConfigNew(testCase)
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
                                     'WithSuffix', 'testWriteConfigNew'));
 
-    WecOptLib.utils.writeConfig("test", 1, 'configDir', tempFixture.Folder)
+    WecOptTool.system.writeConfig("test", 1,    ...
+                                  'configDir', tempFixture.Folder)
     
     filePath = fullfile(tempFixture.Folder, 'config.json');
     testCase.verifyThat(filePath, IsFile)
@@ -55,7 +56,8 @@ function testWriteConfigExists(testCase)
          TemporaryFolderFixture('PreservingOnFailure',  true,       ...
                                 'WithSuffix', 'testWriteConfigExists'));
 
-    WecOptLib.utils.writeConfig("test", 1, 'configDir', tempFixture.Folder)
+    WecOptTool.system.writeConfig("test", 1,    ...
+                                  'configDir', tempFixture.Folder)
     
     filePath = fullfile(tempFixture.Folder, 'config.json');
     testCase.verifyThat(filePath, IsFile)
@@ -67,7 +69,8 @@ function testWriteConfigExists(testCase)
     expVal = '{"test":1}';
     testCase.verifyThat(tline, IsEqualTo(expVal))
     
-    WecOptLib.utils.writeConfig("new", 2, 'configDir', tempFixture.Folder)
+    WecOptTool.system.writeConfig("new", 2,     ...
+                                  'configDir', tempFixture.Folder)
     
     filePath = fullfile(tempFixture.Folder, 'config.json');
     testCase.verifyThat(filePath, IsFile)
@@ -91,7 +94,8 @@ function testWriteConfigRemove(testCase)
          TemporaryFolderFixture('PreservingOnFailure',  true,       ...
                                 'WithSuffix', 'testWriteConfigRemove'));
 
-    WecOptLib.utils.writeConfig("test", 1, 'configDir', tempFixture.Folder)
+    WecOptTool.system.writeConfig("test", 1,    ...
+                                  'configDir', tempFixture.Folder)
     
     filePath = fullfile(tempFixture.Folder, 'config.json');
     testCase.verifyThat(filePath, IsFile)
@@ -103,9 +107,8 @@ function testWriteConfigRemove(testCase)
     expVal = '{"test":1}';
     testCase.verifyThat(tline, IsEqualTo(expVal))
     
-    WecOptLib.utils.writeConfig("test", ...
-                                "",     ...
-                                'configDir', tempFixture.Folder)
+    WecOptTool.system.writeConfig("test",  "",     ...
+                                  'configDir', tempFixture.Folder)
     
     filePath = fullfile(tempFixture.Folder, 'config.json');
     testCase.verifyThat(filePath, IsFile)

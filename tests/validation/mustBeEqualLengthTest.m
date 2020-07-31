@@ -6,29 +6,29 @@ function test_mustBeEqualLength_scalar(testCase)
     x=1.0;
     y=2.0;
     verifyWarningFree(testCase, ...
-                      @() WecOptLib.validation.mustBeEqualLength(x,y))
+                      @() WecOptTool.validation.mustBeEqualLength(x,y))
 end
 
 function test_mustBeEqualLength_array(testCase)
     x=ones(1,5);
     y=zeros(1,5);
     verifyWarningFree(testCase, ...
-                      @() WecOptLib.validation.mustBeEqualLength(x,y))
+                      @() WecOptTool.validation.mustBeEqualLength(x,y))
 end
 
 function test_mustBeEqualLength_mixed(testCase)
-    x = WecOptLib.tests.data.example8Spectra();
+    x = WecOptTool.SeaState.example8Spectra();
     y = zeros(length(x),1);
     verifyWarningFree(testCase, ...
-                      @() WecOptLib.validation.mustBeEqualLength(x,y))
+                      @() WecOptTool.validation.mustBeEqualLength(x,y))
 end
 
 function test_mustBeEqualLength_error(testCase)
     x=1.0;
     y=[2, 3];
-    eID = 'WecOptLib:Validation:NotEqualLength';
+    eID = 'WecOptTool:Validation:NotEqualLength';
     verifyError(testCase,                                           ...
-                @() WecOptLib.validation.mustBeEqualLength(x,y),    ...
+                @() WecOptTool.validation.mustBeEqualLength(x,y),   ...
                 eID)
 end
 

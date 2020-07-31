@@ -1,7 +1,5 @@
 
-% Copyright 2020 National Technology & Engineering Solutions of Sandia, 
-% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
-% U.S. Government retains certain rights in this software.
+% Copyright 2020 Sandia National Labs
 %
 % This file is part of WecOptTool.
 % 
@@ -16,16 +14,24 @@
 %     GNU General Public License for more details.
 % 
 %     You should have received a copy of the GNU General Public License
-%     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
+%     along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
 
-function tests = scriptsTest()
+function tests = hasParallelToolboxTest()
    tests = functiontests(localfunctions);
 end
 
-function testDependencyCheck(testCase)
+function testhasParallelToolbox(testCase)
+
+    import matlab.unittest.constraints.IsSubsetOf
     
-    srcRootPath = WecOptLib.utils.getSrcRootPath();
-    cd(srcRootPath);
-    verifyWarningFree(testCase, @dependencyCheck);
+    [combined,  ...
+     licensed,  ...
+     installed] = WecOptTool.system.hasParallelToolbox();
+ 
+    testCase.verifyThat(combined, IsSubsetOf(logical([0;1])));
+    testCase.verifyThat(licensed, IsSubsetOf(logical([0;1])));
+    testCase.verifyThat(installed, IsSubsetOf(logical([0;1])));
     
 end
+
+

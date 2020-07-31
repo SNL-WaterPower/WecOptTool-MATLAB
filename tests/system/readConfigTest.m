@@ -23,7 +23,7 @@ end
 
 function testReadConfigNoDir(testCase)
 
-    func = @() WecOptLib.utils.readConfig("test", 'configDir', "");
+    func = @() WecOptTool.system.readConfig("test", 'configDir', "");
     eID = 'WecOptTool:readConfig:missingDirectory';
     verifyError(testCase, func, eID)
     
@@ -37,8 +37,9 @@ function testReadConfigNoFile(testCase)
          TemporaryFolderFixture('PreservingOnFailure',  true,       ...
                                 'WithSuffix', 'testReadConfigNoFile'));
 
-    func = @() WecOptLib.utils.readConfig("test",   ...
-                                          'configDir', tempFixture.Folder);
+    func = @() WecOptTool.system.readConfig(    ...
+                                        "test", ...
+                                        'configDir', tempFixture.Folder);
     eID = 'WecOptTool:readConfig:missingFile';
     verifyError(testCase, func, eID)
     
@@ -53,13 +54,15 @@ function testReadConfigNoKey(testCase)
          TemporaryFolderFixture('PreservingOnFailure',  true,       ...
                                 'WithSuffix', 'testReadConfigNoKey'));
 
-    WecOptLib.utils.writeConfig("test", 1, 'configDir', tempFixture.Folder)
+    WecOptTool.system.writeConfig("test", 1,    ...
+                                  'configDir', tempFixture.Folder)
     
     filePath = fullfile(tempFixture.Folder, 'config.json');
     testCase.verifyThat(filePath, IsFile)
                             
-    func = @() WecOptLib.utils.readConfig("wrongkey",   ...
-                                          'configDir', tempFixture.Folder);
+    func = @() WecOptTool.system.readConfig(        ...
+                                        "wrongkey", ...
+                                        'configDir', tempFixture.Folder);
     eID = 'WecOptTool:readConfig:missingKey';
     verifyError(testCase, func, eID)
     
@@ -76,14 +79,14 @@ function testReadConfig(testCase)
                                 'WithSuffix', 'testReadConfig'));
 
     expected = 1;
-    WecOptLib.utils.writeConfig("test",     ...
-                                expected,   ...
-                                'configDir', tempFixture.Folder)
+    WecOptTool.system.writeConfig("test", expected,   ...
+                                  'configDir', tempFixture.Folder)
     
     filePath = fullfile(tempFixture.Folder, 'config.json');
     testCase.verifyThat(filePath, IsFile)
     
-    actual = WecOptLib.utils.readConfig("test",   ...
+    actual = WecOptTool.system.readConfig(      ...
+                                        "test", ...
                                         'configDir', tempFixture.Folder);
     
     testCase.verifyThat(actual, IsEqualTo(expected))

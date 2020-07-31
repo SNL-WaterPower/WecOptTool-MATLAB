@@ -54,13 +54,11 @@ classdef PlotsTest < matlab.unittest.TestCase
         function testPowerPerFreqSingleSpectrum(testCase)
             
             % Fake some inputs
-            device = WecOptTool.Device();
-            spectrum = WecOptLib.tests.data.exampleSpectrum();
-            device.seaState = WecOptTool.types.SeaState(spectrum);
-            device.motions(1).w = spectrum.w;
-            device.performances(1).powPerFreq = spectrum.S;
+            spectrum = WecOptTool.SeaState.exampleSpectrum();
+            input.w = spectrum.w;
+            input.powPerFreq = spectrum.S;
 
-            testHandle = @() WecOptTool.plot.powerPerFreq(device);
+            testHandle = @() WecOptTool.plot.powerPerFreq(input);
             verifyWarningFree(testCase, testHandle)
                               
         end
@@ -68,18 +66,16 @@ classdef PlotsTest < matlab.unittest.TestCase
         function testPowerPerFreqMultiSpectra(testCase)
             
             % Fake some inputs
-            device = WecOptTool.Device();
-            spectra = WecOptLib.tests.data.example8Spectra();
-            device.seaState = WecOptTool.types("SeaState", spectra);
+            spectra = WecOptTool.SeaState.example8Spectra();
             NSS = length(spectra);
             
             for i = 1:NSS
                 spectrum = spectra(i);
-                device.motions(i).w = spectrum.w;
-                device.performances(i).powPerFreq = spectrum.S;
+                input(i).w = spectrum.w;
+                input(i).powPerFreq = spectrum.S;
             end
             
-            testHandle = @() WecOptTool.plot.powerPerFreq(device);
+            testHandle = @() WecOptTool.plot.powerPerFreq(input);
             verifyWarningFree(testCase, testHandle)
                               
         end

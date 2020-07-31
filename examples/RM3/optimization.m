@@ -3,18 +3,14 @@
 
 %% Define and store sea state of interest
 
-% Create Bretschnider spectrum from WAFO
+% Create Bretschnider spectrum from WAFO and trim  off frequencies that 
+% have less that 1% of the max spectral density
 % S = bretschneider([],[8,10],0);
+% SS = WecOptTool.SeaState(S, "trimFrequencies", 0.01)
 
-% Alternatively load a single example spectrum
-% S = WecOptTool.tests.data.exampleSpectrum();
-
-% Or load an example with multiple sea-states (8 differing spectra)
-S = WecOptTool.tests.data.example8Spectra();
-
-% Now store the sea-state in a SeaState data type and trim off frequencies
-% that have less that 1% of the max spectral density
-SS = WecOptTool.SeaState(S, "trimFrequencies", 0.01);
+% Load an example with multiple sea-states (8 differing spectra) and trim 
+% off frequencies that have less that 1% of the max spectral density
+SS = WecOptTool.SeaState.example8Spectra("trimFrequencies", 0.01);
 
 %% Optimization Setup
 

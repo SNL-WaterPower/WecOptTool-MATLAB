@@ -4,19 +4,19 @@ end
 
 function testUniqueDir(testCase)
     
-    autoFolder1 = WecOptTool.base.AutoFolder();
-    autoFolder2 = WecOptTool.base.AutoFolder();
+    autoFolder1 = WecOptTool.AutoFolder();
+    autoFolder2 = WecOptTool.AutoFolder();
     
-    verifyNotEqual(testCase, autoFolder1.folder, autoFolder2.folder)
+    verifyNotEqual(testCase, autoFolder1.path, autoFolder2.path)
     
 end
 
 function testDestructor(testCase)
     
     % Directory build
-    autoFolder = WecOptTool.base.AutoFolder();
-    assertTrue(testCase, isfolder(autoFolder.folder))
-    testDir = autoFolder.folder;
+    autoFolder = WecOptTool.AutoFolder();
+    assertTrue(testCase, isfolder(autoFolder.path))
+    testDir = autoFolder.path;
     
     % Trigger destructor
     clear autoFolder
@@ -33,8 +33,8 @@ function testParentFolderDestructor(testCase)
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
                                     'WithSuffix', 'testStudySaveNEMOH'));
     
-    autoFolder = WecOptTool.base.AutoFolder(tempFixture.Folder);
-    testDir = autoFolder.folder;
+    autoFolder = WecOptTool.AutoFolder(tempFixture.Folder);
+    testDir = autoFolder.path;
     verifyTrue(testCase, isfolder(testDir))
     
     % Trigger destructor
@@ -53,9 +53,9 @@ function testSaveFolder(testCase)
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
                                     'WithSuffix', 'testStudySaveNEMOH'));
     
-    autoFolder = WecOptTool.base.AutoFolder();
+    autoFolder = WecOptTool.AutoFolder();
     
-    filePath = fullfile(autoFolder.folder, 'changing.txt');
+    filePath = fullfile(autoFolder.path, 'changing.txt');
     fileID = fopen(filePath,'w');
     fmt = '%5d %5d %5d %5d\n';
     fprintf(fileID,fmt, magic(4));
@@ -78,7 +78,7 @@ function testSaveFolderNoCopy(testCase)
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
                                     'WithSuffix', 'testStudyNoSopyNEMOH'));
     
-    autoFolder = WecOptTool.base.AutoFolder();
+    autoFolder = WecOptTool.AutoFolder();
     
     % Attempt to copy data
     testDir = fullfile(tempFixture.Folder, "test");

@@ -33,7 +33,7 @@ function testNotFolder(testCase)
     fclose(fopen(dummyFile, 'w'));
     assertTrue(testCase, isfile(dummyFile))
     
-    folderNames = WecOptLib.utils.getFolders(dummyFile);
+    folderNames = WecOptTool.system.getFolders(dummyFile);
     verifyEmpty(testCase, folderNames)
 
 end
@@ -49,7 +49,7 @@ function testEmptyFolder(testCase)
     fclose(fopen(dummyFile, 'w'));
     assertTrue(testCase, isfile(dummyFile))
     
-    folderNames = WecOptLib.utils.getFolders(tempFixture.Folder);
+    folderNames = WecOptTool.system.getFolders(tempFixture.Folder);
     verifyEmpty(testCase, folderNames)
 
 end
@@ -76,7 +76,7 @@ function testRelativePaths(testCase)
         
     end
         
-    folderNames = WecOptLib.utils.getFolders(tempFixture.Folder);
+    folderNames = WecOptTool.system.getFolders(tempFixture.Folder);
     verifyEqual(testCase, folderNames, expected)
 
 end
@@ -104,7 +104,7 @@ function testAbsolutePaths(testCase)
         
     end
         
-    folderNames = WecOptLib.utils.getFolders(tempFixture.Folder,    ...
+    folderNames = WecOptTool.system.getFolders(tempFixture.Folder,    ...
                                              "absPath", true);
     verifyEqual(testCase, folderNames, expected)
 

@@ -6,28 +6,19 @@ function testVerify_CC(testCase)
 
     import matlab.unittest.fixtures.PathFixture
             
-    addFolder = fullfile(WecOptLib.utils.getSrcRootPath(),  ...
-                         "examples",                        ...
+    addFolder = fullfile(WecOptTool.system.getSrcRootPath(),    ...
+                         "examples",                            ...
                          "RM3");
     testCase.applyFixture(PathFixture(addFolder));
 
-    S = WecOptLib.tests.data.exampleSpectrum();
-    SS = WecOptTool.types("SeaState", S);
-    
-    blueprint = RM3();
+    SS = WecOptTool.SeaState.exampleSpectrum();
             
-    geomMode.type = 'scalar';
-    geomMode.params = {1};
-    cntrlMode.type = 'CC';
-    
-    RM3Device = makeDevices(blueprint, geomMode, cntrlMode);
-    simulate(RM3Device, SS);
+    deviceHydro = designDevice('scalar', 1);
+    performance = simulateDevice(deviceHydro, SS, 'CC');
+    pow = sum(performance.powPerFreq);
     
     expSol = 4.072835515358689e+06;
-    verifyEqual(testCase,                   ...
-                RM3Device.aggregation.pow,  ... 
-                expSol,                     ...
-                'RelTol', 0.001)
+    verifyEqual(testCase, pow, expSol, 'RelTol', 0.001)
     
 end
 
@@ -35,28 +26,19 @@ function testVerify_damping(testCase)
 
     import matlab.unittest.fixtures.PathFixture
             
-    addFolder = fullfile(WecOptLib.utils.getSrcRootPath(),  ...
-                         "examples",                        ...
+    addFolder = fullfile(WecOptTool.system.getSrcRootPath(),    ...
+                         "examples",                            ...
                          "RM3");
     testCase.applyFixture(PathFixture(addFolder));
 
-    S = WecOptLib.tests.data.exampleSpectrum();
-    SS = WecOptTool.types("SeaState", S);
+    SS = WecOptTool.SeaState.exampleSpectrum();
     
-    blueprint = RM3();
-            
-    geomMode.type = 'scalar';
-    geomMode.params = {1};
-    cntrlMode.type = 'P';
-    
-    RM3Device = makeDevices(blueprint, geomMode, cntrlMode);
-    simulate(RM3Device, SS);
+    deviceHydro = designDevice('scalar', 1);
+    performance = simulateDevice(deviceHydro, SS, 'P');
+    pow = sum(performance.powPerFreq);
     
     expSol = 1.525591864472636e+06;
-    verifyEqual(testCase,                   ...
-                RM3Device.aggregation.pow,  ... 
-                expSol,                     ...
-                'RelTol', 0.001)
+    verifyEqual(testCase, pow, expSol, 'RelTol', 0.001)
     
 end
 
@@ -75,29 +57,19 @@ function testVerify_PS(testCase)
 
     import matlab.unittest.fixtures.PathFixture
             
-    addFolder = fullfile(WecOptLib.utils.getSrcRootPath(),  ...
-                         "examples",                        ...
+    addFolder = fullfile(WecOptTool.system.getSrcRootPath(),    ...
+                         "examples",                            ...
                          "RM3");
     testCase.applyFixture(PathFixture(addFolder));
 
-    S = WecOptLib.tests.data.exampleSpectrum();
-    SS = WecOptTool.types("SeaState", S, "resampleByError", 0.08);
+    SS = WecOptTool.SeaState.exampleSpectrum("resampleByError", 0.08);
     
-    blueprint = RM3();
-            
-    geomMode.type = 'scalar';
-    geomMode.params = {1};
-    cntrlMode.type = 'PS';
-    cntrlMode.params = {10 1e9};
-    
-    RM3Device = makeDevices(blueprint, geomMode, cntrlMode);
-    simulate(RM3Device, SS);
+    deviceHydro = designDevice('scalar', 1);
+    performance = simulateDevice(deviceHydro, SS, 'PS', 10, 1e9);
+    pow = sum(performance.powPerFreq);
     
     expSol = 4.072812570315526e+06;
-    verifyEqual(testCase,                   ...
-                RM3Device.aggregation.pow,  ... 
-                expSol,                     ...
-                'RelTol', 0.001)
+    verifyEqual(testCase, pow, expSol, 'RelTol', 0.001)
     
 end
 
@@ -105,21 +77,13 @@ function test_RM3_mass(testCase)
 
     import matlab.unittest.fixtures.PathFixture
             
-    addFolder = fullfile(WecOptLib.utils.getSrcRootPath(),  ...
-                         "examples",                        ...
+    addFolder = fullfile(WecOptTool.system.getSrcRootPath(),    ...
+                         "examples",                            ...
                          "RM3");
     testCase.applyFixture(PathFixture(addFolder));
     
-    blueprint = RM3();
-            
-    geomMode.type = 'scalar';
-    geomMode.params = {1};
-    cntrlMode.type = "CC";
-    
-    RM3Device = makeDevices(blueprint, geomMode, cntrlMode);
-
-    hydro = RM3Device.hydro;
-    mass = sum(hydro.Vo * hydro.rho);
+    deviceHydro = designDevice('scalar', 1);
+    mass = sum(deviceHydro.Vo * deviceHydro.rho);
     
     expSol = 1.652838125000000e6;
     verifyEqual(testCase, mass, expSol, 'RelTol', 0.001)

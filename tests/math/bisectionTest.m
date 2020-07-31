@@ -8,7 +8,7 @@ function testIdentity(testCase)
     import matlab.unittest.constraints.AbsoluteTolerance
 
     f = @(x) x;
-    result = WecOptLib.utils.bisection(f, -1, 1);
+    result = WecOptTool.math.bisection(f, -1, 1);
     
     testCase.assertThat(result,     ...
                         IsEqualTo(0, 'Within', AbsoluteTolerance(1e-10)))
@@ -21,7 +21,7 @@ function testParabola(testCase)
     import matlab.unittest.constraints.AbsoluteTolerance
 
     f = @(x) x^2 - 1;
-    result = WecOptLib.utils.bisection(f, 0, 10);
+    result = WecOptTool.math.bisection(f, 0, 10);
     
     testCase.assertThat(result,     ...
                         IsEqualTo(1, 'Within', AbsoluteTolerance(1e-10)))
@@ -31,9 +31,9 @@ end
 function testBadInterval(testCase)
 
     f = @(x) x;
-    eID = "WecOptLib:bisection:badInterval";
+    eID = "WecOptTool:bisection:badInterval";
     verifyError(testCase,                                   ...
-                @() WecOptLib.utils.bisection(f, 0.5, 1),   ...
+                @() WecOptTool.math.bisection(f, 0.5, 1),   ...
                 eID)
             
 end
@@ -48,9 +48,9 @@ function testSearchSpaceClosed(testCase)
         end
     end
         
-    eID = "WecOptLib:bisection:searchSpaceClosed";
+    eID = "WecOptTool:bisection:searchSpaceClosed";
     verifyError(testCase,                                       ...
-                @() WecOptLib.utils.bisection(@step, -1, 1),    ...
+                @() WecOptTool.math.bisection(@step, -1, 1),    ...
                 eID)
             
 end
@@ -65,9 +65,9 @@ function testTooManyIterations(testCase)
         end
     end
         
-    eID = "WecOptLib:bisection:tooManyIterations";
+    eID = "WecOptTool:bisection:tooManyIterations";
     verifyError(testCase,                                       ...
-                @() WecOptLib.utils.bisection(@step, -1, 1,     ...
+                @() WecOptTool.math.bisection(@step, -1, 1,     ...
                                               "nmax", 2),       ...
                 eID)
             

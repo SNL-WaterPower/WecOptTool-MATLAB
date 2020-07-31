@@ -18,12 +18,14 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-function SS = example8Spectra
-%EXAMPLE8SPECTRA Example Bretschneider spectrum with varying HHm0s, Tps, 
-%                Nbins, and range
-    p = mfilename('fullpath');
-    [filepath, ~, ~] = fileparts(p);
-    dataPath = fullfile(filepath, '8spectra.mat');
-    example_data = load(dataPath);
-    SS = example_data.SS;
+function tests = scriptsTest()
+   tests = functiontests(localfunctions);
+end
+
+function testDependencyCheck(testCase)
+    
+    srcRootPath = WecOptTool.system.getSrcRootPath();
+    cd(srcRootPath);
+    verifyWarningFree(testCase, @dependencyCheck);
+    
 end

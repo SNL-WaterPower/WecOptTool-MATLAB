@@ -1,11 +1,8 @@
 
 clear controlParams performances r
 
-% define sea state of interest
-S = WecOptTool.tests.data.exampleSpectrum();
-
-% Create a SeaState object before optimisation to avoid repeated warnings.
-SS = WecOptTool.SeaState(S, "resampleByError", 0.1);
+% Create an example SeaState object
+SS = WecOptTool.SeaState.exampleSpectrum("resampleByError", 0.1);
 
 controlParams.type = 'CC';
 controlParams(2).type = 'P';

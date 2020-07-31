@@ -24,13 +24,13 @@ end
 
 function testIsParallelTrue(testCase)
 
-    testCase.assumeTrue(WecOptLib.utils.hasParallelToolbox(),   ...
+    testCase.assumeTrue(WecOptTool.system.hasParallelToolbox(),   ...
                         'Parallel toolbox not available')
     
     tests = zeros(1, 2);
     
     parfor i = 1:length(tests)
-        tests(i) = WecOptLib.utils.isParallel();
+        tests(i) = WecOptTool.system.isParallel();
     end
     
     verifyEqual(testCase, all(tests), true)
@@ -42,7 +42,7 @@ function testIsParallelFalse(testCase)
     tests = zeros(1, 2);
     
     for i = 1:length(tests)
-        tests(i) = WecOptLib.utils.isParallel();
+        tests(i) = WecOptTool.system.isParallel();
     end
     
     verifyEqual(testCase, any(tests), false)

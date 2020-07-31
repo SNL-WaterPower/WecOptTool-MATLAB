@@ -18,8 +18,7 @@ classdef RM3BlueprintParametricCCTest < matlab.unittest.TestCase
                                  "RM3");
             testCase.applyFixture(PathFixture(addFolder));
             
-            S = WecOptTool.tests.data.exampleSpectrum();
-            testCase.SS = WecOptTool.SeaState(S,                        ...
+            testCase.SS = WecOptTool.SeaState.exampleSpectrum(          ...
                                               "extendFrequencies", 2,   ...
                                               "resampleByStep", 0.05);
             w = testCase.SS.getRegularFrequencies(0.5);
@@ -61,10 +60,8 @@ classdef RM3BlueprintParametricCCTest < matlab.unittest.TestCase
         function test_runParametric(testCase)
             
             expSol = 4.759798816032207e+06;
-            verifyEqual(testCase,                           ...
-                        testCase.device.aggregation.pow,    ...
-                        expSol,                             ...
-                        'RelTol', 0.001)
+            pow = sum(testCase.performance.powPerFreq);
+            verifyEqual(testCase, pow, expSol, 'RelTol', 0.001)
                         
         end
         

@@ -5,8 +5,8 @@ function results = runTests()
     import matlab.unittest.plugins.TestReportPlugin;
 
     % Define test suite
-    suite = TestSuite.fromPackage('WecOptTool.tests',    ...
-                                  'IncludingSubpackages', true);
+    suite = TestSuite.fromFolder('tests',    ...
+                                 'IncludingSubfolders', true);
     
     % Build the runner
     runner = TestRunner.withTextOutput;

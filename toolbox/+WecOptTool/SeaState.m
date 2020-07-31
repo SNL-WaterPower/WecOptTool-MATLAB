@@ -935,7 +935,27 @@ classdef SeaState
             
         end
         
-        function SS = regularWave(w, sdata)
+        function SS = exampleSpectrum(varargin)
+            %EXAMPLESPECTRUM Example Bretschneider spectrum with Hm0=8 and 
+            % Tp=10
+            p = mfilename('fullpath');
+            [filepath, ~, ~] = fileparts(p);
+            dataPath = fullfile(filepath, 'data', 'spectrum.mat');
+            example_data = load(dataPath);
+            SS = WecOptTool.SeaState(example_data.S, varargin{:});
+        end
+        
+        function SS = example8Spectra(varargin)
+            %EXAMPLE8SPECTRA Example Bretschneider spectrum with varying , 
+            % HHm0s, Tps, Nbins, and range
+            p = mfilename('fullpath');
+            [filepath, ~, ~] = fileparts(p);
+            dataPath = fullfile(filepath, 'data', '8spectra.mat');
+            example_data = load(dataPath);
+            SS = WecOptTool.SeaState(example_data.SS, varargin{:});
+        end
+        
+        function SS = regularWave(w, sdata, varargin)
             % Returns a regular wave using a WAFO-like struct
             %
             % Arguments:
@@ -978,7 +998,7 @@ classdef SeaState
             S.phi = 0;
             S.norm = 0;
 
-            SS = WecOptTool.SeaState(S);
+            SS = WecOptTool.SeaState(S, varargin{:});
 
         end
         

@@ -14,11 +14,19 @@ classdef SeaStateTest < matlab.unittest.TestCase
         
         function setup(testCase)
             
-            testCase.S = WecOptLib.tests.data.example8Spectra();
-            testCase.SS = WecOptTool.types("SeaState", testCase.S,      ...
-                                           "resampleByError", 0.01,     ...
-                                           "trimFrequencies", 0.01,     ...
-                                           "extendFrequencies", 2);
+            p = mfilename('fullpath');
+            [filepath, ~, ~] = fileparts(p);
+            dataPath = fullfile(filepath,       ...
+                                '..',           ...
+                                'toolbox',      ...
+                                '+WecOptTool',  ...
+                                'data',         ...
+                                'spectrum.mat');
+            testCase.S = load(dataPath).S;
+            testCase.SS = WecOptTool.SeaState(testCase.S,               ...
+                                              "resampleByError", 0.01,  ...
+                                              "trimFrequencies", 0.01,  ...
+                                              "extendFrequencies", 2);
             
         end
         
@@ -107,7 +115,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
         end
         
         function testCheckSpectrumMissingFields(testCase)
-            S1 = WecOptLib.tests.data.exampleSpectrum();
+            S1 = testCase.S;
             S1 = rmfield(S1,'w');
             eID = "WecOptTool:SeaState:checkSpectrum";
             wID = 'SeaState:checkSpectrum:missingFields';
@@ -119,7 +127,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
         end
 
         function testCheckSpectrumMismatchedLengths(testCase)
-            S1 = WecOptLib.tests.data.exampleSpectrum();
+            S1 = testCase.S;
             S1.w = [];
             eID = "WecOptTool:SeaState:checkSpectrum";
             wID = 'SeaState:checkSpectrum:mismatchedLengths';
@@ -131,7 +139,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
         end
 
         function testCheckSpectrumNotColumnVectors(testCase)
-            S1 = WecOptLib.tests.data.exampleSpectrum();
+            S1 = testCase.S;
             S1.w = S1.w';
             eID = "WecOptTool:SeaState:checkSpectrum";
             wID = 'SeaState:checkSpectrum:notColumnVectors';
@@ -143,7 +151,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
         end
 
         function testCheckSpectrumNegativeFrequencies(testCase)
-            S1 = WecOptLib.tests.data.exampleSpectrum();
+            S1 = testCase.S;
             S1.w(1) = -1.0;
             eID = "WecOptTool:SeaState:checkSpectrum";
             wID = 'SeaState:checkSpectrum:negativeFrequencies';
@@ -155,7 +163,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
         end
         
         function testCheckSpectrumNotMonotonic(testCase)
-            S1 = WecOptLib.tests.data.exampleSpectrum();
+            S1 = testCase.S;
             S1.w(1) = max(S1.w) + 1;
             eID = "WecOptTool:SeaState:checkSpectrum";
             wID = 'SeaState:checkSpectrum:notMonotonic';
@@ -167,7 +175,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
         end
         
         function testCheckSpectrumNotRegular(testCase)
-            S1 = WecOptLib.tests.data.exampleSpectrum();
+            S1 = testCase.S;
             S1.w(2) = 0.9 * S1.w(2);
             eID = "WecOptTool:SeaState:checkSpectrum";
             wID = 'SeaState:checkSpectrum:notRegular';
