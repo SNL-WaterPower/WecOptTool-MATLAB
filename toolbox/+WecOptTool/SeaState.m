@@ -291,6 +291,31 @@ classdef SeaState
             
         end
         
+        function Aw = getAmpSpectrum(obj, w, interpMethod)
+            % getAmpSpectrum    Returns wave amplitude spectrum
+            %
+            % If optional argument w is provided, the amplitude spectrum
+            % will be interpolated onto the new frequency vector.
+            %
+            % Arguments:
+            %   w               (optional) new frequency vector on which to
+            %                   interpolate results
+            %   interpMethod    (optional) interpolation method 
+            %                   (default: 'linear')
+            %
+            % See also interp1
+
+            Aw_tmp = sqrt(2 * obj.dw * obj.S(:));
+            if nargin > 1
+                if nargin < 3
+                    interpMethod = 'linear';
+                end
+                Aw = interp1(obj.w, Aw_tmp, w, interpMethod, 0);
+            else
+                Aw = Aw_tmp;
+            end
+        end
+        
         function plot(obj)
             % Plot spectra and comparison to base spectra, if different.
             % 

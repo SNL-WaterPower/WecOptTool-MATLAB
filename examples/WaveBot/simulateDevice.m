@@ -53,17 +53,13 @@ function dynModel = getDynamicsModel(hydro, SS)
     end
 
     w = hydro.w(:);
-    dw = w(2) - w(1); % TODO - make dw a property
-    
-    SS_struct = struct(SS);
-    S = interp1(SS_struct.w,SS_struct.S,hydro.w,...
-        'nearest',0); % TODO - allow user to set interp method
+    dw = w(2) - w(1);
     
     % Calculate wave amplitude
-    waveAmp = sqrt(2 * dw * S(:));
+    waveAmp = SS.getAmpSpectrum(w,'nearest');
 
-    % Row vector of random phases?
-    ph = rand(length(S), 1);
+    % Row vector of random phases
+    ph = rand(size(waveAmp));
 
     % Wave height in frequency domain
     eta_fd = waveAmp .* exp(1i * ph);
@@ -95,6 +91,7 @@ function dynModel = getDynamicsModel(hydro, SS)
     dynModel.A = A;
     dynModel.Bf = Bf;
     dynModel.Zi = Zi;
+    dynModel.Hex = Hex;
     dynModel.F0 = F0;
     
 end
@@ -340,7 +337,7 @@ function dynModel = getPSCoefficients(dynModel, delta_Zmax, delta_Fmax)
     dynModel.mass_scale = m_scale;
 end
 
-function [powTot, fRes, tRes] = getPSPhasePower(motion, ph)
+function [powTot, fRes, tRes] = getPSPhasePower(dynModel, ph)
     % getPSPhasePower   calculates power using the pseudospectral
     % method given a phase and a descrption of the body movement.
     % Returns total phase power and power per frequency
@@ -353,7 +350,7 @@ function [powTot, fRes, tRes] = getPSPhasePower(motion, ph)
     fef3(1:2:end) =  real(E3);
     fef3(2:2:end) = -imag(E3);
     
-    Beq = [fef3; 0] / motion.mass_scale;
+    Beq = [fef3; 0] / dynModel.mass_scale;
     
     % constrained optimization settings
     qp_options = optimoptions('fmincon',  ...
@@ -364,13 +361,13 @@ function [powTot, fRes, tRes] = getPSPhasePower(motion, ph)
         'OptimalityTolerance', 1e-8,      ...
         'StepTolerance', 1e-8);
     
-    siz = size(motion.A_ineq);
+    siz = size(dynModel.A_ineq);
     X0 = zeros(siz(2),1);
     [y, fval, exitflag, output] = fmincon(@pow_calc,...
         X0,...
-        motion.A_ineq,...
-        motion.B_ineq,...
-        motion.Aeq,...         % Aeq and Beq are the hydrodynamic model
+        dynModel.A_ineq,...
+        dynModel.B_ineq,...
+        dynModel.Aeq,...         % Aeq and Beq are the hydrodynamic model
         Beq,...
         [], [], [],...
         qp_options);
@@ -389,19 +386,19 @@ function [powTot, fRes, tRes] = getPSPhasePower(motion, ph)
     % find the spectra
     ps2spec = @(x) (x(1:2:end) - 1i * x(2:2:end));  % TODO - probably make this a global function
     velFreq = ps2spec(x1hat);
-    posFreq = velFreq ./ (1i * motion.w);
-    uFreq = motion.mass_scale * ps2spec(uhat);
+    posFreq = velFreq ./ (1i * dynModel.w);
+    uFreq = dynModel.mass_scale * ps2spec(uhat);
     powFreq = 1/2 * uFreq .* conj(velFreq);
     zFreq = uFreq ./ velFreq;
     
     % find time histories
-    spec2time = @(x) motion.Phip' * x;              % TODO - probably make this a global function
+    spec2time = @(x) dynModel.Phip' * x;              % TODO - probably make this a global function
     velT = spec2time(x1hat);
-    posT = y(end-1) + (motion.Phip' / motion.Dphi) * x1hat;
-    uT = motion.mass_scale * (y(end) + spec2time(uhat));
+    posT = y(end-1) + (dynModel.Phip' / dynModel.Dphi) * x1hat;
+    uT = dynModel.mass_scale * (y(end) + spec2time(uhat));
     powT = 1 * velT .* uT;
     
-    powTot = trapz(motion.tkp, powT) / (motion.tkp(end) - motion.tkp(1));
+    powTot = trapz(dynModel.tkp, powT) / (dynModel.tkp(end) - dynModel.tkp(1));
     assert(WecOptTool.math.isClose(powTot, sum(real(powFreq)),...
         'rtol', eps*1e2),...
         sprintf('Mismatch in PS results\n\tpowTot: %.3e\n\tpowFreq: %.3e',...
@@ -420,7 +417,7 @@ function [powTot, fRes, tRes] = getPSPhasePower(motion, ph)
     tRes.pow = powT;
     
     function P = pow_calc(X)
-        P = X(1:end-2)' * motion.H_mat * X(1:end-2); % 1/2 factor dropped for simplicity
+        P = X(1:end-2)' * dynModel.H_mat * X(1:end-2); % 1/2 factor dropped for simplicity
     end
 end
 
