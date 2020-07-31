@@ -53,7 +53,7 @@ wp = w(6);
 fp = wp/(2*pi);
 Tp = 1/fp; 
 SS = WecOptTool.SeaState.regularWave(w,[A,Tp]);
-% w = SS.getRegularFrequencies(0.3);
+w = SS.getRegularFrequencies(0.3);
 
 %%
 controlParams.type = 'CC';

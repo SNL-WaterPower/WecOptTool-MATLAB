@@ -283,7 +283,7 @@ classdef SeaState
             wMin = min(allFreqs);
             wMax = max(allFreqs);
             
-            wIntegerStepMin = wMin;
+            wIntegerStepMin = min([floor(wMin / dw),1]) * dw;
             wIntegerStepMax = ceil(wMax / dw) * dw;                                
 
             freqs = wIntegerStepMin:dw:wIntegerStepMax;
@@ -535,8 +535,33 @@ classdef SeaState
                 end
             end
             
-            inds = 1:length(S);
-            pass = 1;
+            function result = checkStart(S, idx)
+                
+                try
+                    
+                    dw = uniquetol(diff(S.w), eps('single'));
+                    
+                    if length(dw) > 1
+                        result = 0;
+                        return
+                    end
+                    
+                    result = abs(mod(S.w(1), dw)) < eps('single');
+                    
+                    if ~result
+                        wID = 'SeaState:checkSpectrum:badStart';
+                        msg = ['First frequency in Spectrum #%i is not '...
+                               'integer multiple of frequency step'];
+                        warning(wID, msg, idx)
+                    end
+                    
+                catch
+                    result = 0;
+                end
+                
+            end
+            
+            
             
             check{1} = @(Spect,idx) checkFields(Spect, idx);
             check{2} = @(Spect,idx) checkLengths(Spect, idx);
@@ -544,7 +569,9 @@ classdef SeaState
             check{4} = @(Spect,idx) checkPositive(Spect, idx);
             check{5} = @(Spect,idx) checkMonotonic(Spect, idx);
             check{6} = @(Spect,idx) checkRegular(Spect, idx);
+            check{7} = @(Spect,idx) checkStart(Spect, idx);
             
+            inds = 1:length(S);
             for ii = 1:length(check)
                 pass(ii) = sum(arrayfun(check{ii}, S, inds));
             end
