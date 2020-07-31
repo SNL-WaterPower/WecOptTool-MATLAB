@@ -1,5 +1,5 @@
 function performance = simulateDevice(hydro, seastate, controlType, options)
-    % WaveBot   WEC based on the Sandia "WaveBot" device.
+    % simulateDevice   WEC based on the Sandia "WaveBot" device.
     %
     % The WaveBot is a model-scale wave energy converter (WEC) tested in
     % the Navy's Manuevering and Sea Keeping (MASK) basin. Reports and
@@ -8,15 +8,24 @@ function performance = simulateDevice(hydro, seastate, controlType, options)
     % Arguments:
     %  hydro        structure containing BEM results
     %  seastate     sea state object
-    %  controlType  char specif
+    %  controlType  controller type:
+    %                   complex conjugate:      'CC'
+    %                   proportional damping:   'P'
+    %                   pseudo-spectral:        'PS'
+    %  name-value pairs
+    %  interpMethod (optional) method to use for linear interpolation
+    %  Zmax         (only valid for controlType == 'controlType') maximum
+    %               displacement
+    %  Fmax         (only valid for controlType == 'controlType') maximum
+    %               PTO force
     %
-    % See aslo seastate
+    % See also WecOptTool.SeaState, interp1
     
     arguments
         hydro (1,1) struct
         seastate (1,:) WecOptTool.SeaState
         controlType (1,1) string
-        options.Zmax (1,:) double  = Inf
+        options.Zmax (1,:) double  = Inf % TODO - can be assymetric, need to check throughout
         options.Fmax (1,:) double = Inf
         options.interpMethod (1,1) string = 'linear'
     end
@@ -139,7 +148,7 @@ end
 
 function myPerf = dampingControl(dynModel,~)
     
-    myPerf = Performance(); % TODO - move this up to Device?
+    myPerf = Performance();
             
     P_max = @(b) -0.5*b*sum(abs(dynModel.F0 ./ ...
                                 (dynModel.Zi + b)).^2);
