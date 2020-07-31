@@ -510,52 +510,21 @@ classdef SeaState
                 end
             end
             
-            function result = checkStart(S, idx)
-                
-                try
-                    
-                    dw = uniquetol(diff(S.w), eps('single'));
-                    
-                    if length(dw) > 1
-                        result = 0;
-                        return
-                    end
-                    
-                    result = abs(mod(S.w(1), dw)) < eps('single');
-                    
-                    if ~result
-                        wID = 'SeaState:checkSpectrum:badStart';
-                        msg = ['First frequency in Spectrum #%i is not '...
-                               'integer multiple of frequency step'];
-                        warning(wID, msg, idx)
-                    end
-                    
-                catch
-                    result = 0;
-                end
-                
-            end
-            
             inds = 1:length(S);
             pass = 1;
             
-            check1 = @(Spect,idx) checkFields(Spect, idx);
-            check2 = @(Spect,idx) checkLengths(Spect, idx);
-            check3 = @(Spect,idx) checkCol(Spect, idx);
-            check4 = @(Spect,idx) checkPositive(Spect, idx);
-            check5 = @(Spect,idx) checkMonotonic(Spect, idx);
-            check6 = @(Spect,idx) checkRegular(Spect, idx);
-            check7 = @(Spect,idx) checkStart(Spect, idx);
+            check{1} = @(Spect,idx) checkFields(Spect, idx);
+            check{2} = @(Spect,idx) checkLengths(Spect, idx);
+            check{3} = @(Spect,idx) checkCol(Spect, idx);
+            check{4} = @(Spect,idx) checkPositive(Spect, idx);
+            check{5} = @(Spect,idx) checkMonotonic(Spect, idx);
+            check{6} = @(Spect,idx) checkRegular(Spect, idx);
             
-            pass = pass * sum(arrayfun(check1, S, inds));
-            pass = pass * sum(arrayfun(check2, S, inds));
-            pass = pass * sum(arrayfun(check3, S, inds));
-            pass = pass * sum(arrayfun(check4, S, inds));
-            pass = pass * sum(arrayfun(check5, S, inds));
-            pass = pass * sum(arrayfun(check6, S, inds));
-            pass = pass * sum(arrayfun(check7, S, inds));
+            for ii = 1:length(check)
+                pass(ii) = sum(arrayfun(check{ii}, S, inds));
+            end
             
-            if ~pass
+            if ~prod(pass)
                 msg = ['Given spectrum is incorrectly defined. See '    ...
                        'warnings for details.'];
                 error("WecOptTool:SeaState:checkSpectrum", msg)
@@ -975,7 +944,6 @@ classdef SeaState
             assert(issorted(w));
             dws = diff(w);
             assert(all(dws - dws(1) < eps*1e3)); % TODO - not sure why == won't work
-            assert(w(1) == dws(1));
             assert(iscolumn(w));
 
             S.w = w;
