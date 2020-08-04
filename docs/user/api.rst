@@ -7,37 +7,22 @@ API
 WecOptTool
 ----------
 
-The top-level WecOptTool package provides the main interface for the toolbox.
-
-.. mat:autoclass:: +WecOptTool.Blueprint(baseFolder)
-    :members:
-    
-    .. mat:automethod:: +WecOptTool.+base.AutoFolder.saveFolder
-
-.. mat:autoclass:: +WecOptTool.Device()
-    :members:
-    
-    .. mat:automethod:: +WecOptTool.+base.AutoFolder.saveFolder
-
 .. mat:autofunction:: +WecOptTool.types
 
 .. mat:autofunction:: +WecOptTool.mesh
 
 .. mat:autofunction:: +WecOptTool.solver
 
-WecOptTool.callbacks
---------------------
+WecOptTool.geometry
+-------------------
 
-The mesh callbacks provides callbacks for use with user defined blueprints created using the :mat:class:`+WecOptTool.Blueprint` class.
-This allows reuse of commonly used functionality between blueprints.
+.. mat:automodule:: +WecOptTool.+geometry
+    :members:
 
-WecOptTool.callbacks.geometry
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+WecOptTool.math
+---------------
 
-Geometry callbacks are used with the ``geometryCallbacks`` property
-of :mat:class:`+WecOptTool.Blueprint`.
-
-.. mat:automodule:: +WecOptTool.+callbacks.+geometry
+.. mat:automodule:: +WecOptTool.+math
     :members:
 
 WecOptTool.plot

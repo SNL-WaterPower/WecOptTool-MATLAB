@@ -2,14 +2,12 @@ classdef (Abstract) Solver < WecOptTool.AutoFolder
     % Abstract class for creating new solver classes
     %
     % A single method should be implemented, called ``getHydro`` that
-    % takes an array of :mat:class:`+WecOptTool.+types.Mesh` objects and 
-    % an arbitrary number of additional inputs, solves the hydrodynamics 
-    % for the meshes and return a :mat:class:`+WecOptTool.+types.Hydro` 
-    % object.
+    % solves the hydrodynamics for a given mesh using any particular 
+    % external tool
     %
     % --
     %
-    % See also WecOptTool.types.Mesh,  WecOptTool.types.Hydro
+    % See also WecOptTool.mesh
     %
     % --
     

@@ -1,3 +1,14 @@
+function tests = scriptsTest()
+   tests = functiontests(localfunctions);
+end
+
+function testDependencyCheck(testCase)
+    
+    srcRootPath = WecOptTool.system.getSrcRootPath();
+    cd(srcRootPath);
+    verifyWarningFree(testCase, @dependencyCheck);
+    
+end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
 % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -17,15 +28,3 @@
 % 
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
-
-function tests = scriptsTest()
-   tests = functiontests(localfunctions);
-end
-
-function testDependencyCheck(testCase)
-    
-    srcRootPath = WecOptTool.system.getSrcRootPath();
-    cd(srcRootPath);
-    verifyWarningFree(testCase, @dependencyCheck);
-    
-end

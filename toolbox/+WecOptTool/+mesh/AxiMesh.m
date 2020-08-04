@@ -76,8 +76,17 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             %       the number of the body (starting from one)
             %       
             % Returns:
-            %    :mat:class:`+WecOptTool.+types.Mesh`:
-            %        A populated Mesh object for the body
+            %    struct:
+            %        A mesh description with fields as described below
+            %
+            % ============  ================  ======================================
+            % **Variable**  **Format**        **Description**
+            % bodyNum       int               body number
+            % name          char array        name of the mesh
+            % nodes         Nx4 table         table of N node positions with columns ID, x, y, z
+            % panels        Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs
+            % zG            float             z-coordinate of the bodies centre of gravity
+            % ============  ================  ======================================
             %
             % Warning:
             %     z(i) must be greater than or equal to z(i+1)
@@ -89,7 +98,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             %
             % --
             % 
-            % See also WecOptTool.types.Mesh
+            % See also WecOptTool.mesh
             %
             % --
             
