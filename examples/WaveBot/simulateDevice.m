@@ -457,14 +457,6 @@ function [powTot, fRes, tRes] = getPSPhasePower(dynModel, ph)
     end
 end
 
-function out = aggregate(seastate, hydro, motions, performances)
-    "Hello"
-    performances
-    s = struct(seastate);
-    p = struct(performances);
-    out.pow = dot([p.pow], [s.mu]) / sum([s.mu]);
-end
-
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
 % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
 % U.S. Government retains certain rights in this software.
