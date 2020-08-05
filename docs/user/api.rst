@@ -7,7 +7,9 @@ API
 WecOptTool
 ----------
 
-.. mat:autofunction:: +WecOptTool.types
+.. mat:autoclass:: +WecOptTool.AutoFolder
+
+.. mat:autoclass:: +WecOptTool.SeaState
 
 .. mat:autofunction:: +WecOptTool.mesh
 
@@ -16,44 +18,21 @@ WecOptTool
 WecOptTool.geometry
 -------------------
 
+The geometry package provides predefined geometry generation functions.
+
 .. mat:automodule:: +WecOptTool.+geometry
+    :members:
+
+WecOptTool.plot
+---------------
+
+.. mat:automodule:: +WecOptTool.+plot
     :members:
 
 WecOptTool.math
 ---------------
 
 .. mat:automodule:: +WecOptTool.+math
-    :members:
-
-WecOptTool.plot
----------------
-
-The plot subpackage provides plots.
-
-.. mat:automodule:: +WecOptTool.+plot
-    :members:
-
-WecOptTool.types
-----------------
-
-The types subpackage provides data type classes, that contain parameters for recording the outputs of, and providing inputs to, the various stages of a WecOptTool calculation.
-
-.. mat:automodule:: +WecOptTool.+types
-
-
-.. mat:autoclass:: +WecOptTool.+types.Hydro
-    :members:
-
-.. mat:autoclass:: +WecOptTool.+types.Mesh
-    :members:
-
-.. mat:autoclass:: +WecOptTool.+types.Motion
-    :members:
-
-.. mat:autoclass:: +WecOptTool.+types.Performance
-    :members:
-
-.. mat:autoclass:: +WecOptTool.+types.SeaState
     :members:
 
 WecOptTool.mesh
@@ -75,16 +54,9 @@ The solver subpackage provides hydrodynamic solver classes, that provide the sta
 WecOptTool.base
 ---------------
 
-The base subpackage provides base classes.
+The base subpackage provides base classes used in other classes.
 
 .. mat:automodule:: +WecOptTool.+base
-
-
-.. mat:autoclass:: +WecOptTool.+base.AutoFolder
-    :members:
-
-.. mat:autoclass:: +WecOptTool.+base.Data
-    :members:
 
 .. mat:autoclass:: +WecOptTool.+base.Mesher
     :members:

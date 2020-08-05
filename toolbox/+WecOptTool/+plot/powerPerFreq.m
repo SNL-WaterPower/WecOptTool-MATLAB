@@ -2,18 +2,15 @@ function powerPerFreq(input)
     % Plots power per frequency for a simulated device.
     %
     % Arguments:
-    %   device (:mat:class:`+WecOptTool.Device`):
-    %       A device that has been simulated with a given sea state
-    %       
-    % Note:
-    %     If the ``simulate`` method of the device has not been called
-    %     no plot will be created.
+    %   input (struct):
+    %       A struct array with fields defined in the table below
     %
-    % --
-    % 
-    % See also WecOptTool.Device
+    % ============  ================  =====================================
+    % **Variable**  **Format**        **Description**
+    % w             Nx1 float array   N sea-state frequencie
+    % powPerFreq    Nx1 float array   Power production per frequency
+    % ============  ================  =====================================
     %
-    % --
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
