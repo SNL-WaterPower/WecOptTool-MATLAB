@@ -1,4 +1,4 @@
-classdef (Abstract) Solver < WecOptTool.AutoFolder
+classdef (Abstract) Solver < WecOptTool.base.TempFolder
     % Abstract class for creating new solver classes
     %
     % A single method should be implemented, called ``getHydro`` that

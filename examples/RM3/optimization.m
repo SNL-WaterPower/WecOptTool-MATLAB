@@ -36,21 +36,23 @@ Aeq = [];
 Beq = [];
 NONLCON = [];
 
+% Create a folder for storing intermediate files (cleans itself after
+% being cleared).
 folder = WecOptTool.AutoFolder();
 
 %% Optimization Execution
 
 % Create simple objective function handle
-objFun = @(x) myWaveBotObjFun(x, SS, folder.path);
+objFun = @(x) myWaveBotObjFun(x, SS, folder);
 
 % Call the solver
 [x, fval] = fmincon(objFun, x0, A, B, Aeq, Beq, lb, ub, NONLCON, opts);
 
 %% Recover device object of best simulation and plot its power per freq
-performances = recoverPerformances(folder.path);
+performances = folder.recoverVar("performances");
     
-for testCell = performances
-    test = testCell{1};
+for i = 1:length(performances)
+    test = performances{i};
     if isequal(test(1).x, x)
         bestPerformances = test;
         break
@@ -66,7 +68,7 @@ WecOptTool.plot.powerPerFreq(bestPerformances);
 function fval = myWaveBotObjFun(x, seastate, folder)
     
     w = seastate.getRegularFrequencies(0.5);
-    geomParams = [folder num2cell(x) {w}];
+    geomParams = [folder.path num2cell(x) {w}];
 
     deviceHydro = designDevice('parametric', geomParams{:});
     
@@ -76,40 +78,17 @@ function fval = myWaveBotObjFun(x, seastate, folder)
                                          'CC');
     end
     
-    for j = 1:length(seastate)
-        performances(j).w = seastate(j).w;
-    end
-     
-    fval = -1 * sum(aggregateSeaStates(seastate, performances));
+    fval = -1 * weightedPower(seastate, performances);
     
+    [performances(:).w] = seastate.w;
     performances(1).x = x;
-    resultsFolder = tempname(folder);
-    mkdir(resultsFolder);
-    etcPath = fullfile(resultsFolder, "performances.mat");
-    save(etcPath, 'performances');
-    
+    folder.stashVar(performances);
+
 end
 
-function out = aggregateSeaStates(seastate, performances)
+function out = weightedPower(seastate, performances)
     pow = sum([performances.powPerFreq]);
     out = dot(pow, [seastate.mu]) / sum([seastate.mu]);
-end
-
-function performances = recoverPerformances(folder)
-
-    pDirs = WecOptTool.system.getFolders(folder,  ...
-                                         "absPath", true);
-    nDirs = length(pDirs);
-    performances = {};
-
-    for i = 1:nDirs
-        dir = pDirs{i};
-        fileName = fullfile(dir, 'performances.mat');
-        if isfile(fileName)
-            performances = [performances, {load(fileName).performances}];
-        end
-    end
-
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 

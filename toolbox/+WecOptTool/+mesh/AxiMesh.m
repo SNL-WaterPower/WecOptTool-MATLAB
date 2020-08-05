@@ -1,7 +1,12 @@
 classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
     % Class for making meshes using the NEMOH aximesh routine
     %
+    % Arguments:
+    %     base (string, optional):
+    %        Parent for folder which stores NEMOH input and output files.
+    %
     % Attributes:
+    %     path (string): path to file storage folder
     %     verb (bool): use verbose console outputs (default false)
     %     rho (float): water density (default = 1025 kg/m\ :sup:`3`)
     %     g (float):
@@ -180,9 +185,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
                 fprintf('\n --> Number of nodes             : %g',nx);
                 fprintf('\n --> Number of panels (max 2000) : %g \n',nf);
             end
-
-             % obj.path;
-
+            
             % If this is a multi-body device the mesh and results 
             % directories will already exist
             if exist(fullfile(rundir,'mesh'),'dir') ~= 7

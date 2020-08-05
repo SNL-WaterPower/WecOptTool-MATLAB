@@ -8,8 +8,10 @@ WecOptTool
 ----------
 
 .. mat:autoclass:: +WecOptTool.AutoFolder
+    :members:
 
 .. mat:autoclass:: +WecOptTool.SeaState
+    :members:
 
 .. mat:autofunction:: +WecOptTool.mesh
 
@@ -57,12 +59,4 @@ WecOptTool.base
 The base subpackage provides base classes used in other classes.
 
 .. mat:automodule:: +WecOptTool.+base
-
-.. mat:autoclass:: +WecOptTool.+base.Mesher
-    :members:
-
-.. mat:autoclass:: +WecOptTool.+base.NEMOH
-    :members:
-
-.. mat:autoclass:: +WecOptTool.+base.Solver
     :members:

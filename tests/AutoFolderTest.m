@@ -2,16 +2,7 @@ function tests = AutoFolderTest()
     tests = functiontests(localfunctions);
 end
 
-function testUniqueDir(testCase)
-    
-    autoFolder1 = WecOptTool.AutoFolder();
-    autoFolder2 = WecOptTool.AutoFolder();
-    
-    verifyNotEqual(testCase, autoFolder1.path, autoFolder2.path)
-    
-end
-
-function testDestructor(testCase)
+function testPathDestructor(testCase)
     
     % Directory build
     autoFolder = WecOptTool.AutoFolder();
@@ -25,27 +16,51 @@ function testDestructor(testCase)
     
 end
 
-function testParentFolderDestructor(testCase)
+function testVarsPathExists(testCase)
+    
+    % Directory build
+    autoFolder = AutoFolderMule();
+    verifyTrue(testCase, isfolder(autoFolder.varsPathPublic))
+    
+end
 
-    import matlab.unittest.fixtures.TemporaryFolderFixture
+function testVarsPathDestructor(testCase)
     
-    tempFixture = testCase.applyFixture(                            ...
-             TemporaryFolderFixture('PreservingOnFailure',  true,   ...
-                                    'WithSuffix', 'testStudySaveNEMOH'));
-    
-    autoFolder = WecOptTool.AutoFolder(tempFixture.Folder);
-    testDir = autoFolder.path;
-    verifyTrue(testCase, isfolder(testDir))
+    % Directory build
+    autoFolder = AutoFolderMule();
+    assertTrue(testCase, isfolder(autoFolder.varsPathPublic))
+    testDir = autoFolder.varsPathPublic;
     
     % Trigger destructor
     clear autoFolder
     
-    % Folder should not be deleted
-    verifyTrue(testCase, isfolder(testDir))
+    verifyEqual(testCase, isfolder(testDir), false)
     
 end
 
-function testSaveFolder(testCase)
+function testStashVar(testCase)
+
+    autoFolder = AutoFolderMule();
+    myData.value = "Test";
+    autoFolder.stashVar(myData)
+    folders = WecOptTool.system.getFolders(autoFolder.varsPathPublic,   ...
+                                           "absPath", true);
+    files = dir(fullfile(folders{1}, '*.mat'));
+    verifySubstring(testCase, files.name, "myData.mat")
+    
+end
+
+function testRecoverVar(testCase)
+
+    autoFolder = AutoFolderMule();
+    myData.value = "Test";
+    autoFolder.stashVar(myData)
+    test = autoFolder.recoverVar("myData");
+    verifyEqual(testCase, test{1}, myData)
+    
+end
+
+function testArchive(testCase)
 
     import matlab.unittest.fixtures.TemporaryFolderFixture
     
@@ -63,14 +78,14 @@ function testSaveFolder(testCase)
     
     % Copy data
     testDir = fullfile(tempFixture.Folder, "test");
-    autoFolder.saveFolder(testDir);
+    autoFolder.archive(testDir);
     
     verifyTrue(testCase, isfolder(testDir))
     rmdir(testDir, 's')
     
 end
 
-function testSaveFolderNoCopy(testCase)
+function testArchiveNoCopy(testCase)
 
     import matlab.unittest.fixtures.TemporaryFolderFixture
     
@@ -82,7 +97,7 @@ function testSaveFolderNoCopy(testCase)
     
     % Attempt to copy data
     testDir = fullfile(tempFixture.Folder, "test");
-    autoFolder.saveFolder(testDir);
+    autoFolder.archive(testDir);
     
     verifyFalse(testCase, isfolder(testDir))
     

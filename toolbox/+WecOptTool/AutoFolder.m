@@ -1,21 +1,16 @@
-classdef AutoFolder < handle
-    % Class that creates a unique temporary folder.
-    %
-    % The folder may either be orphaned and will be deleted upon deletion 
-    % of the container object or it may be a child of a given base folder, 
-    % in which case deletion of the folder is the responsibility of the
-    % parent.
-    %
-    % Arguments:
-    %     base (optional string): path of the parent folder.
+classdef AutoFolder < WecOptTool.base.TempFolder
+    % Class that creates a unique temporary folders, which are deleted 
+    % upon object destruction.
     %
     % Attributes:
-    %     path (string): path to unique folder
+    %     path (string): path to unique folder for storage
     %
     % --
     % 
     % AutoFolder Methods:
-    %     saveFolder - Save the folder and contents
+    %     stashVar - store a variable for recovery later
+    %     recoverVar - retrieve stashed variable
+    %     archive - Save the folder and contents
     % 
     % --
      
@@ -39,35 +34,76 @@ classdef AutoFolder < handle
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    properties
-        path
-    end
-    
-    properties (Access = private)
-        autoRemoveFolder = true
+    properties (Access = protected)
+        varsPath
     end
     
     methods
         
-        function obj = AutoFolder(base)
+        function obj = AutoFolder()
             
-            if nargin > 0 && isempty(base)
-                obj.autoRemoveFolder = false;
-                return
-            end
-            
-            args = {};
-            
-            if nargin > 0
-                args{1} = base;
-                obj.autoRemoveFolder = false;
-            end
-                
-            obj.makeFolder(args{:});
+            obj = obj@WecOptTool.base.TempFolder();
+            obj.varsPath = tempname;
+            obj.mkdirSafe(obj.varsPath);
             
         end
         
-        function saveFolder(obj, targetPath)
+        function stashVar(obj, variable)
+            % Store a variable for recovery later.
+            %
+            % Arguments:
+            %   variable: variable to store
+            %
+            % Note:
+            %   A new stash is created every time a variable is stored,
+            %   so multiple values may be returned by 
+            %   :mat:meth:`.recoverVar`
+            %
+            
+            arguments
+                obj
+                variable {mustBeNonempty}
+            end
+            
+            resultsFolder = tempname(obj.varsPath);
+            mkdir(resultsFolder);
+            etcPath = fullfile(resultsFolder, inputname(2) + ".mat");
+            save(etcPath, "variable");
+            
+        end
+        
+        function result = recoverVar(obj, variableName)
+            % Recover stashed variable
+            %
+            % Arguments:
+            %   variableName (string): variable to recover
+            %
+            % Returns:
+            %   cell: cell array containing all stored version of given
+            %         variable name
+            %
+            
+            arguments
+                obj
+                variableName string {mustBeNonempty}
+            end
+            
+            pDirs = WecOptTool.system.getFolders(obj.varsPath,  ...
+                                                 "absPath", true);
+            nDirs = length(pDirs);
+            result = {};
+
+            for i = 1:nDirs
+                dir = pDirs{i};
+                fileName = fullfile(dir, variableName + ".mat");
+                if isfile(fileName)
+                    result = [result, {load(fileName).variable}];
+                end
+            end
+            
+        end
+        
+        function archive(obj, targetPath)
             % Save the folder and contents
             %
             % Args:
@@ -77,6 +113,11 @@ classdef AutoFolder < handle
             %   If there are no files to copy this function will not
             %   make the destination folder
             %
+            
+            arguments
+                obj
+                targetPath string
+            end
             
             if length(dir(obj.path)) == 2
                 return
@@ -88,44 +129,24 @@ classdef AutoFolder < handle
         
     end
     
-    methods (Access=protected)
-        
-        function obj = makeFolder(obj, base)
-            
-            if obj.path
-                errStr = "folder is already defined";
-                error('WecOptTool:AutoFolder:FolderDefined', errStr)
-            end
-            
-            % Try to ensure folder is unique and reserved
-            if nargin > 1
-                obj.path = tempname(base);
-            else
-                obj.path = tempname;
-            end
-            
-            [status, ~, message] = mkdir(obj.path);
-            
-            if ~status || strcmp(message, 'MATLAB:MKDIR:DirectoryExists')
-                errStr = "Failed to create unique folder";
-                error('WecOptTool:AutoFolder:NoUniqueFolder', errStr)
-            end
-            
-        end
-        
-        function obj = rmFolder(obj)
+    methods (Access = protected)
+                
+        function obj = rmFolders(obj)
             if isfolder(obj.path)
                 WecOptTool.system.rmdirRetry(obj.path);
+            end
+            if isfolder(obj.varsPath)
+                WecOptTool.system.rmdirRetry(obj.varsPath);
             end
         end
                 
         function delete(obj)
-            if obj.autoRemoveFolder && ~WecOptTool.system.isParallel()
-                obj.rmFolder();
+            if ~WecOptTool.system.isParallel()
+                obj.rmFolders();
             end
         end
         
     end
-    
+       
 end
 

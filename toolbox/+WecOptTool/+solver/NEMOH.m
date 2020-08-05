@@ -2,10 +2,11 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
     % Class for solving meshes using the NEMOH suite.
     %
     % Arguments:
-    %    basePath (string):
-    %        Path to folder for storing NEMOH input and output files.
+    %     base (string, optional):
+    %        Parent for folder which stores NEMOH input and output files.
     %
     % Attributes:
+    %     path (string): path to file storage folder
     %     verb (bool): use verbose console outputs (default false)
     %     rho (float): water density (default = 1025 kg/m\ :sup:`3`)
     %     g (float):
