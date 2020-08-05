@@ -3,7 +3,8 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
     %
     % Arguments:
     %     base (string, optional):
-    %        Parent for folder which stores NEMOH input and output files.
+    %        Parent for folder which stores NEMOH input and output files,
+    %        default is tempdir
     %
     % Attributes:
     %     path (string): path to file storage folder
