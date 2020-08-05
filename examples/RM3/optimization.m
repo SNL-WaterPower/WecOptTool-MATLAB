@@ -12,6 +12,9 @@
 % off frequencies that have less that 1% of the max spectral density
 SS = WecOptTool.SeaState.example8Spectra("trimFrequencies", 0.01);
 
+%% Create a folder for storing intermediate files
+folder = WecOptTool.AutoFolder();
+
 %% Optimization Setup
 
 % Add geometry design variables (parametric)
@@ -35,10 +38,6 @@ B = [];
 Aeq = [];
 Beq = [];
 NONLCON = [];
-
-% Create a folder for storing intermediate files (cleans itself after
-% being cleared).
-folder = WecOptTool.AutoFolder();
 
 %% Optimization Execution
 

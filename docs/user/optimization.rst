@@ -7,8 +7,9 @@ Optimizing an Existing WEC Model
 Overview
 ========
 
-This section explains and expands upon the |optimization.m|_ example file provided in the ``examples/RM3`` directory of the WecOptTool source code.
-This example considers the DOE Reference Model 3 (RM3_) device. 
+This section explains and expands upon the |optimization.m|_ example file 
+provided in the ``examples/RM3`` directory of the WecOptTool source code. This 
+example considers the DOE Reference Model 3 (RM3_) device. 
 
 .. raw:: html
 
@@ -22,66 +23,66 @@ This example considers the DOE Reference Model 3 (RM3_) device.
 
    </details></br>
 
-The general concept of WecOptTool is illustrated in the diagram below organized into three columns. 
+The general concept of WecOptTool is illustrated in the diagram below organized 
+into three columns. 
 
     * **User Inputs** (Green) - aspects of the tool that the user can interact with
     * **Data Classes** (Blue) - objects used to store and transfer information within a study
     * **Solvers** (Yellow) - physics models and optimization algorithms that process data
 
-To run WecOptTool the user will need to define each of the six input blocks in the User Inputs column.
-For the RM3, the Geometry will be defined by a mesh and design variables (:math:`r_1, r_2, d_1, d_2`), which refer to the spar/float radius and distance between the surface water level and the distance between the two boides.
-In the Power Take Off (PTO) input, the user will define constraints on the PTO such as max force, :math:`F_{max}`, and max stroke :math:`\Delta 
-x_{max}` and an operational constraint, :math:`H_{s,max}`.).
-Lastly, the kinematics will define how the two bodies of the RM3 move relative to the resource and relative degrees of freedom. 
+To run WecOptTool the user will need to define each of the six input blocks in 
+the User Inputs column. For the RM3, the Geometry will be defined by a mesh and 
+design variables (:math:`r_1, r_2, d_1, d_2`), which refer to the spar/float 
+radius and distance between the surface water level and the distance between 
+the two bodies. In the Power Take Off (PTO) input, the user will define 
+constraints on the PTO such as max force, :math:`F_{max}`, and max stroke 
+:math:`\Delta x_{max}` and an operational constraint, :math:`H_{s,max}`.). 
+Lastly, the kinematics will define how the two bodies of the RM3 move relative 
+to the resource and relative degrees of freedom. 
 
-Next, the user will choose one of three controllers to compute the resulting dynamics(``ProportionalDamping``, ``ComplexConjugate``, ``PseudoSpectral``).
-The Sea States input block for the RM3 may made up of a single spctrum or multiple spectra.
-Finally, the user will need to determine some objective function of interest for the device being studied.
+Next, the user will choose one of three controllers to compute the resulting 
+dynamics(``ProportionalDamping``, ``ComplexConjugate``, ``PseudoSpectral``). 
+The Sea States input block for the RM3 may made up of a single spectrum or 
+multiple spectra. Finally, the user will need to determine some objective 
+function of interest for the device being studied. 
 
-WecOptTool will use the User inputs to build a set of Data Classes and pass the information to the Solvers.
-The Hydrodynamics Solver currently uses Nemoh_ to compute the linear wave-body interaction properties using the boundary element method (BEM).
-The Optimal Control Solver will take the Data Classes to return device results for the given controller and sea state.
-This output, paired with some cost proxy from the device, can be used to evaluate the objective function inside the Optimization Routine.
+WecOptTool will use the User inputs to build a set of Data Classes and pass the 
+information to the Solvers. The Hydrodynamics Solver currently uses Nemoh_ to 
+compute the linear wave-body interaction properties using the boundary element 
+method (BEM). The Optimal Control Solver will take the Data Classes to return 
+device results for the given controller and sea state. This output, paired with 
+some cost proxy from the device, can be used to evaluate the objective function 
+inside the Optimization Routine. 
 
 .. image:: /_static/WecOptToolFlowChart.svg
    :alt: Conceptual illustration of WecOptTool functionality
 
 In WecOptTool, this process is executed by applying the following steps:
 
-#. Select a WEC Blueprint (RM3, in this case)
-#. Create one or many Devices using the Blueprint
-#. Examine the performance each Device object for a given seastate
+#. Select a device design and calculate its hydrodynamic parameters
+#. Examine the performance of the device design using the chosen control 
+   options, for a given seastate
 
-The remainder of this page will illustrate (using the |optimization.m|_ example) how this process is applied to a co-optimisation problem.
-For more information about the :mat:class:`~+WecOptTool.Blueprint` and :mat:class:`~+WecOptTool.Device` classes see the :ref:`model` and :ref:`api` 
-sections. 
-
-Create an RM3 object
-====================
-
-Once defined, :mat:class:`~+WecOptTool.Blueprint` subclasses are easy to
-initialize:
-
-.. literalinclude:: /../examples/RM3/optimization.m
-    :language: matlab
-    :lines: 5-6
-    :linenos:
-    :lineno-start: 5
+The remainder of this page will illustrate (using the |optimization.m|_ 
+example) how this process is applied to a co-optimisation problem.
 
 Define a seastate
 =================
 
-WecOptTool can simulate single or multiple spectra sea states, where weightings can be provided to indicate the relative likelihood of each spectra.
-The following lines from |optimization.m|_ provide means of using the WAFO_ MATLAB toolbox or preset spectra from WecOptTool.
+WecOptTool can simulate single or multiple spectra sea states, where weightings 
+can be provided to indicate the relative likelihood of each spectra. The 
+following lines from |optimization.m|_ provide means of using the WAFO_ MATLAB 
+toolbox or a predefined spectra from WecOptTool. 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 8-17
+    :lines: 6-13
     :linenos:
-    :lineno-start: 8
+    :lineno-start: 6
 
-Spectra are formatted following the convention of the WAFO_ MATLAB toolbox, but can be generated in via any means (e.g., from buoy measurements) as long as the 
-structure includes the ``S.S``, ``S.w``, and ``S.phi`` fields.
+Spectra are formatted following the convention of the WAFO_ MATLAB toolbox, but 
+can be generated via any means (e.g., from buoy measurements) as long as the 
+structure includes the ``S.S`` and ``S.w`` fields. 
 
 .. code:: matlab
 
@@ -116,19 +117,34 @@ These can be plotted using standard MATLAB commands.
 .. image:: /_static/example_spectra.svg
    :alt: Eight spectra consider in example.m
 
-The desired spectrum or spectra must now be converted into a 
-:mat:class:`~+WecOptTool.+types.SeaState` data type object.
+The predefined spectra are returned as :mat:class:`~+WecOptTool.SeaState` 
+objects. The :mat:class:`~+WecOptTool.SeaState` class allows the user to 
+manipulate the given spectra to the requirements of the experiment. 
+Automatically, the weighting parameter ``mu`` will be set to unity when 
+multiple sea-states are given with ``mu`` undefined. In this example, 
+frequencies that have less than 1% of the maximum spectral density are also 
+removed, (using the ``"trimFrequencies"`` option) to increase the speed of 
+computation with minimal loss of accuracy. See the 
+:mat:class:`~+WecOptTool.SeaState` documentation for all available options. 
+
+Create File Storage
+===================
+
+A number of processes used by WecOptTool require temporary storage for 
+intermediate files. Additionally, as part of the optimization process, it can 
+be useful to store data in temporary files for recovery later (as MATLAB 
+optimizers do not keep intermediate values). WecOptTool provides the 
+:mat:class:`~+WecOptTool.AutoFolder` class for just this purpose, which 
+provides a temporary storage space. Also, the user does not need to worry about 
+deleting the files contained in the folder when finished, as these are removed 
+automatically when the :mat:class:`~+WecOptTool.AutoFolder` object is deleted. 
+The folder is created as follows: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 19-21
+    :lines: 15-16
     :linenos:
-    :lineno-start: 19
-
-The :mat:func:`+WecOptTool.types` function is the preferred method for creating data type object arrays.
-The :mat:class:`~+WecOptTool.+types.SeaState` class allows the user to manipulate the given spectra to the requirements of the experiment. Automatically, the weighting parameter ``mu`` will be set to unity when multiple sea-states are given with ``mu`` undefined.
-In this example, frequencies that have less than 1% of the maximum spectral density are also removed, (using the ``"trimFrequencies"`` option) to increase the speed of computation with minimal loss of accuracy.
-See the :mat:class:`~+WecOptTool.+types.SeaState` documentation for all available options.
+    :lineno-start: 15
 
 Create an objective function
 ============================
