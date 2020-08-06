@@ -67,7 +67,7 @@ WecOptTool.plot.powerPerFreq(bestPerformances);
 function fval = myWaveBotObjFun(x, seastate, folder)
     
     w = seastate.getRegularFrequencies(0.5);
-    geomParams = [folder.path num2cell(x) {w}];
+    geomParams = [folder.path num2cell(x) w];
 
     deviceHydro = designDevice('parametric', geomParams{:});
     
