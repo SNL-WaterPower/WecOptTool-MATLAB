@@ -79,8 +79,9 @@ classdef AutoFolder < WecOptTool.base.TempFolder
             %   variableName (string): variable to recover
             %
             % Returns:
-            %   cell: cell array containing all stored version of given
-            %         variable name
+            %   cell:
+            %       cell array containing all stored version of given
+            %       variable name
             %
             
             arguments
