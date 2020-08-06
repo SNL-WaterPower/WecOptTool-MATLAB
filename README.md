@@ -155,7 +155,7 @@ Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
 
 ## Code Architecture
 
-The top level folders of the WecOptTool repository have the follow use:
+The top level folders of the WecOptTool repository are used as follows:
 
 * **docs** contains the web documentation source code
 * **examples** contains subfolders with structured examples of co-optimisation 
