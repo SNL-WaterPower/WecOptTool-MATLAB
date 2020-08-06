@@ -1,4 +1,4 @@
-classdef RM3ExampleTest < matlab.unittest.TestCase
+classdef ExamplesTest < matlab.unittest.TestCase
     
     properties
         OriginalDefault
@@ -28,39 +28,19 @@ classdef RM3ExampleTest < matlab.unittest.TestCase
     
     methods(Test)
         
-        function testExample(testCase)
+        function testWaveBot_caseA(testCase)
             
             examplePath = fullfile(WecOptTool.system.getSrcRootPath(),  ...
                                    "examples",                          ...
-                                   "RM3",                               ...
-                                   "basic.m");
+                                   "WaveBot",                           ...
+                                   "WaveBot_caseA.m");
             
             % This fills the function namespace with the variables defined
             % in the example
             run(examplePath);
             
-            verifyEqual(testCase,                       ...
-                        r(1), 4.046658023714033e+06,    ...
-                        'RelTol', 5 * eps)
+            verifyEqual(testCase, length(r), 3)
             
-        end
-        
-        function testExampleOptim(testCase)
-            
-            examplePath = fullfile(WecOptTool.system.getSrcRootPath(),  ...
-                                   "examples",                          ...
-                                   "RM3",                               ...
-                                   "optimization.m");
-            
-            % This fills the function namespace with the variables defined
-            % in the example
-            run(examplePath);
-            
-            verifyEqual(testCase,                                   ...
-                        bestPerformances(1).x, [5 7.5 1.125 42],    ...
-                        'RelTol', 5 * eps)
-                         
-                         
         end
         
     end

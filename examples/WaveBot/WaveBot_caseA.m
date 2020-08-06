@@ -39,9 +39,7 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-clc
 clear controlParams r
-close all
 
 %% define sea state of interest
 

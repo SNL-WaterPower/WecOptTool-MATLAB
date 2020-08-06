@@ -1,4 +1,4 @@
-function tests = RM3BlueprintTest()
+function tests = optionsTest()
     tests = functiontests(localfunctions);
 end
 

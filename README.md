@@ -133,8 +133,8 @@ WecOptTool source code and is run from the MATLAB command window, as follows:
    
     ```
     Totals:
-          79 Passed, 0 Failed, 0 Incomplete.
-          95.7460 seconds testing time.
+          80 Passed, 0 Failed, 0 Incomplete.
+          125.1625 seconds testing time.
     ```
 
 1. **Begin use:** See the 

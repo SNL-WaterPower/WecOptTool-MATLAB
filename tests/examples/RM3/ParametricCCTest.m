@@ -1,4 +1,4 @@
-classdef RM3BlueprintParametricCCTest < matlab.unittest.TestCase
+classdef ParametricCCTest < matlab.unittest.TestCase
  
     properties
         SS
