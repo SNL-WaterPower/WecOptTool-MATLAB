@@ -1,13 +1,12 @@
-classdef (Abstract) Mesher < WecOptTool.base.AutoFolder
+classdef (Abstract) Mesher < WecOptTool.base.TempFolder
     % Abstract class for creating new mesher classes
     %
     % A single method should be implemented, called ``makeMesh`` that
-    % takes an arbitrary number of inputs but must return a 
-    % :mat:class:`+WecOptTool.+types.Mesh` object.
+    % creates a mesh using any particular external tool
     %
     % --
     %
-    % See also WecOptTool.types.Mesh
+    % See also WecOptTool.mesh
     %
     % --
     

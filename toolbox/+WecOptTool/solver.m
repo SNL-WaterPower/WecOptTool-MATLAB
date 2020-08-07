@@ -16,7 +16,7 @@ function hydro = solver(solverName, folder, varargin)
     %         method of the chosen solver class for details.
     %
     % Returns:
-    %    :mat:class:`+WecOptTool.+types.Hydro`: A populated Hydro object
+    %    struct: Output struct from chosen solver
     %
     % --
     %

@@ -43,7 +43,7 @@ classdef NEMOH < handle
             inpath = 1;
 
             try
-                 nemohPath = WecOptLib.utils.readConfig('nemohPath');
+                 nemohPath = WecOptTool.system.readConfig('nemohPath');
             catch
                 inpath = 0;
                 cd(startdir);
@@ -96,7 +96,7 @@ classdef NEMOH < handle
             end
 
             cd(startdir);
-            WecOptLib.utils.rmdirRetry(rundir);
+            WecOptTool.system.rmdirRetry(rundir);
             
         end
         

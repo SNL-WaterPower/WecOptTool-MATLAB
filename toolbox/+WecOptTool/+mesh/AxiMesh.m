@@ -1,7 +1,13 @@
 classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
     % Class for making meshes using the NEMOH aximesh routine
     %
+    % Arguments:
+    %     base (string, optional):
+    %        Parent for folder which stores NEMOH input and output files,
+    %        default is tempdir
+    %
     % Attributes:
+    %     path (string): path to file storage folder
     %     verb (bool): use verbose console outputs (default false)
     %     rho (float): water density (default = 1025 kg/m\ :sup:`3`)
     %     g (float):
@@ -52,7 +58,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
     
     methods
         
-        function mesh = makeMesh(obj, r, z, ntheta, nfobj, zG, bodyNum)
+        function meshData = makeMesh(obj, r, z, ntheta, nfobj, zG, bodyNum)
             % Mesh generation of an axisymmetric body.
             %
             % All coordinates are measured from the undisturbed sea
@@ -76,8 +82,17 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             %       the number of the body (starting from one)
             %       
             % Returns:
-            %    :mat:class:`+WecOptTool.+types.Mesh`:
-            %        A populated Mesh object for the body
+            %    struct:
+            %        A mesh description with fields as described below
+            %
+            % ============  ================  ======================================
+            % **Variable**  **Format**        **Description**
+            % bodyNum       int               body number
+            % name          char array        name of the mesh
+            % nodes         Nx4 table         table of N node positions with columns ID, x, y, z
+            % panels        Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs
+            % zG            float             z-coordinate of the bodies centre of gravity
+            % ============  ================  ======================================
             %
             % Warning:
             %     z(i) must be greater than or equal to z(i+1)
@@ -89,11 +104,9 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             %
             % --
             % 
-            % See also WecOptTool.types.Mesh
+            % See also WecOptTool.mesh
             %
             % --
-
-            import WecOptTool.types.Mesh
             
             % Throwing error message if Nemoh could not be found.
             nemohExistFlag = obj.isNemohInPath();
@@ -109,7 +122,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             end
             
             startdir = pwd;
-            cd(obj.folder);
+            cd(obj.path);
             rundir = '.';
             
             if exist(fullfile(rundir,'input.txt'), 'file') ~= 2
@@ -119,7 +132,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
                 fclose(fip);
             end
 
-            WOTDataPath = WecOptLib.utils.getUserPath();
+            WOTDataPath = WecOptTool.system.getUserPath();
             configPath = fullfile(WOTDataPath, 'config.json');
             config = jsondecode(fileread(configPath));
             nemohPath = fullfile(config.nemohPath);
@@ -173,9 +186,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
                 fprintf('\n --> Number of nodes             : %g',nx);
                 fprintf('\n --> Number of panels (max 2000) : %g \n',nf);
             end
-
-             % obj.folder;
-
+            
             % If this is a multi-body device the mesh and results 
             % directories will already exist
             if exist(fullfile(rundir,'mesh'),'dir') ~= 7
@@ -232,7 +243,6 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             meshData.name = mname;
             meshData.zG = zG;
             meshData.bodyNum = bodyNum;
-            mesh = Mesh(meshData);
             
             cd(startdir);
         

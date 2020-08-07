@@ -8,5 +8,5 @@ Fixes # (issue)
 
 - [ ] Added the results of running the test suite (in pdf form)
 - [ ] All new files contain the GPL header
-- [ ] If `example.m` has been modified, the content / line numbers in 
-  `docs\user\example.rst` are still valid or have been fixed
+- [ ] If `examples/RM3/optimization.m` has been modified, the content / line 
+  numbers in `docs/user/optimization.rst` are still valid or have been fixed

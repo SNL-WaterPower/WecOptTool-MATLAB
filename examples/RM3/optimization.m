@@ -1,24 +1,19 @@
 %% optimization.m
-% Example of an optimization study, utilizing the RM3 blueprint defined in
-% the RM3.m file.
-
-%% Create RM3 blueprint.
-RM3Blueprint = RM3();
+% Example of an optimization study
 
 %% Define and store sea state of interest
 
-% Create Bretschnider spectrum from WAFO
+% Create Bretschnider spectrum from WAFO and trim  off frequencies that 
+% have less that 1% of the max spectral density
 % S = bretschneider([],[8,10],0);
+% SS = WecOptTool.SeaState(S, "trimFrequencies", 0.01)
 
-% Alternatively load a single example spectrum
-% S = WecOptLib.tests.data.exampleSpectrum();
+% Load an example with multiple sea-states (8 differing spectra) and trim 
+% off frequencies that have less that 1% of the max spectral density
+SS = WecOptTool.SeaState.example8Spectra("trimFrequencies", 0.01);
 
-% Or load an example with multiple sea-states (8 differing spectra)
-S = WecOptLib.tests.data.example8Spectra();
-
-% Now store the sea-state in a SeaState data type and trim off frequencies
-% that have less that 1% of the max spectral density
-SS = WecOptTool.types("SeaState", S, "trimFrequencies", 0.01);
+%% Create a folder for storing intermediate files
+folder = WecOptTool.AutoFolder();
 
 %% Optimization Setup
 
@@ -47,38 +42,52 @@ NONLCON = [];
 %% Optimization Execution
 
 % Create simple objective function handle
-objFun = @(x) myWaveBotObjFun(x, RM3Blueprint, SS);
+objFun = @(x) myWaveBotObjFun(x, SS, folder);
 
 % Call the solver
 [x, fval] = fmincon(objFun, x0, A, B, Aeq, Beq, lb, ub, NONLCON, opts);
 
 %% Recover device object of best simulation and plot its power per freq
-devices = RM3Blueprint.recoverDevices();
+performances = folder.recoverVar("performances");
     
-for device = devices
-    if isequal(device.geomParams(1:4), num2cell(x))
-        bestDevice = device;
+for i = 1:length(performances)
+    test = performances{i};
+    if isequal(test(1).x, x)
+        bestPerformances = test;
         break
     end
 end
 
-WecOptTool.plot.powerPerFreq(bestDevice);
+WecOptTool.plot.powerPerFreq(bestPerformances);
 
 %% Define objective function
 % This can take any form that complies with the requirements of the MATLAB
 % optimization functions
 
-function [fval, device] = myWaveBotObjFun(x, blueprint, seastate)
+function fval = myWaveBotObjFun(x, seastate, folder)
     
-    geomMode.type = 'parametric';
     w = seastate.getRegularFrequencies(0.5);
-    geomMode.params = [num2cell(x) {w}];
-    cntrlMode.type = 'CC';
+    geomParams = [folder.path num2cell(x) w];
 
-    device = blueprint.makeDevices(geomMode, cntrlMode);
-    device.simulate(seastate);
-    fval = -1 * device.aggregation.pow;
+    deviceHydro = designDevice('parametric', geomParams{:});
     
+    for j = 1:length(seastate)
+        performances(j) = simulateDevice(deviceHydro,   ...
+                                         seastate(j),   ...
+                                         'CC');
+    end
+    
+    fval = -1 * weightedPower(seastate, performances);
+    
+    [performances(:).w] = seastate.w;
+    performances(1).x = x;
+    folder.stashVar(performances);
+
+end
+
+function out = weightedPower(seastate, performances)
+    pow = sum([performances.powPerFreq]);
+    out = dot(pow, [seastate.mu]) / sum([seastate.mu]);
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
