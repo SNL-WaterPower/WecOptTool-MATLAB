@@ -1,0 +1,18 @@
+--- Body %i ------------------------------------------------------------------
+'%s' ! Name of mesh file
+%-12i %-12i  ! Number of points and number of panels
+6                          ! Number of degrees of freedom
+1 1. 0. 0. 0. 0. 0.        ! Surge
+1 0. 1. 0. 0. 0. 0.        ! Sway
+1 0. 0. 1. 0. 0. 0.        ! Heave
+2 1. 0. 0. 0. 0. %-9.4f ! Roll about a point
+2 0. 1. 0. 0. 0. %-9.4f ! Pitch about a point
+2 0. 0. 1. 0. 0. %-9.4f ! Yaw about a point
+6                          ! Number of resulting generalised forces
+1 1. 0.    0. 0. 0. 0.     ! Force in x direction
+1 0. 1.    0. 0. 0. 0.     ! Force in y direction
+1 0. 0. 1. 0. 0. 0.        ! Force in z direction
+2 1. 0. 0. 0. 0. %-9.4f ! Moment force in x direction about a point
+2 0. 1. 0. 0. 0. %-9.4f ! Moment force in y direction about a point
+2 0. 0. 1. 0. 0. %-9.4f ! Moment force in z direction about a point
+0                          ! Number of lines of additional information

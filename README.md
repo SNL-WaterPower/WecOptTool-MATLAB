@@ -22,9 +22,8 @@ development version will support the latest available version of MATLAB, but no
 guarantees are given regarding legacy MATLAB support. 
 
 <sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to 
-match the output of the WAFO toolbox. These spectra can also be produced 'by 
-hand' and an example spectra is stored in the `example_data` folder, to use if 
-WAFO is not installed._ 
+match the output of the WAFO toolbox; however these spectra can also be 
+produced 'by hand', or other means, as long as they follow the same formatting. 
 
 ## Download
 
@@ -134,13 +133,15 @@ WecOptTool source code and is run from the MATLAB command window, as follows:
    
     ```
     Totals:
-          27 Passed, 0 Failed, 0 Incomplete.
-          209.4266 seconds testing time.
+          80 Passed, 0 Failed, 0 Incomplete.
+          125.1625 seconds testing time.
     ```
 
-1. **Begin use:** See the
-[`example.m`](https://github.com/SNL-WaterPower/WecOptTool/blob/master/example.m) 
-file.
+1. **Begin use:** See the 
+[`basic`](https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/basic.m) 
+or
+[`optimization`](https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m)
+examples for the RM3 device.
 
 ## Uninstall
 
@@ -152,40 +153,35 @@ Uninstall a previous version of WecOptTool using the MATLAB command prompt:
 
 Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
 
-## NEMOH Files
-
-A number of files are generated to handle inputs and outputs for the NEMOH
-hydrodynamic solver. These files are stored within the source code root 
-directory in the folder `~nemoh_runs`. This folder can become large, so
-it is recommended to occasionally remove it and it is safe to remove if no
-WecOptTool simulations are running.
-
 ## Code Architecture
 
-The WecOptTool toolbox is divided into two main packages as follows:
+The top level folders of the WecOptTool repository are used as follows:
 
-1. **WecOptTool** provides the user interface to the toolbox. The main 
-   components are: 
-     * The `RM3Study` object, used for setting up a simulation.
-     * The geometric and controller classes, as found in the `WecOptTool.geom` 
-       and `WecOptTool.control` sub-packages, which are combined with a study 
-       object to define the type of simulation desired.
-     * Top level functions to control execution and examine results of the 
-       simulation such as `WecOptTool.run` and `WecOptTool.result`.
-2. **WecOptLib** contains most of the business logic for implementing the 
-   studies created using the WecOptTool package. The sub-packages found 
-   here are divided by purpose, for instance:
-     * The `WecOptLib.nemoh` package contains functions related to 
-       manipulating NEMOH.
-     * The `WecOptLib.models` contain the logic relating to the modelled wave 
-       device (currently only RM3).
-   
-   Note, any interfaces provided by WecOptLib are highly volatile and will
-   change often. It is anticipated that only "super users" will use the 
-   functions in WecOptLib directly.
+* **docs** contains the web documentation source code
+* **examples** contains subfolders with structured examples of co-optimisation 
+  problems
+* **tests** contains integration and unit tests
+* **toolbox** contains the supporting MATLAB toolbox used by the examples
 
-The code architecture, for both the WecOptTool and WecOptLib packages, is 
-subject to change as the code approaches maturity.
+The toolbox uses [namespaces](https://uk.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html)
+to subdivide it's functionality, as follows:
+
+1. **WecOptTool** provides the main support functions and classes such as:
+    * **SeaState** for working with wave spectra and
+    * **AutoFolder** for creating storage space for intermediate files
+1. **WecOptTool.base** contains base classes used by other classes in the
+   toolbox
+1. **WecOptTool.geometry** provides functions for device geometry design
+1. **WecOptTool.math** provides numerical helper functions
+1. **WecOptTool.mesh** contains mesh generation classes
+1. **WecOptTool.plot** provides plots
+1. **WecOptTool.solver** contains classes for hydrodynamic solvers
+1. **WecOptTool.system** provides functions for MATLAB specific tasks
+1. **WecOptTool.validation** provides functions for argument validation 
+1. **WecOptTool.vendor** contains code from external sources
+
+The code architecture for both the WecOptTool is subject to change as the code 
+approaches maturity.
 
 ## Documentation
 
@@ -203,34 +199,39 @@ replace slashes (`/`) in paths with backslashes (`\ `).
 
 1. Install [Anaconda Python](https://www.anaconda.com/distribution/).
 
-2. Download sphixcontrib-versioning (from [H0R5E](
-   https://github.com/H0R5E/sphinxcontrib-versioning)):
-   
-   ```
-   > git clone --single-branch --branch v1.8.5_support https://github.com/H0R5E/sphinxcontrib-versioning.git <path/to/sphinxcontrib-versioning>
-   ```
-   Replace `<path/to/sphinxcontrib-versioning>` with a path of your choosing.
-
-3. Create the Sphinx environment:
+2. Create the Sphinx environment:
    
    ```
    > conda create -c conda-forge -n _sphinx click colorama colorclass future pip "sphinx=1.8.5" sphinx_rtd_theme 
    > activate _sphinx
-   (_sphinx) > pip install sphinxcontrib-matlabdomain
-   (_sphinx) > cd path/to/sphinxcontrib-versioning
-   (_sphinx) > pip install -e .
+   (_sphinx) > pip install https://github.com/H0R5E/sphinxcontrib-versioning/archive/v1.8.5_support.zip
+   (_sphinx) > pip install git+https://github.com/H0R5E/matlabdomain.git/@function_arguments#egg=matlabdomain
    (_sphinx) > conda deactivate
    >
    ```
 
-> :warning: sphinxcontrib-versioning is installed in development mode, so 
-  **do not delete** the folder where it is stored.
+#### Testing the Current Branch
 
-#### Building Locally
+The documentation for the current branch can be built locally for inspection 
+prior to publishing. They are built in the `docs/_build` directory. Note, 
+unlike the final documentation, version tags and other branches will not be 
+available. 
 
-Docs can be built locally for inspection prior to publishing. They are built in 
-the `docs/_build` directory. Note, docs are built from the remote, so only
-pushed changes will be shown. 
+To test the current branch, use the following:
+
+```
+> activate _sphinx
+(_sphinx) > cd path/to/WecOptTool
+(_sphinx) > sphinx-build -b html docs docs/_build/html
+(_sphinx) > conda deactivate
+>
+```
+
+#### Building Final Version Locally
+
+The final documentation can be built locally for inspection prior to 
+publishing. They are built in the `docs/_build` directory. Note, docs are built 
+from the remote, so only pushed changes will be shown. 
 
 To build the docs as they would be published, use the following:
 
@@ -255,7 +256,7 @@ To build the docs with a current feature branch as the default docs use:
 The front page of the docs can be accessed at 
 `WecOptTool/docs/_build/html/index.html`. 
 
-#### Publishing Remotely
+#### Publishing Final Version Remotely
 
 The WecOptTool docs are rebuilt automatically following every merge commit made 
 to the master branch of the [SNL-WaterPower/WecOptTool](

@@ -1,27 +1,62 @@
+.. _api:
+
 ***
 API
 ***
 
 WecOptTool
-==========
+----------
 
-The WecOptTool package provides the main interface for the toolbox.
-
-.. mat:automodule:: +WecOptTool
+.. mat:autoclass:: +WecOptTool.AutoFolder
     :members:
 
-WecOptTool.control
-------------------
-
-The control subpackage provides options for device control.
-
-.. mat:automodule:: +WecOptTool.+control
+.. mat:autoclass:: +WecOptTool.SeaState
     :members:
 
-WecOptTool.geom
+.. mat:autofunction:: +WecOptTool.mesh
+
+.. mat:autofunction:: +WecOptTool.solver
+
+WecOptTool.geometry
+-------------------
+
+The geometry package provides predefined geometry generation functions.
+
+.. mat:automodule:: +WecOptTool.+geometry
+    :members:
+
+WecOptTool.plot
 ---------------
 
-The geom subpackage provides options for device geometry variation.
+.. mat:automodule:: +WecOptTool.+plot
+    :members:
 
-.. mat:automodule:: +WecOptTool.+geom
+WecOptTool.math
+---------------
+
+.. mat:automodule:: +WecOptTool.+math
+    :members:
+
+WecOptTool.mesh
+---------------
+
+The mesh subpackage provides mesh generation classes, that provide the standard method ``makeMesh``.
+
+.. mat:automodule:: +WecOptTool.+mesh
+    :members:
+
+WecOptTool.solver
+-----------------
+
+The solver subpackage provides hydrodynamic solver classes, that provide the standard method ``getHydro``.
+
+.. mat:automodule:: +WecOptTool.+solver
+    :members:
+
+WecOptTool.base
+---------------
+
+The base subpackage provides base classes used in other classes.
+
+.. mat:automodule:: +WecOptTool.+base
     :members:
