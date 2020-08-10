@@ -177,7 +177,17 @@ function out = dampingControl(motion)
     
 end
 
-function out = pseudoSpectralControl(motion, delta_Zmax, delta_Fmax)
+function out = pseudoSpectralControl(motion,        ...
+                                     delta_Zmax,    ...
+                                     delta_Fmax,    ...
+                                     display)
+                                 
+    arguments
+        motion
+        delta_Zmax
+        delta_Fmax
+        display = "off"
+    end
 
     % PSEUDOSPECTRAL Pseudo spectral control
     %   Returns power per frequency and frequency bins
@@ -193,7 +203,7 @@ function out = pseudoSpectralControl(motion, delta_Zmax, delta_Fmax)
     % Add phase realizations
     n_ph_avg = 5;
     ph_mat = 2 * pi * rand(length(motion.w), n_ph_avg); 
-    n_ph = size(ph_mat, 2);
+    n_ph = size(ph_mat, 2)
     
     freq = motion.W;
     n_freqs = length(freq);
@@ -202,7 +212,7 @@ function out = pseudoSpectralControl(motion, delta_Zmax, delta_Fmax)
     for ind_ph = 1 : n_ph
         
         ph = ph_mat(:, ind_ph);
-        [~, phasePowPerFreq] = getPSPhasePower(motion, ph);
+        [~, phasePowPerFreq] = getPSPhasePower(motion, ph, display);
         
         for ind_freq = 1 : n_freqs
             powPerFreqMat(ind_ph, ind_freq) = phasePowPerFreq(ind_freq);
@@ -328,7 +338,7 @@ function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     
 end
 
-function [pow, powPerFreq] = getPSPhasePower(motion, ph)
+function [pow, powPerFreq] = getPSPhasePower(motion, ph, display)
     %Calculates power using the pseudospectral method given a phase and
     % a descrption of the body movement. Returns total phase power and 
     % power per frequency 
@@ -356,7 +366,7 @@ function [pow, powPerFreq] = getPSPhasePower(motion, ph)
     % constrained optimiztion
     qp_options = optimoptions('fmincon',                        ...
                               'Algorithm', 'sqp',               ...
-                              'Display', 'off',                 ...
+                              'Display', display,               ...
                               'MaxIterations', 1e3,             ...
                               'MaxFunctionEvaluations', 1e5,    ...
                               'OptimalityTolerance', 1e-8,      ...
