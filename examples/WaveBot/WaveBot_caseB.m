@@ -50,9 +50,8 @@ SS = WecOptTool.SeaState.regularWave(w,[A,Tp]);
 controlType{1} = 'CC';
 controlType{2} = 'P';
 controlType{3} = 'PS';
-controlParams(3).params = {1e10 2e3}; % {zmax, Fmax}
-zmax = 1e10;
-fmax = 2e3;
+zmax = 0.6;
+fmax = 1e10;
 
 folder = WecOptTool.AutoFolder();
 % w = SS.getRegularFrequencies(0.3);
