@@ -124,9 +124,7 @@ zlabel('Pos. mag., $z^{\textrm{max}}$ [m]', 'interpreter','latex')
 %% PLot 2D
 figure()
 hold on
-%contour(-X,Y,Z,'--')
 contour(-X,Y,Z,'--','ShowText','on', 'TextStep',0.15);
-%contour(-X,Y,Z,'--','ShowText','on', 'LabelSpacing', 500);
 scatter(-pBar, vol, [],zmax, 'filled', 'MarkerEdgeColor','k' );
 
 grid on
@@ -136,7 +134,6 @@ cb = colorbar;
 cb.Label.Interpreter = 'latex';
 cb.Label.String = ('Pos. mag., $z^{\textrm{max}}$ [m]');
 set(cb,'YDir','reverse')
-%set(gca,'Xscale','log')
 set(gca,'Yscale','log')
 
 
