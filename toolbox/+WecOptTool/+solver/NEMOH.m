@@ -182,7 +182,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             % ss_R2         [6*Nb,6*Nb]               state space R2 fit
             % T             [1,Nf]                    wave periods
             % Vo            [1,Nb]                    displaced volume
-            % omega         [1,Nf]                    wave frequencies
+            % w             [1,Nf]                    wave frequencies
             % ============  ========================  ======================================
             % 
             % Note:
@@ -231,10 +231,13 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             obj.nemohCall(obj.nemoh_run_command);
             obj.nemohCall(obj.nemoh_postProc_command);
 
-            hydro = struct();
-            hydro = WecOptTool.vendor.WEC_Sim.Read_NEMOH(hydro, rundir);
-            hydro.rundir = obj.path;
-
+            data = struct();
+            data = WecOptTool.vendor.WEC_Sim.Read_NEMOH(data, rundir);
+            
+            hydro = WecOptTool.Hydrodynamics(data,                  ...
+                                             "solverName", "NEMOH", ...
+                                             "runDirectory", obj.path);
+            
             cd(startdir)
 
         end
