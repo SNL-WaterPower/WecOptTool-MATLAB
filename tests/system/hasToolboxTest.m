@@ -1,14 +1,16 @@
-function tests = hasParallelToolboxTest()
+function tests = hasToolboxTest()
    tests = functiontests(localfunctions);
 end
 
 function testhasParallelToolbox(testCase)
 
     import matlab.unittest.constraints.IsSubsetOf
+    import WecOptTool.system.hasToolbox
     
     [combined,  ...
      licensed,  ...
-     installed] = WecOptTool.system.hasParallelToolbox();
+     installed] = hasToolbox("Distrib_Computing_Toolbox",   ...
+                             "Parallel Computing Toolbox");
  
     testCase.verifyThat(combined, IsSubsetOf(logical([0;1])));
     testCase.verifyThat(licensed, IsSubsetOf(logical([0;1])));

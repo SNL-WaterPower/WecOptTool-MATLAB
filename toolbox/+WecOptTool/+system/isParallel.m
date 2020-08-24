@@ -21,9 +21,12 @@ function result = isParallel()
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>. 
     
-    import WecOptTool.system.hasParallelToolbox
+    import WecOptTool.system.hasToolbox
     
-    if ~hasParallelToolbox()
+    hasParallelToolbox = hasToolbox("Distrib_Computing_Toolbox",    ...
+                                    "Parallel Computing Toolbox");
+    
+    if ~hasParallelToolbox
         result = false;
         return
     end
