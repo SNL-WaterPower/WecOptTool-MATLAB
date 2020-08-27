@@ -110,6 +110,7 @@ Z = griddata(pBar, vol, zmax, X, Y);
 mesh(-X,Y,Z)
 hold on
 scatter3(-pBar, vol, zmax, 'filled');
+scatter3(-pBar(knee_idx), vol(knee_idx), zmax(knee_idx),150,'marker','+','MarkerEdgeColor','k','LineWidth',2);
 
 grid on
 cb = colorbar;
@@ -122,37 +123,76 @@ zlabel('Pos. mag., $z^{\textrm{max}}$ [m]', 'interpreter','latex')
 %set(gca,'Xscale','log')
 
 %% PLot 2D
-figure()
-hold on
-contour(-X,Y,Z,'--','ShowText','on', 'TextStep',0.15);
-scatter(-pBar, vol, [],zmax, 'filled', 'MarkerEdgeColor','k' );
+clear ax
 
+knee_idx = 36
+
+fig = figure();
+fig.Position = fig.Position .* [1 1 1.5 1]*1;
+
+tiledlayout(3,4,'TileSpacing','compact','Padding','compact')
+axb = nexttile([3,2]);
+
+hold on
 grid on
-xlabel('Neg. avg. power, $ - \bar{P}$ [W]', 'interpreter','latex')
+scatter(axb, pBar,vol,75,zmax,...
+    'filled',...
+    'MarkerEdgeColor','k',...
+    'MarkerFaceAlpha',0.5);
+
+scatter(axb, pBar(knee_idx),vol(knee_idx),200,'marker','+','MarkerEdgeColor','k','LineWidth',1.5);
+
+
+xlabel('Avg. power, $ \bar{P}$ [W]', 'interpreter','latex')
 ylabel('Vol. fun, $(r_0 + r)^3$ [m$^3$]', 'interpreter','latex')
+
 cb = colorbar;
 cb.Label.Interpreter = 'latex';
-cb.Label.String = ('Pos. mag., $z^{\textrm{max}}$ [m]');
+cb.Label.String = ('Max. PTO stroke, $z^{\textrm{max}}$ [m]');
+cb.Location = 'northoutside';
 set(cb,'YDir','reverse')
+
 set(gca,'Yscale','log')
 
+ylim([min(vol), Inf])
 
+% Create textarrow
+annotation(fig,'textarrow',[0.0813492063492065 0.113095238095238],...
+    [0.81825396825397 0.554761904761905],'TextEdgeColor',[0 0 0],...
+    'TextBackgroundColor',[1 1 1],...
+    'String',{'Smaller stroke,','larger vol.'},...
+    'HorizontalAlignment','center');
 
-
-%% Plot the Results
+% Create textarrow
+annotation(fig,'textarrow',[0.0726190476190479 0.0821428571428572],...
+    [0.276984126984128 0.104761904761905],'TextEdgeColor',[0 0 0],...
+    'TextBackgroundColor',[1 1 1],...
+    'String',{'Larger stroke,','smaller vol.'},...
+    'HorizontalAlignment','center');
 
 rlbs = {'$\bar{P}$','$(r_0 + r)^3$','$z^{\textrm{max}}$'};
 xlbs = {'Outer radius, $r$ [m]','Max. PTO force, $F_u^{max}$ [N]'};
 
-figure
+for kk = 1:2*3
+    ax(kk) = nexttile();
+end
+ax = reshape(ax,[2,3]);
 
 for ii = 1:size(x,2)
     for jj = 1:size(fval,2)
-        idx = sub2ind([2,3],ii,jj);
-        ax(ii,jj) = subplot(3,2,idx);
-        grid on
-        hold on
-        scatter(x(:,ii),fval(:,jj))
+        hold(ax(ii,jj),'on')
+        scatter(ax(ii,jj),x(:,ii),fval(:,jj),[],zmax,...
+            'filled',...
+            'MarkerEdgeColor','k',...
+            'MarkerFaceAlpha',0.25);
+%         hold on
+%         plot(ax(ii,jj),x(knee_idx,ii),fval(knee_idx,jj),'k+','MarkerSize',10)
+        scatter(ax(ii,jj),x(knee_idx,ii),fval(knee_idx,jj),200,'marker','+',...
+            'MarkerEdgeColor','k','LineWidth',1.5);
+        
+%         scatter(ax(ii,jj),x(knee_idx,ii),fval(knee_idx,jj),[],zmax(knee_idx),...
+%             'marker','*');
+        
         
         if jj ~= size(fval,2)
             set(ax(ii,jj),'XTickLabel',[])
@@ -165,6 +205,8 @@ for ii = 1:size(x,2)
     xlabel(ax(ii,jj),xlbs{ii}, 'interpreter','latex')
 end
 
+
+exportgraphics(fig, 'WaveBot_caseC_results.pdf','ContentType','vector')
 
 %% objective function
 
