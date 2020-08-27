@@ -64,7 +64,7 @@ rmin = 0.25;
 rmax = 2;
 r0 = 0.88;
 radii = sort([linspace(rmin,rmax,19), r0]);
-zmax = 1e4;
+zlim = 1e4; % (inactive)
 folder = WecOptTool.AutoFolder();
 
 %% set up optimization problem
@@ -88,7 +88,7 @@ opts.PlotFcn = @psplotparetof;
 %% run optimization solver
 
 rng(3)
-[x,fval,exitflag,output,residuals] = paretosearch(@(x) myWaveBotObjFun(x,w,SS, zmax,folder.path),nvars,...
+[x,fval,exitflag,output,residuals] = paretosearch(@(x) myWaveBotObjFun(x,w,SS, zlim,folder.path),nvars,...
     A,B,Aeq,Beq,LB,UB,NONLCON,opts);
 
 % Optimized Values
@@ -168,7 +168,7 @@ end
 
 %% objective function
 
-function [fval] = myWaveBotObjFun(x,w,SS, zmax,folderPath)        
+function [fval] = myWaveBotObjFun(x,w,SS,zmax,folderPath)        
     
     r1 =x(1);
     fmax =x(2);
