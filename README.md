@@ -6,19 +6,19 @@ optimal control.
 
 ## Dependencies
 
-Dependency                          | Website                                                         | Usage<sup>1</sup>
+Dependency                          | Website                                                         | Required<sup>1</sup>
 ----------------------------------- | --------------------------------------------------------------- | -----------------
-MATLAB                              | https://www.mathworks.com/products/matlab.html                  | toolbox\*
-MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | toolbox
-NEMOH                               | https://github.com/LHEEA/Nemoh                                  | toolbox
-WAFO                                | https://github.com/wafo-project/wafo                            | examples
-MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | examples
-MATLAB Global Optimization Toolbox  | https://www.mathworks.com/products/global-optimization.html     | examples
+MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes\*
+MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
+NEMOH                               | https://github.com/LHEEA/Nemoh                                  | yes
+WAFO                                | https://github.com/wafo-project/wafo                            | optional
+MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | optional
+MATLAB Global Optimization Toolbox  | https://www.mathworks.com/products/global-optimization.html     | optional
 
-<sup>1</sup> The values in the _Usage_ column have the following meanings:
-  * **toolbox** indicates dependencies that must be installed to use the
-    toolbox
-  * **examples** indicates dependencies that are used on a case by case basis, 
+<sup>1</sup> The values in the _Required_ column have the following meanings:
+  * **yes** indicates dependencies that must be installed to use the
+    WecOptTool toolbox
+  * **optional** indicates dependencies that are used on a case by case basis, 
     in the examples
 
 \* The latest WecOptTool release, version 0.1.0, was tested on **MATLAB 
