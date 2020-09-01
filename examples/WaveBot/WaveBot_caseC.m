@@ -125,7 +125,7 @@ zlabel('Pos. mag., $z^{\textrm{max}}$ [m]', 'interpreter','latex')
 %% PLot 2D
 clear ax
 
-knee_idx = 36
+knee_idx = 36;
 
 fig = figure();
 fig.Position = fig.Position .* [1 1 1.5 1]*1;
