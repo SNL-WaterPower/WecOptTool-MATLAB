@@ -150,7 +150,7 @@ cb = colorbar;
 cb.Label.Interpreter = 'latex';
 cb.Label.String = ('Max. PTO stroke, $z^{\textrm{max}}$ [m]');
 cb.Location = 'northoutside';
-set(cb,'YDir','reverse')
+% set(cb,'YDir','reverse')
 
 set(gca,'Yscale','log')
 
