@@ -76,8 +76,7 @@ end
 
 
 %% simulate performance
-for ii = 1:length(controlType) 
-     disp("Simulation " + (ii) + " of " + length(controlType))
+for ii = 1:length(controlType)      
     for jj = 1:length(radii)       
         rng(3) % run same wave phasing for each case
         r(jj,ii) = simulateDevice(deviceHydro(jj),SS,controlType{ii},...
@@ -105,7 +104,8 @@ opts.PlotFcn = {@optimplotx,@optimplotfval};
 
 %% run optimization solver (for each control type)
 
-for ii = 1:length(controlType) 
+for ii = 1:length(controlType)
+    disp("Simulation " + (ii) + " of " + length(controlType))    
     [x_opt(ii), fval(ii), exitflag(ii), output(ii)] = ...
         fminbnd(@(x) myWaveBotObjFun(x,w,                     ...
                                      SS, controlType{ii},     ...
@@ -165,7 +165,6 @@ xlabel('Outer radius, $r_1$ [m]', 'interpreter','latex')
 linkaxes(ax,'x')
 xlim([0.25, max(radii)])
 
-%export_fig('../gfx/WaveBot_caseB_results.pdf','-transparent')
 
 fig = figure('name','WaveBot_caseB_geometrities');
 fig.Position = fig.Position .*[1,1,1.5,0.75];
@@ -174,7 +173,7 @@ plotXSection(radii,ax);
 delete(get(gca,'legend'));
 ylim([-0.6, 0])
 xlim([0, rmax])
-%export_fig('../gfx/WaveBot_caseB_geometries.pdf','-transparent')
+
 
 
 %% objective function
