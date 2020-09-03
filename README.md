@@ -4,15 +4,22 @@ The WEC Design Optimization MATLAB Toolbox (WecOptTool) allows users to perform
 wave energy converter (WEC) device design optimization studies with constrained 
 optimal control. 
 
-## Requirements
+## Dependencies
 
-Dependency                          | Website                                                         | Required?
------------------------------------ | --------------------------------------------------------------- | ---------
+Dependency                          | Website                                                         | Required<sup>1</sup>
+----------------------------------- | --------------------------------------------------------------- | -----------------
 MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes\*
 MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
 NEMOH                               | https://github.com/LHEEA/Nemoh                                  | yes
-WAFO<sup>1</sup>                    | https://github.com/wafo-project/wafo                            | no
-MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | no
+WAFO                                | https://github.com/wafo-project/wafo                            | optional
+MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | optional
+MATLAB Global Optimization Toolbox  | https://www.mathworks.com/products/global-optimization.html     | optional
+
+<sup>1</sup> The values in the _Required_ column have the following meanings:
+  * **yes** indicates dependencies that must be installed to use the
+    WecOptTool toolbox
+  * **optional** indicates dependencies that are used on a case by case basis, 
+    in the examples
 
 \* The latest WecOptTool release, version 0.1.0, was tested on **MATLAB 
 2020a**, whilst the oldest compatible version known is **MATLAB 2018a**. Please 
@@ -20,10 +27,6 @@ help the development team by reporting compatibility with other versions
 [HERE]( https://github.com/SNL-WaterPower/WecOptTool/issues/91). The 
 development version will support the latest available version of MATLAB, but no 
 guarantees are given regarding legacy MATLAB support. 
-
-<sup>1</sup>_WecOptTool requires an input wave spectra which is formatted to 
-match the output of the WAFO toolbox; however these spectra can also be 
-produced 'by hand', or other means, as long as they follow the same formatting. 
 
 ## Download
 
