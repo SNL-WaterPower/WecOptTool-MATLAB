@@ -38,8 +38,7 @@ classdef PlotsTest < matlab.unittest.TestCase
             input.w = spectrum.w;
             input.powPerFreq = spectrum.S;
 
-            testHandle = @() WecOptTool.plot.powerPerFreq(input);
-            verifyWarningFree(testCase, testHandle)
+            WecOptTool.plot.powerPerFreq(input);
                               
         end
         
@@ -55,8 +54,7 @@ classdef PlotsTest < matlab.unittest.TestCase
                 input(i).powPerFreq = spectrum.S;
             end
             
-            testHandle = @() WecOptTool.plot.powerPerFreq(input);
-            verifyWarningFree(testCase, testHandle)
+            WecOptTool.plot.powerPerFreq(input);
                               
         end
         
