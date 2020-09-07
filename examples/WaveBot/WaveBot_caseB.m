@@ -34,9 +34,9 @@
 %
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
-clear controlParams r
 
 %% define sea state of interest
+
 dw = 0.3142;
 nf = 50;
 w = dw * (1:nf)';
@@ -47,6 +47,7 @@ Tp = 1/fp;
 SS = WecOptTool.SeaState.regularWave(w,[A,Tp]);
 
 %% set up device types
+
 controlType{1} = 'CC';
 controlType{2} = 'P';
 controlType{3} = 'PS';
@@ -57,6 +58,7 @@ folder = WecOptTool.AutoFolder();
 % w = SS.getRegularFrequencies(0.3);
 
 %% create set of devices (running hydrodynamics)
+
 rmin = 0.25;
 rmax = 2;
 r0 = 0.88;
@@ -76,6 +78,8 @@ end
 
 
 %% simulate performance
+
+clear r
 for ii = 1:length(controlType)      
     for jj = 1:length(radii)       
         rng(3) % run same wave phasing for each case
@@ -86,8 +90,7 @@ for ii = 1:length(controlType)
     end
 end
 
-
- %% set up optimization problems
+%% set up optimization problems
 
 x0 = 2;
 A = [];
@@ -104,17 +107,17 @@ opts.PlotFcn = {@optimplotx,@optimplotfval};
 
 %% run optimization solver (for each control type)
 
+clear fval x_opt exitflag output optSimres
 for ii = 1:length(controlType)
     disp("Simulation " + (ii) + " of " + length(controlType))    
     [x_opt(ii), fval(ii), exitflag(ii), output(ii)] = ...
-        fminbnd(@(x) myWaveBotObjFun(x,w,                     ...
-                                     SS, controlType{ii},     ...
-                                     zmax,fmax, folder.path), ...
-        LB,UB,opts);
-      
+        fminbnd(@(x) myWaveBotObjFun(x,w,SS,controlType{ii},zmax,fmax,...
+        folder.path),LB,UB,opts);
+    [~, optSimres(ii), optHydro(ii)] = ...
+        myWaveBotObjFun(x_opt(ii),w,SS,controlType{ii},zmax,fmax,folder.path);
 end
 
-%% Plotting
+%% plot results
 
 fig = figure('Name','WaveBot_caseB');
 fig.Position = fig.Position .* [1, 1, 1, 1.5];
@@ -127,8 +130,9 @@ for ii = 1:4
     hold on
 end
 
-mkrs = {'.','o','s'};
+mkrs = {'^','o','s'};
 
+% plot Monte-Carlo results
 for ii = 1:size(r,2)
     
     SMRY = summary(r(:,ii));
@@ -136,49 +140,92 @@ for ii = 1:size(r,2)
     vol = arrayfun(@(x) deviceHydro(x).Vo, 1:length(radii))';
     pos = SMRY.MaxPos;
     obfn = pow ./ (0.88 + radii(:)).^3;
-    obfn = obfn;
     
-    semilogy(ax(1), radii, pow, 'Marker', mkrs{ii})
-    plot(ax(2), radii, vol, 'Marker', mkrs{ii})
-    semilogy(ax(3), radii, pos, 'Marker', mkrs{ii})
-    semilogy(ax(4), radii, obfn, 'Marker', mkrs{ii})
+    semilogy(ax(1), radii, pow, 'Marker', mkrs{ii},'LineWidth',1.5)
+    plot(ax(2), radii, vol, 'Marker', mkrs{ii},'LineWidth',1.5)
+    semilogy(ax(3), radii, pos, 'Marker', mkrs{ii},'LineWidth',1.5)
+    semilogy(ax(4), radii, obfn, 'Marker', mkrs{ii},'LineWidth',1.5)
 end
 
-% plot vertical lines for optimal designs
-for ii = 1:length(ax)
-    set(ax(ii),'ColorOrderIndex',1)
-    for jj = 1:length(x_opt)
-        plot(ax(ii),x_opt(jj)*ones(2,1),ylim(ax(ii)),'-.')
-    end
+
+for jj = 1:length(ax)
+    set(ax(jj),'ColorOrderIndex',1)
 end
 
-ylabel(ax(1),'Avg. pow [W]')
-ylabel(ax(2),'Vol. [m^3]')
-ylabel(ax(3),'Pos. amp. [m]')
-ylabel(ax(4),'Obj. fun. [W/m^3]')
+% plot optimal solutions
+for ii = 1:length(optSimres)
+    
+    SMRY = summary(optSimres(ii));
+    pow = abs(SMRY.AvgPow);
+    vol = optHydro(ii).Vo;
+    pos = SMRY.MaxPos;
+    obfn = -1*fval(ii);
+    
+    stem(ax(1), x_opt(ii), pow, 'Marker', mkrs{ii},...
+        'LineWidth',2,'MarkerSize',10)
+    stem(ax(2), x_opt(ii), vol, 'Marker', mkrs{ii},...
+        'LineWidth',2,'MarkerSize',10)
+    stem(ax(3), x_opt(ii), pos, 'Marker', mkrs{ii},...
+        'LineWidth',2,'MarkerSize',10)
+    stem(ax(4), x_opt(ii), obfn, 'Marker', mkrs{ii},...
+        'LineWidth',2,'MarkerSize',10)
+end
+
+fs = 15;
+
+ylabel(ax(1),'Avg. pow [W]','interpreter','latex','FontSize',fs)
+ylabel(ax(2),'Vol. [m$^3$]','interpreter','latex','FontSize',fs)
+ylabel(ax(3),'Pos. amp. [m]','interpreter','latex','FontSize',fs)
+ylabel(ax(4),'$-1\cdot{}$Obj. fun. [W/m$^3$]','interpreter','latex','FontSize',fs)
 
 set(ax(1:3),'XTickLabel',[])
 
 l1 = legend(ax(1),'CC','P','PS');
 set(l1,'location','southeast')
-xlabel('Outer radius, $r_1$ [m]', 'interpreter','latex')
+xlabel('Outer radius, $r_1$ [m]','interpreter','latex','FontSize',fs)
 linkaxes(ax,'x')
 xlim([0.25, max(radii)])
 
+annotation(gcf,'textarrow',[0.808928571428571 0.728571428571429],...
+        [0.49047619047619 0.434920634920635],'String','$z^{\textrm{{max}}}$',...
+        'Interpreter','latex',...
+        'FontSize',18);
+h = plot(ax(3),[0,1e10],zmax * ones(2,1),'k--');
+uistack(h,'bottom');
+
+% export_fig('WaveBot_caseB_results.pdf','-transparent')
+
+%% plot geometries
 
 fig = figure('name','WaveBot_caseB_geometrities');
 fig.Position = fig.Position .*[1,1,1.5,0.75];
+hold on
+grid on
 ax = gca;
-plotXSection(radii,ax);
-delete(get(gca,'legend'));
+for ii = 1:length(radii)
+    radius = radii(ii);
+    xCoords =  [0, radius, radius, 0.35, 0];
+    yCoords = [0.2, 0.2, -0.16, -0.53, -0.53];
+    p(ii) = plot(ax,xCoords, yCoords, 'bo-','DisplayName',num2str(ii));
+    if ii == 8
+        p(ii) = plot(ax,xCoords, yCoords, 'ks-','DisplayName','Original');
+    end
+end
+l1 = legend([p(8),p(1)],...
+    'Original geometry (Coe et al 2016)','WecOptTool study geometries');
+set(l1,'location','southeast')
+
+xlabel('$r$ [m]','interpreter','latex')
+ylabel('$z$ [m]','interpreter','latex')
+axis equal
 ylim([-0.6, 0])
 xlim([0, rmax])
 
-
+% export_fig('WaveBot_caseB_geometries.pdf','-transparent')
 
 %% objective function
 
-function [fval] = myWaveBotObjFun(x,w,SS, controlType,zmax,fmax, folderPath)        
+function [fval, simRes, deviceHydro] = myWaveBotObjFun(x,w,SS,controlType,zmax,fmax,folderPath)        
     
     % create device and simulate performance the parametric input is 
     % [r1, r2, d1, d2] (all positive); here we specify only r1
@@ -198,40 +245,6 @@ function [fval] = myWaveBotObjFun(x,w,SS, controlType,zmax,fmax, folderPath)
     end
     
     % objective function value
-    p_bar = sum(real(pow));     % average power
-    fval = 1 * p_bar ./ (0.88 + x).^3; % r1 = 0.88 is the as-built WaveBot
-    
-end
-
-
-function plotXSection(radii,ax)
-    % plots geometry cross section
-    %
-    % Args.
-    %   ax  (optional) axes handle (e.g., ax = gca)
-
-
-    if nargin < 2
-        figure('name','WaveBot Geometry')
-        ax = gca;
-    end
-    plot(ax,[0, 0.88, 0.88, 0.35, 0],...
-            [0.2, 0.2, -0.16, -0.53, -0.53],'.--',...
-            'DisplayName','original')
-    
-    hold on
-    grid on
-
-    for ii = 1:length(radii)
-        radius = radii(ii);
-        xCoords =  [0, radius, radius, 0.35, 0];
-        yCoords = [0.2, 0.2, -0.16, -0.53, -0.53];
-        plot(ax,xCoords, yCoords, 'o-','DisplayName',num2str(ii))
-    end
-
-    legend('location','southeast')
-    xlabel('$r$ [m]','interpreter','latex')
-    ylabel('$z$ [m]','interpreter','latex')
-    ylim([-Inf, 0])
-    axis equal
+    p_bar = sum(real(pow));             % average power
+    fval = 1 * p_bar ./ (0.88 + x).^3;  % r1 = 0.88 is as-built WaveBot
 end
