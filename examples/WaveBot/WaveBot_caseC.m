@@ -11,7 +11,7 @@
 %
 % Pbar      average absorbed power
 % volFun    (r_0 + r)^3, where r_0 = 0.88
-% xMax      maximum displacement
+% zMax      maximum displacement
 %
 % This case study is detailed in the following paper:
 % 
@@ -81,17 +81,16 @@ opts = optimoptions('paretosearch');
 opts.UseParallel = true;
 opts.Display = 'iter';
 opts.PlotFcn = @psplotparetof;
-% opts.MaxFunctionEvaluations = 50;
-% opts.OptimalityTolerance = 1e-8;
-
+% opts.MaxFunctionEvaluations = 10;     % for debugging
 
 %% run optimization solver
 
 rng(3)
-[x,fval,exitflag,output,residuals] = paretosearch(@(x) myWaveBotObjFun(x,w,SS, zlim,folder.path),nvars,...
+[x,fval,exitflag,output,residuals] = ...
+    paretosearch(@(x) myWaveBotObjFun(x,w,SS, zlim,folder.path),nvars,...
     A,B,Aeq,Beq,LB,UB,NONLCON,opts);
 
-% Optimized Values
+% Optimized values
 radiiOpt = x(:,1);
 fmaxOpt = x(:,2);
 % Optimized results
@@ -101,8 +100,9 @@ zmax  = fval(:,3);
 
 %% Plot 3D
 
+knee_idx = 36; % a potential single solution on the Pareto front
+
 figure
-% Plot 3D grid 
 xv = linspace(min(pBar),max(pBar));         
 yv = linspace(min(vol),max(vol));  
 [X,Y] = meshgrid(xv, yv);
@@ -110,7 +110,8 @@ Z = griddata(pBar, vol, zmax, X, Y);
 mesh(-X,Y,Z)
 hold on
 scatter3(-pBar, vol, zmax, 'filled');
-scatter3(-pBar(knee_idx), vol(knee_idx), zmax(knee_idx),150,'marker','+','MarkerEdgeColor','k','LineWidth',2);
+scatter3(-pBar(knee_idx), vol(knee_idx), zmax(knee_idx),150,...
+    'marker','+','MarkerEdgeColor','k','LineWidth',2);
 
 grid on
 cb = colorbar;
@@ -119,14 +120,10 @@ cb.Label.String = ('Pos. mag., $z^{\textrm{max}}$ [m]');
 xlabel('Neg. avg. power, $ - \bar{P}$ [W]', 'interpreter','latex')
 ylabel('Vol. fun, $(r_0 + r)^3$ [m$^3$]', 'interpreter','latex')
 zlabel('Pos. mag., $z^{\textrm{max}}$ [m]', 'interpreter','latex')
-%set(gca,'Zscale','log')
-%set(gca,'Xscale','log')
 
-%% PLot 2D
+%% Plot 2D
+
 clear ax
-
-knee_idx = 36;
-
 fig = figure();
 fig.Position = fig.Position .* [1 1 1.5 1]*1;
 
@@ -140,7 +137,8 @@ scatter(axb, pBar,vol,75,zmax,...
     'MarkerEdgeColor','k',...
     'MarkerFaceAlpha',0.5);
 
-scatter(axb, pBar(knee_idx),vol(knee_idx),200,'marker','+','MarkerEdgeColor','k','LineWidth',1.5);
+scatter(axb, pBar(knee_idx),vol(knee_idx),200,...
+    'marker','+','MarkerEdgeColor','k','LineWidth',1.5);
 
 
 xlabel('Avg. power, $ \bar{P}$ [W]', 'interpreter','latex')
@@ -150,7 +148,6 @@ cb = colorbar;
 cb.Label.Interpreter = 'latex';
 cb.Label.String = ('Max. PTO stroke, $z^{\textrm{max}}$ [m]');
 cb.Location = 'northoutside';
-% set(cb,'YDir','reverse')
 
 set(gca,'Yscale','log')
 
@@ -185,14 +182,11 @@ for ii = 1:size(x,2)
             'filled',...
             'MarkerEdgeColor','k',...
             'MarkerFaceAlpha',0.25);
-%         hold on
-%         plot(ax(ii,jj),x(knee_idx,ii),fval(knee_idx,jj),'k+','MarkerSize',10)
-        scatter(ax(ii,jj),x(knee_idx,ii),fval(knee_idx,jj),200,'marker','+',...
-            'MarkerEdgeColor','k','LineWidth',1.5);
-        
-%         scatter(ax(ii,jj),x(knee_idx,ii),fval(knee_idx,jj),[],zmax(knee_idx),...
-%             'marker','*');
-        
+
+        scatter(ax(ii,jj),x(knee_idx,ii),fval(knee_idx,jj),200,...
+            'marker','+',...
+            'MarkerEdgeColor','k',...
+            'LineWidth',1.5);
         
         if jj ~= size(fval,2)
             set(ax(ii,jj),'XTickLabel',[])
@@ -235,8 +229,6 @@ function [fval] = myWaveBotObjFun(x,w,SS,zmax,folderPath)
     
     fval(1) = 1 * p_bar;
     fval(2) = (0.88 + r1).^3;% r1 = 0.88 is the as-built WaveBot
-    fval(3) = SMRY.MaxPos;                        
-                        
+    fval(3) = SMRY.MaxPos;                                    
     
 end
-
