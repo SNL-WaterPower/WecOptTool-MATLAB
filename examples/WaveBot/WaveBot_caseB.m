@@ -191,7 +191,7 @@ function [fval] = myWaveBotObjFun(x,w,SS, controlType,zmax,fmax, folderPath)
                             'interpMethod','nearest',  ...
                             'Zmax',zmax,               ...
                             'Fmax',fmax);
-    if controlType == 'PS'
+    if strcmp(controlType,'PS')
         pow =simRes.pow(:,1);
     else
         pow = simRes.pow;
