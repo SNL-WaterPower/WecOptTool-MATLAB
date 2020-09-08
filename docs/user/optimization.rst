@@ -66,6 +66,8 @@ In WecOptTool, this process is executed by applying the following steps:
 The remainder of this page will illustrate (using the |optimization.m|_ 
 example) how this process is applied to a co-optimisation problem.
 
+.. _seastate:
+
 Define a seastate
 =================
 
@@ -205,6 +207,8 @@ object array. These inputs are combined and then added as arguments to the
     :lines: 69-72
     :linenos:
     :lineno-start: 69
+
+.. _controlledPerformance:
 
 Calculate controlled device performance
 ---------------------------------------
