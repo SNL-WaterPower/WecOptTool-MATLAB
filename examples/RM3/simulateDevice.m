@@ -1,4 +1,4 @@
-function performance = simulateDevice(hydro, seastate, controlType, varargin)
+function [performance, motion] = simulateDevice(hydro, seastate, controlType, varargin)
     
     static = getStaticModel(hydro);
     motion = getDynamicModel(static, hydro, seastate);
@@ -6,6 +6,8 @@ function performance = simulateDevice(hydro, seastate, controlType, varargin)
     switch controlType
     
         case 'CC'
+            performance = powerUpperBound(motion, varargin{:});
+        case 'CC2'
             performance = complexCongugateControl(motion, varargin{:});
         case 'P'
             performance = dampingControl(motion, varargin{:});
@@ -153,11 +155,22 @@ function dynamic = getDynamicModel(static, hydro, S)
 end
 
 
-function out = complexCongugateControl(motion)
+function out = powerUpperBound(motion)
             
     % Maximum absorbed power
     % Note: Re{Zi} = Radiation Damping Coeffcient
     out.powPerFreq = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
+    
+end
+
+function out = complexCongugateControl(motion)
+                        
+    Zpto = conj(motion.Zi);
+    Ur = motion.F0 ./ (Zpto + motion.Zi);
+    Fpto = -1 *Zpto .* Ur;
+    
+    % power
+    out.powPerFreq = real(0.5 * Fpto .* conj(Ur));
     
 end
 
@@ -203,7 +216,7 @@ function out = pseudoSpectralControl(motion,        ...
     % Add phase realizations
     n_ph_avg = 5;
     ph_mat = 2 * pi * rand(length(motion.w), n_ph_avg); 
-    n_ph = size(ph_mat, 2)
+    n_ph = size(ph_mat, 2);
     
     freq = motion.W;
     n_freqs = length(freq);

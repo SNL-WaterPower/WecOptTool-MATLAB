@@ -29,6 +29,7 @@ classdef RM3ParametricPSBug < matlab.unittest.TestCase
         SS
         deviceHydro
         performanceCC
+        performanceCC2
         performanceP
         performancePS
     end
@@ -66,6 +67,11 @@ classdef RM3ParametricPSBug < matlab.unittest.TestCase
                                 simulateDevice(testCase.deviceHydro,    ...
                                                testCase.SS,             ...
                                                'CC');
+                                           
+            testCase.performanceCC2 =                                    ...
+                                simulateDevice(testCase.deviceHydro,    ...
+                                               testCase.SS,             ...
+                                               'CC2');
             
             delta_Zmax = 10;
             delta_Fmax = 1e9;
@@ -90,6 +96,15 @@ classdef RM3ParametricPSBug < matlab.unittest.TestCase
             lower = sum(testCase.performanceP.powPerFreq); 
             upper = sum(testCase.performanceCC.powPerFreq);
             verifyGreaterThanOrEqual(testCase, upper, lower)
+            
+        end
+        
+        function test_CC_equal(testCase)
+            
+            % Test that CC == CC2
+            UB = sum(testCase.performanceCC.powPerFreq); 
+            CC = sum(testCase.performanceCC2.powPerFreq);
+            verifyGreaterThanOrEqual(testCase, UB, CC)
             
         end
         
