@@ -4,8 +4,11 @@ end
 
 function testIsParallelTrue(testCase)
 
-    testCase.assumeTrue(WecOptTool.system.hasParallelToolbox(),   ...
-                        'Parallel toolbox not available')
+    import WecOptTool.system.hasToolbox
+    
+    installed = hasToolbox("Distrib_Computing_Toolbox",   ...
+                           "Parallel Computing Toolbox");
+    testCase.assumeTrue(installed, 'Parallel toolbox not available')
     
     tests = zeros(1, 2);
     

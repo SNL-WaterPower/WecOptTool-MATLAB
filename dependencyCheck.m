@@ -21,6 +21,8 @@ function dependencyCheck()
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
+    import WecOptTool.system.hasToolbox
+    
     allfoundflag = true;
     
     fprintf('\nWecOptTool Dependency Checker\n');
@@ -34,41 +36,21 @@ function dependencyCheck()
     
     %% Optimisation Toolbox
     
-    % First Check for ToolBox license
-    optimizationToolboxLicensed = license('test', "Optimization_Toolbox");
+    [optimBoxFound,     ...
+     optimBoxLicensed,  ...
+     optimBoxInstalled] = hasToolbox("Optimization_Toolbox",    ...
+                                     "Optimization Toolbox");
     
-    % Second check if installed
-    installedProducts = ver;
-    installedNames = {installedProducts(:).Name};
-    optimizationToolboxInstalled = false;
+    print_dependency("Optimization Toolbox",    ...
+                     optimBoxInstalled,         ...
+                     optimBoxLicensed);
     
-    for name = installedNames
-        if contains(name, "Optimization Toolbox")
-            optimizationToolboxInstalled = true;
-            break
-        end
-    end
-    
-    if optimizationToolboxLicensed && optimizationToolboxInstalled
-        fprintf('Optimization Toolbox:          Found\n');
-    elseif ~optimizationToolboxLicensed && optimizationToolboxInstalled
-        allfoundflag = false;
-        fprintf('Optimization Toolbox:          Unlicensed\n');
-    else
-        allfoundflag = false;
-        fprintf('Optimization Toolbox:          Not Installed\n');
-    end
+    allfoundflag = allfoundflag && optimBoxFound;
     
     %% Nemoh
     
     nemohExistFlag = WecOptTool.base.NEMOH.isNemohInPath();
-    
-    if nemohExistFlag
-        fprintf('NEMOH:                         Found\n');
-    else
-        allfoundflag = false;
-        fprintf('NEMOH:                         Not found\n');
-    end
+    print_dependency("NEMOH", nemohExistFlag);
     
     %% Optional Products
     
@@ -78,17 +60,25 @@ function dependencyCheck()
     
     %% Parallel Computing Toolbox
     
-    [parallelToolboxFound,      ...
-        parallelToolboxLicensed,   ...
-        parallelToolboxInstalled] = WecOptTool.system.hasParallelToolbox();
+    [~,                     ...
+     parallelBoxLicensed,   ...
+     parallelBoxInstalled] = hasToolbox("Distrib_Computing_Toolbox",    ...
+                                        "Parallel Computing Toolbox");
     
-    if parallelToolboxFound
-        fprintf('Parallel Toolbox:              Found\n');
-    elseif ~parallelToolboxLicensed && parallelToolboxInstalled
-        fprintf('Parallel Toolbox:              Unlicensed\n');
-    else
-        fprintf('Parallel Toolbox:              Not Installed\n');
-    end
+    print_dependency("Parallel Toolbox",    ...
+                     parallelBoxInstalled,  ...
+                     parallelBoxLicensed);
+    
+    %% Global Optimization Toolbox
+    
+    [~,                     ...
+     globOptBoxLicensed,    ...
+     globOptBoxInstalled] = hasToolbox("GADS_Toolbox",  ...
+                                       "Global Optimization Toolbox");
+    
+    print_dependency("Global Optimization Toolbox",    ...
+                     globOptBoxInstalled,  ...
+                     globOptBoxLicensed);
     
     %% WAFO
     
@@ -96,20 +86,42 @@ function dependencyCheck()
     wafoPath = fullfile('wafo', 'spec','bretschneider.m');
     
     wafoCheck = lower(which(wafoFunction));
+    wafoInstalled = contains(wafoCheck, wafoPath) &&    ...
+                        (exist(wafoCheck, 'file') == 2);
     
-    % Don't set allfoundflag for missing optional deps
-    if contains(wafoCheck, wafoPath) && (exist(wafoCheck, 'file') == 2)
-        fprintf('WAFO:                          Found\n');
-    else
-        fprintf('WAFO:                          Not found\n');
-    end
+    print_dependency("WAFO", wafoInstalled);
+    
+    %% End matter
     
     fprintf('\n')
     
-    %% Warn if execution not possible
-    
+    % Warn if execution not possible
     if ~allfoundflag
         warning("Mandatory dependencies are missing!")
+    end
+    
+end
+
+function print_dependency(name, installed, licensed, options)
+
+    arguments
+        name
+        installed
+        licensed = true
+        options.columns = 45
+    end
+    
+    name = name + ":";
+
+    if licensed && installed
+        nChars = options.columns - 6;
+        fprintf('%-*s Found\n', nChars, name);
+    elseif ~licensed && installed
+        nChars = options.columns - 11;
+        fprintf('%-*s Unlicensed\n', nChars, name);
+    else
+        nChars = options.columns - 14;
+        fprintf('%-*s Not Installed\n', nChars, name);
     end
     
 end

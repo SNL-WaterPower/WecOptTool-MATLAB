@@ -107,7 +107,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
         end
         
         function testPlot(testCase)
-            verifyWarningFree(testCase, @() testCase.SS.plot())
+            testCase.SS.plot();
         end
         
         function testcheckSpectruMultiSeaStates(testCase)

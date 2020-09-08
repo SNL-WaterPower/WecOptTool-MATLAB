@@ -1,5 +1,20 @@
-function [combined, licensed, installed] = hasParallelToolbox()
-    % Is the Parallel Computing Toolbox available?
+function [combined, licensed, installed] = hasToolbox(licenseName,  ...
+                                                      installedName)
+    % Check if an extension toolbox is installed
+    %
+    % Arguments:
+    %     licenseName (string):
+    %         the licence name (normally with underscores)
+    %     installedName (string):
+    %         the toolbox name (as given by the ver command)
+    %
+    % Returns:
+    %     (): outputs are:
+    %     
+    %         combined (bool): true if toolbox is licensed and installed
+    %         licensed (bool): true is toolbox is licensed
+    %         installed (bool): true is toolbox is installed
+    %
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -21,14 +36,14 @@ function [combined, licensed, installed] = hasParallelToolbox()
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>. 
 
-    licensed = logical(license('test', "Distrib_Computing_Toolbox"));
+    licensed = logical(license('test', licenseName));
     
     installedProducts = ver;
     installedNames = {installedProducts(:).Name};
     installed = false;
 
     for name = installedNames
-        if contains(name, "Parallel Computing Toolbox")
+        if contains(name, installedName)
             installed = true;
             break
         end
