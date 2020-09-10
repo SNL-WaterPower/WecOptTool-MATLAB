@@ -1,5 +1,7 @@
-function hydro = designDevice(type, varargin) 
+function [hydro, meshes] = designDevice(type, varargin) 
     
+    meshes = [];
+
     switch type
         
         case 'existing'
@@ -7,7 +9,7 @@ function hydro = designDevice(type, varargin)
         case 'scalar'
             hydro = getHydroScalar(varargin{:});
         case 'parametric'
-            hydro = getHydroParametric(varargin{:});
+            [hydro, meshes] = getHydroParametric(varargin{:});
         
     end
     
@@ -42,7 +44,7 @@ function hydro = getHydroScalar(lambda)
 end
 
 
-function hydro = getHydroParametric(folder, r1, r2, d1, d2, w)
+function [hydro, meshes] = getHydroParametric(folder, r1, r2, d1, d2, w)
     
     % Float
     
