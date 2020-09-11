@@ -252,7 +252,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             spectra = zeros(length(w),1);
             oneThird = floor(length(spectra)/3);
             spectra(oneThird:2*oneThird, 1) = 1;
-            expectedLength = length(spectra(oneThird:2*oneThird,1));        
+            expectedLength = length(spectra(1:2*oneThird,1)); 
             S1.S = spectra;
 
             % Remove the tails
@@ -315,6 +315,43 @@ classdef SeaStateTest < matlab.unittest.TestCase
             checkError = abs(S1.S - interpS) / max(S1.S);
             verifyTrue(testCase, all(checkError <= 0.01 + 1e-9))
                           
+        end
+        
+        function testExampleSpectrum(testCase)
+        
+            test = WecOptTool.SeaState.exampleSpectrum(                 ...
+                                            "resampleByError", 0.05,    ...
+                                            "trimFrequencies", 0.01,    ...
+                                            "extendFrequencies", 4);
+                                       
+            verifyTrue(testCase, isa(test, "WecOptTool.SeaState"))
+            
+        end
+        
+        function testExample8Spectrum(testCase)
+        
+            test = WecOptTool.SeaState.example8Spectra(                 ...
+                                            "resampleByError", 0.05,    ...
+                                            "trimFrequencies", 0.01,    ...
+                                            "extendFrequencies", 4);
+                                       
+            verifyTrue(testCase, isa(test, "WecOptTool.SeaState"))
+            
+        end
+        
+        function testRegularWave(testCase)
+            
+            dw = 0.25;
+            nf = 50;
+            w = dw * (1:nf)';
+            test = WecOptTool.SeaState.regularWave(                     ...
+                                            w,                          ...
+                                            [1, 1],                     ...
+                                            "trimFrequencies", 0.01);
+            
+            verifyTrue(testCase, isa(test, "WecOptTool.SeaState"))
+            verifyTrue(testCase, test.S(end) > 0)
+            
         end
         
     end

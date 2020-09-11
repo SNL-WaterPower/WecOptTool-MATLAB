@@ -37,7 +37,7 @@ function testVerify_damping(testCase)
     performance = simulateDevice(deviceHydro, SS, 'P');
     pow = sum(performance.powPerFreq);
     
-    expSol = 1.525591864472636e+06;
+    expSol = 2.144693683724375e+06;
     verifyEqual(testCase, pow, expSol, 'RelTol', 0.001)
     
 end

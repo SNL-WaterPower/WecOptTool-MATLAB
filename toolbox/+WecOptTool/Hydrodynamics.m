@@ -1,5 +1,99 @@
 classdef Hydrodynamics
-    %HYDRODYNAMICS
+    % Data type for storage of solver hydrodynamics output.
+    %
+    % This data type defines a set of parameters that are common to 
+    % description of wave device hydrodynamics parameters, such as in
+    % `WEC-Sim's BEMIO <http://wec-sim.github.io/WEC-Sim/advanced_features.html?highlight=bemio#bemio-hydro-data-structure>`_.
+    %
+    % The following parameters must be provided within the input struct,
+    % which map directly to class attributes (see below):
+    %
+    %     * ex_re
+    %     * ex_im
+    %     * g
+    %     * rho
+    %     * w
+    %     * A
+    %     * Ainf
+    %     * B
+    %     * C
+    %     * Vo
+    %
+    % Note:
+    %     Any negative radiation damping coefficients detected for 
+    %     individual bodies will be set to zero, automatically.
+    %
+    % Arguments:
+    %    S (hydroData):
+    %        A struct containing the required fields
+    %    options: name-value pair options. See below.
+    %
+    % The following options are supported:
+    %
+    %    solverName (string):
+    %        The name of the solver used to generate the data
+    %    runDirectory (string):
+    %        Path to the directory containing the solver's output files
+    %
+    % Attributes:
+    %    base (struct):
+    %        ccopy of the input struct
+    %    ex_re (array):
+    %        real component of excitation force or torque ([6*Nb,Nh,Nf])
+    %    ex_im (array):
+    %        imaginary component of excitation force or torque
+    %        ([6*Nb,Nh,Nf])
+    %    g (float):
+    %        gravitational acceleration
+    %    rho (float):
+    %        water density
+    %    w (array):
+    %        simulated wave frequencies ([1,Nf])
+    %    A (array):
+    %        radiation added mass ([6*Nb,6*Nb,Nf])
+    %    Ainf (array):
+    %        infinite frequency added mass ([6*Nb,6*Nb])
+    %    B (array):
+    %        radiation wave damping ([6*Nb,6*Nb,Nf])
+    %    C (array):
+    %        hydrostatic restoring stiffness ([6,6,Nb])
+    %    Nb (int):
+    %        number of bodies
+    %    Nh (int):
+    %        number of wave headings
+    %    Nf (int):
+    %        number of wave frequencies
+    %    Vo (array):
+    %        displaced volume ([1,Nb])
+    %    solverName (string):
+    %        name of solver used to generate hydrodyamic parameters.
+    %        Default is "Unknown".
+    %    runDirectory (string):
+    %        path to folder containing output files of the hydrodynamic
+    %        solver. Defaults to "".
+    %
+    % --
+    %
+    % Hydrodynamics Properties:
+    %     S - spectral density
+    %     base - copy of the input struct
+    %     ex_re - real component of excitation force or torque ([6*Nb,Nh,Nf])
+    %     ex_im - imaginary component of excitation force or torque
+    %     g - gravitational acceleration
+    %     rho -water density
+    %     w - simulated wave frequencies ([1,Nf])
+    %     A - radiation added mass ([6*Nb,6*Nb,Nf])
+    %     Ainf - infinite frequency added mass ([6*Nb,6*Nb])
+    %     B - radiation wave damping ([6*Nb,6*Nb,Nf])
+    %     C - hydrostatic restoring stiffness ([6,6,Nb])
+    %     Nb - number of bodies
+    %     Nh - number of wave headings
+    %     Nf - number of wave frequencies
+    %     Vo - displaced volume ([1,Nb])
+    %     solverName - name of solver used to generate hydrodyamic parameters. Default is "Unknown".
+    %     runDirectory - Path to folder containing output files of the hydrodynamic solver. Defaults to "".
+    %
+    % --
     
     properties
         base
@@ -9,8 +103,12 @@ classdef Hydrodynamics
         rho
         w
         A
+        Ainf
         B
-        C 
+        C
+        Nb
+        Nh
+        Nf
         Vo
         solverName
         runDirectory
@@ -33,31 +131,15 @@ classdef Hydrodynamics
             obj.rho = hydroData.rho;
             obj.w = hydroData.w;
             obj.A = hydroData.A;
+            obj.Ainf = hydroData.Ainf;
             obj.B = obj.checkDamping(hydroData.B);
             obj.C = hydroData.C;
+            obj.Nb = hydroData.Nb;
+            obj.Nh = hydroData.Nh;
+            obj.Nf = hydroData.Nf;
             obj.Vo = hydroData.Vo;
             obj.solverName = options.solverName;
             obj.runDirectory = options.runDirectory;
-            
-        end
-        
-        function plotDamping(obj, B)
-            
-            arguments
-                obj
-                B = obj.B
-            end
-            
-            Bdiag = cell2mat(arrayfun(@(x) diag(B(:,:,x)),     ...
-                                      1:size(B, 3),            ...
-                                      'UniformOutput', false));
-                                   
-            figure
-            hold on
-            grid on
-            plot(obj.w, Bdiag);
-            xlabel('Frequency [rad/s]')
-            ylabel('Radiation damping')
             
         end
         

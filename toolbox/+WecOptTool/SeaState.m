@@ -55,11 +55,9 @@ classdef SeaState
     %      #. extended so that the maximum frequency is 4 times the 
     %         trimmed maximum
     %
-    %    >>> S = WecOptTool.tests.data.example8Spectra();
-    %    >>> SS = WecOptTool.types("SeaState", S,           ...
-    %    ...                       "resampleByError", 0.05, ...
-    %    ...                       "trimFrequencies", 0.01, ...
-    %    ...                       "extendFrequencies", 4);
+    %    >>> S = WecOptTool.SeaState.example8Spectra("resampleByError", 0.05, ...
+    %    ...                                         "trimFrequencies", 0.01, ...
+    %    ...                                         "extendFrequencies", 4);
     %
     % Note:
     %    To create an array of SeaState objects use the
@@ -120,8 +118,6 @@ classdef SeaState
     %                      maximum per spectrum.
     %    resampleByStep - Resample the given seastate struct using a given 
     %                     frequency step
-    %
-    % See also WecOptTool.types
     %
     % --
     
@@ -189,11 +185,9 @@ classdef SeaState
                         
             for i = 1:length(S)
                 
-                obj(i).w = S(i).w;
-                obj(i).S = S(i).S;
-                obj(i).basew = obj(i).w;
-                obj(i).baseS = obj(i).S;
-                obj(i).dw = obj(i).w(2) - obj(i).w(1);
+                obj(i).basew = S(i).w;
+                obj(i).baseS = S(i).S;
+                obj(i).dw = S(i).w(2) - S(i).w(1);
                 obj(i).trimLoss = 0;
                 obj(i).sampleError = 0;
 
@@ -209,12 +203,12 @@ classdef SeaState
                    error("WecOptTool:SeaState:BadOptions", msg)
 
                 end
-
+                
                 if isfield(options, "trimFrequencies")
                     S = obj.trimFrequencies(S, options.trimFrequencies);
                     obj(i).trimLoss = options.trimFrequencies;
                 end
-
+                
                 if isfield(options, "resampleByError")
                     [S, obj(i).dw] = obj.resampleByError(S,    ...
                                                   options.resampleByError);
@@ -291,31 +285,6 @@ classdef SeaState
             
         end
         
-        function Aw = getAmpSpectrum(obj, w, interpMethod)
-            % getAmpSpectrum    Returns wave amplitude spectrum
-            %
-            % If optional argument w is provided, the amplitude spectrum
-            % will be interpolated onto the new frequency vector.
-            %
-            % Arguments:
-            %   w               (optional) new frequency vector on which to
-            %                   interpolate results
-            %   interpMethod    (optional) interpolation method 
-            %                   (default: 'linear')
-            %
-            % See also interp1
-
-            Aw_tmp = sqrt(2 * obj.dw * obj.S(:));
-            if nargin > 1
-                if nargin < 3
-                    interpMethod = 'linear';
-                end
-                Aw = interp1(obj.w, Aw_tmp, w, interpMethod, 0);
-            else
-                Aw = Aw_tmp;
-            end
-        end
-        
         function plot(obj)
             % Plot spectra and comparison to base spectra, if different.
             % 
@@ -356,8 +325,6 @@ classdef SeaState
                         titleChar = [titleChar '; '];
                     end
                     
-                    xline(min(wMod), '--',  ...
-                          'DisplayName', 'Modified Lower Bound')
                     xline(max(wMod), '-.',  ...
                           'DisplayName', 'Modified Upper Bound')
                                         
@@ -383,14 +350,6 @@ classdef SeaState
     end
     
     methods (Static, Access=private)
-       
-        function obj = initSeaState(obj, index, S, options)
-            
-            import WecOptTool.SeaState
-            
-            
-            
-        end
         
         function obj = makeMu(obj)
                         
@@ -732,7 +691,8 @@ classdef SeaState
 
         function S = trimFrequencies(S, densityTolerence)
             % Removes frequencies below a threshold of the maximum spectral 
-            % density, per spectra, of a spectra struct array.
+            % density from the tails, per spectra, of a spectra struct 
+            % array.
             %
             % Arguments:
             %     S (struct):
@@ -764,11 +724,11 @@ classdef SeaState
             end
             
             for k = 1:length(S)
-                i = find(S(k).S > max(S(k).S) * densityTolerence);
-                iStart = min(i);
-                iEnd = max(i);
-                S(k).w = S(k).w(iStart:iEnd);
-                S(k).S = S(k).S(iStart:iEnd);
+                iEnd = find(S(k).S > max(S(k).S) * densityTolerence,    ...
+                            1,                                          ...
+                            'last');
+                S(k).w = S(k).w(1:iEnd);
+                S(k).S = S(k).S(1:iEnd);
             end
             
         end
@@ -871,17 +831,22 @@ classdef SeaState
             end
             
             import WecOptTool.SeaState
-            oldS = [S.S];
             
             function residual = ObjFun(dw) 
                 [~, errors] = SeaState.resampleByStep(S, dw);
                 residual = max(errors) - targetError;
             end
             
-            assert(isequaln(oldS,[S.S]))
+            maxw = 0;
             
-            w = [S.w];
-            dw = WecOptTool.math.bisection(@ObjFun, min_dw, max(w(:)));
+            for i = 1:length(S)
+                testmax = max(S(i).w);
+                if testmax > maxw
+                    maxw = testmax;
+                end
+            end
+            
+            dw = WecOptTool.math.bisection(@ObjFun, min_dw, maxw);
             [S, errors] = SeaState.resampleByStep(S, dw);
             
         end
@@ -928,7 +893,8 @@ classdef SeaState
             
             N = length(S);
             baseS = S;
-            
+            maxS = 0;
+
             for i = 1:N
                 
                 wMin = min(S(i).w);
@@ -949,16 +915,21 @@ classdef SeaState
                 S(i).w = wResampled;
                 S(i).S = SResampled;
                 
+                testmax = max(baseS(i).S);
+                
+                if testmax > maxS
+                    maxS = testmax;
+                end
+                
             end
             
             abserrors = SeaState.getMaxAbsoluteDensityError(baseS, S);
-            errors = abserrors ./ max([baseS.S]);
+            errors = abserrors ./ maxS;
             
         end
         
         function SS = exampleSpectrum(varargin)
-            %EXAMPLESPECTRUM Example Bretschneider spectrum with Hm0=8 and 
-            % Tp=10
+            % Example Bretschneider spectrum with Hm0=8 and Tp=10
             p = mfilename('fullpath');
             [filepath, ~, ~] = fileparts(p);
             dataPath = fullfile(filepath, 'data', 'spectrum.mat');
@@ -967,8 +938,8 @@ classdef SeaState
         end
         
         function SS = example8Spectra(varargin)
-            %EXAMPLE8SPECTRA Example Bretschneider spectrum with varying , 
-            % HHm0s, Tps, Nbins, and range
+            % Example Bretschneider spectrum with varying HHm0s, Tps, 
+            % Nbins, and range
             p = mfilename('fullpath');
             [filepath, ~, ~] = fileparts(p);
             dataPath = fullfile(filepath, 'data', '8spectra.mat');
@@ -995,7 +966,7 @@ classdef SeaState
 
             assert(issorted(w));
             dws = diff(w);
-            assert(all(dws - dws(1) < eps*1e3)); % TODO - not sure why == won't work
+            assert(all(abs(dws - dws(1)) < eps*1e3));
             assert(iscolumn(w));
 
             S.w = w;
@@ -1007,6 +978,9 @@ classdef SeaState
             [~,idx] = min(abs(w - 2*pi/T));
 
             S.S = zeros(size(w));
+            
+            % TODO: Where does this come from. Shouldn't there be a 
+            % pi in here?
             S.S(idx) = A^2/(2*dw);
 
             S.date = datestr(now);
