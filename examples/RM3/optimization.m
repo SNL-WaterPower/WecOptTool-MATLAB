@@ -59,7 +59,7 @@ for i = 1:length(performances)
 end
 
 WecOptTool.plot.powerPerFreq(bestPerformances);
-WecOptTool.plot.plotMesh(bestPerformances.meshes);
+WecOptTool.plot.plotMesh(bestPerformances(1).meshes);
 
 %% Define objective function
 % This can take any form that complies with the requirements of the MATLAB
