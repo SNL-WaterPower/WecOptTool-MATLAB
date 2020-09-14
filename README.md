@@ -66,19 +66,21 @@ version is not broken, bugs or unexpected behaviour may occur, so please beware.
    
    Alternatively the “Set Path” graphical tool can be used to add the toolbox.
 
-1. **Set up Nemoh:**
+1. **Set up [Nemoh](https://github.com/LHEEA/Nemoh):**
 
-    a. ***Windows:*** Executables are provided in the 'Release' directory of 
+    a. ***Windows:*** Executables are provided in the [Release 
+    directory](https://github.com/LHEEA/Nemoh/tree/master/Release) of 
     the NEMOH source code. These are installed into WecOptTool using the 
     `installNemoh.m` MATLAB script, run from the WecOptTool root directory, 
-    as follows: 
+    using the MATLAB command window as follows: 
     
     ```matlab
     >> cd /path/to/WecOptTool
     >> installNemoh('/path/to/NEMOH/Release');
     ```
     
-    b. ***Linux:*** To set up NEMOH for linux, first, compile the executables 
+    b. ***Linux:*** To set up NEMOH for linux, first, use a command 
+    window to compile the executables 
     (you will need gfortran or the intel fortran compiler):
     
     ```
@@ -88,7 +90,8 @@ version is not broken, bugs or unexpected behaviour may occur, so please beware.
     
     Executables will be created a new directory called 'bin', which must 
     then be installed into WecOptTool using the `installNemoh.m` MATLAB 
-    script, run from the WecOptTool root directory: 
+    script, run in the MATLAB command window from the WecOptTool 
+    root directory: 
     
     ```matlab
     >> cd /path/to/WecOptTool
@@ -98,7 +101,7 @@ version is not broken, bugs or unexpected behaviour may occur, so please beware.
 1. **Verify dependencies installation:** You can verify that the dependencies 
 have been installed correctly by running the `dependencyCheck.m` script 
 provided in the root directory of the WecOptTool source code. The script is 
-called as follows: 
+called in MATLAB as follows: 
 
     ```matlab
     >> cd /path/to/WecOptTool
