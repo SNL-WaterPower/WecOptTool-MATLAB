@@ -1,7 +1,7 @@
 classdef Hydrodynamics
     % Data type for storage of solver hydrodynamics output.
     %
-    % This data type defines a set of parameters that are common to 
+    % This data type defines a set of parameters that are common to the
     % description of wave device hydrodynamics parameters, such as in
     % `WEC-Sim's BEMIO <http://wec-sim.github.io/WEC-Sim/advanced_features.html?highlight=bemio#bemio-hydro-data-structure>`_.
     %
