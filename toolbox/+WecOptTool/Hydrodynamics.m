@@ -17,6 +17,9 @@ classdef Hydrodynamics
     %     * Ainf
     %     * B
     %     * C
+    %     * Nb
+    %     * Nh
+    %     * Nf
     %     * Vo
     %
     % Note:
