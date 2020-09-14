@@ -58,6 +58,17 @@ classdef PlotsTest < matlab.unittest.TestCase
                               
         end
         
+        function testPlotMesh(testCase)
+            
+            meshes = load('meshes.mat');
+            WecOptTool.plot.plotMesh(meshes.meshes);
+            
+        end
+        
+        function testPlotMeshEmpty(testCase)
+            WecOptTool.plot.plotMesh([]);
+        end
+        
     end
     
 end
