@@ -4,18 +4,7 @@
 % ratio of average power and a polynomial of submerged hull volume. The
 % goal behind this study is to illustrate how the different control types
 % result in different optimal designs.
-%
-% This case study is detailed in the following paper:
-% 
-% @Article{WecDesignOptimizationTool,
-%   author       = {Ryan G. Coe and Giorgio Bacelli and Sterling Olson and 
-%                   Vincent S. Neary and Matthew B. R. Topper},
-%   title        = {A WEC design optimization tool},
-%   date         = {2020-07-07},
-%   journaltitle = {submitted to Journal of Ocean Engineering and Marine 
-%                   Energy},
-% }
-%
+
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC
 % (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S.
 % Government retains certain rights in this software.
