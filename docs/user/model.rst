@@ -46,7 +46,7 @@ The **Designing the device** step effectively takes the **Geometry**, **Power ta
 The **Designing the device** step codifies the user inputs for the **Geometry**, **Power take off**, and **Kinematics** of the WEC.
 With some important caveats, this step can be seen as analogous to building the physical device.
 This step can include [#f1]_ generating a panelized representation of the WEC's hull and calling a BEM code (e.g., NEMOH) to estimate the hydrodynamic coefficients.
-We can see from the signature of |designDevice.m|_ that it will return a hydro structure, containing these hydrodynamic coefficients.
+We can see from the signature of |designDevice.m|_ that it will return a :mat:class:`~+WecOptTool.Hydrodynamics` object.
 
 .. code:: matlab
 
@@ -76,8 +76,8 @@ For WaveBot, this is codified in the |simulateDevice.m|_, function, which has th
 
 The arguments for |simulateDevice.m|_ are:
 
-* ``hydro`` - structure containing hydrodynamic coefficients produced by |designDevice.m|_
-* ``seastate`` - sea state object (see :ref:`seastate`)
+* ``hydro`` - a :mat:class:`~+WecOptTool.Hydrodynamics` object containing hydrodynamic coefficients produced by |designDevice.m|_
+* ``seastate`` - a :mat:class:`~+WecOptTool.SeaState` object (see :ref:`seastate`)
 * ``controlType`` - string specifying the control type (see :ref:`controlledPerformance`)
 * ``options`` - name-value pair arguments for additional settings
 
