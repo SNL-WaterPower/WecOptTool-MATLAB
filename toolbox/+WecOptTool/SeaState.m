@@ -282,6 +282,11 @@ classdef SeaState
             
         end
         
+        function Aw = getAmplitudeSpectrum(obj)
+            % Get wave amplitude per angular frequency
+            Aw = sqrt(2 * obj.dw * obj.S(:));
+        end
+        
         function plot(obj)
             % Plot spectra and comparison to base spectra, if different.
             % 
@@ -581,8 +586,9 @@ classdef SeaState
             energies = zeros(1, N);
             
             for i = 1:N
-                energies(i) = options.g * options.rho *     ...
-                                                trapz(S(i).w, S(i).S);
+                dw = uniquetol(diff(S(i).w), eps('single'));
+                assert(length(dw) == 1)
+                energies(i) = options.g * options.rho * dw * sum(S(i).S);
             end
             
         end

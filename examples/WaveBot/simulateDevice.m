@@ -81,7 +81,7 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod)
     dw = w(2) - w(1);
     
     % Calculate wave amplitude
-    waveAmpSS = sqrt(2 * SS.dw * SS.S); 
+    waveAmpSS = SS.getAmplitudeSpectrum();
     waveAmp = interp1(SS.w, waveAmpSS, w, interpMethod, 'extrap');
 
     % Row vector of random phases

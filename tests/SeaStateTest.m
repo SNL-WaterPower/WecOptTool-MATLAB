@@ -106,6 +106,14 @@ classdef SeaStateTest < matlab.unittest.TestCase
             
         end
         
+        function testGetAmplitudeSpectrum(testCase)
+            % Looking for (Hs/4)^2 where Hs=8 for the test BS spectrum
+            spectrum = WecOptTool.SeaState.exampleSpectrum();
+            ampSpec = spectrum.getAmplitudeSpectrum();
+            verifyEqual(testCase, sum(ampSpec.^2) / 2, 4,       ...
+                        'RelTol', 5e-3);
+        end
+        
         function testPlot(testCase)
             testCase.SS.plot();
         end
@@ -238,7 +246,7 @@ classdef SeaStateTest < matlab.unittest.TestCase
             expected = 1 / 4;
             
             testCase.assertThat(result,     ...
-                IsEqualTo(expected, 'Within', RelativeTolerance(0.001)))
+                IsEqualTo(expected, 'Within', RelativeTolerance(0.02)))
             
         end
             
