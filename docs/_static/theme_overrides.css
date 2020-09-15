@@ -12,6 +12,10 @@
    }
 }
 
-.section {
+li {
+	text-align:left;
+}
+
+body {
 	text-align:justify;
 }
