@@ -22,7 +22,7 @@ function hydro = getHydroScalar(lambda)
     [filepath, ~, ~] = fileparts(p);
     dataPath = fullfile(filepath, 'RM3_BEM.mat');
 
-    load(dataPath, 'hydro');
+    hydro = struct2array(load(dataPath, 'hydro'));
 
     % dimensionalize w/ WEC-Sim built-in function
     hydro.rho = 1025;
