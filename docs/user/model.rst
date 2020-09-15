@@ -4,15 +4,16 @@
 Problem set up anatomy
 **********************
 
-Overview
-========
-
 This section explains how to create a WecOptTool model for a new WEC.
 WecOptTool is currently structured as a set of examples, all of which follow a similar format and can thus rely on common utilities.
 It is envisioned that the structure of WecOptTool may some day be consolidated based on experience in developing these examples.
 
 We can consider the WaveBot example to illustrate this concept.
 Note that this example is the subject of a journal manuscript :cite:`Coe2020`.
+
+Overview
+========
+
 The process for performing a study in WecOptTool can be broken into three distinct steps, which correlate to three files in the WaveBot example:
 
 	* **Designing the device** - |designDevice.m|_ creates the device based on a set of design variables
