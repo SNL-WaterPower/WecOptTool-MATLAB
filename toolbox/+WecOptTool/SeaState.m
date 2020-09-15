@@ -975,9 +975,6 @@ classdef SeaState
             [~,idx] = min(abs(w - 2*pi/T));
 
             S.S = zeros(size(w));
-            
-            % TODO: Where does this come from. Shouldn't there be a 
-            % pi in here?
             S.S(idx) = A^2/(2*dw);
 
             S.date = datestr(now);

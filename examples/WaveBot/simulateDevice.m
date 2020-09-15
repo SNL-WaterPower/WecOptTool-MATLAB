@@ -81,7 +81,6 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod)
     dw = w(2) - w(1);
     
     % Calculate wave amplitude
-    % TODO: Why times root(2) here?
     waveAmpSS = sqrt(2 * SS.dw * SS.S); 
     waveAmp = interp1(SS.w, waveAmpSS, w, interpMethod, 'extrap');
 
