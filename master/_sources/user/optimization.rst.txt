@@ -155,9 +155,9 @@ complete code is as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 63-91
+    :lines: 65-93
     :linenos:
-    :lineno-start: 63
+    :lineno-start: 65
 
 The following subsections will describe each stage of setting up the objective
 function.
@@ -202,9 +202,9 @@ object array. These inputs are combined and then added as arguments to the
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 69-72
+    :lines: 71-74
     :linenos:
-    :lineno-start: 69
+    :lineno-start: 71
 
 Calculate controlled device performance
 ---------------------------------------
@@ -249,9 +249,9 @@ as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 74-78
+    :lines: 76-80
     :linenos:
-    :lineno-start: 74
+    :lineno-start: 76
 
 Define the objective function value
 -----------------------------------
@@ -262,17 +262,17 @@ all spectra in the given seastate:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 88-91
+    :lines: 92-95
     :linenos:
-    :lineno-start: 88
+    :lineno-start: 92
 
 Then, to make a minimisation problem, the negation of this value returned: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 80
+    :lines: 82
     :linenos:
-    :lineno-start: 80
+    :lineno-start: 82
 
 .. note::
     **Objective function:** The chosen objective function in |optimization.m|_ 
@@ -292,9 +292,9 @@ and then stash it for recovery later:
 
  .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 82-84
+    :lines: 84-88
     :linenos:
-    :lineno-start: 82
+    :lineno-start: 84
 
 Set optimization solver
 =======================
@@ -371,7 +371,7 @@ optimisation, the :mat:meth:`~+WecOptTool.AutoFolder.recoverVar` method of the
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 50-51
+    :lines: 50-52
     :linenos:
     :lineno-start: 50
 
@@ -381,21 +381,26 @@ match is found, as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 53-59
+    :lines: 54-60
     :linenos:
-    :lineno-start: 53
+    :lineno-start: 54
 
-Finally, by using the :mat:func:`+WecOptTool.+plot.powerPerFreq` function, the 
-spectral distribution of energy absorbed by the resulting design for each of 
-the eight sea states can be shown. 
+Finally, by using the :mat:func:`+WecOptTool.+plot.powerPerFreq` and
+:mat:func:`+WecOptTool.+plot.plotMesh` functions, the spectral distribution of 
+energy absorbed by the resulting design for each of the eight sea states can be 
+shown, alongside the simulated meshes.
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 61
+    :lines: 62-63
     :linenos:
-    :lineno-start: 61
+    :lineno-start: 62
 
 .. image:: /_static/example_spectralPowerPlot.svg
+   :width: 400pt
+   :alt: Absorbed Spectral power distribution for each sea state
+
+.. image:: /_static/example_meshes.svg
    :width: 400pt
    :alt: Absorbed Spectral power distribution for each sea state
 

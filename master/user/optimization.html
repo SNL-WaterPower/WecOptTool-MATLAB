@@ -302,7 +302,11 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 107
 108
 109
-110</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% optimization.m</span>
+110
+111
+112
+113
+114</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% optimization.m</span>
 <span class="c">% Example of an optimization study</span>
 
 <span class="c">%% Define and store sea state of interest</span>
@@ -352,6 +356,7 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">fval</span><span class="p">]</span> <span class="p">=</span> <span class="n">fmincon</span><span class="p">(</span><span class="n">objFun</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">Aeq</span><span class="p">,</span> <span class="n">Beq</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">,</span> <span class="n">NONLCON</span><span class="p">,</span> <span class="n">opts</span><span class="p">);</span>
 
 <span class="c">%% Recover device object of best simulation and plot its power per freq</span>
+<span class="c">%% and mesh</span>
 <span class="n">performances</span> <span class="p">=</span> <span class="n">folder</span><span class="p">.</span><span class="n">recoverVar</span><span class="p">(</span><span class="s">&quot;performances&quot;</span><span class="p">);</span>
     
 <span class="n">for</span> <span class="s">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">performances</span><span class="p">)</span>
@@ -363,6 +368,7 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 <span class="k">end</span>
 
 <span class="n">WecOptTool</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">powerPerFreq</span><span class="p">(</span><span class="n">bestPerformances</span><span class="p">);</span>
+<span class="n">WecOptTool</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">plotMesh</span><span class="p">(</span><span class="n">bestPerformances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">meshes</span><span class="p">);</span>
 
 <span class="c">%% Define objective function</span>
 <span class="c">% This can take any form that complies with the requirements of the MATLAB</span>
@@ -373,7 +379,7 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 <span class="w">    </span><span class="n">w</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">getRegularFrequencies</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
     <span class="n">geomParams</span> <span class="p">=</span> <span class="p">[</span><span class="n">folder</span><span class="p">.</span><span class="n">path</span> <span class="n">num2cell</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">w</span><span class="p">];</span>
 
-    <span class="n">deviceHydro</span> <span class="p">=</span> <span class="n">designDevice</span><span class="p">(</span><span class="s">&#39;parametric&#39;</span><span class="p">,</span> <span class="n">geomParams</span><span class="p">{:});</span>
+    <span class="p">[</span><span class="n">deviceHydro</span><span class="p">,</span> <span class="n">meshes</span><span class="p">]</span> <span class="p">=</span> <span class="n">designDevice</span><span class="p">(</span><span class="s">&#39;parametric&#39;</span><span class="p">,</span> <span class="n">geomParams</span><span class="p">{:});</span>
     
     <span class="n">for</span> <span class="s">j</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">seastate</span><span class="p">)</span>
         <span class="n">performances</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span> <span class="p">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">deviceHydro</span><span class="p">,</span>   <span class="k">...</span>
@@ -385,6 +391,8 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
     
     <span class="p">[</span><span class="n">performances</span><span class="p">(:).</span><span class="n">w</span><span class="p">]</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
     <span class="n">performances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">x</span> <span class="p">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">performances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">meshes</span> <span class="p">=</span> <span class="n">meshes</span><span class="p">;</span>
+    
     <span class="n">folder</span><span class="p">.</span><span class="n">stashVar</span><span class="p">(</span><span class="n">performances</span><span class="p">);</span>
 
 <span class="n">end</span>
@@ -538,9 +546,7 @@ The folder is created as follows:</p>
 <p>Next, we create the objective function we wish to minimise. Note, functions
 must be defined at the bottom of the script, although we will them above. The
 complete code is as follows:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>63
-64
-65
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>65
 66
 67
 68
@@ -566,7 +572,9 @@ complete code is as follows:</p>
 88
 89
 90
-91</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Define objective function</span>
+91
+92
+93</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Define objective function</span>
 <span class="c">% This can take any form that complies with the requirements of the MATLAB</span>
 <span class="c">% optimization functions</span>
 
@@ -575,7 +583,7 @@ complete code is as follows:</p>
 <span class="w">    </span><span class="n">w</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">getRegularFrequencies</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
     <span class="n">geomParams</span> <span class="p">=</span> <span class="p">[</span><span class="n">folder</span><span class="p">.</span><span class="n">path</span> <span class="n">num2cell</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">w</span><span class="p">];</span>
 
-    <span class="n">deviceHydro</span> <span class="p">=</span> <span class="n">designDevice</span><span class="p">(</span><span class="s">&#39;parametric&#39;</span><span class="p">,</span> <span class="n">geomParams</span><span class="p">{:});</span>
+    <span class="p">[</span><span class="n">deviceHydro</span><span class="p">,</span> <span class="n">meshes</span><span class="p">]</span> <span class="p">=</span> <span class="n">designDevice</span><span class="p">(</span><span class="s">&#39;parametric&#39;</span><span class="p">,</span> <span class="n">geomParams</span><span class="p">{:});</span>
     
     <span class="n">for</span> <span class="s">j</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">seastate</span><span class="p">)</span>
         <span class="n">performances</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span> <span class="p">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">deviceHydro</span><span class="p">,</span>   <span class="k">...</span>
@@ -587,14 +595,14 @@ complete code is as follows:</p>
     
     <span class="p">[</span><span class="n">performances</span><span class="p">(:).</span><span class="n">w</span><span class="p">]</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
     <span class="n">performances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">x</span> <span class="p">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">performances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">meshes</span> <span class="p">=</span> <span class="n">meshes</span><span class="p">;</span>
+    
     <span class="n">folder</span><span class="p">.</span><span class="n">stashVar</span><span class="p">(</span><span class="n">performances</span><span class="p">);</span>
 
 <span class="n">end</span>
 
 <span class="s">function</span> <span class="s">out</span> <span class="p">=</span> <span class="n">weightedPower</span><span class="p">(</span><span class="n">seastate</span><span class="p">,</span> <span class="n">performances</span><span class="p">)</span>
     <span class="n">pow</span> <span class="p">=</span> <span class="n">sum</span><span class="p">([</span><span class="n">performances</span><span class="p">.</span><span class="n">powPerFreq</span><span class="p">]);</span>
-    <span class="n">out</span> <span class="p">=</span> <span class="nb">dot</span><span class="p">(</span><span class="n">pow</span><span class="p">,</span> <span class="p">[</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">])</span> <span class="o">/</span> <span class="n">sum</span><span class="p">([</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">]);</span>
-<span class="n">end</span>
 </pre></div>
 </td></tr></table></div>
 <p>The following subsections will describe each stage of setting up the objective
@@ -630,13 +638,13 @@ object using its <a class="reference internal" href="api.html#+WecOptTool.SeaSta
 method, which provides regularly spaced frequencies covering all spectra in the
 object array. These inputs are combined and then added as arguments to the
 <code class="docutils literal notranslate"><span class="pre">designDevice</span></code> function, after the design option name.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>69
-70
-71
-72</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">w</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">getRegularFrequencies</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>71
+72
+73
+74</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">w</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">getRegularFrequencies</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
     <span class="n">geomParams</span> <span class="p">=</span> <span class="p">[</span><span class="n">folder</span><span class="p">.</span><span class="n">path</span> <span class="n">num2cell</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">w</span><span class="p">];</span>
 
-    <span class="n">deviceHydro</span> <span class="p">=</span> <span class="n">designDevice</span><span class="p">(</span><span class="s">&#39;parametric&#39;</span><span class="p">,</span> <span class="n">geomParams</span><span class="p">{:});</span>
+    <span class="p">[</span><span class="n">deviceHydro</span><span class="p">,</span> <span class="n">meshes</span><span class="p">]</span> <span class="p">=</span> <span class="n">designDevice</span><span class="p">(</span><span class="s">&#39;parametric&#39;</span><span class="p">,</span> <span class="n">geomParams</span><span class="p">{:});</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -676,11 +684,11 @@ by the <code class="docutils literal notranslate"><span class="pre">simulateDevi
 selection (with additional optional parameters, if used). Here, the
 device is evaluated across the 8 different sea-states in the example spectra,
 as follows:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>74
-75
-76
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>76
 77
-78</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">for</span> <span class="s">j</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">seastate</span><span class="p">)</span>
+78
+79
+80</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">for</span> <span class="s">j</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">seastate</span><span class="p">)</span>
         <span class="n">performances</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span> <span class="p">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">deviceHydro</span><span class="p">,</span>   <span class="k">...</span>
                                          <span class="n">seastate</span><span class="p">(</span><span class="nb">j</span><span class="p">),</span>   <span class="k">...</span>
                                          <span class="s">&#39;CC&#39;</span><span class="p">);</span>
@@ -693,17 +701,17 @@ as follows:</p>
 <p>The value of the objective function is provided by an axillary function (called
 <code class="docutils literal notranslate"><span class="pre">weightedPower</span></code>) which calculates the maximum absorbed power, weighted across
 all spectra in the given seastate:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>88
-89
-90
-91</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>out <span class="p">=</span><span class="w"> </span><span class="nf">weightedPower</span><span class="p">(</span>seastate, performances<span class="p">)</span><span class="w"></span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>92
+93
+94
+95</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>out <span class="p">=</span><span class="w"> </span><span class="nf">weightedPower</span><span class="p">(</span>seastate, performances<span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="n">pow</span> <span class="p">=</span> <span class="n">sum</span><span class="p">([</span><span class="n">performances</span><span class="p">.</span><span class="n">powPerFreq</span><span class="p">]);</span>
     <span class="n">out</span> <span class="p">=</span> <span class="nb">dot</span><span class="p">(</span><span class="n">pow</span><span class="p">,</span> <span class="p">[</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">])</span> <span class="o">/</span> <span class="n">sum</span><span class="p">([</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">]);</span>
 <span class="n">end</span>
 </pre></div>
 </td></tr></table></div>
 <p>Then, to make a minimisation problem, the negation of this value returned:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>80</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">fval</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">weightedPower</span><span class="p">(</span><span class="n">seastate</span><span class="p">,</span> <span class="n">performances</span><span class="p">);</span>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>82</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">fval</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">weightedPower</span><span class="p">(</span><span class="n">seastate</span><span class="p">,</span> <span class="n">performances</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <div class="admonition note">
@@ -723,10 +731,14 @@ values, used in the objection function, using the
 value and the sea state frequencies to the <code class="docutils literal notranslate"><span class="pre">simulateDevice</span></code> function output
 and then stash it for recovery later:</p>
 <blockquote>
-<div><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>82
-83
-84</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="p">[</span><span class="n">performances</span><span class="p">(:).</span><span class="n">w</span><span class="p">]</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+<div><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>84
+85
+86
+87
+88</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="p">[</span><span class="n">performances</span><span class="p">(:).</span><span class="n">w</span><span class="p">]</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
     <span class="n">performances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">x</span> <span class="p">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">performances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">meshes</span> <span class="p">=</span> <span class="n">meshes</span><span class="p">;</span>
+    
     <span class="n">folder</span><span class="p">.</span><span class="n">stashVar</span><span class="p">(</span><span class="n">performances</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
@@ -817,20 +829,22 @@ the SeaState and AutoFolder object inputs:</p>
 optimisation, the <a class="reference internal" href="api.html#+WecOptTool.AutoFolder.recoverVar" title="+WecOptTool.AutoFolder.recoverVar"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">recoverVar()</span></code></a> method of the
 <a class="reference internal" href="api.html#+WecOptTool.AutoFolder" title="+WecOptTool.AutoFolder"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">AutoFolder</span></code></a> class is used:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>50
-51</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Recover device object of best simulation and plot its power per freq</span>
+51
+52</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Recover device object of best simulation and plot its power per freq</span>
+<span class="c">%% and mesh</span>
 <span class="n">performances</span> <span class="p">=</span> <span class="n">folder</span><span class="p">.</span><span class="n">recoverVar</span><span class="p">(</span><span class="s">&quot;performances&quot;</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <p>Next, the device that matches the best solution returned by fmincon must be
 found. To do this, compare the <code class="docutils literal notranslate"><span class="pre">x</span></code> field of the recovered structs, until a
 match is found, as follows:</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>53
-54
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>54
 55
 56
 57
 58
-59</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">performances</span><span class="p">)</span>
+59
+60</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="nb">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">performances</span><span class="p">)</span>
     <span class="n">test</span> <span class="p">=</span> <span class="n">performances</span><span class="p">{</span><span class="nb">i</span><span class="p">};</span>
     <span class="n">if</span> <span class="s">isequal(test(1).x,</span> <span class="s">x)</span>
         <span class="n">bestPerformances</span> <span class="p">=</span> <span class="n">test</span><span class="p">;</span>
@@ -839,13 +853,17 @@ match is found, as follows:</p>
 <span class="k">end</span>
 </pre></div>
 </td></tr></table></div>
-<p>Finally, by using the <a class="reference internal" href="api.html#+WecOptTool.+plot.powerPerFreq" title="+WecOptTool.+plot.powerPerFreq"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">WecOptTool.plot.powerPerFreq()</span></code></a> function, the
-spectral distribution of energy absorbed by the resulting design for each of
-the eight sea states can be shown.</p>
-<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>61</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">WecOptTool</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">powerPerFreq</span><span class="p">(</span><span class="n">bestPerformances</span><span class="p">);</span>
+<p>Finally, by using the <a class="reference internal" href="api.html#+WecOptTool.+plot.powerPerFreq" title="+WecOptTool.+plot.powerPerFreq"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">WecOptTool.plot.powerPerFreq()</span></code></a> and
+<a class="reference internal" href="api.html#+WecOptTool.+plot.plotMesh" title="+WecOptTool.+plot.plotMesh"><code class="xref mat mat-func docutils literal notranslate"><span class="pre">WecOptTool.plot.plotMesh()</span></code></a> functions, the spectral distribution of
+energy absorbed by the resulting design for each of the eight sea states can be
+shown, alongside the simulated meshes.</p>
+<div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>62
+63</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">WecOptTool</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">powerPerFreq</span><span class="p">(</span><span class="n">bestPerformances</span><span class="p">);</span>
+<span class="n">WecOptTool</span><span class="p">.</span><span class="n">plot</span><span class="p">.</span><span class="n">plotMesh</span><span class="p">(</span><span class="n">bestPerformances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">meshes</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
 <a class="reference internal image-reference" href="../_images/example_spectralPowerPlot.svg"><img alt="Absorbed Spectral power distribution for each sea state" src="../_images/example_spectralPowerPlot.svg" width="400pt" /></a>
+<a class="reference internal image-reference" href="../_images/example_meshes.svg"><img alt="Absorbed Spectral power distribution for each sea state" src="../_images/example_meshes.svg" width="400pt" /></a>
 <table class="docutils citation" frame="void" id="falnes" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">

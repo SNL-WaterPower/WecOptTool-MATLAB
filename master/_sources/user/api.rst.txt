@@ -10,6 +10,9 @@ WecOptTool
 .. mat:autoclass:: +WecOptTool.AutoFolder
     :members:
 
+.. mat:autoclass:: +WecOptTool.Hydrodynamics
+    :members:
+
 .. mat:autoclass:: +WecOptTool.SeaState
     :members:
 
