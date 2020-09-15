@@ -48,6 +48,7 @@ objFun = @(x) myWaveBotObjFun(x, SS, folder);
 [x, fval] = fmincon(objFun, x0, A, B, Aeq, Beq, lb, ub, NONLCON, opts);
 
 %% Recover device object of best simulation and plot its power per freq
+%% and mesh
 performances = folder.recoverVar("performances");
     
 for i = 1:length(performances)
