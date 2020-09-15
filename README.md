@@ -209,6 +209,7 @@ replace slashes (`/`) in paths with backslashes (`\ `).
    > activate _sphinx
    (_sphinx) > pip install https://github.com/H0R5E/sphinxcontrib-versioning/archive/v1.8.5_support.zip
    (_sphinx) > pip install git+https://github.com/H0R5E/matlabdomain.git/@function_arguments#egg=matlabdomain
+   (_sphinx) > pip install sphinxcontrib-bibtex
    (_sphinx) > conda deactivate
    >
    ```

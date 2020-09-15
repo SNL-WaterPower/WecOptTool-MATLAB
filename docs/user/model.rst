@@ -12,7 +12,7 @@ WecOptTool is currently structured as a set of examples, all of which follow a s
 It is envisioned that the structure of WecOptTool may some day be consolidated based on experience in developing these examples. |designDevice.m|_
 
 We can consider the WaveBot example to illustrate this concept.
-Note that this example is the subject of a journal paper [Coe]_.
+Note that this example is the subject of a journal manuscript :cite:`Coe2020`.
 The process for performing a study in WecOptTool can be broken into three distinct steps, which correlate to three files in the WaveBot example:
 
 	* **Designing the device** - |designDevice.m|_ creates the device based on a set of design variables
@@ -99,8 +99,6 @@ Reporting results
 The WaveBot example includes the |Performance.m|_ class for storing and reporting results.
 As a final step after simulations are completed, |simulateDevice.m|_ populates the fields of this object for return to the user.
 In addition to storing the results in a systematic structure, this class also provides some basic plotting functionality.
-
-.. [Coe] R. G. Coe, G. Bacelli, S. Olson, V. S. Neary, and M. B. R. Topper, “Initial conceptual demonstration of control co-design for WEC optimization,” submitted to Journal of Ocean Engineering and Marine Energy.
 
 .. |designDevice.m| replace:: ``designDevice.m``
 .. _designDevice.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/designDevice.m

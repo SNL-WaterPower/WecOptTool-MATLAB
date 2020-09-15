@@ -215,14 +215,14 @@ Calculate controlled device performance
 
 In the RM3 example, three types of controllers are defined:
 
- - **Proportional Damping** (``'P'``): Resistive damping (i.e., a proportional feedback on velocity) (see, e.g., [Falnes]_). Here, the power take-off (PTO) force is set as
+ - **Proportional Damping** (``'P'``): Resistive damping (i.e., a proportional feedback on velocity) (see, e.g., :cite:`Falnes2002`). Here, the power take-off (PTO) force is set as
 
    .. math::
      F_u(\omega) = -B_{PTO}(\omega)u(\omega)
 
    where :math:`B_{PTO}` is a constant chosen to maximize absorbed power and :math:`u(\omega)` is the velocity. |br| |br|
    
- - **Complex Conjugate** (``'CC'``): Optimal power absorption through impedance matching (see, e.g., [Falnes]_). The intrinsic impedance is given by 
+ - **Complex Conjugate** (``'CC'``): Optimal power absorption through impedance matching (see, e.g., :cite:`Falnes2002`). The intrinsic impedance is given by 
 
    .. math::
     Z_i(\omega) = B(\omega) + i \left( \omega{}(m + A(\omega)) - \frac{K_{HS}}{\omega}\right) ,
@@ -239,7 +239,7 @@ In the RM3 example, three types of controllers are defined:
    where :math:`u(\omega)` is the velocity. |br| |br|
 
  - **Pseudo Spectral** (``'PS'``): Constrained optimal power absorption 
-   [Bacelli]_. This is a numerical optimal control algorithm capable of dealing 
+   :cite:`Bacelli2014a`. This is a numerical optimal control algorithm capable of dealing 
    with both constraints and nonlinear dynamics. This approach is based on 
    |pseudo spectral method|_.
 
@@ -403,13 +403,6 @@ the eight sea states can be shown.
    :width: 400pt
    :alt: Absorbed Spectral power distribution for each sea state
 
-.. [Falnes] Falnes, Johannes. Ocean waves and oscillating systems: linear 
-         interactions including wave-energy extraction. Cambridge University 
-         Press, 2002.
-
-.. [Bacelli] Bacelli, Giorgio, and John V. Ringwood. "Numerical optimal control 
-       of wave energy converters." IEEE Transactions on Sustainable Energy 6.2 
-       (2014): 294-302.
 
 .. |optimization.m| replace:: ``optimization.m``
 .. _optimization.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m
