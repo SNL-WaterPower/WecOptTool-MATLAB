@@ -329,7 +329,7 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 <span class="c">% Define optimisation options</span>
 <span class="n">opts</span> <span class="p">=</span> <span class="n">optimoptions</span><span class="p">(</span><span class="s">&#39;fmincon&#39;</span><span class="p">);</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">FiniteDifferenceType</span> <span class="p">=</span> <span class="s">&#39;central&#39;</span><span class="p">;</span>
-<span class="n">opts</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
+<span class="n">opts</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">MaxFunctionEvaluations</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c">% set artificial low for fast running</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">Display</span> <span class="p">=</span> <span class="s">&#39;iter&#39;</span><span class="p">;</span>
 
@@ -354,7 +354,7 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 <span class="c">%% Recover device object of best simulation and plot its power per freq</span>
 <span class="n">performances</span> <span class="p">=</span> <span class="n">folder</span><span class="p">.</span><span class="n">recoverVar</span><span class="p">(</span><span class="s">&quot;performances&quot;</span><span class="p">);</span>
     
-<span class="n">for</span> <span class="s">i</span> <span class="s">=</span> <span class="s">1:length(performances)</span>
+<span class="n">for</span> <span class="s">i</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">performances</span><span class="p">)</span>
     <span class="n">test</span> <span class="p">=</span> <span class="n">performances</span><span class="p">{</span><span class="nb">i</span><span class="p">};</span>
     <span class="n">if</span> <span class="s">isequal(test(1).x,</span> <span class="s">x)</span>
         <span class="n">bestPerformances</span> <span class="p">=</span> <span class="n">test</span><span class="p">;</span>
@@ -375,13 +375,13 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 
     <span class="n">deviceHydro</span> <span class="p">=</span> <span class="n">designDevice</span><span class="p">(</span><span class="s">&#39;parametric&#39;</span><span class="p">,</span> <span class="n">geomParams</span><span class="p">{:});</span>
     
-    <span class="n">for</span> <span class="s">j</span> <span class="s">=</span> <span class="s">1:length(seastate)</span>
-        <span class="n">performances</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span> <span class="p">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">deviceHydro</span><span class="p">,</span>   <span class="c">...</span>
-                                         <span class="n">seastate</span><span class="p">(</span><span class="nb">j</span><span class="p">),</span>   <span class="c">...</span>
+    <span class="n">for</span> <span class="s">j</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">seastate</span><span class="p">)</span>
+        <span class="n">performances</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span> <span class="p">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">deviceHydro</span><span class="p">,</span>   <span class="k">...</span>
+                                         <span class="n">seastate</span><span class="p">(</span><span class="nb">j</span><span class="p">),</span>   <span class="k">...</span>
                                          <span class="s">&#39;CC&#39;</span><span class="p">);</span>
     <span class="n">end</span>
     
-    <span class="s">fval</span> <span class="s">=</span> <span class="s">-1</span> <span class="s">*</span> <span class="s">weightedPower(seastate,</span> <span class="s">performances)</span><span class="p">;</span>
+    <span class="s">fval</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">weightedPower</span><span class="p">(</span><span class="n">seastate</span><span class="p">,</span> <span class="n">performances</span><span class="p">);</span>
     
     <span class="p">[</span><span class="n">performances</span><span class="p">(:).</span><span class="n">w</span><span class="p">]</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
     <span class="n">performances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">x</span> <span class="p">=</span> <span class="n">x</span><span class="p">;</span>
@@ -389,12 +389,12 @@ example considers the DOE Reference Model 3 (<a class="reference external" href=
 
 <span class="n">end</span>
 
-<span class="s">function</span> <span class="s">out</span> <span class="s">=</span> <span class="s">weightedPower(seastate,</span> <span class="s">performances)</span>
+<span class="s">function</span> <span class="s">out</span> <span class="p">=</span> <span class="n">weightedPower</span><span class="p">(</span><span class="n">seastate</span><span class="p">,</span> <span class="n">performances</span><span class="p">)</span>
     <span class="n">pow</span> <span class="p">=</span> <span class="n">sum</span><span class="p">([</span><span class="n">performances</span><span class="p">.</span><span class="n">powPerFreq</span><span class="p">]);</span>
     <span class="n">out</span> <span class="p">=</span> <span class="nb">dot</span><span class="p">(</span><span class="n">pow</span><span class="p">,</span> <span class="p">[</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">])</span> <span class="o">/</span> <span class="n">sum</span><span class="p">([</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">]);</span>
 <span class="n">end</span>
 
-<span class="s">%</span> <span class="s">Copyright</span> <span class="s">2020</span> <span class="s">National</span> <span class="s">Technology</span> <span class="s">&amp;</span> <span class="s">Engineering</span> <span class="s">Solutions</span> <span class="s">of</span> <span class="s">Sandia,</span> 
+<span class="s">%</span> <span class="s">Copyright</span> <span class="s">2020</span> <span class="s">National</span> <span class="s">Technology</span> <span class="o">&amp;</span> <span class="n">Engineering</span> <span class="n">Solutions</span> <span class="n">of</span> <span class="n">Sandia</span><span class="p">,</span> 
 <span class="c">% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the </span>
 <span class="c">% U.S. Government retains certain rights in this software.</span>
 <span class="c">%</span>
@@ -577,13 +577,13 @@ complete code is as follows:</p>
 
     <span class="n">deviceHydro</span> <span class="p">=</span> <span class="n">designDevice</span><span class="p">(</span><span class="s">&#39;parametric&#39;</span><span class="p">,</span> <span class="n">geomParams</span><span class="p">{:});</span>
     
-    <span class="n">for</span> <span class="s">j</span> <span class="s">=</span> <span class="s">1:length(seastate)</span>
-        <span class="n">performances</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span> <span class="p">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">deviceHydro</span><span class="p">,</span>   <span class="c">...</span>
-                                         <span class="n">seastate</span><span class="p">(</span><span class="nb">j</span><span class="p">),</span>   <span class="c">...</span>
+    <span class="n">for</span> <span class="s">j</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">seastate</span><span class="p">)</span>
+        <span class="n">performances</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span> <span class="p">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">deviceHydro</span><span class="p">,</span>   <span class="k">...</span>
+                                         <span class="n">seastate</span><span class="p">(</span><span class="nb">j</span><span class="p">),</span>   <span class="k">...</span>
                                          <span class="s">&#39;CC&#39;</span><span class="p">);</span>
     <span class="n">end</span>
     
-    <span class="s">fval</span> <span class="s">=</span> <span class="s">-1</span> <span class="s">*</span> <span class="s">weightedPower(seastate,</span> <span class="s">performances)</span><span class="p">;</span>
+    <span class="s">fval</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">weightedPower</span><span class="p">(</span><span class="n">seastate</span><span class="p">,</span> <span class="n">performances</span><span class="p">);</span>
     
     <span class="p">[</span><span class="n">performances</span><span class="p">(:).</span><span class="n">w</span><span class="p">]</span> <span class="p">=</span> <span class="n">seastate</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
     <span class="n">performances</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">x</span> <span class="p">=</span> <span class="n">x</span><span class="p">;</span>
@@ -591,7 +591,7 @@ complete code is as follows:</p>
 
 <span class="n">end</span>
 
-<span class="s">function</span> <span class="s">out</span> <span class="s">=</span> <span class="s">weightedPower(seastate,</span> <span class="s">performances)</span>
+<span class="s">function</span> <span class="s">out</span> <span class="p">=</span> <span class="n">weightedPower</span><span class="p">(</span><span class="n">seastate</span><span class="p">,</span> <span class="n">performances</span><span class="p">)</span>
     <span class="n">pow</span> <span class="p">=</span> <span class="n">sum</span><span class="p">([</span><span class="n">performances</span><span class="p">.</span><span class="n">powPerFreq</span><span class="p">]);</span>
     <span class="n">out</span> <span class="p">=</span> <span class="nb">dot</span><span class="p">(</span><span class="n">pow</span><span class="p">,</span> <span class="p">[</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">])</span> <span class="o">/</span> <span class="n">sum</span><span class="p">([</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">]);</span>
 <span class="n">end</span>
@@ -680,9 +680,9 @@ as follows:</p>
 75
 76
 77
-78</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">for</span> <span class="s">j</span> <span class="s">=</span> <span class="s">1:length(seastate)</span>
-        <span class="n">performances</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span> <span class="p">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">deviceHydro</span><span class="p">,</span>   <span class="c">...</span>
-                                         <span class="n">seastate</span><span class="p">(</span><span class="nb">j</span><span class="p">),</span>   <span class="c">...</span>
+78</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">for</span> <span class="s">j</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">seastate</span><span class="p">)</span>
+        <span class="n">performances</span><span class="p">(</span><span class="nb">j</span><span class="p">)</span> <span class="p">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">deviceHydro</span><span class="p">,</span>   <span class="k">...</span>
+                                         <span class="n">seastate</span><span class="p">(</span><span class="nb">j</span><span class="p">),</span>   <span class="k">...</span>
                                          <span class="s">&#39;CC&#39;</span><span class="p">);</span>
     <span class="n">end</span>
 </pre></div>
@@ -758,7 +758,7 @@ and then stash it for recovery later:</p>
 33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">% Define optimisation options</span>
 <span class="n">opts</span> <span class="p">=</span> <span class="n">optimoptions</span><span class="p">(</span><span class="s">&#39;fmincon&#39;</span><span class="p">);</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">FiniteDifferenceType</span> <span class="p">=</span> <span class="s">&#39;central&#39;</span><span class="p">;</span>
-<span class="n">opts</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
+<span class="n">opts</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">MaxFunctionEvaluations</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c">% set artificial low for fast running</span>
 <span class="n">opts</span><span class="p">.</span><span class="n">Display</span> <span class="p">=</span> <span class="s">&#39;iter&#39;</span><span class="p">;</span>
 

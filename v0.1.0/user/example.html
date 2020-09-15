@@ -311,7 +311,7 @@ DOE Reference Model 3 (<a class="reference external" href="https://tethys-engine
 <span class="c">%% Set up some optimisation options for fmincon</span>
 <span class="n">options</span> <span class="p">=</span> <span class="n">optimoptions</span><span class="p">(</span><span class="s">&#39;fmincon&#39;</span><span class="p">);</span>
 <span class="n">options</span><span class="p">.</span><span class="n">MaxFunctionEvaluations</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c">% set artificial low for fast running</span>
-<span class="n">options</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
+<span class="n">options</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
 
 <span class="c">%% Run the study</span>
 <span class="n">WecOptTool</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">study</span><span class="p">,</span> <span class="n">options</span><span class="p">);</span>
@@ -531,7 +531,7 @@ follows:</p>
 65
 66
 67
-68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">options</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="n">true</span><span class="p">;</span>
+68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">options</span><span class="p">.</span><span class="n">UseParallel</span> <span class="p">=</span> <span class="nb">true</span><span class="p">;</span>
 
 <span class="c">%% Run the study</span>
 <span class="n">WecOptTool</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">study</span><span class="p">,</span> <span class="n">options</span><span class="p">);</span>
