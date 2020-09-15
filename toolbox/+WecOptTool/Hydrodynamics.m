@@ -40,7 +40,7 @@ classdef Hydrodynamics
     %
     % Attributes:
     %    base (struct):
-    %        ccopy of the input struct
+    %        copy of the input struct
     %    ex_re (array):
     %        real component of excitation force or torque ([6*Nb,Nh,Nf])
     %    ex_im (array):
@@ -83,7 +83,7 @@ classdef Hydrodynamics
     %     ex_re - real component of excitation force or torque ([6*Nb,Nh,Nf])
     %     ex_im - imaginary component of excitation force or torque
     %     g - gravitational acceleration
-    %     rho -water density
+    %     rho - water density
     %     w - simulated wave frequencies ([1,Nf])
     %     A - radiation added mass ([6*Nb,6*Nb,Nf])
     %     Ainf - infinite frequency added mass ([6*Nb,6*Nb])
