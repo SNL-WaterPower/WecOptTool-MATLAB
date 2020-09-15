@@ -1,8 +1,10 @@
-classdef ParametricCCTest < matlab.unittest.TestCase
+classdef ParametricTest < matlab.unittest.TestCase
  
     properties
         SS
-        performance
+        performanceCC
+        performanceP
+        performancePS
         folder
         rundir
     end
@@ -29,10 +31,26 @@ classdef ParametricCCTest < matlab.unittest.TestCase
                                        10, 15, 3, 42,           ...
                                        w);
             
-            testCase.rundir = deviceHydro.rundir;
-            testCase.performance = simulateDevice(deviceHydro,   ...
-                                                  testCase.SS,   ...
-                                                  'CC');
+            testCase.rundir = deviceHydro.runDirectory;
+            
+            testCase.performanceP = simulateDevice(deviceHydro,     ...
+                                                   testCase.SS,     ...
+                                                   'P');
+                                        
+            testCase.performanceCC = simulateDevice(deviceHydro,    ...
+                                                    testCase.SS,    ...
+                                                    'CC');
+            
+            delta_Zmax = 10;
+            delta_Fmax = 1e9;
+            
+            testCase.performancePS = simulateDevice(deviceHydro,    ...
+                                                    testCase.SS,    ...
+                                                    'PS',           ...
+                                                    delta_Zmax,     ...
+                                                    delta_Fmax,     ...
+                                                    'iter',         ...
+                                                    1e-4);
             
         end
         
@@ -42,7 +60,7 @@ classdef ParametricCCTest < matlab.unittest.TestCase
     
         function test_existingRunFiles(testCase)
                         
-            tol = 5 * eps;
+            tol = 1e-12;
             madeFile = testCase.rundir;
             
             deviceHydro = designDevice('existing', madeFile);
@@ -51,7 +69,7 @@ classdef ParametricCCTest < matlab.unittest.TestCase
                                             'CC');
             
             verifyEqual(testCase,                ...
-                        testCase.performance,    ...
+                        testCase.performanceCC,  ...
                         newPerformance,          ...
                         'RelTol', tol);
             
@@ -60,9 +78,37 @@ classdef ParametricCCTest < matlab.unittest.TestCase
         function test_runParametric(testCase)
             
             expSol = 4.759798816032207e+06;
-            pow = sum(testCase.performance.powPerFreq);
+            pow = sum(testCase.performanceCC.powPerFreq);
             verifyEqual(testCase, pow, expSol, 'RelTol', 0.001)
                         
+        end
+        
+        function test_bounds(testCase)
+            
+            % Test that P <= CC
+            lower = sum(testCase.performanceP.powPerFreq); 
+            upper = sum(testCase.performanceCC.powPerFreq);
+            verifyGreaterThanOrEqual(testCase, upper, lower)
+            
+        end
+        
+        
+        function test_lower_bound(testCase)
+            
+            % The P controller should be the lower bound for PS
+            expSol = sum(testCase.performanceP.powPerFreq); 
+            pow = sum(testCase.performancePS.powPerFreq);
+            verifyGreaterThanOrEqual(testCase, pow, expSol)
+            
+        end
+
+        function test_upper_bound(testCase)
+            
+            % The CC controller should be the upper bound for PS
+            expSol = sum(testCase.performanceCC.powPerFreq); 
+            pow = sum(testCase.performancePS.powPerFreq);
+            verifyLessThanOrEqual(testCase, pow, expSol)
+            
         end
         
     end

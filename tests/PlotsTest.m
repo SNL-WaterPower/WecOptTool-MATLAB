@@ -51,11 +51,22 @@ classdef PlotsTest < matlab.unittest.TestCase
             for i = 1:NSS
                 spectrum = spectra(i);
                 input(i).w = spectrum.w;
-                input(i).powPerFreq = spectrum.S;
+                input(i).powPerFreq = spectrum.S(2:end);
             end
             
             WecOptTool.plot.powerPerFreq(input);
                               
+        end
+        
+        function testPlotMesh(testCase)
+            
+            meshes = load('meshes.mat');
+            WecOptTool.plot.plotMesh(meshes.meshes);
+            
+        end
+        
+        function testPlotMeshEmpty(testCase)
+            WecOptTool.plot.plotMesh([]);
         end
         
     end

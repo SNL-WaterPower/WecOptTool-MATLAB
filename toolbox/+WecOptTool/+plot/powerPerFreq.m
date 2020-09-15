@@ -49,6 +49,12 @@ function powerPerFreq(input)
         for i = 1 : NSS
             
             freq = input(i).w;
+            
+            % Trim off zero frequencies
+            if abs(freq(1)) <= eps
+                freq = freq(2:end);
+            end
+            
             powPerFreq = input(i).powPerFreq;
             plot(freq, powPerFreq,'DisplayName',int2str(i))
 
