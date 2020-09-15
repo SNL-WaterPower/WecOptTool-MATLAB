@@ -8,8 +8,7 @@ classdef Hydrodynamics
     % The following parameters must be provided within the input struct,
     % which map directly to class attributes (see below):
     %
-    %     * ex_re
-    %     * ex_im
+    %     * ex
     %     * g
     %     * rho
     %     * w
@@ -41,11 +40,8 @@ classdef Hydrodynamics
     % Attributes:
     %    base (struct):
     %        copy of the input struct
-    %    ex_re (array):
-    %        real component of excitation force or torque ([6*Nb,Nh,Nf])
-    %    ex_im (array):
-    %        imaginary component of excitation force or torque
-    %        ([6*Nb,Nh,Nf])
+    %    ex (array):
+    %        complex excitation force or torque ([6*Nb,Nh,Nf])
     %    g (float):
     %        gravitational acceleration
     %    rho (float):
@@ -80,8 +76,7 @@ classdef Hydrodynamics
     % Hydrodynamics Properties:
     %     S - spectral density
     %     base - copy of the input struct
-    %     ex_re - real component of excitation force or torque ([6*Nb,Nh,Nf])
-    %     ex_im - imaginary component of excitation force or torque
+    %     ex - complex component of excitation force or torque ([6*Nb,Nh,Nf])
     %     g - gravitational acceleration
     %     rho - water density
     %     w - simulated wave frequencies ([1,Nf])
@@ -120,8 +115,7 @@ classdef Hydrodynamics
     
     properties
         base
-        ex_re
-        ex_im
+        ex
         g
         rho
         w
@@ -148,8 +142,7 @@ classdef Hydrodynamics
             end
             
             obj.base = hydroData;
-            obj.ex_re = hydroData.ex_re;
-            obj.ex_im = hydroData.ex_im;
+            obj.ex = complex(hydroData.ex_re, hydroData.ex_im);
             obj.g = hydroData.g;
             obj.rho = hydroData.rho;
             obj.w = hydroData.w;

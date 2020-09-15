@@ -70,9 +70,7 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod)
 
     function result = interp_ex(hydro, dof, w)
 
-        h = complex(squeeze(hydro.ex_re(dof, 1, :)),   ...
-                    squeeze(hydro.ex_im(dof, 1, :)));
-
+        h = squeeze(hydro.ex(dof, 1, :));
         result = interp1(hydro.w, h ,w, interpMethod, 0);
 
     end

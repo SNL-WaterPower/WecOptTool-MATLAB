@@ -36,11 +36,7 @@ function hydro = getHydroScalar(lambda)
     hydro.B = hydro.B .* lambda^2.5;
     hydro.A = hydro.A .* lambda^3;
     hydro.ex = complex(hydro.ex_re,hydro.ex_im) .* lambda^2;
-    hydro.ex_ma = abs(hydro.ex);
-    hydro.ex_ph = angle(hydro.ex);
-    hydro.ex_re = real(hydro.ex);
-    hydro.ex_im = imag(hydro.ex);
-           
+    hydro = rmfield(hydro,{'ex_re','ex_im'});
 end
 
 
