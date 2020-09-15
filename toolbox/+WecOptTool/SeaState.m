@@ -75,8 +75,6 @@ classdef SeaState
     %         the specific energy of the spectra [J / m\ :sup:`2`]
     %     mu (float): spectrum weighting, for arrays only  (defaults to 1)
     %
-    % Methods:
-    %    struct(): convert to struct
     %
     % --
     %
@@ -95,6 +93,7 @@ classdef SeaState
     %    getAllFrequencies - return unique frequencies over all sea-states
     %    getRegularFrequencies - return regularly spaced frequencies
     %                            covering all sea-states
+    %    getAmplitudeSpectrum - return wave amplitude per angular frequency
     %    plot - plot spectra with comparison to base spectra, if different
     %    validateArray - object array validation
     %    struct - convert to struct
@@ -284,7 +283,12 @@ classdef SeaState
         
         function Aw = getAmplitudeSpectrum(obj)
             % Get wave amplitude per angular frequency
+            %
+            % Returns:
+            %     array: wave amplitudes [m]
+            
             Aw = sqrt(2 * obj.dw * obj.S(:));
+            
         end
         
         function plot(obj)
