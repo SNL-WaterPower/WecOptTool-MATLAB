@@ -70,9 +70,7 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod)
 
     function result = interp_ex(hydro, dof, w)
 
-        h = complex(squeeze(hydro.ex_re(dof, 1, :)),   ...
-                    squeeze(hydro.ex_im(dof, 1, :)));
-
+        h = squeeze(hydro.ex(dof, 1, :));
         result = interp1(hydro.w, h ,w, interpMethod, 0);
 
     end
@@ -81,7 +79,8 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod)
     dw = w(2) - w(1);
     
     % Calculate wave amplitude
-    waveAmp = SS.getAmpSpectrum(w, interpMethod);
+    waveAmpSS = SS.getAmplitudeSpectrum();
+    waveAmp = interp1(SS.w, waveAmpSS, w, interpMethod, 'extrap');
 
     % Row vector of random phases
     ph = rand(size(waveAmp));

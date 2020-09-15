@@ -48,6 +48,7 @@ objFun = @(x) myWaveBotObjFun(x, SS, folder);
 [x, fval] = fmincon(objFun, x0, A, B, Aeq, Beq, lb, ub, NONLCON, opts);
 
 %% Recover device object of best simulation and plot its power per freq
+%% and mesh
 performances = folder.recoverVar("performances");
     
 for i = 1:length(performances)
@@ -59,6 +60,7 @@ for i = 1:length(performances)
 end
 
 WecOptTool.plot.powerPerFreq(bestPerformances);
+WecOptTool.plot.plotMesh(bestPerformances(1).meshes);
 
 %% Define objective function
 % This can take any form that complies with the requirements of the MATLAB
@@ -69,7 +71,7 @@ function fval = myWaveBotObjFun(x, seastate, folder)
     w = seastate.getRegularFrequencies(0.5);
     geomParams = [folder.path num2cell(x) w];
 
-    deviceHydro = designDevice('parametric', geomParams{:});
+    [deviceHydro, meshes] = designDevice('parametric', geomParams{:});
     
     for j = 1:length(seastate)
         performances(j) = simulateDevice(deviceHydro,   ...
@@ -81,6 +83,8 @@ function fval = myWaveBotObjFun(x, seastate, folder)
     
     [performances(:).w] = seastate.w;
     performances(1).x = x;
+    performances(1).meshes = meshes;
+    
     folder.stashVar(performances);
 
 end
