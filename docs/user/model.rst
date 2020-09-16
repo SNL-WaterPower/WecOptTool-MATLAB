@@ -4,14 +4,14 @@
 WEC Model Architecture
 **********************
 
-Introduction
-============
-
 This section provides an overview of how a typical WecOptTool model is programmed.
 WecOptTool is currently structured as a set of examples, all of which follow a similar format and can thus rely on common utilities.
 It is envisioned that the structure of WecOptTool may some day be consolidated based on experience in developing these examples.
 
-The WaveBot example (:cite:`Coe2020`) will be used to illustrate these concepts in more detail.
+Introduction
+============
+
+The WaveBot example :cite:`Coe2020` will be used to illustrate these concepts in more detail.
 The process for performing a study in WecOptTool can be broken into three distinct steps, which correlate to three files in the WaveBot example:
 
 	* **Designing the device** - |designDevice.m|_ creates the device based on a set of design variables
