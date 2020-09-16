@@ -8,3 +8,4 @@
    user/model
    user/api
    user/license
+   user/references
