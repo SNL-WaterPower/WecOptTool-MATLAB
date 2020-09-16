@@ -404,6 +404,9 @@ shown, alongside the simulated meshes.
    :width: 400pt
    :alt: Absorbed Spectral power distribution for each sea state
 
+.. image:: /_static/example_meshes.svg
+   :width: 400pt
+   :alt: Absorbed Spectral power distribution for each sea state
 
 .. |optimization.m| replace:: ``optimization.m``
 .. _optimization.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m
