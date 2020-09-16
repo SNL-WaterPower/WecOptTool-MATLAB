@@ -1,32 +1,31 @@
 .. _model:
 
 **********************
-Problem set up anatomy
+WEC Model Architecture
 **********************
 
-This section explains how to create a WecOptTool model for a new WEC.
+Introduction
+============
+
+This section provides an overview of how a typical WecOptTool model is programmed.
 WecOptTool is currently structured as a set of examples, all of which follow a similar format and can thus rely on common utilities.
 It is envisioned that the structure of WecOptTool may some day be consolidated based on experience in developing these examples.
 
-We can consider the WaveBot example to illustrate this concept.
-Note that this example is the subject of a journal manuscript :cite:`Coe2020`.
-
-Overview
-========
-
+The WaveBot example (:cite:`Coe2020`) will be used to illustrate these concepts in more detail.
 The process for performing a study in WecOptTool can be broken into three distinct steps, which correlate to three files in the WaveBot example:
 
 	* **Designing the device** - |designDevice.m|_ creates the device based on a set of design variables
 	* **Simulating device response** - |simulateDevice.m|_ simulates device performance
 	* **Reporting results** - |Performance.m|_ a class for storing and plotting performance data
 
-In the diagram below, we can see each of these steps within the context of the overall work-flow.
-The **Designing the device** step produces a **Device** (see upper left hand quadrant of the diagram), which, along with information about the sea state and controller, can used to **Simulating device response** (see right hand solvers column in the diagram).
-The **Objective Function** and subsequent **Optimization Routine** in the diagram may use some functionality in the **Reporting results** step, e.g., to find the average power.
+The diagram below shows the responsibilities that each of these steps take within the context of the overall work-flow.
+The **Designing the device** step takes user inputs regarding the configuration of the device and calculates the hydrodynamic parameters of that design.
+In the diagram below, the processes bounded by **rectangle 1** are encapsulated by this step. 
+**Simulating device response** takes information about the sea state and controller type, and finds the optimal power output for the given hydrodynamic parameters, encapsulating the processes in **rectangle 2**.
+Finally, the processes in **rectangle 3** will use metrics that are calculated in the **Reporting results** step, e.g., to find the average power.
 
-
-.. image:: /_static/WecOptToolFlowChart.svg
-   :alt: Conceptual illustration of WecOptTool functionality
+.. image:: /_static/WecOptToolFlowChartCode.svg
+   :alt: Steps for implementing the WecOptTool functionality
 
 Designing the device
 ====================
@@ -43,7 +42,6 @@ Designing the device
 
    </details></br>
 
-The **Designing the device** step effectively takes the **Geometry**, **Power take off**, and **Kinematics**.
 The **Designing the device** step codifies the user inputs for the **Geometry**, **Power take off**, and **Kinematics** of the WEC.
 With some important caveats, this step can be seen as analogous to building the physical device.
 This step can include [#f1]_ generating a panelized representation of the WEC's hull and calling a BEM code (e.g., NEMOH) to estimate the hydrodynamic coefficients.
