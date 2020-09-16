@@ -4,7 +4,7 @@ jobs:
   include:
     - stage: pages
       install:
-        - pip install click colorama colorclass future "sphinx==1.8.5" sphinx_rtd_theme
+        - pip install click colorama colorclass future "sphinx==1.8.5" sphinxcontrib-bibtex sphinx_rtd_theme
         - pip install https://github.com/H0R5E/sphinxcontrib-versioning/archive/v1.8.5_support.zip
         - pip install git+https://github.com/H0R5E/matlabdomain.git/@function_arguments#egg=matlabdomain
       script:

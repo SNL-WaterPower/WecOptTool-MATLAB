@@ -208,11 +208,10 @@ replace slashes (`/`) in paths with backslashes (`\ `).
 2. Create the Sphinx environment:
    
    ```
-   > conda create -c conda-forge -n _sphinx click colorama colorclass future pip "sphinx=1.8.5" sphinx_rtd_theme 
+   > conda create -c conda-forge -n _sphinx click colorama colorclass future pip "sphinx=1.8.5" sphinxcontrib-bibtex sphinx_rtd_theme 
    > activate _sphinx
    (_sphinx) > pip install https://github.com/H0R5E/sphinxcontrib-versioning/archive/v1.8.5_support.zip
    (_sphinx) > pip install git+https://github.com/H0R5E/matlabdomain.git/@function_arguments#egg=matlabdomain
-   (_sphinx) > pip install sphinxcontrib-bibtex
    (_sphinx) > conda deactivate
    >
    ```
