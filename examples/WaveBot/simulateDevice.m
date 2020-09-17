@@ -22,7 +22,7 @@ function performance = simulateDevice(hydro, seastate, controlType, options)
     % See also WecOptTool.SeaState, interp1
     
     arguments
-        hydro (1,1) struct
+        hydro WecOptTool.Hydrodynamics
         seastate (1,:) WecOptTool.SeaState
         controlType (1,1) string
         options.Zmax (1,:) double  = Inf % TODO - can be assymetric, need to check throughout
@@ -213,12 +213,10 @@ function myPerf = psControl(dynModel,delta_Zmax,delta_Fmax)
 %     pow = powPerFreqMat(:,1);
 
     arguments
-        dynModel
+        dynModel (1, 1) struct
         delta_Zmax (1,:) double {mustBeFinite,mustBeReal,mustBePositive}
         delta_Fmax (1,:) double {mustBeFinite,mustBeReal,mustBePositive}
     end
-
-    dynModel = struct(dynModel);
         
     % Fix random seed <- Do we want this???
     rng(1);
