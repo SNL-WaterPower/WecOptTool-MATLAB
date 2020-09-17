@@ -46,7 +46,7 @@ The Sea States input block for the RM3 may made up of a single spectrum or
 multiple spectra. Finally, the user will need to determine some objective 
 function of interest for the device being studied. 
 
-WecOptTool will use the User inputs to build a set of Data Classes and pass the 
+WecOptTool will use the User Inputs to build a set of Data Classes and pass the 
 information to the Solvers. The Hydrodynamics Solver currently uses Nemoh_ to 
 compute the linear wave-body interaction properties using the boundary element 
 method (BEM). The Optimal Control Solver will take the Data Classes to return 
@@ -61,10 +61,10 @@ In WecOptTool, this process is executed by applying the following steps:
 
 #. Select a device design and calculate its hydrodynamic parameters
 #. Examine the performance of the device design using the chosen control 
-   options, for a given seastate
+   options, for a given sea state
 
 The remainder of this page will illustrate (using the |optimization.m|_ 
-example) how this process is applied to a co-optimisation problem.
+example) how this process is applied to a co-optimization problem.
 
 .. _seastate:
 
@@ -152,7 +152,7 @@ Create an objective function
 ============================
 
 Next, we create the objective function we wish to minimise. Note, functions 
-must be defined at the bottom of the script, although we will them above. The 
+must be defined at the bottom of the script, although we will use them above. The 
 complete code is as follows: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
@@ -195,7 +195,7 @@ calculated by the ``designDevice`` function. The ``'parametric'`` option to
 the geometry design variables, ``r1, r2, d1, d2``, and a representative set of 
 angular frequencies to be calculated by NEMOH. The folder is provided by the 
 ``path`` attribute of the :mat:class:`~+WecOptTool.AutoFolder` object. The 
-design variables will be passed by the optimisation routine, while the 
+design variables will be passed by the optimization routine, while the 
 frequencies can be extracted from the given :mat:class:`~+WecOptTool.SeaState` 
 object using its :mat:meth:`~+WecOptTool.SeaState.getRegularFrequencies` 
 method, which provides regularly spaced frequencies covering all spectra in the 
@@ -270,7 +270,7 @@ all spectra in the given seastate:
     :linenos:
     :lineno-start: 92
 
-Then, to make a minimisation problem, the negation of this value returned: 
+Then, to make a minimization problem, the negation of this value returned: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -370,7 +370,7 @@ Examine optimum design
 ======================
 
 To recover the detailed performance of all the device designs tested in the 
-optimisation, the :mat:meth:`~+WecOptTool.AutoFolder.recoverVar` method of the 
+optimization, the :mat:meth:`~+WecOptTool.AutoFolder.recoverVar` method of the 
 :mat:class:`~+WecOptTool.AutoFolder` class is used: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
