@@ -22,7 +22,7 @@ function performance = simulateDevice(hydro, seastate, controlType, options)
     % See also WecOptTool.SeaState, interp1
     
     arguments
-        hydro WecOptTool.Hydrodynamics
+        hydro (1,1) WecOptTool.Hydrodynamics
         seastate (1,:) WecOptTool.SeaState
         controlType (1,1) string
         options.Zmax (1,:) double  = Inf % TODO - can be assymetric, need to check throughout
