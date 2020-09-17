@@ -877,9 +877,7 @@ We can see from the signature of <a class="reference external" href="https://git
 471
 472
 473
-474
-475
-476</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>performance <span class="p">=</span><span class="w"> </span><span class="nf">simulateDevice</span><span class="p">(</span>hydro, seastate, controlType, options<span class="p">)</span><span class="w"></span>
+474</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>performance <span class="p">=</span><span class="w"> </span><span class="nf">simulateDevice</span><span class="p">(</span>hydro, seastate, controlType, options<span class="p">)</span><span class="w"></span>
 <span class="w">    </span><span class="c">% simulateDevice   WEC based on the Sandia &quot;WaveBot&quot; device.</span>
     <span class="c">%</span>
     <span class="c">% The WaveBot is a model-scale wave energy converter (WEC) tested in</span>
@@ -903,7 +901,7 @@ We can see from the signature of <a class="reference external" href="https://git
     <span class="c">% See also WecOptTool.SeaState, interp1</span>
     
     <span class="n">arguments</span>
-        <span class="s">hydro</span> <span class="s">(1,1)</span> <span class="s">struct</span>
+        <span class="s">hydro</span> <span class="s">(1,1)</span> <span class="s">WecOptTool.Hydrodynamics</span>
         <span class="n">seastate</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">SeaState</span>
         <span class="n">controlType</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="n">string</span>
         <span class="n">options</span><span class="p">.</span><span class="n">Zmax</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">double</span>  <span class="p">=</span> <span class="n">Inf</span> <span class="c">% TODO - can be assymetric, need to check throughout</span>
@@ -1094,14 +1092,12 @@ We can see from the signature of <a class="reference external" href="https://git
 <span class="c">%     pow = powPerFreqMat(:,1);</span>
 
     <span class="n">arguments</span>
-        <span class="s">dynModel</span>
+        <span class="s">dynModel</span> <span class="s">(1,</span> <span class="s">1)</span> <span class="s">struct</span>
         <span class="n">delta_Zmax</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">,</span><span class="n">mustBeReal</span><span class="p">,</span><span class="n">mustBePositive</span><span class="p">}</span>
         <span class="n">delta_Fmax</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">,</span><span class="n">mustBeReal</span><span class="p">,</span><span class="n">mustBePositive</span><span class="p">}</span>
     <span class="n">end</span>
-
-    <span class="s">dynModel</span> <span class="p">=</span> <span class="n">struct</span><span class="p">(</span><span class="n">dynModel</span><span class="p">);</span>
         
-    <span class="c">% Fix random seed &lt;- Do we want this???</span>
+    <span class="s">%</span> <span class="s">Fix</span> <span class="s">random</span> <span class="s">seed</span> <span class="o">&lt;-</span> <span class="n">Do</span> <span class="n">we</span> <span class="n">want</span> <span class="n">this</span>???
     <span class="n">rng</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
     
     <span class="c">% Reformulate equations of motion</span>
