@@ -191,17 +191,40 @@ fig.Position = fig.Position .*[1,1,1.5,0.75];
 hold on
 grid on
 ax = gca;
+
+lstr = ['CC','P','PS'];
+% Plot Optimal Solution X-section
+for ii = 1:length(controlType)
+    radiusOpt = x_opt(ii);
+    xCoords =  [0, radiusOpt, radiusOpt, 0.35, 0];
+    yCoords = [0.2, 0.2, -0.16, -0.53, -0.53]; 
+    p(ii) = plot(ax, xCoords, yCoords, 'Marker', mkrs{ii},...
+                            'LineWidth',2,'MarkerSize',10,...
+                            'DisplayName', lstr(ii));
+end
+
+
 for ii = 1:length(radii)
+    baseN = length(controlType);
     radius = radii(ii);
     xCoords =  [0, radius, radius, 0.35, 0];
     yCoords = [0.2, 0.2, -0.16, -0.53, -0.53];
-    p(ii) = plot(ax,xCoords, yCoords, 'bo-','DisplayName',num2str(ii));
-    if ii == 8
-        p(ii) = plot(ax,xCoords, yCoords, 'ks-','DisplayName','Original');
+    if ii+baseN == 8
+        p(ii+baseN) = plot(ax,xCoords, yCoords, 'ks-',...
+            'DisplayName','Original');
+    else
+        p(ii+baseN) = plot(ax,xCoords, yCoords, 'bo-', ...
+                                       'DisplayName',num2str(ii));
     end
 end
-l1 = legend([p(8),p(1)],...
-    'Original geometry (Coe et al 2016)','WecOptTool study geometries');
+%legend('CC','P','PS', 'Parametric geometries')
+%l1 = legend(p,'CC');%,'P','PS', ...
+    %'Original geometry (Coe et al. 2016)', ...
+    %'WecOptTool study geometries'});
+l1 = legend([p(1), p(2), p(3), p(4), p(8)],...
+    'CC','P','PS', ...
+    'Original geometry (Coe et al. 2016)', ...
+    'WecOptTool study geometries');
 set(l1,'location','southeast')
 
 xlabel('$r$ [m]','interpreter','latex')
