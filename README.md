@@ -6,27 +6,27 @@ optimal control.
 
 ## Dependencies
 
-Dependency                          | Website                                                         | Required<sup>1</sup>
+Dependency                          | Website                                                         | Required\*
 ----------------------------------- | --------------------------------------------------------------- | -----------------
-MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes\*
+MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes<sup>1</sup>
 MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
 NEMOH                               | https://github.com/LHEEA/Nemoh                                  | yes
 WAFO                                | https://github.com/wafo-project/wafo                            | optional
 MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | optional
 MATLAB Global Optimization Toolbox  | https://www.mathworks.com/products/global-optimization.html     | optional
 
-<sup>1</sup> The values in the _Required_ column have the following meanings:
+\* The values in the _Required_ column have the following meanings:
   * **yes** indicates dependencies that must be installed to use the
     WecOptTool toolbox
   * **optional** indicates dependencies that are used on a case by case basis, 
     in the examples
 
-\* The latest WecOptTool release, version 0.1.0, was tested on **MATLAB 
-2020a**, whilst the oldest compatible version known is **MATLAB 2018a**. Please 
-help the development team by reporting compatibility with other versions 
-[HERE]( https://github.com/SNL-WaterPower/WecOptTool/issues/91). The 
-development version will support the latest available version of MATLAB, but no 
-guarantees are given regarding legacy MATLAB support. 
+<sup>1</sup> The WecOptTool developers are endeavouring to ensure that this 
+software is compatible with the latest version of MATLAB (and the toolbox 
+dependencies). Unfortunately, this may mean that backwards compatibility with 
+older versions of MATLAB is not possible. See the [MATLAB Version Support 
+Policy](https://github.com/SNL-WaterPower/WecOptTool/wiki/MATLAB-Version-Support-Policy) 
+page for further details. 
 
 ## Download
 
@@ -111,18 +111,19 @@ called in MATLAB as follows:
     and successful output may look like this:
     
     ```
-    WecOptTool dependency checker
+    WecOptTool Dependency Checker
     -------------------------------
-    
+
     Required
     --------
-    Optimization Toolbox:       Found
-    NEMOH:                      Found
-    
+    Optimization Toolbox:                   Found
+    NEMOH:                                  Found
+
     Optional
     --------
-    Parallel Computing Toolbox: Not found
-    WAFO:                       Found
+    Parallel Toolbox:                       Found
+    Global Optimization Toolbox:    Not Installed
+    WAFO:                                   Found
     ```
 
 1. **(optional) Run functionality tests:** A test suite is available to verify 
@@ -139,8 +140,8 @@ WecOptTool source code and is run from the MATLAB command window, as follows:
    
     ```
     Totals:
-          80 Passed, 0 Failed, 0 Incomplete.
-          125.1625 seconds testing time.
+          91 Passed, 0 Failed, 0 Incomplete.
+          195.0643 seconds testing time.
     ```
 
 1. **Begin use:** See the 
