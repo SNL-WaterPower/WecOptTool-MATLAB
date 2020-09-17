@@ -26,7 +26,7 @@ classdef Hydrodynamics
     %     individual bodies will be set to zero, automatically.
     %
     % Arguments:
-    %    S (hydroData):
+    %    hydroData (struct):
     %        A struct containing the required fields
     %    options: name-value pair options. See below.
     %

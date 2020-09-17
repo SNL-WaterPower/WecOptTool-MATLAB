@@ -157,7 +157,7 @@ complete code is as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 65-93
+    :lines: 65-95
     :linenos:
     :lineno-start: 65
 
