@@ -6,11 +6,8 @@ The WEC Design Optimization MATLAB Toolbox (WecOptTool) allows users to perform 
 In particular, this tool's key feature is the usage of a pseudo spectral solution method capable of dealing with both constraints and nonlinear dynamics.
 This allows for the optimization study to find the best possible power capture performance within the system constraints (e.g., maximum power take-off force).
 
-Applications of WecOptTool include design optimization studies of the 
-`WaveBot`_ point absorber and `RM3`_ point absorber (see the 
-:ref:`optimization` section for further details). These examples illustrate how 
-WecOptTool can be applied to arbitrary devices of the user's choosing (see the 
-:ref:`model` section). 
+Applications of WecOptTool include design optimization studies of the `WaveBot`_ point absorber and `RM3`_ point absorber (see the :ref:`optimization` section for further details).
+These examples illustrate how WecOptTool can be applied to arbitrary devices of the user's choosing (see the :ref:`model` section). 
 
 Developers
 ==========
