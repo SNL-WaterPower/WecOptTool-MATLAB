@@ -21,7 +21,7 @@ MATLAB Global Optimization Toolbox  | https://www.mathworks.com/products/global-
   * **optional** indicates dependencies that are used on a case by case basis, 
     in the examples
 
-<sup>1</sup> The WecOptTool developers are endeavouring to ensure that this 
+<sup>1</sup> The WecOptTool developers are endeavoring to ensure that this 
 software is compatible with the latest version of MATLAB (and the toolbox 
 dependencies). Unfortunately, this may mean that backwards compatibility with 
 older versions of MATLAB is not possible. See the [MATLAB Version Support 
@@ -43,12 +43,12 @@ repository, using the [Clone or download](
 https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 button.
 
-Note that, although the developers endeavour to ensure that the development
-version is not broken, bugs or unexpected behaviour may occur, so please beware.
+Note that, although the developers endeavor to ensure that the development
+version is not broken, bugs or unexpected behavior may occur, so please beware.
 
 ## Getting Started
 
-> :warning: Unexpected behaviour may occur if multiple versions of the toolbox 
+> :warning: Unexpected behavior may occur if multiple versions of the toolbox 
   are installed. Please following the [Uninstall](#uninstall) instructions to 
   uninstall any previous versions of WecOptTool first.
 
@@ -165,7 +165,7 @@ Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
 The top level folders of the WecOptTool repository are used as follows:
 
 * **docs** contains the web documentation source code
-* **examples** contains subfolders with structured examples of co-optimisation 
+* **examples** contains subfolders with structured examples of co-optimization 
   problems
 * **tests** contains integration and unit tests
 * **toolbox** contains the supporting MATLAB toolbox used by the examples
@@ -320,7 +320,7 @@ A code maintainer will review your pull request at the earliest possible
 opportunity. For large pull requests, it would be advisable to open a related 
 issue to discuss the purpose of your updates. The developers also would be 
 grateful if *"Allow edits from maintainers"* is checked when making a pull 
-request, as this will allow us to finalise your contributions more rapidly.
+request, as this will allow us to finalize your contributions more rapidly.
 
 ## Software License
 

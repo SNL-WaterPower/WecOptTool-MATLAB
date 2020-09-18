@@ -1003,5 +1003,3 @@ classdef SeaState
     end
 
 end
-
-

@@ -188,7 +188,7 @@ Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
 
 .. rubric:: Footnotes
 
-.. [#f1] The WecOptTool developers are endeavouring to ensure that this 
+.. [#f1] The WecOptTool developers are endeavoring to ensure that this 
          software is compatible with the latest version of MATLAB (and the 
          toolbox dependencies). Unfortunately, this may mean that backwards 
          compatibility with older versions of MATLAB is not possible. See the 
