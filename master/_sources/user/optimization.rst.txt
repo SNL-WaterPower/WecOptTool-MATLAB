@@ -290,9 +290,9 @@ MATLAB's optimization routines only store the sample and cost function values
 of the designs tested. WecOptTool provides a means to store intermediate 
 values, used in the objection function, using the 
 :mat:meth:`~+WecOptTool.AutoFolder.stashVar` method of the 
-:mat:class:`~+WecOptTool.AutoFolder` class. In this example we add the sample 
-value and the sea state frequencies to the ``simulateDevice`` function output 
-and then stash it for recovery later: 
+:mat:class:`~+WecOptTool.AutoFolder` class. In this example we add the sea 
+state frequencies, sample value and device meshes to the ``simulateDevice`` 
+function output and then stash it for recovery later: 
 
  .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
