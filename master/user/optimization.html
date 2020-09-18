@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>2. Optimizing an Existing WEC Model &mdash; WecOptTool 0.1.0 documentation</title>
+  <title>2. Optimizing an Existing WEC Model &mdash; WecOptTool 1.0.0 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1
+                1.0
               </div>
             
           
@@ -94,7 +94,7 @@
 <li class="toctree-l1"><a class="reference internal" href="setup.html">1. Setup</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">2. Optimizing an Existing WEC Model</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">2.1. Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#define-a-seastate">2.2. Define a seastate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-a-sea-state">2.2. Define a sea state</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#create-file-storage">2.3. Create file storage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#create-an-objective-function">2.4. Create an objective function</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#define-the-inputs">2.4.1. Define the inputs</a></li>
@@ -105,7 +105,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#set-optimization-solver">2.5. Set optimization solver</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-optimiser-and-view-results">2.6. Run optimiser and view results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-optimizer-and-view-results">2.6. Run optimizer and view results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#examine-optimum-design">2.7. Examine optimum design</a></li>
 </ul>
 </li>
@@ -446,7 +446,7 @@ dynamics(<code class="docutils literal notranslate"><span class="pre">Proportion
 The Sea States input block for the RM3 may made up of a single spectrum or
 multiple spectra. Finally, the user will need to determine some objective
 function of interest for the device being studied.</p>
-<p>WecOptTool will use the User inputs to build a set of Data Classes and pass the
+<p>WecOptTool will use the User Inputs to build a set of Data Classes and pass the
 information to the Solvers. The Hydrodynamics Solver currently uses <a class="reference external" href="https://github.com/LHEEA/Nemoh">Nemoh</a> to
 compute the linear wave-body interaction properties using the boundary element
 method (BEM). The Optimal Control Solver will take the Data Classes to return
@@ -457,13 +457,13 @@ inside the Optimization Routine.</p>
 <ol class="arabic simple">
 <li>Select a device design and calculate its hydrodynamic parameters</li>
 <li>Examine the performance of the device design using the chosen control
-options, for a given seastate</li>
+options, for a given sea state</li>
 </ol>
 <p>The remainder of this page will illustrate (using the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a>
-example) how this process is applied to a co-optimisation problem.</p>
+example) how this process is applied to a co-optimization problem.</p>
 </div>
-<div class="section" id="define-a-seastate">
-<span id="seastate"></span><h2>2.2. Define a seastate<a class="headerlink" href="#define-a-seastate" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="define-a-sea-state">
+<span id="seastate"></span><h2>2.2. Define a sea state<a class="headerlink" href="#define-a-sea-state" title="Permalink to this headline">¶</a></h2>
 <p>WecOptTool can simulate single or multiple spectra sea states, where weightings
 can be provided to indicate the relative likelihood of each spectra. The
 following lines from <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> provide means of using the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO</a> MATLAB
@@ -519,7 +519,7 @@ These can be plotted using standard MATLAB commands.</p>
 objects. The <a class="reference internal" href="api.html#+WecOptTool.SeaState" title="+WecOptTool.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a> class allows the user to
 manipulate the given spectra to the requirements of the experiment.
 Automatically, the weighting parameter <code class="docutils literal notranslate"><span class="pre">mu</span></code> will be set to unity when
-multiple sea-states are given with <code class="docutils literal notranslate"><span class="pre">mu</span></code> undefined. In this example,
+multiple sea states are given with <code class="docutils literal notranslate"><span class="pre">mu</span></code> undefined. In this example,
 frequencies that have less than 1% of the maximum spectral density are also
 removed, (using the <code class="docutils literal notranslate"><span class="pre">&quot;trimFrequencies&quot;</span></code> option) to increase the speed of
 computation with minimal loss of accuracy. See the
@@ -544,8 +544,8 @@ The folder is created as follows:</p>
 </div>
 <div class="section" id="create-an-objective-function">
 <h2>2.4. Create an objective function<a class="headerlink" href="#create-an-objective-function" title="Permalink to this headline">¶</a></h2>
-<p>Next, we create the objective function we wish to minimise. Note, functions
-must be defined at the bottom of the script, although we will them above. The
+<p>Next, we create the objective function we wish to minimize. Note, functions
+must be defined at the bottom of the script, although we will use them above. The
 complete code is as follows:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>65
 66
@@ -575,7 +575,9 @@ complete code is as follows:</p>
 90
 91
 92
-93</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Define objective function</span>
+93
+94
+95</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c">%% Define objective function</span>
 <span class="c">% This can take any form that complies with the requirements of the MATLAB</span>
 <span class="c">% optimization functions</span>
 
@@ -604,6 +606,8 @@ complete code is as follows:</p>
 
 <span class="s">function</span> <span class="s">out</span> <span class="p">=</span> <span class="n">weightedPower</span><span class="p">(</span><span class="n">seastate</span><span class="p">,</span> <span class="n">performances</span><span class="p">)</span>
     <span class="n">pow</span> <span class="p">=</span> <span class="n">sum</span><span class="p">([</span><span class="n">performances</span><span class="p">.</span><span class="n">powPerFreq</span><span class="p">]);</span>
+    <span class="n">out</span> <span class="p">=</span> <span class="nb">dot</span><span class="p">(</span><span class="n">pow</span><span class="p">,</span> <span class="p">[</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">])</span> <span class="o">/</span> <span class="n">sum</span><span class="p">([</span><span class="n">seastate</span><span class="p">.</span><span class="n">mu</span><span class="p">]);</span>
+<span class="n">end</span>
 </pre></div>
 </td></tr></table></div>
 <p>The following subsections will describe each stage of setting up the objective
@@ -633,7 +637,7 @@ calculated by the <code class="docutils literal notranslate"><span class="pre">d
 the geometry design variables, <code class="docutils literal notranslate"><span class="pre">r1,</span> <span class="pre">r2,</span> <span class="pre">d1,</span> <span class="pre">d2</span></code>, and a representative set of
 angular frequencies to be calculated by NEMOH. The folder is provided by the
 <code class="docutils literal notranslate"><span class="pre">path</span></code> attribute of the <a class="reference internal" href="api.html#+WecOptTool.AutoFolder" title="+WecOptTool.AutoFolder"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">AutoFolder</span></code></a> object. The
-design variables will be passed by the optimisation routine, while the
+design variables will be passed by the optimization routine, while the
 frequencies can be extracted from the given <a class="reference internal" href="api.html#+WecOptTool.SeaState" title="+WecOptTool.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a>
 object using its <a class="reference internal" href="api.html#+WecOptTool.SeaState.getRegularFrequencies" title="+WecOptTool.SeaState.getRegularFrequencies"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">getRegularFrequencies()</span></code></a>
 method, which provides regularly spaced frequencies covering all spectra in the
@@ -679,11 +683,11 @@ with both constraints and nonlinear dynamics. This approach is based on
 </ul>
 </div></blockquote>
 <p>For the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m"><code class="docutils literal notranslate"><span class="pre">optimization.m</span></code></a> example we choose the Complex Conjugate option. The
-performance of the controlled device design is evaluated for a given sea-state
+performance of the controlled device design is evaluated for a given sea state
 by the <code class="docutils literal notranslate"><span class="pre">simulateDevice</span></code> function, which takes, as input, the output of the
-<code class="docutils literal notranslate"><span class="pre">designDevice</span></code> function, the sea-state to evaluate and the controller
+<code class="docutils literal notranslate"><span class="pre">designDevice</span></code> function, the sea state to evaluate and the controller
 selection (with additional optional parameters, if used). Here, the
-device is evaluated across the 8 different sea-states in the example spectra,
+device is evaluated across the 8 different sea states in the example spectra,
 as follows:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>76
 77
@@ -701,7 +705,7 @@ as follows:</p>
 <h3>2.4.4. Define the objective function value<a class="headerlink" href="#define-the-objective-function-value" title="Permalink to this headline">¶</a></h3>
 <p>The value of the objective function is provided by an axillary function (called
 <code class="docutils literal notranslate"><span class="pre">weightedPower</span></code>) which calculates the maximum absorbed power, weighted across
-all spectra in the given seastate:</p>
+all spectra in the given sea state:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>92
 93
 94
@@ -711,7 +715,7 @@ all spectra in the given seastate:</p>
 <span class="n">end</span>
 </pre></div>
 </td></tr></table></div>
-<p>Then, to make a minimisation problem, the negation of this value returned:</p>
+<p>Then, to make a minimization problem, the negation of this value returned:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>82</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    <span class="n">fval</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">weightedPower</span><span class="p">(</span><span class="n">seastate</span><span class="p">,</span> <span class="n">performances</span><span class="p">);</span>
 </pre></div>
 </td></tr></table></div>
@@ -798,8 +802,8 @@ and then stash it for recovery later:</p>
 </pre></div>
 </td></tr></table></div>
 </div>
-<div class="section" id="run-optimiser-and-view-results">
-<h2>2.6. Run optimiser and view results<a class="headerlink" href="#run-optimiser-and-view-results" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="run-optimizer-and-view-results">
+<h2>2.6. Run optimizer and view results<a class="headerlink" href="#run-optimizer-and-view-results" title="Permalink to this headline">¶</a></h2>
 <p>Before using the objective function, the inputs must be simplified to allow
 fmincon to just pass the design variables. To do this an <a class="reference external" href="https://uk.mathworks.com/help/matlab/matlab_prog/anonymous-functions.html">anonymous function</a>
 is defined, which requires the design variables as input and fixes the value of
@@ -827,7 +831,7 @@ the SeaState and AutoFolder object inputs:</p>
 <div class="section" id="examine-optimum-design">
 <h2>2.7. Examine optimum design<a class="headerlink" href="#examine-optimum-design" title="Permalink to this headline">¶</a></h2>
 <p>To recover the detailed performance of all the device designs tested in the
-optimisation, the <a class="reference internal" href="api.html#+WecOptTool.AutoFolder.recoverVar" title="+WecOptTool.AutoFolder.recoverVar"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">recoverVar()</span></code></a> method of the
+optimization, the <a class="reference internal" href="api.html#+WecOptTool.AutoFolder.recoverVar" title="+WecOptTool.AutoFolder.recoverVar"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">recoverVar()</span></code></a> method of the
 <a class="reference internal" href="api.html#+WecOptTool.AutoFolder" title="+WecOptTool.AutoFolder"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">AutoFolder</span></code></a> class is used:</p>
 <div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>50
 51

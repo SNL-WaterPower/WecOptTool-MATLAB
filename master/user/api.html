@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>4. API &mdash; WecOptTool 0.1.0 documentation</title>
+  <title>4. API &mdash; WecOptTool 1.0.0 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                0.1
+                1.0
               </div>
             
           
@@ -298,7 +298,7 @@ individual bodies will be set to zero, automatically.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>S</strong> (<em>hydroData</em>) – A struct containing the required fields</li>
+<li><strong>hydroData</strong> (<em>struct</em>) – A struct containing the required fields</li>
 <li><strong>options</strong> – name-value pair options. See below.</li>
 </ul>
 </td>
@@ -533,7 +533,7 @@ solver. Defaults to “”.</p>
 <em class="property">class </em><code class="descclassname">WecOptTool.</code><code class="descname">SeaState</code><span class="sig-paren">(</span><em>S</em>, <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data type for storage of sea state information.</p>
 <p>This data type defines a set of parameters that are common to
-description of sea-states and is based upon the formats used by
+description of sea states and is based upon the formats used by
 the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO MATLAB toolbox</a>.</p>
 <p>The following parameters must be provided within the input struct
 (any additional parameters given will also be stored within the
@@ -806,7 +806,7 @@ method</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sea-state struct which conforms to
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sea state struct which conforms to
 <a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></p>
 </td>
 </tr>
@@ -832,7 +832,7 @@ method</li>
 <dl class="method">
 <dt id="+WecOptTool.SeaState.getAllFrequencies">
 <code class="descname">getAllFrequencies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.getAllFrequencies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns all unique frequencies over all sea-states</p>
+<dd><p>Returns all unique frequencies over all sea states</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -903,7 +903,7 @@ in a spectrum after resampling</p>
 <dl class="method">
 <dt id="+WecOptTool.SeaState.getRegularFrequencies">
 <code class="descname">getRegularFrequencies</code><span class="sig-paren">(</span><em>dw</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.getRegularFrequencies" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns regularly spaced frequencies covering all sea-states
+<dd><p>Returns regularly spaced frequencies covering all sea states
 at the given step size</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1042,7 +1042,7 @@ m/s<sup>2</sup>.</dd>
 <dl class="staticmethod">
 <dt id="+WecOptTool.SeaState.resampleByError">
 <em class="property">static </em><code class="descname">resampleByError</code><span class="sig-paren">(</span><em>S</em>, <em>targetError</em>, <em>min_dw</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.resampleByError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resample the given seastate struct based on the error in
+<dd><p>Resample the given sea state struct based on the error in
 spectral density normalized by the maximum per spectrum.
 a maximum error of the maximum spectral density for a spectra
 struct array.</p>
@@ -1060,7 +1060,7 @@ method</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li>S (struct): Sea-state struct which conforms to
+<li>S (struct): Sea state struct which conforms to
 <a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></li>
 <li>dw (array): Frequency spacings per spectrum</li>
 </ul>
@@ -1086,7 +1086,7 @@ maximum</p>
 <dl class="staticmethod">
 <dt id="+WecOptTool.SeaState.resampleByStep">
 <em class="property">static </em><code class="descname">resampleByStep</code><span class="sig-paren">(</span><em>S</em>, <em>dw</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.resampleByStep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resample the given seastate struct using a given frequency
+<dd><p>Resample the given sea state struct using a given frequency
 step</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1101,7 +1101,7 @@ method</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li>S (struct): Sea-state struct which conforms to
+<li>S (struct): Sea state struct which conforms to
 <a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></li>
 <li>errors (array): error in spectral density (normalized
 by the maximum) per spectrum</li>
@@ -1141,7 +1141,7 @@ method</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sea-state struct which conforms to
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sea state struct which conforms to
 <a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></p>
 </td>
 </tr>
@@ -1539,7 +1539,7 @@ symmetric in the xz plane.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>r</strong> (<em>array of float</em>) – radial coordinates</li>
 <li><strong>z</strong> (<em>array of float</em>) – vertical coordinates</li>
-<li><strong>ntheta</strong> (<em>int</em>) – number of points for discretisation in angular
+<li><strong>ntheta</strong> (<em>int</em>) – number of points for discretization in angular
 direction (over pi radians)</li>
 <li><strong>nfobj</strong> (<em>int</em>) – number of nodes within the resulting half body mesh</li>
 <li><strong>zG</strong> (<em>float</em>) – z-coordinate of the bodies centre of gravity</li>
