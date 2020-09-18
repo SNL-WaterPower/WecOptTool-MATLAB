@@ -68,8 +68,8 @@ example) how this process is applied to a co-optimization problem.
 
 .. _seastate:
 
-Define a seastate
-=================
+Define a sea state
+==================
 
 WecOptTool can simulate single or multiple spectra sea states, where weightings 
 can be provided to indicate the relative likelihood of each spectra. The 
@@ -123,7 +123,7 @@ The predefined spectra are returned as :mat:class:`~+WecOptTool.SeaState`
 objects. The :mat:class:`~+WecOptTool.SeaState` class allows the user to 
 manipulate the given spectra to the requirements of the experiment. 
 Automatically, the weighting parameter ``mu`` will be set to unity when 
-multiple sea-states are given with ``mu`` undefined. In this example, 
+multiple sea states are given with ``mu`` undefined. In this example, 
 frequencies that have less than 1% of the maximum spectral density are also 
 removed, (using the ``"trimFrequencies"`` option) to increase the speed of 
 computation with minimal loss of accuracy. See the 
@@ -151,7 +151,7 @@ The folder is created as follows:
 Create an objective function
 ============================
 
-Next, we create the objective function we wish to minimise. Note, functions 
+Next, we create the objective function we wish to minimize. Note, functions 
 must be defined at the bottom of the script, although we will use them above. The 
 complete code is as follows: 
 
@@ -244,11 +244,11 @@ In the RM3 example, three types of controllers are defined:
    |pseudo spectral method|_.
 
 For the |optimization.m|_ example we choose the Complex Conjugate option. The 
-performance of the controlled device design is evaluated for a given sea-state 
+performance of the controlled device design is evaluated for a given sea state 
 by the ``simulateDevice`` function, which takes, as input, the output of the 
-``designDevice`` function, the sea-state to evaluate and the controller 
+``designDevice`` function, the sea state to evaluate and the controller 
 selection (with additional optional parameters, if used). Here, the 
-device is evaluated across the 8 different sea-states in the example spectra, 
+device is evaluated across the 8 different sea states in the example spectra, 
 as follows: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
@@ -262,7 +262,7 @@ Define the objective function value
 
 The value of the objective function is provided by an axillary function (called 
 ``weightedPower``) which calculates the maximum absorbed power, weighted across 
-all spectra in the given seastate: 
+all spectra in the given sea state: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -335,7 +335,7 @@ In order to pass the above options, some dummy values must also be supplied for 
     :linenos:
     :lineno-start: 35
 
-Run optimiser and view results
+Run optimizer and view results
 ==============================
 
 Before using the objective function, the inputs must be simplified to allow 

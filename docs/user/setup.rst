@@ -45,7 +45,7 @@ Download
 
    <details><summary><a>Get the stable version</a></summary></br>
 
-The latest stable version of WecOptTool can be downloaded by clicking `HERE <https://github.com/SNL-WaterPower/WecOptTool/archive/v0.1.0.zip>`__.
+The latest stable version of WecOptTool can be downloaded by clicking `HERE <https://github.com/SNL-WaterPower/WecOptTool/archive/v1.0.0.zip>`__.
 
 Details of this and previous stable releases can be found in the `Releases <https://github.com/SNL-WaterPower/WecOptTool/releases/>`__  section of the GitHub repository.
 

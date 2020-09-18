@@ -2,7 +2,7 @@ classdef SeaState
     % Data type for storage of sea state information.
     %
     % This data type defines a set of parameters that are common to 
-    % description of sea-states and is based upon the formats used by
+    % description of sea states and is based upon the formats used by
     % the `WAFO MATLAB toolbox <http://www.maths.lth.se/matstat/wafo/>`_.
     %
     % The following parameters must be provided within the input struct 
@@ -90,9 +90,9 @@ classdef SeaState
     %     mu - spectrum weighting, for arrays only (defaults to 1)
     %
     %  SeaState Methods:
-    %    getAllFrequencies - return unique frequencies over all sea-states
+    %    getAllFrequencies - return unique frequencies over all sea states
     %    getRegularFrequencies - return regularly spaced frequencies
-    %                            covering all sea-states
+    %                            covering all sea states
     %    getAmplitudeSpectrum - return wave amplitude per angular frequency
     %    plot - plot spectra with comparison to base spectra, if different
     %    validateArray - object array validation
@@ -236,7 +236,7 @@ classdef SeaState
         end
         
         function allFreqs = getAllFrequencies(obj)
-            % Returns all unique frequencies over all sea-states
+            % Returns all unique frequencies over all sea states
             %
             % Returns:
             %     array: sorted unique angular frequencies [rad / s]
@@ -252,7 +252,7 @@ classdef SeaState
         end
         
         function freqs = getRegularFrequencies(obj, dw)
-            % Returns regularly spaced frequencies covering all sea-states
+            % Returns regularly spaced frequencies covering all sea states
             % at the given step size
             %
             % Arguments:
@@ -710,7 +710,7 @@ classdef SeaState
             %         Percentage of maximum spectral density
             %
             % Returns:
-            %     struct: Sea-state struct which conforms to 
+            %     struct: Sea state struct which conforms to 
             %     :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %
             % Example:
@@ -753,7 +753,7 @@ classdef SeaState
             %         Number of repetitions of max frequency
             %
             % Returns:
-            %     struct: Sea-state struct which conforms to 
+            %     struct: Sea state struct which conforms to 
             %     :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %
             % Example:
@@ -791,7 +791,7 @@ classdef SeaState
         function [S, dw] = resampleByError(S,           ...
                                            targetError, ...
                                            min_dw)
-            % Resample the given seastate struct based on the error in
+            % Resample the given sea state struct based on the error in
             % spectral density normalized by the maximum per spectrum.
             % a maximum error of the maximum spectral density for a spectra
             % struct array.
@@ -808,7 +808,7 @@ classdef SeaState
             %
             % Returns:
             %      :
-            %     - S (struct): Sea-state struct which conforms to 
+            %     - S (struct): Sea state struct which conforms to 
             %       :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %     - dw (array): Frequency spacings per spectrum
             %
@@ -859,7 +859,7 @@ classdef SeaState
         end
         
         function [S, errors] = resampleByStep(S, dw)
-            % Resample the given seastate struct using a given frequency 
+            % Resample the given sea state struct using a given frequency 
             % step
             %
             % Arguments:
@@ -872,7 +872,7 @@ classdef SeaState
             %
             % Returns:
             %      :
-            %     - S (struct): Sea-state struct which conforms to 
+            %     - S (struct): Sea state struct which conforms to 
             %       :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %     - errors (array): error in spectral density (normalized 
             %       by the maximum) per spectrum
