@@ -72,7 +72,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             %   r (array of float): radial coordinates
             %   z (array of float): vertical coordinates
             %   ntheta (int):
-            %       number of points for discretisation in angular 
+            %       number of points for discretization in angular 
             %       direction (over pi radians)
             %   nfobj (int):
             %       number of nodes within the resulting half body mesh
