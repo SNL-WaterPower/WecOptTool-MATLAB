@@ -18,9 +18,6 @@ classdef SeaState
     %
     %     * mu
     %
-    % Once created, the parameters in the object are read only, but the
-    % object can be converted to a struct, and then modified.
-    %
     % Arguments:
     %    S (struct):
     %        A struct containing the required fields, validated by the
@@ -96,7 +93,6 @@ classdef SeaState
     %    getAmplitudeSpectrum - return wave amplitude per angular frequency
     %    plot - plot spectra with comparison to base spectra, if different
     %    validateArray - object array validation
-    %    struct - convert to struct
     %    checkSpectrum - validate a struct array representing spectra
     %    getSpecificEnergy - calculate the specific energy of spectra
     %                        struct array

@@ -1,5 +1,5 @@
 classdef AutoFolder < WecOptTool.base.TempFolder
-    % Class that creates a unique temporary folders, which are deleted 
+    % Class that creates unique temporary folders, which are deleted 
     % upon object destruction.
     %
     % Attributes:
