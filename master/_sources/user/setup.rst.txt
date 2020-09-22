@@ -43,7 +43,7 @@ Download
 
 .. raw:: html
 
-   <details><summary><a>Get the stable version</a></summary></br>
+   <details><summary><clickme>Get the stable version</clickme></summary></br>
 
 The latest stable version of WecOptTool can be downloaded by clicking `HERE <https://github.com/SNL-WaterPower/WecOptTool/archive/v1.0.0.zip>`__.
 
@@ -55,7 +55,7 @@ Details of this and previous stable releases can be found in the `Releases <http
 
 .. raw:: html
 
-   <details><summary><a>Get the development version</a></summary></br>
+   <details><summary><clickme>Get the development version</clickme></summary></br>
 
 To get the latest development version of WecOptTool, clone or download the WecOptTool GitHub repository using the '`Clone or download <https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository>`__' button.
 
@@ -90,7 +90,7 @@ Install
 
    .. raw:: html
 
-       <details><summary><a>Windows</a></summary></br>
+       <details><summary><clickme>Windows</clickme></summary></br>
 
    Executables are provided in the ‘Release’ directory of the NEMOH source code.
    These are installed into WecOptTool using the ``installNemoh.m`` MATLAB script, run from the WecOptTool root directory, using the MATLAB command prompt as follows:
@@ -106,7 +106,7 @@ Install
 
    .. raw:: html
 
-       <details><summary><a>Linux</a></summary></br>
+       <details><summary><clickme>Linux</clickme></summary></br>
 
    To set up NEMOH for Linux, first, use a command window to compile the executables (you will need gfortran or the Intel FORTRAN compiler):
 

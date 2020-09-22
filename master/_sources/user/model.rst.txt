@@ -32,7 +32,7 @@ Designing the device
 
 .. raw:: html
 
-   <details><summary><a>See the entire file</a></summary></br>
+   <details><summary><clickme>See the entire file</clickme></summary></br>
 
 .. literalinclude:: /../examples/WaveBot/designDevice.m
     :language: matlab
@@ -56,7 +56,7 @@ Simulating device response
 
 .. raw:: html
 
-   <details><summary><a>See the entire file</a></summary></br>
+   <details><summary><clickme>See the entire file</clickme></summary></br>
 
 .. literalinclude:: /../examples/WaveBot/simulateDevice.m
     :language: matlab
@@ -89,7 +89,7 @@ Reporting results
 
 .. raw:: html
 
-   <details><summary><a>See the entire file</a></summary></br>
+   <details><summary><clickme>See the entire file</clickme></summary></br>
 
 .. literalinclude:: /../examples/WaveBot/Performance.m
     :language: matlab
