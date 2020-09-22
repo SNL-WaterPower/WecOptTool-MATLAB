@@ -13,7 +13,7 @@ example considers the DOE Reference Model 3 (RM3_) device.
 
 .. raw:: html
 
-   <details><summary><a>See the entire example file</a></summary></br>
+   <details><summary><clickme>See the entire example file</clickme></summary></br>
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
