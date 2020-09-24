@@ -11,6 +11,7 @@
    user/references
 
 .. toctree::
+   :hidden:
    :caption: External
 
    GitHub Repository <https://github.com/SNL-WaterPower/WecOptTool>
