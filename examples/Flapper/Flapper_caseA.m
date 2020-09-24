@@ -1,8 +1,10 @@
 
+%% Test
 
-clc
-clear
-close all
+f(1, "bob", 5, "barry", 6)
+
+
+%%
 
 % my_widths = linspace(1,10,10);
 my_widths = 5;
@@ -27,6 +29,27 @@ function [pow,wkdir] = evalFun(width)
     pow = NaN;
 end
 
+%%
+
 % gmesh command line call to set all arguments and generate matlab format
 % output:
 % gmsh flapper_base2.geo -setnumber lc 0.2 -setnumber width 5 -setnumber thick 1 -setnumber height 6 -0 -o test.m
+
+% This is the structure of the matlab function for making the mesh
+function f(input, names, values)
+    arguments
+        input
+    end
+    arguments (Repeating)
+        names
+        values
+    end
+    
+    input
+    
+    for i = 1:length(names)
+        names{i}
+        values{i}
+    end
+    
+end
