@@ -6,17 +6,17 @@ Mesh.Algorithm = 9;
 // width = 5;
 // thick = 1;
 // height = 6;
-// depth = 10;
+depth = 10;
 
-Point(1) = {0, 0, 0, lc};
-Point(2) = {width, 0, 0, lc};
-Point(3) = {width, thick, 0, lc};
-Point(4) = {0, thick, 0, lc};
+Point(1) = {0, 0, -depth, lc};
+Point(2) = {width, 0, -depth, lc};
+Point(3) = {width, thick, -depth, lc};
+Point(4) = {0, thick, -depth, lc};
 
-Point(5) = {0, 0, height, lc};
-Point(6) = {width, 0, height, lc};
-Point(7) = {width, thick, height, lc};
-Point(8) = {0, thick, height, lc};
+Point(5) = {0, 0, height - depth, lc};
+Point(6) = {width, 0, height - depth, lc};
+Point(7) = {width, thick, height - depth, lc};
+Point(8) = {0, thick, height - depth, lc};
 
 Line(1) = {1, 2};
 Line(2) = {2, 3};
@@ -47,6 +47,7 @@ Surface(6) = {6};
 
 Surface Loop(1) = {1, 2, 3, 4, 5, 6};
 Volume(1) = {1};
+Translate {-width / 2, -thick / 2, 0} { Volume{1}; }
 
 Physical Surface("my_surface") = {1};
 Physical Volume("my_volume") = {1};
