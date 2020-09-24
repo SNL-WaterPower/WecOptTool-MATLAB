@@ -27,4 +27,6 @@ function [pow,wkdir] = evalFun(width)
     pow = NaN;
 end
 
-
+% gmesh command line call to set all arguments and generate matlab format
+% output:
+% gmsh flapper_base2.geo -setnumber lc 0.2 -setnumber width 5 -setnumber thick 1 -setnumber height 6 -0 -o test.m
