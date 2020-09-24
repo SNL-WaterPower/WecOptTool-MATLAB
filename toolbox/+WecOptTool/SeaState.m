@@ -2,7 +2,7 @@ classdef SeaState
     % Data type for storage of sea state information.
     %
     % This data type defines a set of parameters that are common to 
-    % description of sea-states and is based upon the formats used by
+    % description of sea states and is based upon the formats used by
     % the `WAFO MATLAB toolbox <http://www.maths.lth.se/matstat/wafo/>`_.
     %
     % The following parameters must be provided within the input struct 
@@ -18,13 +18,10 @@ classdef SeaState
     %
     %     * mu
     %
-    % Once created, the parameters in the object are read only, but the
-    % object can be converted to a struct, and then modified.
-    %
     % Arguments:
     %    S (struct):
     %        A struct containing the required fields, validated by the
-    %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` method.
+    %        :mat:meth:`+WecOptTool.SeaState.checkSpectrum` method.
     %    options: name-value pair options. See below.
     %
     % The following options are supported:
@@ -55,15 +52,10 @@ classdef SeaState
     %      #. extended so that the maximum frequency is 4 times the 
     %         trimmed maximum
     %
-    %    >>> S = WecOptTool.tests.data.example8Spectra();
-    %    >>> SS = WecOptTool.types("SeaState", S,           ...
-    %    ...                       "resampleByError", 0.05, ...
-    %    ...                       "trimFrequencies", 0.01, ...
-    %    ...                       "extendFrequencies", 4);
+    %    >>> S = WecOptTool.SeaState.example8Spectra("resampleByError", 0.05, ...
+    %    ...                                         "trimFrequencies", 0.01, ...
+    %    ...                                         "extendFrequencies", 4);
     %
-    % Note:
-    %    To create an array of SeaState objects use the
-    %    :mat:func:`+WecOptTool.types` function.
     %
     % Attributes:
     %     S (array of float): spectral density [m\ :sup:`2` s/rad]
@@ -80,8 +72,6 @@ classdef SeaState
     %         the specific energy of the spectra [J / m\ :sup:`2`]
     %     mu (float): spectrum weighting, for arrays only  (defaults to 1)
     %
-    % Methods:
-    %    struct(): convert to struct
     %
     % --
     %
@@ -97,12 +87,12 @@ classdef SeaState
     %     mu - spectrum weighting, for arrays only (defaults to 1)
     %
     %  SeaState Methods:
-    %    getAllFrequencies - return unique frequencies over all sea-states
+    %    getAllFrequencies - return unique frequencies over all sea states
     %    getRegularFrequencies - return regularly spaced frequencies
-    %                            covering all sea-states
+    %                            covering all sea states
+    %    getAmplitudeSpectrum - return wave amplitude per angular frequency
     %    plot - plot spectra with comparison to base spectra, if different
     %    validateArray - object array validation
-    %    struct - convert to struct
     %    checkSpectrum - validate a struct array representing spectra
     %    getSpecificEnergy - calculate the specific energy of spectra
     %                        struct array
@@ -120,8 +110,6 @@ classdef SeaState
     %                      maximum per spectrum.
     %    resampleByStep - Resample the given seastate struct using a given 
     %                     frequency step
-    %
-    % See also WecOptTool.types
     %
     % --
     
@@ -189,11 +177,9 @@ classdef SeaState
                         
             for i = 1:length(S)
                 
-                obj(i).w = S(i).w;
-                obj(i).S = S(i).S;
-                obj(i).basew = obj(i).w;
-                obj(i).baseS = obj(i).S;
-                obj(i).dw = obj(i).w(2) - obj(i).w(1);
+                obj(i).basew = S(i).w;
+                obj(i).baseS = S(i).S;
+                obj(i).dw = S(i).w(2) - S(i).w(1);
                 obj(i).trimLoss = 0;
                 obj(i).sampleError = 0;
 
@@ -209,12 +195,12 @@ classdef SeaState
                    error("WecOptTool:SeaState:BadOptions", msg)
 
                 end
-
+                
                 if isfield(options, "trimFrequencies")
                     S = obj.trimFrequencies(S, options.trimFrequencies);
                     obj(i).trimLoss = options.trimFrequencies;
                 end
-
+                
                 if isfield(options, "resampleByError")
                     [S, obj(i).dw] = obj.resampleByError(S,    ...
                                                   options.resampleByError);
@@ -246,7 +232,7 @@ classdef SeaState
         end
         
         function allFreqs = getAllFrequencies(obj)
-            % Returns all unique frequencies over all sea-states
+            % Returns all unique frequencies over all sea states
             %
             % Returns:
             %     array: sorted unique angular frequencies [rad / s]
@@ -262,7 +248,7 @@ classdef SeaState
         end
         
         function freqs = getRegularFrequencies(obj, dw)
-            % Returns regularly spaced frequencies covering all sea-states
+            % Returns regularly spaced frequencies covering all sea states
             % at the given step size
             %
             % Arguments:
@@ -291,29 +277,14 @@ classdef SeaState
             
         end
         
-        function Aw = getAmpSpectrum(obj, w, interpMethod)
-            % getAmpSpectrum    Returns wave amplitude spectrum
+        function Aw = getAmplitudeSpectrum(obj)
+            % Get wave amplitude per angular frequency
             %
-            % If optional argument w is provided, the amplitude spectrum
-            % will be interpolated onto the new frequency vector.
-            %
-            % Arguments:
-            %   w               (optional) new frequency vector on which to
-            %                   interpolate results
-            %   interpMethod    (optional) interpolation method 
-            %                   (default: 'linear')
-            %
-            % See also interp1
-
-            Aw_tmp = sqrt(2 * obj.dw * obj.S(:));
-            if nargin > 1
-                if nargin < 3
-                    interpMethod = 'linear';
-                end
-                Aw = interp1(obj.w, Aw_tmp, w, interpMethod, 0);
-            else
-                Aw = Aw_tmp;
-            end
+            % Returns:
+            %     array: wave amplitudes [m]
+            
+            Aw = sqrt(2 * obj.dw * obj.S(:));
+            
         end
         
         function plot(obj)
@@ -356,8 +327,6 @@ classdef SeaState
                         titleChar = [titleChar '; '];
                     end
                     
-                    xline(min(wMod), '--',  ...
-                          'DisplayName', 'Modified Lower Bound')
                     xline(max(wMod), '-.',  ...
                           'DisplayName', 'Modified Upper Bound')
                                         
@@ -383,14 +352,6 @@ classdef SeaState
     end
     
     methods (Static, Access=private)
-       
-        function obj = initSeaState(obj, index, S, options)
-            
-            import WecOptTool.SeaState
-            
-            
-            
-        end
         
         function obj = makeMu(obj)
                         
@@ -591,7 +552,7 @@ classdef SeaState
             % Arguments:
             %    S (struct):
             %        struct array that satisfies the
-            %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
+            %        :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %        method
             %    options: name-value pair options. See below.
             %
@@ -608,7 +569,7 @@ classdef SeaState
             %
             % Example:
             %
-            %     >>> import WecOptTool.types.SeaState
+            %     >>> import WecOptTool.SeaState
             %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> e = SeaState.getSpecificEnergy(S);
             %     >>> disp(e)
@@ -625,8 +586,9 @@ classdef SeaState
             energies = zeros(1, N);
             
             for i = 1:N
-                energies(i) = options.g * options.rho *     ...
-                                                trapz(S(i).w, S(i).S);
+                dw = uniquetol(diff(S(i).w), eps('single'));
+                assert(length(dw) == 1)
+                energies(i) = options.g * options.rho * dw * sum(S(i).S);
             end
             
         end
@@ -638,11 +600,11 @@ classdef SeaState
             % Arguments:
             %    trueS (struct):
             %        struct array representing the true value and satisfies
-            %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
+            %        :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %    approxS (struct):
             %        struct array representing the approximate value and 
             %        satisfies 
-            %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %        :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %
             % Returns:
             %     array: absolute error per spectrum [m\ :sup:`2` s/rad]
@@ -651,7 +613,7 @@ classdef SeaState
             %     Find the maximum absolute error in spectral density
             %     in a spectrum after resampling
             %
-            %     >>> import WecOptTool.types.SeaState
+            %     >>> import WecOptTool.SeaState
             %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> newS = SeaState.resampleByStep(S, 0.2);
             %     >>> error = SeaState.getMaxAbsoluteDensityError(S, newS);
@@ -693,11 +655,11 @@ classdef SeaState
             % Arguments:
             %    trueS (struct):
             %        struct array representing the true value and satisfies
-            %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
+            %        :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %    approxS (struct):
             %        struct array representing the approximate value and 
             %        satisfies 
-            %        :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %        :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %
             % Returns:
             %     array: relative error per spectrum
@@ -706,7 +668,7 @@ classdef SeaState
             %     Find the relative error in specific energy of a spectrum 
             %     after resampling
             %
-            %     >>> import WecOptTool.types.SeaState
+            %     >>> import WecOptTool.SeaState
             %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> newS = SeaState.resampleByStep(S, 0.2);
             %     >>> error = SeaState.getRelativeEnergyError(S, newS);
@@ -732,25 +694,26 @@ classdef SeaState
 
         function S = trimFrequencies(S, densityTolerence)
             % Removes frequencies below a threshold of the maximum spectral 
-            % density, per spectra, of a spectra struct array.
+            % density from the tails, per spectra, of a spectra struct 
+            % array.
             %
             % Arguments:
             %     S (struct):
             %         struct array that satisfies the
-            %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
+            %         :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %         method
             %     densityTolerence (float):
             %         Percentage of maximum spectral density
             %
             % Returns:
-            %     struct: Sea-state struct which conforms to 
-            %     :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %     struct: Sea state struct which conforms to 
+            %     :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %
             % Example:
             %     Remove frequencies containing less than 1% of the maximum
             %     spectral density
             %
-            %     >>> import WecOptTool.types.SeaState
+            %     >>> import WecOptTool.SeaState
             %     >>> S = WecOptTool.tests.data.example8Spectra();
             %     >>> newS = SeaState.trimFrequencies(S, 0.01);
             %     
@@ -764,11 +727,11 @@ classdef SeaState
             end
             
             for k = 1:length(S)
-                i = find(S(k).S > max(S(k).S) * densityTolerence);
-                iStart = min(i);
-                iEnd = max(i);
-                S(k).w = S(k).w(iStart:iEnd);
-                S(k).S = S(k).S(iStart:iEnd);
+                iEnd = find(S(k).S > max(S(k).S) * densityTolerence,    ...
+                            1,                                          ...
+                            'last');
+                S(k).w = S(k).w(1:iEnd);
+                S(k).S = S(k).S(1:iEnd);
             end
             
         end
@@ -780,19 +743,19 @@ classdef SeaState
             % Arguments:
             %     S (struct):
             %         struct array that satisfies the
-            %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
+            %         :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %         method
             %     nRepeats (int):
             %         Number of repetitions of max frequency
             %
             % Returns:
-            %     struct: Sea-state struct which conforms to 
-            %     :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %     struct: Sea state struct which conforms to 
+            %     :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %
             % Example:
             %     Double the frequency range of the given spectrum
             %
-            %     >>> import WecOptTool.types.SeaState
+            %     >>> import WecOptTool.SeaState
             %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> disp(max(S.w))
             %         3.2000
@@ -824,7 +787,7 @@ classdef SeaState
         function [S, dw] = resampleByError(S,           ...
                                            targetError, ...
                                            min_dw)
-            % Resample the given seastate struct based on the error in
+            % Resample the given sea state struct based on the error in
             % spectral density normalized by the maximum per spectrum.
             % a maximum error of the maximum spectral density for a spectra
             % struct array.
@@ -832,7 +795,7 @@ classdef SeaState
             % Arguments:
             %     S (struct):
             %         struct array that satisfies the
-            %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
+            %         :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %         method
             %     targetError (float):
             %         Target maximum error in normalized spectral density 
@@ -841,8 +804,8 @@ classdef SeaState
             %
             % Returns:
             %      :
-            %     - S (struct): Sea-state struct which conforms to 
-            %       :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %     - S (struct): Sea state struct which conforms to 
+            %       :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %     - dw (array): Frequency spacings per spectrum
             %
             % Example:
@@ -850,7 +813,7 @@ classdef SeaState
             %     spectral density is less that 5% of it's original
             %     maximum
             %
-            %     >>> import WecOptTool.types.SeaState
+            %     >>> import WecOptTool.SeaState
             %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> newS = SeaState.resampleByError(S, 0.05);
             %     >>> error = SeaState.getMaxAbsoluteDensityError(S, newS);
@@ -871,44 +834,49 @@ classdef SeaState
             end
             
             import WecOptTool.SeaState
-            oldS = [S.S];
             
             function residual = ObjFun(dw) 
                 [~, errors] = SeaState.resampleByStep(S, dw);
                 residual = max(errors) - targetError;
             end
             
-            assert(isequaln(oldS,[S.S]))
+            maxw = 0;
             
-            w = [S.w];
-            dw = WecOptTool.math.bisection(@ObjFun, min_dw, max(w(:)));
+            for i = 1:length(S)
+                testmax = max(S(i).w);
+                if testmax > maxw
+                    maxw = testmax;
+                end
+            end
+            
+            dw = WecOptTool.math.bisection(@ObjFun, min_dw, maxw);
             [S, errors] = SeaState.resampleByStep(S, dw);
             
         end
         
         function [S, errors] = resampleByStep(S, dw)
-            % Resample the given seastate struct using a given frequency 
+            % Resample the given sea state struct using a given frequency 
             % step
             %
             % Arguments:
             %     S (struct):
             %         struct array that satisfies the
-            %         :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum` 
+            %         :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %         method
             %     dw (float):
             %         Angular frequency step size
             %
             % Returns:
             %      :
-            %     - S (struct): Sea-state struct which conforms to 
-            %       :mat:meth:`+WecOptTool.+types.SeaState.checkSpectrum`
+            %     - S (struct): Sea state struct which conforms to 
+            %       :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %     - errors (array): error in spectral density (normalized 
             %       by the maximum) per spectrum
             %
             % Example:
             %     Resample using a fixed angular frequency step of 0.2
             %
-            %     >>> import WecOptTool.types.SeaState
+            %     >>> import WecOptTool.SeaState
             %     >>> S = WecOptTool.tests.data.exampleSpectrum();
             %     >>> newS = SeaState.resampleByStep(S, 0.2);
             %     >>> dw = uniquetol(diff(newS.w), eps('single'));
@@ -928,7 +896,8 @@ classdef SeaState
             
             N = length(S);
             baseS = S;
-            
+            maxS = 0;
+
             for i = 1:N
                 
                 wMin = min(S(i).w);
@@ -949,16 +918,21 @@ classdef SeaState
                 S(i).w = wResampled;
                 S(i).S = SResampled;
                 
+                testmax = max(baseS(i).S);
+                
+                if testmax > maxS
+                    maxS = testmax;
+                end
+                
             end
             
             abserrors = SeaState.getMaxAbsoluteDensityError(baseS, S);
-            errors = abserrors ./ max([baseS.S]);
+            errors = abserrors ./ maxS;
             
         end
         
         function SS = exampleSpectrum(varargin)
-            %EXAMPLESPECTRUM Example Bretschneider spectrum with Hm0=8 and 
-            % Tp=10
+            % Example Bretschneider spectrum with Hm0=8 and Tp=10
             p = mfilename('fullpath');
             [filepath, ~, ~] = fileparts(p);
             dataPath = fullfile(filepath, 'data', 'spectrum.mat');
@@ -967,8 +941,8 @@ classdef SeaState
         end
         
         function SS = example8Spectra(varargin)
-            %EXAMPLE8SPECTRA Example Bretschneider spectrum with varying , 
-            % HHm0s, Tps, Nbins, and range
+            % Example Bretschneider spectrum with varying HHm0s, Tps, 
+            % Nbins, and range
             p = mfilename('fullpath');
             [filepath, ~, ~] = fileparts(p);
             dataPath = fullfile(filepath, 'data', '8spectra.mat');
@@ -995,7 +969,7 @@ classdef SeaState
 
             assert(issorted(w));
             dws = diff(w);
-            assert(all(dws - dws(1) < eps*1e3)); % TODO - not sure why == won't work
+            assert(all(abs(dws - dws(1)) < eps*1e3));
             assert(iscolumn(w));
 
             S.w = w;
@@ -1025,5 +999,3 @@ classdef SeaState
     end
 
 end
-
-

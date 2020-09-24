@@ -12,6 +12,16 @@
    }
 }
 
-.section {
-	text-align:justify;
+li {
+    text-align:left;
+}
+
+body {
+    text-align:justify;
+}
+
+clickme {
+    color: #2980b9;
+    text-decoration: none;
+    cursor: pointer;
 }

@@ -4,7 +4,7 @@ jobs:
   include:
     - stage: pages
       install:
-        - pip install click colorama colorclass future "sphinx==1.8.5" sphinx_rtd_theme
+        - pip install click colorama colorclass future "sphinx==1.8.5" sphinxcontrib-bibtex sphinx_rtd_theme
         - pip install https://github.com/H0R5E/sphinxcontrib-versioning/archive/v1.8.5_support.zip
         - pip install git+https://github.com/H0R5E/matlabdomain.git/@function_arguments#egg=matlabdomain
       script:
@@ -15,4 +15,4 @@ jobs:
         - git config --global user.name "Travis CI"
         - git remote set-url --push origin "git@github.com:$TRAVIS_REPO_SLUG"
         - sphinx-versioning push -abt -e .nojekyll -e README.md docs gh-pages .
-      if: branch = master AND type = push
+      if: branch = master AND (type = push OR tag IS present)

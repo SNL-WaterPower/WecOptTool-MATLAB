@@ -1,23 +1,14 @@
-function mesh = mesh(meshName, folder, varargin)
-    % Make a mesh using shortcuts to the ``makeMesh`` method of the 
-    % defined Mesher concrete classes in the :mat:mod:`+WecOptTool.+mesh` 
-    % package.
+function plotMesh(meshses, newFig)
+    % Plot the given meshes on a single 3D axis.
     %
     % Arguments:
-    %     meshName (string):
-    %         Meshing routine to use. Current options are:
-    %              
-    %              * AxiMesh (:mat:class:`+WecOptTool.+mesh.AxiMesh`)
+    %     meshses (struct):
+    %         Struct array containing mesh description with fields as 
+    %         described below
+    %     newFig (bool):
+    %         If true a new figure is created
     %
-    %     folder (string):
-    %         Path to the folder to store output files
-    %     varargin:
-    %         Arguments to pass to the meshing routine. See the
-    %         ``makeMesh`` method of the chosen mesher class for details.
-    %
-    % Returns:
-    %    struct:
-    %        A mesh description with fields as described below
+    % The meshes struct must contain the following fields:
     %
     % ============  ================  ======================================
     % **Variable**  **Format**        **Description**
@@ -29,11 +20,6 @@ function mesh = mesh(meshName, folder, varargin)
     % zG            float             z-coordinate of the bodies centre of gravity
     % ============  ================  ======================================
     %
-    % --
-    %
-    % See also WecOptTool.mesh.AxiMesh
-    %
-    % --
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
     % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
@@ -53,11 +39,64 @@ function mesh = mesh(meshName, folder, varargin)
     % 
     %     You should have received a copy of the GNU General Public 
     %     License along with WecOptTool.  If not, see 
-    %     <https://www.gnu.org/licenses/>. 
+    %     <https://www.gnu.org/licenses/>.
     
-    fullQName = "WecOptTool.mesh." + meshName;
-    meshHandle = str2func(fullQName);
-    mesher = meshHandle(folder);
-    mesh = mesher.makeMesh(varargin{:});
+    arguments
+        meshses
+        newFig = true
+    end
+    
+    if isempty(meshses)
+        return
+    end
 
+    if newFig
+        figure
+        ax1 = axes;
+        view(ax1, 3)
+    end
+    
+    hold on
+    
+    for mesh = meshses
+        plotSingleMesh(ax1, mesh);
+    end
+    
+    xlabel("x")
+    ylabel("y")
+    zlabel("z")
+    
+    axis image
+    
+    hold off
+    
 end
+
+function plotSingleMesh(ax, mesh)
+
+    n = size(mesh.panels, 1);
+    
+    X = zeros(4, n);
+    Y = zeros(4, n);
+    Z = zeros(4, n);
+    
+    for i = 1:n
+        X(:, i) = mesh.nodes(mesh.panels(i, :), :).x;
+        Y(:, i) = mesh.nodes(mesh.panels(i, :), :).y;
+        Z(:, i) = mesh.nodes(mesh.panels(i, :), :).z;
+    end
+    
+    fill3(ax, X, Y, Z, 'r')
+    
+    if ~mesh.xzSymmetric
+        return
+    end
+    
+    for i = 1:n
+        Y(:, i) = -mesh.nodes(mesh.panels(i, :), :).y;
+    end
+    
+    fill3(ax, X, Y, Z, 'r')
+    
+end
+

@@ -2,7 +2,7 @@
 Setup
 *****
 
-Requirements
+Dependencies
 ============
 
 The following table displays the required and optional dependencies for
@@ -11,26 +11,30 @@ WecOptTool.
 .. table::
     :widths: 35, 55, 10
 
-    +----------------------+------------------------------------------------------------+-----------+
-    | Dependency           | Website                                                    | Required? |
-    +======================+============================================================+===========+
-    | MATLAB               | https://www.mathworks.com/products/matlab.html             | yes\*     |
-    +----------------------+------------------------------------------------------------+-----------+
-    | MATLAB Optimization  | https://www.mathworks.com/products/optimization.html       | yes       |
-    | Toolbox              |                                                            |           |
-    +----------------------+------------------------------------------------------------+-----------+
-    | NEMOH                | https://github.com/LHEEA/Nemoh                             | yes       |
-    +----------------------+------------------------------------------------------------+-----------+
-    | WAFO [#f1]_          | https://github.com/wafo-project/wafo                       | no        |
-    +----------------------+------------------------------------------------------------+-----------+
-    | MATLAB Parallel      | https://www.mathworks.com/products/parallel-computing.html | no        |
-    | Computing            |                                                            |           |
-    | Toolbox [#f2]_       |                                                            |           |
-    +----------------------+------------------------------------------------------------+-----------+
+    +----------------------+-------------------------------------------------------------+--------------+
+    | Dependency           | Website                                                     | Required?\*  |
+    +======================+=============================================================+==============+
+    | MATLAB               | https://www.mathworks.com/products/matlab.html              | yes [#f1]_   |
+    +----------------------+-------------------------------------------------------------+--------------+
+    | MATLAB Optimization  | https://www.mathworks.com/products/optimization.html        | yes          |
+    | Toolbox              |                                                             |              |
+    +----------------------+-------------------------------------------------------------+--------------+
+    | NEMOH                | https://github.com/LHEEA/Nemoh                              | yes          |
+    +----------------------+-------------------------------------------------------------+--------------+
+    | WAFO                 | https://github.com/wafo-project/wafo                        | optional     |
+    +----------------------+-------------------------------------------------------------+--------------+
+    | MATLAB Parallel      | https://www.mathworks.com/products/parallel-computing.html  | optional     |
+    | Computing Toolbox    |                                                             |              |
+    +----------------------+-------------------------------------------------------------+--------------+
+    | MATLAB Global        | https://www.mathworks.com/products/global-optimization.html | optional     |
+    | Optimization Toolbox |                                                             |              |
+    +----------------------+-------------------------------------------------------------+--------------+
 
-\* The latest WecOptTool release, version 0.1.0, was tested on **MATLAB 2020a**, whilst the oldest compatible version known is **MATLAB 2018a**.
-Please help the development team by reporting compatibility with other versions `HERE <https://github.com/SNL-WaterPower/WecOptTool/issues/91>`__.
-The development version will support the latest available version of MATLAB, but no guarantees are given regarding legacy MATLAB support. 
+\* The values in the Required column have the following meanings:
+    * **yes** indicates dependencies that must be installed to use the
+      WecOptTool toolbox
+    * **optional** indicates dependencies that are used on a case by case basis, 
+      in the examples
 
 .. _user-setup-download:
 
@@ -39,9 +43,9 @@ Download
 
 .. raw:: html
 
-   <details><summary><a>Get the stable version</a></summary></br>
+   <details><summary><clickme>Get the stable version</clickme></summary></br>
 
-The latest stable version of WecOptTool can be downloaded by clicking `HERE <https://github.com/SNL-WaterPower/WecOptTool/archive/v0.1.0.zip>`__.
+The latest stable version of WecOptTool can be downloaded by clicking `HERE <https://github.com/SNL-WaterPower/WecOptTool/archive/v1.0.0.zip>`__.
 
 Details of this and previous stable releases can be found in the `Releases <https://github.com/SNL-WaterPower/WecOptTool/releases/>`__  section of the GitHub repository.
 
@@ -51,7 +55,7 @@ Details of this and previous stable releases can be found in the `Releases <http
 
 .. raw:: html
 
-   <details><summary><a>Get the development version</a></summary></br>
+   <details><summary><clickme>Get the development version</clickme></summary></br>
 
 To get the latest development version of WecOptTool, clone or download the WecOptTool GitHub repository using the '`Clone or download <https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository>`__' button.
 
@@ -86,10 +90,10 @@ Install
 
    .. raw:: html
 
-       <details><summary><a>Windows</a></summary></br>
+       <details><summary><clickme>Windows</clickme></summary></br>
 
    Executables are provided in the ‘Release’ directory of the NEMOH source code.
-   These are installed into WecOptTool using the ``installNemoh.m`` MATLAB script, run from the WecOptTool root directory, as follows:
+   These are installed into WecOptTool using the ``installNemoh.m`` MATLAB script, run from the WecOptTool root directory, using the MATLAB command prompt as follows:
 
    .. code:: matlab
 
@@ -102,16 +106,16 @@ Install
 
    .. raw:: html
 
-       <details><summary><a>Linux</a></summary></br>
+       <details><summary><clickme>Linux</clickme></summary></br>
 
-   To set up NEMOH for Linux, first, compile the executables (you will need gfortran or the Intel FORTRAN compiler):
+   To set up NEMOH for Linux, first, use a command window to compile the executables (you will need gfortran or the Intel FORTRAN compiler):
 
    ::
 
       $ cd /path/to/NEMOH
       $ make
 
-   Executables will be created a new directory called ‘bin’, which must then be installed into WecOptTool using the ``installNemoh.m`` MATLAB script, run from the WecOptTool root directory:
+   Executables will be created a new directory called ‘bin’, which must then be installed into WecOptTool using the ``installNemoh.m`` MATLAB script, run from the WecOptTool root directory using the MATLAB command prompt:
 
    .. code:: matlab
 
@@ -124,7 +128,7 @@ Install
 
 #. **Verify dependencies installation:** You can verify that the dependencies have been installed correctly by running the
    ``dependencyCheck.m`` script provided in the root directory of the WecOptTool source code.
-   The script is called as follows:
+   The script is called as follows using the MATLAB command prompt:
 
    .. code:: matlab
 
@@ -135,21 +139,23 @@ Install
 
    .. code::
 
-      WecOptTool dependency checker
+      WecOptTool Dependency Checker
       -------------------------------
-
+      
       Required
       --------
-      Optimization Toolbox:       Found
-      NEMOH:                      Found
-
+      Optimization Toolbox:                   Found
+      NEMOH:                                  Found
+      
       Optional
       --------
-      Parallel Computing Toolbox: Not found
-      WAFO:                       Found
+      Parallel Toolbox:                       Found
+      Global Optimization Toolbox:    Not Installed
+      WAFO:                                   Found
+
 
 #. **(optional) Run functionality tests:** A test suite is available to verify that the code is operational.
-#. A script is provided in the root directory of the WecOptTool source code and is run from the MATLAB command window, as follows:
+    A script is provided in the root directory of the WecOptTool source code and is run from the MATLAB command window, as follows:
    
    .. code:: matlab
 
@@ -162,8 +168,8 @@ Install
    .. code::
    
        Totals:
-          27 Passed, 0 Failed, 0 Incomplete.
-          209.4266 seconds testing time.
+          91 Passed, 0 Failed, 0 Incomplete.
+          195.0643 seconds testing time.
 
 .. _user-setup-uninstall:
 
@@ -182,13 +188,13 @@ Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
 
 .. rubric:: Footnotes
 
-.. [#f1] WecOptTool requires an input wave spectra which is formatted to
-         match the output of the WAFO toolbox. These spectra can also be 
-         produced 'by hand' and an example spectra is stored in the 
-         ``example_data`` folder, to use if WAFO is not installed.
-
-.. [#f2] Optimizations can be conducted significantly more efficiently by
-         utilizing parallel computation.
+.. [#f1] The WecOptTool developers are endeavoring to ensure that this 
+         software is compatible with the latest version of MATLAB (and the 
+         toolbox dependencies). Unfortunately, this may mean that backwards 
+         compatibility with older versions of MATLAB is not possible. See the 
+         `MATLAB Version Support Policy 
+         <https://github.com/SNL-WaterPower/WecOptTool/wiki/MATLAB-Version-Support-Policy>`__ 
+         page for further details. 
 
 .. |br| raw:: html
 

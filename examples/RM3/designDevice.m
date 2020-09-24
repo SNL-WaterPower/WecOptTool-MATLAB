@@ -1,5 +1,7 @@
-function hydro = designDevice(type, varargin) 
+function [hydro, meshes] = designDevice(type, varargin) 
     
+    meshes = [];
+
     switch type
         
         case 'existing'
@@ -7,7 +9,7 @@ function hydro = designDevice(type, varargin)
         case 'scalar'
             hydro = getHydroScalar(varargin{:});
         case 'parametric'
-            hydro = getHydroParametric(varargin{:});
+            [hydro, meshes] = getHydroParametric(varargin{:});
         
     end
     
@@ -20,7 +22,8 @@ function hydro = getHydroScalar(lambda)
     [filepath, ~, ~] = fileparts(p);
     dataPath = fullfile(filepath, 'RM3_BEM.mat');
 
-    load(dataPath, 'hydro');
+    mf = matfile(dataPath);
+    hydro = mf.hydro;
 
     % dimensionalize w/ WEC-Sim built-in function
     hydro.rho = 1025;
@@ -34,15 +37,11 @@ function hydro = getHydroScalar(lambda)
     hydro.B = hydro.B .* lambda^2.5;
     hydro.A = hydro.A .* lambda^3;
     hydro.ex = complex(hydro.ex_re,hydro.ex_im) .* lambda^2;
-    hydro.ex_ma = abs(hydro.ex);
-    hydro.ex_ph = angle(hydro.ex);
-    hydro.ex_re = real(hydro.ex);
-    hydro.ex_im = imag(hydro.ex);
-           
+    hydro = rmfield(hydro,{'ex_re','ex_im'});
 end
 
 
-function hydro = getHydroParametric(folder, r1, r2, d1, d2, w)
+function [hydro, meshes] = getHydroParametric(folder, r1, r2, d1, d2, w)
     
     % Float
     

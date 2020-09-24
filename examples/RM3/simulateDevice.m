@@ -1,4 +1,4 @@
-function performance = simulateDevice(hydro, seastate, controlType, varargin)
+function [performance, motion] = simulateDevice(hydro, seastate, controlType, varargin)
     
     static = getStaticModel(hydro);
     motion = getDynamicModel(static, hydro, seastate);
@@ -48,9 +48,7 @@ function dynamic = getDynamicModel(static, hydro, S)
 
     function result = interp_ex(hydro, dof, w)
 
-        h = complex(squeeze(hydro.ex_re(dof, 1, :)),   ...
-                    squeeze(hydro.ex_im(dof, 1, :)));
-
+        h = squeeze(hydro.ex(dof, 1, :));
         result = interp1(hydro.w, h ,w, 'linear', 0);
 
     end
@@ -89,6 +87,13 @@ function dynamic = getDynamicModel(static, hydro, S)
 
     B33 = interp_rad(hydro, 3, 3, w) * hydro.rho .* w;
     A33 = interp_mass(hydro, 3, 3, w) * hydro.rho;
+    
+    % Check radiation damping
+    if max(abs(B39)) > max(max(B33), max(B99))
+        warning('WecOptTool:RM3:BadDamping',                            ...
+                ['Coupled radiation damping magnitude exceeds maximum ' ...
+                 'of single body values. Results may be unphysical.']);
+    end
 
     % Excitation
     H3 = interp_ex(hydro, 3, w) * hydro.g * hydro.rho;
@@ -162,22 +167,26 @@ function out = complexCongugateControl(motion)
 end
 
 function out = dampingControl(motion)
-            
-    % Max Power for a given Damping Coeffcient [Falnes 2002 
-    % (p.51-52)]
-    P_max = @(b) -0.5 * b *     ...
-                    sum(abs(motion.F0 ./ (motion.Zi + b)) .^ 2);
 
-    % Optimize the linear damping coeffcient(B)
-    B_opt = fminsearch(P_max, max(real(motion.Zi)));
-
-    % Power per frequency at optimial damping?
-    out.powPerFreq = 0.5 * B_opt * ...
-                    (abs(motion.F0 ./ (motion.Zi + B_opt)) .^ 2);
+    % Power per frequency at optimial damping
+    out.powPerFreq = 0.25 * abs(motion.F0) .^ 2 ./     ...
+                            (real(motion.Zi) + abs(motion.Zi));
     
 end
 
-function out = pseudoSpectralControl(motion, delta_Zmax, delta_Fmax)
+function out = pseudoSpectralControl(motion,        ...
+                                     delta_Zmax,    ...
+                                     delta_Fmax,    ...
+                                     display,       ...
+                                     OptimalityTolerance)
+                                 
+    arguments
+        motion
+        delta_Zmax
+        delta_Fmax
+        display = "off"
+        OptimalityTolerance = 1e-5
+    end
 
     % PSEUDOSPECTRAL Pseudo spectral control
     %   Returns power per frequency and frequency bins
@@ -202,7 +211,10 @@ function out = pseudoSpectralControl(motion, delta_Zmax, delta_Fmax)
     for ind_ph = 1 : n_ph
         
         ph = ph_mat(:, ind_ph);
-        [~, phasePowPerFreq] = getPSPhasePower(motion, ph);
+        [~, phasePowPerFreq] = getPSPhasePower(motion,  ...
+                                               ph,      ...
+                                               display, ...
+                                               OptimalityTolerance);
         
         for ind_freq = 1 : n_freqs
             powPerFreqMat(ind_ph, ind_freq) = phasePowPerFreq(ind_freq);
@@ -328,7 +340,10 @@ function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     
 end
 
-function [pow, powPerFreq] = getPSPhasePower(motion, ph)
+function [pow, powPerFreq] = getPSPhasePower(motion,    ...
+                                             ph,        ...
+                                             display,   ...
+                                             OptimalityTolerance)
     %Calculates power using the pseudospectral method given a phase and
     % a descrption of the body movement. Returns total phase power and 
     % power per frequency 
@@ -356,11 +371,10 @@ function [pow, powPerFreq] = getPSPhasePower(motion, ph)
     % constrained optimiztion
     qp_options = optimoptions('fmincon',                        ...
                               'Algorithm', 'sqp',               ...
-                              'Display', 'off',                 ...
+                              'Display', display,               ...
                               'MaxIterations', 1e3,             ...
                               'MaxFunctionEvaluations', 1e5,    ...
-                              'OptimalityTolerance', 1e-8,      ...
-                              'StepTolerance', 1e-6);
+                              'OptimalityTolerance', OptimalityTolerance);
     
     siz = size(motion.A_ineq);
     X0 = zeros(siz(2),1);

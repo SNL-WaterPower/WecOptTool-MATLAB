@@ -22,7 +22,7 @@ function performance = simulateDevice(hydro, seastate, controlType, options)
     % See also WecOptTool.SeaState, interp1
     
     arguments
-        hydro (1,1) struct
+        hydro (1,1) WecOptTool.Hydrodynamics
         seastate (1,:) WecOptTool.SeaState
         controlType (1,1) string
         options.Zmax (1,:) double  = Inf % TODO - can be assymetric, need to check throughout
@@ -70,9 +70,7 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod)
 
     function result = interp_ex(hydro, dof, w)
 
-        h = complex(squeeze(hydro.ex_re(dof, 1, :)),   ...
-                    squeeze(hydro.ex_im(dof, 1, :)));
-
+        h = squeeze(hydro.ex(dof, 1, :));
         result = interp1(hydro.w, h ,w, interpMethod, 0);
 
     end
@@ -81,7 +79,8 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod)
     dw = w(2) - w(1);
     
     % Calculate wave amplitude
-    waveAmp = SS.getAmpSpectrum(w, interpMethod);
+    waveAmpSS = SS.getAmplitudeSpectrum();
+    waveAmp = interp1(SS.w, waveAmpSS, w, interpMethod, 'extrap');
 
     % Row vector of random phases
     ph = rand(size(waveAmp));
@@ -214,12 +213,10 @@ function myPerf = psControl(dynModel,delta_Zmax,delta_Fmax)
 %     pow = powPerFreqMat(:,1);
 
     arguments
-        dynModel
+        dynModel (1, 1) struct
         delta_Zmax (1,:) double {mustBeFinite,mustBeReal,mustBePositive}
         delta_Fmax (1,:) double {mustBeFinite,mustBeReal,mustBePositive}
     end
-
-    dynModel = struct(dynModel);
         
     % Fix random seed <- Do we want this???
     rng(1);

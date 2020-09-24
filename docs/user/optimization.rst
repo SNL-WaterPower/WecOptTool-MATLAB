@@ -13,7 +13,7 @@ example considers the DOE Reference Model 3 (RM3_) device.
 
 .. raw:: html
 
-   <details><summary><a>See the entire example file</a></summary></br>
+   <details><summary><clickme>See the entire example file</clickme></summary></br>
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
@@ -46,7 +46,7 @@ The Sea States input block for the RM3 may made up of a single spectrum or
 multiple spectra. Finally, the user will need to determine some objective 
 function of interest for the device being studied. 
 
-WecOptTool will use the User inputs to build a set of Data Classes and pass the 
+WecOptTool will use the User Inputs to build a set of Data Classes and pass the 
 information to the Solvers. The Hydrodynamics Solver currently uses Nemoh_ to 
 compute the linear wave-body interaction properties using the boundary element 
 method (BEM). The Optimal Control Solver will take the Data Classes to return 
@@ -61,13 +61,15 @@ In WecOptTool, this process is executed by applying the following steps:
 
 #. Select a device design and calculate its hydrodynamic parameters
 #. Examine the performance of the device design using the chosen control 
-   options, for a given seastate
+   options, for a given sea state
 
 The remainder of this page will illustrate (using the |optimization.m|_ 
-example) how this process is applied to a co-optimisation problem.
+example) how this process is applied to a co-optimization problem.
 
-Define a seastate
-=================
+.. _seastate:
+
+Define a sea state
+==================
 
 WecOptTool can simulate single or multiple spectra sea states, where weightings 
 can be provided to indicate the relative likelihood of each spectra. The 
@@ -121,7 +123,7 @@ The predefined spectra are returned as :mat:class:`~+WecOptTool.SeaState`
 objects. The :mat:class:`~+WecOptTool.SeaState` class allows the user to 
 manipulate the given spectra to the requirements of the experiment. 
 Automatically, the weighting parameter ``mu`` will be set to unity when 
-multiple sea-states are given with ``mu`` undefined. In this example, 
+multiple sea states are given with ``mu`` undefined. In this example, 
 frequencies that have less than 1% of the maximum spectral density are also 
 removed, (using the ``"trimFrequencies"`` option) to increase the speed of 
 computation with minimal loss of accuracy. See the 
@@ -149,15 +151,15 @@ The folder is created as follows:
 Create an objective function
 ============================
 
-Next, we create the objective function we wish to minimise. Note, functions 
-must be defined at the bottom of the script, although we will them above. The 
+Next, we create the objective function we wish to minimize. Note, functions 
+must be defined at the bottom of the script, although we will use them above. The 
 complete code is as follows: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 63-91
+    :lines: 65-95
     :linenos:
-    :lineno-start: 63
+    :lineno-start: 65
 
 The following subsections will describe each stage of setting up the objective
 function.
@@ -193,7 +195,7 @@ calculated by the ``designDevice`` function. The ``'parametric'`` option to
 the geometry design variables, ``r1, r2, d1, d2``, and a representative set of 
 angular frequencies to be calculated by NEMOH. The folder is provided by the 
 ``path`` attribute of the :mat:class:`~+WecOptTool.AutoFolder` object. The 
-design variables will be passed by the optimisation routine, while the 
+design variables will be passed by the optimization routine, while the 
 frequencies can be extracted from the given :mat:class:`~+WecOptTool.SeaState` 
 object using its :mat:meth:`~+WecOptTool.SeaState.getRegularFrequencies` 
 method, which provides regularly spaced frequencies covering all spectra in the 
@@ -202,23 +204,25 @@ object array. These inputs are combined and then added as arguments to the
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 69-72
+    :lines: 71-74
     :linenos:
-    :lineno-start: 69
+    :lineno-start: 71
+
+.. _controlledPerformance:
 
 Calculate controlled device performance
 ---------------------------------------
 
 In the RM3 example, three types of controllers are defined:
 
- - **Proportional Damping** (``'P'``): Resistive damping (i.e., a proportional feedback on velocity) (see, e.g., [Falnes]_). Here, the power take-off (PTO) force is set as
+ - **Proportional Damping** (``'P'``): Resistive damping (i.e., a proportional feedback on velocity) (see, e.g., :cite:`Falnes2002`). Here, the power take-off (PTO) force is set as
 
    .. math::
      F_u(\omega) = -B_{PTO}(\omega)u(\omega)
 
    where :math:`B_{PTO}` is a constant chosen to maximize absorbed power and :math:`u(\omega)` is the velocity. |br| |br|
    
- - **Complex Conjugate** (``'CC'``): Optimal power absorption through impedance matching (see, e.g., [Falnes]_). The intrinsic impedance is given by 
+ - **Complex Conjugate** (``'CC'``): Optimal power absorption through impedance matching (see, e.g., :cite:`Falnes2002`). The intrinsic impedance is given by 
 
    .. math::
     Z_i(\omega) = B(\omega) + i \left( \omega{}(m + A(\omega)) - \frac{K_{HS}}{\omega}\right) ,
@@ -235,44 +239,44 @@ In the RM3 example, three types of controllers are defined:
    where :math:`u(\omega)` is the velocity. |br| |br|
 
  - **Pseudo Spectral** (``'PS'``): Constrained optimal power absorption 
-   [Bacelli]_. This is a numerical optimal control algorithm capable of dealing 
+   :cite:`Bacelli2014a`. This is a numerical optimal control algorithm capable of dealing 
    with both constraints and nonlinear dynamics. This approach is based on 
    |pseudo spectral method|_.
 
 For the |optimization.m|_ example we choose the Complex Conjugate option. The 
-performance of the controlled device design is evaluated for a given sea-state 
+performance of the controlled device design is evaluated for a given sea state 
 by the ``simulateDevice`` function, which takes, as input, the output of the 
-``designDevice`` function, the sea-state to evaluate and the controller 
+``designDevice`` function, the sea state to evaluate and the controller 
 selection (with additional optional parameters, if used). Here, the 
-device is evaluated across the 8 different sea-states in the example spectra, 
+device is evaluated across the 8 different sea states in the example spectra, 
 as follows: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 74-78
+    :lines: 76-80
     :linenos:
-    :lineno-start: 74
+    :lineno-start: 76
 
 Define the objective function value
 -----------------------------------
 
 The value of the objective function is provided by an axillary function (called 
 ``weightedPower``) which calculates the maximum absorbed power, weighted across 
-all spectra in the given seastate: 
+all spectra in the given sea state: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 88-91
+    :lines: 92-95
     :linenos:
-    :lineno-start: 88
+    :lineno-start: 92
 
-Then, to make a minimisation problem, the negation of this value returned: 
+Then, to make a minimization problem, the negation of this value returned: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 80
+    :lines: 82
     :linenos:
-    :lineno-start: 80
+    :lineno-start: 82
 
 .. note::
     **Objective function:** The chosen objective function in |optimization.m|_ 
@@ -286,15 +290,15 @@ MATLAB's optimization routines only store the sample and cost function values
 of the designs tested. WecOptTool provides a means to store intermediate 
 values, used in the objection function, using the 
 :mat:meth:`~+WecOptTool.AutoFolder.stashVar` method of the 
-:mat:class:`~+WecOptTool.AutoFolder` class. In this example we add the sample 
-value and the sea state frequencies to the ``simulateDevice`` function output 
-and then stash it for recovery later: 
+:mat:class:`~+WecOptTool.AutoFolder` class. In this example we add the sea 
+state frequencies, sample value and device meshes to the ``simulateDevice`` 
+function output and then stash it for recovery later: 
 
  .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 82-84
+    :lines: 84-88
     :linenos:
-    :lineno-start: 82
+    :lineno-start: 84
 
 Set optimization solver
 =======================
@@ -331,7 +335,7 @@ In order to pass the above options, some dummy values must also be supplied for 
     :linenos:
     :lineno-start: 35
 
-Run optimiser and view results
+Run optimizer and view results
 ==============================
 
 Before using the objective function, the inputs must be simplified to allow 
@@ -366,12 +370,12 @@ Examine optimum design
 ======================
 
 To recover the detailed performance of all the device designs tested in the 
-optimisation, the :mat:meth:`~+WecOptTool.AutoFolder.recoverVar` method of the 
+optimization, the :mat:meth:`~+WecOptTool.AutoFolder.recoverVar` method of the 
 :mat:class:`~+WecOptTool.AutoFolder` class is used: 
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 50-51
+    :lines: 50-52
     :linenos:
     :lineno-start: 50
 
@@ -381,31 +385,28 @@ match is found, as follows:
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 53-59
+    :lines: 54-60
     :linenos:
-    :lineno-start: 53
+    :lineno-start: 54
 
-Finally, by using the :mat:func:`+WecOptTool.+plot.powerPerFreq` function, the 
-spectral distribution of energy absorbed by the resulting design for each of 
-the eight sea states can be shown. 
+Finally, by using the :mat:func:`+WecOptTool.+plot.powerPerFreq` and
+:mat:func:`+WecOptTool.+plot.plotMesh` functions, the spectral distribution of 
+energy absorbed by the resulting design for each of the eight sea states can be 
+shown, alongside the simulated meshes.
 
 .. literalinclude:: /../examples/RM3/optimization.m
     :language: matlab
-    :lines: 61
+    :lines: 62-63
     :linenos:
-    :lineno-start: 61
+    :lineno-start: 62
 
 .. image:: /_static/example_spectralPowerPlot.svg
    :width: 400pt
    :alt: Absorbed Spectral power distribution for each sea state
 
-.. [Falnes] Falnes, Johannes. Ocean waves and oscillating systems: linear 
-         interactions including wave-energy extraction. Cambridge University 
-         Press, 2002.
-
-.. [Bacelli] Bacelli, Giorgio, and John V. Ringwood. "Numerical optimal control 
-       of wave energy converters." IEEE Transactions on Sustainable Energy 6.2 
-       (2014): 294-302.
+.. image:: /_static/example_meshes.svg
+   :width: 400pt
+   :alt: Absorbed Spectral power distribution for each sea state
 
 .. |optimization.m| replace:: ``optimization.m``
 .. _optimization.m: https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/RM3/optimization.m

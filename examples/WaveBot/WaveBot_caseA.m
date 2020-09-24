@@ -8,17 +8,6 @@
 % CC    complex conjugate control
 % P     proportional damping
 % PS    pseudo-spectral numerical optimal control
-%
-% This case study is detailed in the following paper:
-% 
-% @Article{WecDesignOptimizationTool,
-%   author       = {Ryan G. Coe and Giorgio Bacelli and Sterling Olson and 
-%                   Vincent S. Neary and Matthew B. R. Topper},
-%   title        = {A WEC design optimization tool},
-%   date         = {2020-07-07},
-%   journaltitle = {submitted to Journal of Ocean Engineering and Marine 
-%                   Energy},
-% }
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, LLC
 % (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the U.S.

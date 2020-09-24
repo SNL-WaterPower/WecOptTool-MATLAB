@@ -6,27 +6,27 @@ optimal control.
 
 ## Dependencies
 
-Dependency                          | Website                                                         | Required<sup>1</sup>
+Dependency                          | Website                                                         | Required\*
 ----------------------------------- | --------------------------------------------------------------- | -----------------
-MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes\*
+MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes<sup>1</sup>
 MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
 NEMOH                               | https://github.com/LHEEA/Nemoh                                  | yes
 WAFO                                | https://github.com/wafo-project/wafo                            | optional
 MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | optional
 MATLAB Global Optimization Toolbox  | https://www.mathworks.com/products/global-optimization.html     | optional
 
-<sup>1</sup> The values in the _Required_ column have the following meanings:
+\* The values in the _Required_ column have the following meanings:
   * **yes** indicates dependencies that must be installed to use the
     WecOptTool toolbox
   * **optional** indicates dependencies that are used on a case by case basis, 
     in the examples
 
-\* The latest WecOptTool release, version 0.1.0, was tested on **MATLAB 
-2020a**, whilst the oldest compatible version known is **MATLAB 2018a**. Please 
-help the development team by reporting compatibility with other versions 
-[HERE]( https://github.com/SNL-WaterPower/WecOptTool/issues/91). The 
-development version will support the latest available version of MATLAB, but no 
-guarantees are given regarding legacy MATLAB support. 
+<sup>1</sup> The WecOptTool developers are endeavoring to ensure that this 
+software is compatible with the latest version of MATLAB (and the toolbox 
+dependencies). Unfortunately, this may mean that backwards compatibility with 
+older versions of MATLAB is not possible. See the [MATLAB Version Support 
+Policy](https://github.com/SNL-WaterPower/WecOptTool/wiki/MATLAB-Version-Support-Policy) 
+page for further details. 
 
 ## Download
 
@@ -43,12 +43,12 @@ repository, using the [Clone or download](
 https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 button.
 
-Note that, although the developers endeavour to ensure that the development
-version is not broken, bugs or unexpected behaviour may occur, so please beware.
+Note that, although the developers endeavor to ensure that the development
+version is not broken, bugs or unexpected behavior may occur, so please beware.
 
 ## Getting Started
 
-> :warning: Unexpected behaviour may occur if multiple versions of the toolbox 
+> :warning: Unexpected behavior may occur if multiple versions of the toolbox 
   are installed. Please following the [Uninstall](#uninstall) instructions to 
   uninstall any previous versions of WecOptTool first.
 
@@ -66,19 +66,21 @@ version is not broken, bugs or unexpected behaviour may occur, so please beware.
    
    Alternatively the “Set Path” graphical tool can be used to add the toolbox.
 
-1. **Set up Nemoh:**
+1. **Set up [Nemoh](https://github.com/LHEEA/Nemoh):**
 
-    a. ***Windows:*** Executables are provided in the 'Release' directory of 
+    a. ***Windows:*** Executables are provided in the [Release 
+    directory](https://github.com/LHEEA/Nemoh/tree/master/Release) of 
     the NEMOH source code. These are installed into WecOptTool using the 
     `installNemoh.m` MATLAB script, run from the WecOptTool root directory, 
-    as follows: 
+    using the MATLAB command window as follows: 
     
     ```matlab
     >> cd /path/to/WecOptTool
     >> installNemoh('/path/to/NEMOH/Release');
     ```
     
-    b. ***Linux:*** To set up NEMOH for linux, first, compile the executables 
+    b. ***Linux:*** To set up NEMOH for linux, first, use a command 
+    window to compile the executables 
     (you will need gfortran or the intel fortran compiler):
     
     ```
@@ -88,7 +90,8 @@ version is not broken, bugs or unexpected behaviour may occur, so please beware.
     
     Executables will be created a new directory called 'bin', which must 
     then be installed into WecOptTool using the `installNemoh.m` MATLAB 
-    script, run from the WecOptTool root directory: 
+    script, run in the MATLAB command window from the WecOptTool 
+    root directory: 
     
     ```matlab
     >> cd /path/to/WecOptTool
@@ -98,7 +101,7 @@ version is not broken, bugs or unexpected behaviour may occur, so please beware.
 1. **Verify dependencies installation:** You can verify that the dependencies 
 have been installed correctly by running the `dependencyCheck.m` script 
 provided in the root directory of the WecOptTool source code. The script is 
-called as follows: 
+called in MATLAB as follows: 
 
     ```matlab
     >> cd /path/to/WecOptTool
@@ -108,18 +111,19 @@ called as follows:
     and successful output may look like this:
     
     ```
-    WecOptTool dependency checker
+    WecOptTool Dependency Checker
     -------------------------------
-    
+
     Required
     --------
-    Optimization Toolbox:       Found
-    NEMOH:                      Found
-    
+    Optimization Toolbox:                   Found
+    NEMOH:                                  Found
+
     Optional
     --------
-    Parallel Computing Toolbox: Not found
-    WAFO:                       Found
+    Parallel Toolbox:                       Found
+    Global Optimization Toolbox:    Not Installed
+    WAFO:                                   Found
     ```
 
 1. **(optional) Run functionality tests:** A test suite is available to verify 
@@ -136,8 +140,8 @@ WecOptTool source code and is run from the MATLAB command window, as follows:
    
     ```
     Totals:
-          80 Passed, 0 Failed, 0 Incomplete.
-          125.1625 seconds testing time.
+          91 Passed, 0 Failed, 0 Incomplete.
+          195.0643 seconds testing time.
     ```
 
 1. **Begin use:** See the 
@@ -161,7 +165,7 @@ Alternatively the "Set Path" graphical tool can be used to remove the toolbox.
 The top level folders of the WecOptTool repository are used as follows:
 
 * **docs** contains the web documentation source code
-* **examples** contains subfolders with structured examples of co-optimisation 
+* **examples** contains subfolders with structured examples of co-optimization 
   problems
 * **tests** contains integration and unit tests
 * **toolbox** contains the supporting MATLAB toolbox used by the examples
@@ -205,7 +209,7 @@ replace slashes (`/`) in paths with backslashes (`\ `).
 2. Create the Sphinx environment:
    
    ```
-   > conda create -c conda-forge -n _sphinx click colorama colorclass future pip "sphinx=1.8.5" sphinx_rtd_theme 
+   > conda create -c conda-forge -n _sphinx click colorama colorclass future pip "sphinx=1.8.5" sphinxcontrib-bibtex sphinx_rtd_theme 
    > activate _sphinx
    (_sphinx) > pip install https://github.com/H0R5E/sphinxcontrib-versioning/archive/v1.8.5_support.zip
    (_sphinx) > pip install git+https://github.com/H0R5E/matlabdomain.git/@function_arguments#egg=matlabdomain
@@ -316,7 +320,7 @@ A code maintainer will review your pull request at the earliest possible
 opportunity. For large pull requests, it would be advisable to open a related 
 issue to discuss the purpose of your updates. The developers also would be 
 grateful if *"Allow edits from maintainers"* is checked when making a pull 
-request, as this will allow us to finalise your contributions more rapidly.
+request, as this will allow us to finalize your contributions more rapidly.
 
 ## Software License
 
