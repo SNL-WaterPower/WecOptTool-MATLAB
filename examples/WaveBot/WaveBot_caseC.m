@@ -32,11 +32,6 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-% clc
-% clear
-% close all
-% clear controlParams r
-
 %% define sea state of interest
 dw = 0.3142;
 nf = 50;
@@ -47,24 +42,20 @@ fp = wp/(2*pi);
 Tp = 1/fp; 
 SS = WecOptTool.SeaState.regularWave(w,[A,Tp]);
 
+%% set up optimization problem
 
-%% create set of devices (running hydrodynamics)
 rmin = 0.25;
 rmax = 2;
 r0 = 0.88;
-radii = sort([linspace(rmin,rmax,19), r0]);
 zlim = 1e4; % (inactive)
-folder = WecOptTool.AutoFolder();
-
-%% set up optimization problem
 
 nvars = 2;
 A = [];
 B = [];
 Aeq = [];
 Beq = [];
-LB = [min(radii), 1e2];
-UB = [max(radii), 1e3];
+LB = [rmin, 1e2];
+UB = [rmax, 1e3];
 NONLCON = [];
 opts = optimoptions('paretosearch');
 opts.UseParallel = true;
@@ -73,6 +64,8 @@ opts.PlotFcn = @psplotparetof;
 % opts.MaxFunctionEvaluations = 10;     % for debugging
 
 %% run optimization solver
+
+folder = WecOptTool.AutoFolder();
 
 rng(3)
 [x,fval,exitflag,output,residuals] = ...

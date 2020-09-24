@@ -41,22 +41,26 @@ fp = wp/(2*pi);
 Tp = 1/fp; 
 SS = WecOptTool.SeaState.regularWave(w,[A,Tp]);
 
-%%
+%% Create device and define controllers
+
 controlType{1} = 'CC';
 controlType{2} = 'P';
 controlType{3} = 'PS';
-controlParams(3).params = {1e10 2e3}; % {zmax, Fmax}
+
+% constraints for PS, zmax: max stroke (inactive); fmax: max PTO force 
 zmax = 1e10;
 fmax = 2e3;
 
+% make a WaveBot using the 'base' dimensions
+designType = 'scalar';
+scalarVal = 1;
 folder = WecOptTool.AutoFolder();
-% w = SS.getRegularFrequencies(0.3);
-deviceHydro = designDevice('scalar', folder.path, 1, w);
+deviceHydro = designDevice(designType, folder.path, scalarVal, w);
 
-%%
+%% Run simulations
 
-for ii = 1:length(controlParams) 
-    disp("Simulation " + (ii) + " of " + length(controlParams))
+for ii = 1:length(controlType) 
+    disp("Simulation " + (ii) + " of " + length(controlType))
     rng(3) % run same wave phasing for each case
     r(ii) = simulateDevice(deviceHydro,SS,controlType{ii},...
         'interpMethod','nearest','Zmax',zmax,'Fmax',fmax);

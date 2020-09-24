@@ -40,31 +40,28 @@ SS = WecOptTool.SeaState.regularWave(w,[A,Tp]);
 controlType{1} = 'CC';
 controlType{2} = 'P';
 controlType{3} = 'PS';
+
+% constraints for PS, zmax: max stroke; fmax: max PTO force (inactive)
 zmax = 0.6;
 fmax = 1e10;
 
 folder = WecOptTool.AutoFolder();
-% w = SS.getRegularFrequencies(0.3);
 
 %% create set of devices (running hydrodynamics)
 
 rmin = 0.25;
 rmax = 2;
-r0 = 0.88;
+r0 = 0.88; % nominal radius
 radii = sort([linspace(rmin,rmax,19), r0]);
 
-deviceHydro = designDevice('parametric', folder.path, ...
-                           radii(1), 0.35, 0.16, 0.53, w);
+deviceHydro(length(radii)) = designDevice('parametric', folder.path, ...
+                           radii(end), 0.35, 0.16, 0.53, w);
 
-                       
-deviceHydro = repmat(deviceHydro, length(radii), 1 );
-for i = 2:length(radii)    
+for i = 1:length(radii)-1   
     radius = radii(i);
     deviceHydro(i) = designDevice('parametric', folder.path, ...
                                radius, 0.35, 0.16, 0.53, w);
-                           
 end
-
 
 %% simulate performance
 
@@ -98,10 +95,12 @@ opts.PlotFcn = {@optimplotx,@optimplotfval};
 
 clear fval x_opt exitflag output optSimres
 for ii = 1:length(controlType)
-    disp("Simulation " + (ii) + " of " + length(controlType))    
+    disp("Simulation " + (ii) + " of " + length(controlType))   
+    
     [x_opt(ii), fval(ii), exitflag(ii), output(ii)] = ...
         fminbnd(@(x) myWaveBotObjFun(x,w,SS,controlType{ii},zmax,fmax,...
         folder.path),LB,UB,opts);
+    
     [~, optSimres(ii), optHydro(ii)] = ...
         myWaveBotObjFun(x_opt(ii),w,SS,controlType{ii},zmax,fmax,folder.path);
 end
