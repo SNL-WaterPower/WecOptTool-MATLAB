@@ -28,8 +28,6 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
-clear controlParams r
-
 %% define sea state of interest
 
 dw = 0.3142;
@@ -59,6 +57,7 @@ deviceHydro = designDevice(designType, folder.path, scalarVal, w);
 
 %% Run simulations
 
+clear r
 for ii = 1:length(controlType) 
     disp("Simulation " + (ii) + " of " + length(controlType))
     rng(3) % run same wave phasing for each case
