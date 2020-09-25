@@ -69,7 +69,7 @@ clear r
 for ii = 1:length(controlType)      
     for jj = 1:length(radii)
         rng(3) % run same wave phasing for each case
-        disp("Simulating " + controlType{ii} + ", case " + (ii) + " of " + length(radii))
+        disp("Monte-carlo for " + controlType{ii} + ", case " + (jj) + " of " + length(radii))
         r(jj,ii) = simulateDevice(deviceHydro(jj),SS,controlType{ii},...
                                   'interpMethod','nearest','Zmax',zmax,...
                                   'Fmax',fmax);
@@ -96,7 +96,7 @@ opts.PlotFcn = {@optimplotx,@optimplotfval};
 
 clear fval x_opt exitflag output optSimres
 for ii = 1:length(controlType)
-    disp("Simulation " + (ii) + " of " + length(controlType))   
+    disp("fminbnd for " + controlType{ii})   
     
     % find optimal geometry for each control type
     [x_opt(ii), fval(ii), exitflag(ii), output(ii)] = ...
