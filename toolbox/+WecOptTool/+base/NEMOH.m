@@ -1,7 +1,18 @@
 classdef NEMOH < handle
     % Base class containing NEMOH helpers
     %
+    % Attributes:
+    %    verb (bool): use verbose console outputs (default false)
+    %    rho (float): water density (default = 1025 kg/m\ :sup:`3`)
+    %    g (float):
+    %        gravitational acceleration (default = 9.81 m/s\ :sup:`2`)
+    %
     % --
+    %
+    % NEMOH Properties:
+    %     verb - use verbose console outputs (default false)
+    %     rho - water density (default = 1025 kg/m^3)
+    %     g - gravitational acceleration (default = 9.81 m/s^2)
     %
     % NEMOH Methods:
     %     isNemohInPath - Determine if the NEMOH executables can be found.
@@ -30,6 +41,12 @@ classdef NEMOH < handle
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
+    properties
+        verb = false
+        rho = 1025
+        g = 9.81
+    end
+    
     methods (Static)
 
         function inpath = isNemohInPath()
@@ -38,10 +55,10 @@ classdef NEMOH < handle
             % Returns:
             %     bool: true if executables found, otherwise false.
             %
-
+            
             startdir = pwd;
             inpath = 1;
-
+            
             try
                  nemohPath = WecOptTool.system.readConfig('nemohPath');
             catch

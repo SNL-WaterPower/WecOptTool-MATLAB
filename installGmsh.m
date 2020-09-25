@@ -1,9 +1,9 @@
-function installNemoh(nemohPath)
-    % Adds Nemoh executables path to WecOptTool
+function installGmsh(gmshPath)
+    % Add Gmsh executable path to WecOptTool
     %
     % Args:
-    %     nemohPath (string):
-    %         path to (platform dependent) NEMOH executables
+    %     gmshPath (string):
+    %         path to folder containing Gmsh executable
     %
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
@@ -26,10 +26,10 @@ function installNemoh(nemohPath)
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
     
-    WecOptTool.system.installExternal("Nemoh",      ...
-                                      "nemohPath",  ...
-                                      nemohPath,    ...
-                                      @WecOptTool.base.NEMOH.isNemohInPath)
+    WecOptTool.system.installExternal("Gmsh",      ...
+                                      "gmshPath",  ...
+                                      gmshPath,    ...
+                                      @WecOptTool.mesh.Gmsh.isGmshInPath)
 
 end
 

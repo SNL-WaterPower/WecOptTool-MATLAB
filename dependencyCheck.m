@@ -91,6 +91,11 @@ function dependencyCheck()
     
     print_dependency("WAFO", wafoInstalled);
     
+    %% Gmsh
+    
+    gmshExistFlag = WecOptTool.mesh.Gmsh.isGmshInPath();
+    print_dependency("Gmsh", gmshExistFlag);
+    
     %% End matter
     
     fprintf('\n')

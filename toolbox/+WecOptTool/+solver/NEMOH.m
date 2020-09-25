@@ -16,6 +16,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
     % --
     %
     % NEMOH Properties:
+    %     path - path to file storage folder
     %     verb - use verbose console outputs (default false)
     %     rho - water density (default = 1025 kg/m^3)
     %     g - gravitational acceleration (default = 9.81 m/s^2)
@@ -50,12 +51,6 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
     %     You should have received a copy of the GNU General Public 
     %     License along with WecOptTool.  If not, see 
     %     <https://www.gnu.org/licenses/>.
-    
-    properties
-        verb = false
-        rho = 1025
-        g = 9.81
-    end
     
     properties (Access=private)
         nemoh_mesh_command
