@@ -33,6 +33,7 @@
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
 %% define sea state of interest
+
 dw = 0.3142;
 nf = 50;
 w = dw * (1:nf)';
@@ -84,28 +85,29 @@ zmax  = fval(:,3);
 
 knee_idx = 36; % a potential single solution on the Pareto front
 
-figure
-xv = linspace(min(pBar),max(pBar));         
-yv = linspace(min(vol),max(vol));  
-[X,Y] = meshgrid(xv, yv);
-Z = griddata(pBar, vol, zmax, X, Y);        
-mesh(-X,Y,Z)
+figure('color','white')
 hold on
-scatter3(-pBar, vol, zmax, 'filled');
+grid on
+
+% Pareto front
+scatter3(-pBar, vol, zmax, 75, zmax, 'filled','LineWidth',0.5,...
+    'MarkerEdgeColor','k','MarkerFaceAlpha',0.5);
+
+% potential single solution
 scatter3(-pBar(knee_idx), vol(knee_idx), zmax(knee_idx),150,...
     'marker','+','MarkerEdgeColor','k','LineWidth',2);
 
-grid on
+view([13, 18])
+
 cb = colorbar;
 cb.Label.Interpreter = 'latex';
-cb.Label.String = ('Pos. mag., $z^{\textrm{max}}$ [m]');
+cb.Label.String = ('Max. PTO stroke, $z^{\textrm{max}}$ [m]');
 xlabel('Neg. avg. power, $ - \bar{P}$ [W]', 'interpreter','latex')
 ylabel('Vol. fun, $(r_0 + r)^3$ [m$^3$]', 'interpreter','latex')
-zlabel('Pos. mag., $z^{\textrm{max}}$ [m]', 'interpreter','latex')
+zlabel('Max. PTO stroke, $z^{\textrm{max}}$ [m]', 'interpreter','latex')
 
 %% Plot 2D
 
-clear ax
 fig = figure();
 fig.Position = fig.Position .* [1 1 1.5 1]*1;
 
@@ -135,14 +137,12 @@ set(gca,'Yscale','log')
 
 ylim([min(vol), Inf])
 
-% Create textarrow
+% annotations
 annotation(fig,'textarrow',[0.0813492063492065 0.113095238095238],...
     [0.81825396825397 0.554761904761905],'TextEdgeColor',[0 0 0],...
     'TextBackgroundColor',[1 1 1],...
     'String',{'Smaller stroke,','larger vol.'},...
     'HorizontalAlignment','center');
-
-% Create textarrow
 annotation(fig,'textarrow',[0.0726190476190479 0.0821428571428572],...
     [0.276984126984128 0.104761904761905],'TextEdgeColor',[0 0 0],...
     'TextBackgroundColor',[1 1 1],...
@@ -181,8 +181,7 @@ for ii = 1:size(x,2)
     xlabel(ax(ii,jj),xlbs{ii}, 'interpreter','latex')
 end
 
-
-exportgraphics(fig, 'WaveBot_caseC_results.pdf','ContentType','vector')
+% exportgraphics(fig, 'WaveBot_caseC_results.pdf','ContentType','vector')
 
 %% objective function
 
