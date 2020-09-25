@@ -43,7 +43,7 @@ classdef Gmsh < WecOptTool.base.Mesher
     
     methods
         
-        function meshData = makeMesh(obj, input, names, values)
+        function meshData = makeMesh(obj, input, name, bodyNum, keys, values)
             % Mesh generation
             %       
             % Returns:
@@ -69,15 +69,17 @@ classdef Gmsh < WecOptTool.base.Mesher
             arguments
                 obj
                 input string
+                name string
+                bodyNum int32
             end
             
             arguments (Repeating)
-                names string
+                keys string
                 values string
             end
             
             % Throwing error message if Gmsh could not be found.
-            gmshExistFlag = WecOptTool.mesh.Gmsh.isGmshInPath();
+            gmshExistFlag = obj.isGmshInPath();
 
             if(~ gmshExistFlag)
                 errMsg = ['Error: Unable to locate Gmsh executable. ',  ...
@@ -107,9 +109,9 @@ classdef Gmsh < WecOptTool.base.Mesher
             exePath = fullfile(gmshPath, exeString);
             commandString = sprintf('%s %s ', exePath, input);
             
-            for i = 1:length(names)
+            for i = 1:length(keys)
                 thisvar = sprintf('-setnumber %s %s ',  ...
-                                  names{i},             ...
+                                  keys{i},             ...
                                   values{i});
                 commandString = [commandString thisvar];
             end
@@ -118,7 +120,7 @@ classdef Gmsh < WecOptTool.base.Mesher
             outputString = sprintf('-0 -save_all -o %s', outputPath);
             commandString = [commandString outputString];
             
-            disp(commandString)
+            %disp(commandString)
             
             % Call the command
             [status, msg] = system(commandString);
@@ -126,6 +128,14 @@ classdef Gmsh < WecOptTool.base.Mesher
             if status
                 error(msg)
             end
+            
+            % load up the mesh
+            mFilePath = fullfile(obj.path, "mesh.m");
+            meshData = obj.readMATLABMesh(mFilePath);
+            
+            % Add additional info
+            meshData.name = name;
+            meshData.bodyNum = bodyNum;
         
         end
         
@@ -161,18 +171,34 @@ classdef Gmsh < WecOptTool.base.Mesher
         end
         
         function meshData = readMATLABMesh(mFilePath)
-
-            M = dlmread(mFilePath);
-            zeroIdxs = find(M(:, 1) == 0);
+            % Load a Gmsh matlab mesh file
             
-            meshData.xzSymmetric = M(1, 2) == 1;
-            nodes = M(2:zeroIdxs(1) - 1, :);
-            meshData.nodes = table(int32(nodes(:,1)),   ...
-                                   nodes(:,2),          ...
-                                   nodes(:,3),          ...
-                                   nodes(:,4),          ...
+            % Adds msh to the function workspace
+            run(mFilePath);
+            
+            meshData.xzSymmetric = false;
+            indexes = 1:size(msh.POS, 1);
+            meshData.nodes = table(indexes',        ...
+                                   msh.POS(:,1),    ...
+                                   msh.POS(:,2),    ...
+                                   msh.POS(:,3),    ...
                                    'VariableNames', {'ID', 'x', 'y', 'z'});
-            meshData.panels = int32(M(zeroIdxs(1) + 1:zeroIdxs(2) - 1, :));
+            
+            panels = [];
+            
+            % Triangle panels
+            if isfield(msh, "TRIANGLES")
+                tripanels = msh.TRIANGLES(:, 1:3);
+                tripanels(:, 4) = tripanels(:, 1);
+                panels = [panels; tripanels];
+            end
+            
+            % Quad panels
+            if isfield(msh, "QUADS")
+                panels = [panels; msh.QUADS(:, 1:4)];
+            end
+            
+            meshData.panels = panels;
             
         end
         

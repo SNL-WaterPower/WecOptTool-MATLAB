@@ -1,4 +1,4 @@
-function hydro = designDevice(geomType, varargin)
+function [hydro, meshes] = designDevice(geomType, varargin)
     
 %     arguments
 %         geomType (1,1) string
@@ -7,7 +7,7 @@ function hydro = designDevice(geomType, varargin)
     
     switch geomType
         case 'parametric'
-            hydro = getHydroParametric(varargin{:});
+            [hydro, meshes] = getHydroParametric(varargin{:});
         otherwise
             error('WecOptTool:UnknownGeometryType',...
                 'Invalid geometry type')
@@ -15,36 +15,25 @@ function hydro = designDevice(geomType, varargin)
     
 end
 
-function hydro = getHydroParametric(folder, width, height, depth, w)
+function [hydro, meshes] = getHydroParametric(folder,   ...
+                                              width,    ...
+                                              height,   ...
+                                              depth,    ...
+                                              w)
                
     if w(1) == 0
         w = w(2:end);
     end
     
-    % update the .geo file with parameters (width, hieght, depth
-    geofn_0 = 'Flapper_base.geo';
-    varinames = {'width','height','depth'};
-    varivals = {width,height,depth};
-    [geofn_1,ftxt] = WecOptTool.mesh.updateGeo(geofn_0, varinames, varivals, folder);
-%     disp(ftxt)
-
-    % call gmsh to create the mesh and save as STL
-    geofn_2 = 'Flapper.stl';
-    meshscalefator = 1;
-    syscall_gmsh = sprintf('gmsh %s -clscale %f -1 -2 -o %s',...
-        geofn_1,meshscalefator,geofn_2);
-    [status,cmdout] = system(syscall_gmsh);
-%     disp(cmdout)
-    
-    % read the file and translate to something that NEMOH can use
-    [TR,fileformat,attributes,solidID] = stlread(geofn_2);
-    
-    figure('name','STL data')
-    trimesh(TR,'EdgeColor','k')
-    axis equal
-    zlim([-Inf, 0])
-    ylim([-10, 10])
-    xlim([-10, 10])
+    meshes = WecOptTool.mesh("Gmsh",       ...
+                             folder,       ...
+                             "Flapper_base2.geo",   ...
+                             "base",                ...
+                             1,                     ...
+                             "lc", 0.5,             ...
+                             "width", width,        ...
+                             "thick", depth,        ...
+                             "height", height);
     
 %     hydro = WecOptTool.solver("NEMOH", folder, meshes, w);
     hydro = nan;
