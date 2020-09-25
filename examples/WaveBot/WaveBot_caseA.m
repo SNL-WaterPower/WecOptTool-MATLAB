@@ -67,18 +67,68 @@ for ii = 1:length(controlType)
     r(ii).name = controlType{ii};
 end
 
-%% plot results
+%% plot freq. domain results
 
 r.plotFreq()
-delete(findobj(gcf, 'Type', 'Legend'))
+
+fig = gcf;
+fig.Position = fig.Position .* [1 1 1.5 0.5];
+delete(findobj(fig, 'Type', 'Legend'))
+
+% LaTex axis labels and legend
 ax = findobj(gcf, 'Type', 'axes');
-legend(ax(end))
-% export_fig('../gfx/WaveBot_caseA_freq.pdf','-transparent')
+l1 = legend(ax(end),'$F_e$','$u$','$F_u$');
+set(l1,'Interpreter','latex')
 
-r.plotTime(0:0.01:10)
-legend(subplot(6,1,1),'CC','P','PS')
-% export_fig('../gfx/WaveBot_caseA_time.pdf','-transparent')
+% update titles
+ax(6).Title.String = 'CC';
+ax(4).Title.String = 'P';
+ax(2).Title.String = 'PS';
 
-%% report results
+% export_fig('WaveBot_caseA_freq.pdf','-transparent')
+
+%% plot time domain results
+
+fs = 15;
+r.plotTime(0:0.01:10);
+fig = gcf;
+ax = findall(fig,'type','axes');
+
+% thicker lines
+lh = findobj(fig,'Type','line');
+for ii = 1:numel(lh)
+    lh(ii).LineWidth=2;
+end
+
+% plot PTO force limits and add annotations
+hp(1) = plot(ax(2),xlim,fmax*ones(2,1),'k--');
+hp(2) = plot(ax(2),xlim,-1*fmax*ones(2,1),'k--');
+uistack(hp,'bottom');
+annotation(fig,'textarrow',[0.648214285714286 0.573214285714286],...
+        [0.361904761904762 0.328571428571429],'String','$F_u^{\textrm{{max}}}$',...
+        'Interpreter','latex',...
+        'FontSize',18);
+annotation(fig,'arrow',[0.648214285714286 0.528571428571429],...
+        [0.36031746031746 0.288888888888889]);
+
+% update legend
+l1 = legend(subplot(6,1,1),'CC','P','PS');
+set(l1,'interpreter','latex')
+set(l1,'FontSize',fs)
+set(l1,'NumColumns',3)
+set(l1,'Location','northeast')
+
+% LaTex axis labels
+ylabel(ax(1),'$P$ [W]','interpreter','latex','FontSize',fs)
+ylabel(ax(2),'$F_u$ [N]','interpreter','latex','FontSize',fs)
+ylabel(ax(3),'$u$ [m/s]','interpreter','latex','FontSize',fs)
+ylabel(ax(4),'$z$ [m]','interpreter','latex','FontSize',fs)
+ylabel(ax(5),'$F_e$ [N]','interpreter','latex','FontSize',fs)
+ylabel(ax(6),'$\eta$ [m]','interpreter','latex','FontSize',fs)
+xlabel(ax(1),'Time [s]','interpreter','latex','FontSize',fs)
+
+% export_fig('WaveBot_caseA_time.pdf','-transparent')
+
+%% report results in a table
 
 summary(r)
