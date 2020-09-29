@@ -102,7 +102,7 @@ structure includes the ``S.S`` and ``S.w`` fields.
         note: 'Bretschneider, Hm0 = 4, Tp = 5'
         date: '25-Mar-2020 13:08:28'
 
-In the active code above from |optimization.m|_, there are eight spectra loaded into a |struct array|_.
+In the active code above from |optimization.m|_, there are eight spectra loaded.
 These can be plotted using standard MATLAB commands.
 
 .. code:: matlab
@@ -110,7 +110,7 @@ These can be plotted using standard MATLAB commands.
     figure
     hold on
     grid on
-    arrayfun(@(x) plot(x.w,x.S,'DisplayName',x.note), S)
+    arrayfun(@(x) plot(x.w,x.S,'DisplayName',x.note), SS)
     legend()
     xlim([0,3])
     xlabel('Freq. [rad/s]')
@@ -415,8 +415,6 @@ shown, alongside the simulated meshes.
 .. _WAFO: http://www.maths.lth.se/matstat/wafo/
 .. _RM3: https://tethys-engineering.pnnl.gov/signature-projects/rm3-wave-point-absorber
 .. _Nemoh: https://github.com/LHEEA/Nemoh
-.. |struct array| replace:: struct array
-.. _struct array: https://www.mathworks.com/help/matlab/matlab_prog/create-a-structure-array.html
 .. |pseudo spectral method| replace:: pseudo spectral optimal control
 .. _pseudo spectral method: https://en.wikipedia.org/wiki/Pseudospectral_optimal_control
 
