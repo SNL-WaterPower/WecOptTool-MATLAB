@@ -17,6 +17,7 @@ classdef SeaState
     % given will be given a default upon instantiation of the object:
     %
     %     * mu
+    %     * note
     %
     % Arguments:
     %    S (struct):
@@ -71,7 +72,7 @@ classdef SeaState
     %     specificEnergy (float):
     %         the specific energy of the spectra [J / m\ :sup:`2`]
     %     mu (float): spectrum weighting, for arrays only  (defaults to 1)
-    %
+    %     note (string): a description of the spectrum
     %
     % --
     %
@@ -85,6 +86,7 @@ classdef SeaState
     %     trimLoss - error due to range trimming as percentage of max(S)
     %     specificEnergy - the specific energy of the spectra
     %     mu - spectrum weighting, for arrays only (defaults to 1)
+    %     note - a description of the spectrum
     %
     %  SeaState Methods:
     %    getAllFrequencies - return unique frequencies over all sea states
@@ -137,6 +139,7 @@ classdef SeaState
         S
         w
         mu
+        note
         baseS
         basew
         dw
@@ -185,6 +188,12 @@ classdef SeaState
 
                 if isfield(S, "mu")
                     obj(i).mu = S(i).mu;
+                end
+                
+                if isfield(S, "note")
+                    obj(i).note = S(i).note;
+                else
+                    obj(i).note = sprintf('Spectrum %d', i);
                 end
 
                 if isfield(options, "resampleByError") && ...

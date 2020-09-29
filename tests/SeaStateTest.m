@@ -52,6 +52,16 @@ classdef SeaStateTest < matlab.unittest.TestCase
     end
     
     methods(Test)
+        
+        function testNote(testCase)
+            
+            noteS.w = [1, 2, 3, 4]';
+            noteS.S = [0, 1, 2, 1]';
+            
+            noteSS = WecOptTool.SeaState(noteS);
+            verifyTrue(testCase, strcmp(noteSS.note, "Spectrum 1"));
+            
+        end
 
         function testSampleError(testCase)
             verifyTrue(testCase, all([testCase.SS.sampleError] == 0.01))
@@ -116,6 +126,17 @@ classdef SeaStateTest < matlab.unittest.TestCase
         
         function testPlot(testCase)
             testCase.SS.plot();
+        end
+        
+        function testPlotManual(testCase)
+            figure
+            hold on
+            grid on
+            arrayfun(@(x) plot(x.w,x.S,'DisplayName',x.note), testCase.SS)
+            legend()
+            xlim([0,3])
+            xlabel('Freq. [rad/s]')
+            ylabel('Spect. density [m^2 rad/s]')
         end
         
         function testcheckSpectruMultiSeaStates(testCase)
