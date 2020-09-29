@@ -79,6 +79,23 @@ ax = findobj(gcf, 'Type', 'axes');
 l1 = legend(ax(end),'$F_e$','$u$','$F_u$');
 set(l1,'Interpreter','latex')
 
+% label x-axis with integer multiples of fundamental freq.
+intf = [1:2:8];
+xt = [0,[1:2:8]*2*pi/Tp];
+xtl{1} = 0;
+for ii = 1:length(intf)
+    xtl{ii+1} = sprintf('%i $\\omega_0$',intf(ii));
+end
+for ii = 1:length(ax)
+    set(ax(ii),'XTick',xt)
+    set(ax(ii),'XTickLabel',xtl)
+    set(ax(ii),'TickLabelInterpreter', 'latex');
+end
+
+for ii = [2,4,6]
+    set(ax(ii),'XTickLabel',[])
+end
+
 % update titles
 ax(6).Title.String = 'CC';
 ax(4).Title.String = 'P';
