@@ -94,6 +94,7 @@ end
 
 for ii = [2,4,6]
     set(ax(ii),'XTickLabel',[])
+    ax(ii).Title.Interpreter = 'latex';
 end
 
 % update titles
