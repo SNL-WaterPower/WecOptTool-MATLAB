@@ -40,38 +40,36 @@ SS = WecOptTool.SeaState.regularWave(w,[A,Tp]);
 controlType{1} = 'CC';
 controlType{2} = 'P';
 controlType{3} = 'PS';
+
+% constraints for PS, zmax: max stroke; fmax: max PTO force (inactive)
 zmax = 0.6;
 fmax = 1e10;
 
 folder = WecOptTool.AutoFolder();
-% w = SS.getRegularFrequencies(0.3);
 
-%% create set of devices (running hydrodynamics)
+%% create set of devices (run hydrodynamics)
 
+% outer radius of WaveBot
 rmin = 0.25;
 rmax = 2;
-r0 = 0.88;
+r0 = 0.88; % nominal radius
 radii = sort([linspace(rmin,rmax,19), r0]);
 
-deviceHydro = designDevice('parametric', folder.path, ...
-                           radii(1), 0.35, 0.16, 0.53, w);
-
-                       
-deviceHydro = repmat(deviceHydro, length(radii), 1 );
-for i = 2:length(radii)    
-    radius = radii(i);
-    deviceHydro(i) = designDevice('parametric', folder.path, ...
+clear deviceHydro
+for idx = 1:length(radii)
+    radius = radii(idx);
+    disp("Running BEM for case " + (idx) + " of " + length(radii))
+    deviceHydro(idx) = designDevice('parametric', folder.path, ...
                                radius, 0.35, 0.16, 0.53, w);
-                           
 end
-
 
 %% simulate performance
 
 clear r
 for ii = 1:length(controlType)      
-    for jj = 1:length(radii)       
+    for jj = 1:length(radii)
         rng(3) % run same wave phasing for each case
+        disp("Monte-carlo for " + controlType{ii} + ", case " + (jj) + " of " + length(radii))
         r(jj,ii) = simulateDevice(deviceHydro(jj),SS,controlType{ii},...
                                   'interpMethod','nearest','Zmax',zmax,...
                                   'Fmax',fmax);
@@ -98,10 +96,14 @@ opts.PlotFcn = {@optimplotx,@optimplotfval};
 
 clear fval x_opt exitflag output optSimres
 for ii = 1:length(controlType)
-    disp("Simulation " + (ii) + " of " + length(controlType))    
+    disp("fminbnd for " + controlType{ii})   
+    
+    % find optimal geometry for each control type
     [x_opt(ii), fval(ii), exitflag(ii), output(ii)] = ...
         fminbnd(@(x) myWaveBotObjFun(x,w,SS,controlType{ii},zmax,fmax,...
         folder.path),LB,UB,opts);
+    
+    % get full results for optimal geometry
     [~, optSimres(ii), optHydro(ii)] = ...
         myWaveBotObjFun(x_opt(ii),w,SS,controlType{ii},zmax,fmax,folder.path);
 end
@@ -184,7 +186,7 @@ uistack(h,'bottom');
 
 % export_fig('WaveBot_caseB_results.pdf','-transparent')
 
-%% plot geometries
+%% Plot geometries cross sections
 
 fig = figure('name','WaveBot_caseB_geometrities');
 fig.Position = fig.Position .*[1,1,1.5,0.75];
@@ -192,18 +194,17 @@ hold on
 grid on
 ax = gca;
 
-lstr = ['CC','P','PS'];
-% Plot Optimal Solution X-section
+% Plot optimal solutions
 for ii = 1:length(controlType)
     radiusOpt = x_opt(ii);
     xCoords =  [0, radiusOpt, radiusOpt, 0.35, 0];
     yCoords = [0.2, 0.2, -0.16, -0.53, -0.53]; 
     p(ii) = plot(ax, xCoords, yCoords, 'Marker', mkrs{ii},...
                             'LineWidth',2,'MarkerSize',10,...
-                            'DisplayName', lstr(ii));
+                            'DisplayName', controlType{ii});
 end
 
-
+% Plot all solutions
 for ii = 1:length(radii)
     baseN = length(controlType);
     radius = radii(ii);
@@ -217,10 +218,7 @@ for ii = 1:length(radii)
                                        'DisplayName',num2str(ii));
     end
 end
-%legend('CC','P','PS', 'Parametric geometries')
-%l1 = legend(p,'CC');%,'P','PS', ...
-    %'Original geometry (Coe et al. 2016)', ...
-    %'WecOptTool study geometries'});
+
 l1 = legend([p(1), p(2), p(3), p(4), p(8+baseN)],...
     'CC','P','PS', ...
     'WecOptTool study geometries', 'Original geometry (Coe et al. 2016)');
