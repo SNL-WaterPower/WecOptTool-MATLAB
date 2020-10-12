@@ -68,7 +68,7 @@ classdef Gmsh < WecOptTool.base.Mesher
             arguments
                 obj
                 input string
-                name string
+                name char
                 bodyNum int32
             end
             

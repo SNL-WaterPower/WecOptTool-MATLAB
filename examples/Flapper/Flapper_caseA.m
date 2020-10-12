@@ -1,26 +1,26 @@
 
-my_widths = linspace(1,2.5,5);
+wkdir = WecOptTool.AutoFolder();
+my_widths = [2];
 
 for ii = 1:length(my_widths)
-    [~, meshes] = evalFun(my_widths(ii));
+    [hydro, meshes] = evalFun(my_widths(ii), wkdir);
     WecOptTool.plot.plotMesh(meshes);
+    plot(w, squeeze(hydro.B(1, 1, :)));
 end
 
-function [hydro, meshes] = evalFun(width)
-    
-    wkdir = WecOptTool.AutoFolder();
+function [hydro, meshes] = evalFun(width, wkdir)
     
     dw = 0.3142;
     nf = 50;
     w = dw * (1:nf)';
 
     height = 5;
-    depth = 10;
+    length = 10;
     [hydro, meshes] = designDevice('parametric',    ...
                                    wkdir.path,      ...
+                                   length,          ...
                                    width,           ...
                                    height,          ...
-                                   depth,           ...
                                    w);
 
 end
