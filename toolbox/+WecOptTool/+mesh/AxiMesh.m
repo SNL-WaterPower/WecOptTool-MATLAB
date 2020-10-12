@@ -53,7 +53,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
     
     methods
         
-        function meshData = makeMesh(obj, r, z, ntheta, nfobj, zG, bodyNum)
+        function meshData = makeMesh(obj, r, z, ntheta, nfobj, bodyNum)
             % Mesh generation of an axisymmetric body.
             %
             % All coordinates are measured from the undisturbed sea
@@ -87,7 +87,6 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             % nodes         Nx4 table         table of N node positions with columns ID, x, y, z
             % panels        Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs
             % xzSymmetric   bool              body is symmetric in xz plane (half mesh)
-            % zG            float             z-coordinate of the bodies centre of gravity
             % ============  ================  ======================================
             %
             % Warning:
@@ -197,7 +196,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             fprintf(fid,[mname,'\n'],1);
             fprintf(fid,'1 \n ');
             fprintf(fid,'0. 0. \n ');
-            fprintf(fid,'%f %f %f \n',[0. 0. zG]);
+            fprintf(fid,'%f %f %f \n',[0. 0. mean(z)]);
             fprintf(fid,'%g \n ', nfobj);
             fprintf(fid,'2 \n ');
             fprintf(fid,'0. \n ');
@@ -237,7 +236,6 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             meshFilePath = fullfile(rundir, 'mesh', meshFileName);
             meshData = obj.readNEMOHMesh(meshFilePath);
             meshData.name = mname;
-            meshData.zG = zG;
             meshData.bodyNum = bodyNum;
             
             cd(startdir);

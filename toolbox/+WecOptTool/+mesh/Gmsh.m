@@ -57,7 +57,6 @@ classdef Gmsh < WecOptTool.base.Mesher
             % nodes         Nx4 table         table of N node positions with columns ID, x, y, z
             % panels        Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs
             % xzSymmetric   bool              body is symmetric in xz plane (half mesh)
-            % zG            float             z-coordinate of the bodies centre of gravity
             % ============  ================  ======================================
             %
             % --
