@@ -36,7 +36,7 @@ classdef NEMOH < handle
             % Determine if the NEMOH executables can be found.
             %
             % Returns:
-            %     bool: true if executables found, otherwise false.
+            %     logical: true if executables found, otherwise false.
             %
 
             startdir = pwd;
