@@ -275,12 +275,11 @@ classdef SeaState
             end
             
             allFreqs = obj.getAllFrequencies();
-            wMin = min(allFreqs);
             wMax = max(allFreqs);
             
-            wIntegerStepMin = min([floor(wMin / dw),1]) * dw;
-            wIntegerStepMax = ceil(wMax / dw) * dw;                                
-
+            wIntegerStepMin = dw;
+            wIntegerStepMax = ceil(wMax / dw) * dw;
+            
             freqs = wIntegerStepMin:dw:wIntegerStepMax;
             freqs = freqs';
             

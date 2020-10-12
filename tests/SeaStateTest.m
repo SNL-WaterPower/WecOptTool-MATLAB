@@ -111,7 +111,6 @@ classdef SeaStateTest < matlab.unittest.TestCase
                     IsEqualTo(dw, 'Within', RelativeTolerance(1e-9)))
             
             allFreqs = testCase.SS.getAllFrequencies();
-            verifyTrue(testCase, min(freqs) <= min(allFreqs));
             verifyTrue(testCase, max(freqs) >= max(allFreqs));
             
         end
