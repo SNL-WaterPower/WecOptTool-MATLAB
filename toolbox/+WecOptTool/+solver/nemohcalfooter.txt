@@ -1,6 +1,6 @@
 --- Load cases to be solved --------------------------------------------------
 %-4i %-11.4f %-11.4f ! Number of wave frequencies, Min, and Max (rad/s)
-1  0.  0.                    ! Number of wave directions, Min and Max (degrees)
+1  %-9.4f  %-9.4f    ! Number of wave directions, Min and Max (degrees)
 --- Post processing ----------------------------------------------------------
 0  0.1  10.                  ! IRF                    ! IRF calculation (0 for no calculation), time step and duration
 0                            ! Show pressure

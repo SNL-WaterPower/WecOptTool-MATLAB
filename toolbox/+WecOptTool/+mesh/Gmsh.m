@@ -43,7 +43,9 @@ classdef Gmsh < WecOptTool.base.Mesher
     
     methods
         
-        function meshData = makeMesh(obj, input, name, bodyNum, keys, values)
+        function meshData = makeMesh(obj, input, name, bodyNum,  ...
+                                          keys, values,          ...
+                                          options)
             % Mesh generation
             %       
             % Returns:
@@ -75,6 +77,10 @@ classdef Gmsh < WecOptTool.base.Mesher
             arguments (Repeating)
                 keys string
                 values string
+            end
+            
+            arguments
+                options.xzSymmetric (1,1) logical = false
             end
             
             % Throwing error message if Gmsh could not be found.
@@ -135,6 +141,7 @@ classdef Gmsh < WecOptTool.base.Mesher
             % Add additional info
             meshData.name = name;
             meshData.bodyNum = bodyNum;
+            meshData.xzSymmetric = options.xzSymmetric;
         
         end
         

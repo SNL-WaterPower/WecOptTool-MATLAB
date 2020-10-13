@@ -3,20 +3,20 @@ Mesh.Algorithm = 9;
 
 // Define in command line call (using -setnumber)
 //lc = 0.5;
-//length = 1;
-//width = 5;
+//length = 10;
+//width = 4;
 //height = 6;
 depth = 10;
 
 Point(1) = {0, 0, 0, lc};
 Point(2) = {length, 0, 0, lc};
-Point(3) = {length, width, 0, lc};
-Point(4) = {0, width, 0, lc};
+Point(3) = {length, width / 2, 0, lc};
+Point(4) = {0, width / 2, 0, lc};
 
 Point(5) = {0, 0, height, lc};
 Point(6) = {length, 0, height, lc};
-Point(7) = {length, width, height, lc};
-Point(8) = {0, width, height, lc};
+Point(7) = {length, width / 2, height, lc};
+Point(8) = {0, width / 2, height, lc};
 
 Line(1) = {1, 2};
 Line(2) = {2, 3};
@@ -40,14 +40,13 @@ Line Loop(6) = {4, 9, -8, -12};
 
 Surface(1) = {-1};
 Surface(2) = {2};
-Surface(3) = {3};
 Surface(4) = {4};
 Surface(5) = {5};
 Surface(6) = {6};
 
-Surface Loop(1) = {1, 2, 3, 4, 5, 6};
+Surface Loop(1) = {1, 2, 4, 5, 6};
 Volume(1) = {1};
-Translate {-length / 2, -width / 2, -depth} { Volume{1}; }
+Translate {-length / 2, 0, -depth} { Volume{1}; }
 
 Physical Volume("flapper") = {1};
 

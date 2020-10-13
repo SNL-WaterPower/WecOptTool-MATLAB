@@ -1,18 +1,16 @@
 
 wkdir = WecOptTool.AutoFolder();
-my_widths = [2];
 
-for ii = 1:length(my_widths)
-    [hydro, meshes] = evalFun(my_widths(ii), wkdir);
-    WecOptTool.plot.plotMesh(meshes);
-    plot(w, squeeze(hydro.B(1, 1, :)));
-end
+SS = WecOptTool.SeaState.exampleSpectrum();
+w = SS.getRegularFrequencies(0.3);
 
-function [hydro, meshes] = evalFun(width, wkdir)
-    
-    dw = 0.3142;
-    nf = 50;
-    w = dw * (1:nf)';
+% Half mesh simulation
+[hydro, mesh] = evalFun(2., w, wkdir);
+[performance, model] = simulateDevice(hydro, SS, 'CC');
+performance.summary()
+
+
+function [hydro, meshes] = evalFun(width, w, wkdir)
 
     height = 5;
     length = 10;

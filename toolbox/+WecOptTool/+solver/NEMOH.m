@@ -136,8 +136,8 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             % nodes          Nx4 table         table of N node positions with columns ID, x, y, z
             % panels         Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs
             % xzSymmetric    bool              body is symmetric in xz plane (half mesh)
-            % CoG            1x3 double        Centre of gravity. Optional, default is geometric centre.
-            % rotationPoint  1x3 double        Point of rotation. Optional, default is geometric centre.
+            % CoG            1x3 double        Centre of gravity. Optional, default is geometric center.
+            % rotationPoint  1x3 double        Point of rotation. Optional, default is geometric center.
             % surge          1x1 logical       Translation in surge (x). Optional, default is false.
             % sway           1x1 logical       Translation in sway (y). Optional, default is false.
             % heave          1x1 logical       Translation in heave (z). Optional, default is false.
@@ -168,6 +168,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
                          {mustBePositive,    ...
                           WecOptTool.validation.mustBeStrictlyIncreasing}
                 options.waterDepth (1, 1) double {mustBeNonnegative} = 0
+                options.waveDirection (1, 1) double {mustBeNonnegative} = 0
             end
             
             nBodies = length(bodies);
@@ -182,7 +183,10 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
                 checkBodies(i) = obj.perBodyTasks(bodies(i), singleBody);
             end
             
-            obj.writeNemohCal(checkBodies, options.waterDepth, w)
+            obj.writeNemohCal(checkBodies,          ...
+                              options.waterDepth,   ...
+                              w,                    ...
+                              options.waveDirection)
             
             rundir = obj.path;
             startdir = pwd;
@@ -218,15 +222,16 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
         function body = perBodyTasks(obj, body, singleBody)
             % Jobs to do on each given body individually
             
+            geomCenter = mean(body.nodes{:, 2:4});
+            if body.xzSymmetric; geomCenter(2) = 0; end
+            
             % Apply values to optional fields if missing
             if ~isfield(body, 'CoG')
-                gCentre = mean(body.nodes{:, 2:4});
-                body.CoG = gCentre;
+                body.CoG = geomCenter;
             end
 
             if ~isfield(body, 'rotationPoint')
-                gCentre = mean(body.nodes{:, 2:4});
-                body.rotationPoint = gCentre;
+                body.rotationPoint = geomCenter;
             end
 
             if ~isfield(body, 'surge')
@@ -308,8 +313,8 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             % Creation des fichiers de calcul du maillage
             fid=fopen(fullfile('Mesh.cal'),'w');
             fprintf(fid,[mname,'\n'],1);
-            fprintf(fid,'1 \n ');
-            fprintf(fid,'0. 0. \n ');
+            fprintf(fid,'%d \n ', mesh.xzSymmetric);
+            fprintf(fid,'%d %d \n ', mesh.surge, mesh.sway);
             fprintf(fid,'%f %f %f \n', mesh.CoG);
             fprintf(fid,'%g \n ', nf);
             fprintf(fid,'2 \n ');
@@ -371,7 +376,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             
         end
         
-        function writeNemohCal(obj, bodies, waterDepth, w)
+        function writeNemohCal(obj, bodies, waterDepth, w, waveDirection)
             
             nBody = length(bodies);
             filePath = fullfile(obj.path, 'Nemoh.cal');
@@ -402,7 +407,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
                 
             end
             
-            footerString = obj.getCalFooter(w);
+            footerString = obj.getCalFooter(w, waveDirection);
             fileStrings = [fileStrings footerString];
             
             fid = fopen(filePath, 'w');
@@ -581,13 +586,14 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             
         end
         
-        function footerStrings = getCalFooter(w)
+        function footerStrings = getCalFooter(w, waveDirection)
             
             p = mfilename('fullpath');
             [filepath, ~, ~] = fileparts(p);
             
             footerStrings = strings(1, 8);
-            lineOps = {2 [length(w) w(1) w(end)]};
+            lineOps = {2 [length(w) w(1) w(end)];
+                       3 [waveDirection waveDirection]};
             
             fid = fopen(fullfile(filepath, "nemohcalfooter.txt"));
             
