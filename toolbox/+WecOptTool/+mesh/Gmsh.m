@@ -43,10 +43,30 @@ classdef Gmsh < WecOptTool.base.Mesher
     
     methods
         
-        function meshData = makeMesh(obj, input, name, bodyNum,  ...
-                                          keys, values,          ...
+        function meshData = makeMesh(obj, geoFile, bodyNum, ...
+                                          keys, values,     ...
                                           options)
-            % Mesh generation
+            % Mesh generation using a Gmsh .geo file
+            %
+            % Arguments:
+            %   geoFile (string): path to input .geo file
+            %   bodyNum (int32):
+            %       the number of the body (starting from one)
+            %   keys (string):
+            %       variable name to assign value to in .geo file. This 
+            %       argument must be used with the values argument. The
+            %       keys and values arguments can be repeated.
+            %   values (string):
+            %       value to use for given variable name in keys argument. 
+            %       This argument must be used with the keys argument. The
+            %       keys and values arguments can be repeated.
+            %   options: name-value pair options. See below.
+            %
+            % The following options are supported:
+            %
+            %    xzSymmetric (logical):
+            %        Use to indicate if the mesh should be reflected in the
+            %        xOz plane.
             %       
             % Returns:
             %    struct:
@@ -54,12 +74,27 @@ classdef Gmsh < WecOptTool.base.Mesher
             %
             % ============  ================  ======================================
             % **Variable**  **Format**        **Description**
-            % bodyNum       int               body number
+            % bodyNum       int32             body number
             % name          char array        name of the mesh
             % nodes         Nx4 table         table of N node positions with columns ID, x, y, z
             % panels        Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs
-            % xzSymmetric   bool              body is symmetric in xz plane (half mesh)
+            % xzSymmetric   logical           body is symmetric in xz plane (half mesh)
             % ============  ================  ======================================
+            %
+            % Example:
+            %     The following example uses the
+            %     :mat:func:`+WecOptTool.mesh` as a shortcut to this
+            %     function.
+            %
+            %     >>> meshes = WecOptTool.mesh("Gmsh",              ...
+            %     ...                          folder,              ...
+            %     ...                          "mygeo.geo",         ...
+            %     ...                          1,                   ...
+            %     ...                          "lc", 0.5,           ... % Passed to geo file
+            %     ...                          "length", length,    ... % Passed to geo file
+            %     ...                          "width", width,      ... % Passed to geo file
+            %     ...                          "height", height,    ... % Passed to geo file
+            %     ...                          "xzSymmetric", true);
             %
             % --
             % 
@@ -69,14 +104,13 @@ classdef Gmsh < WecOptTool.base.Mesher
             
             arguments
                 obj
-                input string
-                name char
-                bodyNum int32
+                geoFile (1, 1) string
+                bodyNum (1, 1) int32
             end
             
             arguments (Repeating)
-                keys string
-                values string
+                keys (1, 1) string
+                values (1, 1) string
             end
             
             arguments
@@ -97,9 +131,9 @@ classdef Gmsh < WecOptTool.base.Mesher
             end
             
             % Check that the input path is genuine (gmsh doesn't care)
-            if ~isfile(input)
+            if ~isfile(geoFile)
                 error("WecOptTool:Gmsh:InputFileMissing",   ...
-                      "The given input file path does not exist");
+                      "The given geo file path does not exist");
             end
             
             % gmsh command line call to set all arguments and generate 
@@ -112,7 +146,7 @@ classdef Gmsh < WecOptTool.base.Mesher
             gmshPath = WecOptTool.system.readConfig('gmshPath');
             exeString = WecOptTool.mesh.Gmsh.getCommand();
             exePath = fullfile(gmshPath, exeString);
-            commandString = sprintf('%s %s ', exePath, input);
+            commandString = sprintf('%s %s ', exePath, geoFile);
             
             for i = 1:length(keys)
                 thisvar = sprintf('-setnumber %s %s ',  ...
@@ -121,7 +155,10 @@ classdef Gmsh < WecOptTool.base.Mesher
                 commandString = [commandString thisvar];
             end
             
-            outputPath = fullfile(obj.path, "mesh.m");
+            meshName = sprintf('gmsh_%i', bodyNum);
+            meshFileName = sprintf('%s.m', meshName);
+            
+            outputPath = fullfile(obj.path, meshFileName);
             outputString = sprintf('-0 -save_all -o %s', outputPath);
             commandString = [commandString outputString];
             
@@ -135,12 +172,12 @@ classdef Gmsh < WecOptTool.base.Mesher
             end
             
             % load up the mesh
-            mFilePath = fullfile(obj.path, "mesh.m");
+            mFilePath = fullfile(obj.path, meshFileName);
             meshData = obj.readMATLABMesh(mFilePath);
             
             % Add additional info
-            meshData.name = name;
             meshData.bodyNum = bodyNum;
+            meshData.name = meshName;
             meshData.xzSymmetric = options.xzSymmetric;
         
         end
@@ -176,8 +213,43 @@ classdef Gmsh < WecOptTool.base.Mesher
             
         end
         
-        function meshData = readMATLABMesh(mFilePath)
-            % Load a Gmsh matlab mesh file
+        function meshData = readMATLABMesh(mFilePath, options)
+            % Load a matlab mesh file exported by Gmsh
+            %
+            % Arguments:
+            %   mFilePath (string): path to input .m file
+            %   options: name-value pair options. See below.
+            %
+            % The following options can be used to define the mesh
+            % metadata:
+            %
+            %    bodyNum (int32):
+            %        the bodynumber
+            %    meshName (string):
+            %        the name of the mesh
+            %    xzSymmetric (logical):
+            %        true if the body is symmetric in xz plane
+            %       
+            % Returns:
+            %    struct:
+            %        A mesh description with fields as described below
+            %
+            % ============  ================  ======================================
+            % **Variable**  **Format**        **Description**
+            % bodyNum       int               body number
+            % name          char array        name of the mesh
+            % nodes         Nx4 table         table of N node positions with columns ID, x, y, z
+            % panels        Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs
+            % xzSymmetric   logical           body is symmetric in xz plane (half mesh)
+            % ============  ================  ======================================
+            %
+            
+            arguments
+                mFilePath (1, 1) string
+                options.bodyNum (1, 1) int32 = 0
+                options.meshName (1, 1) string = "gmsh_0";
+                options.xzSymmetric (1, 1) logical = false;
+            end
             
             % Adds msh to the function workspace
             run(mFilePath);
@@ -205,6 +277,11 @@ classdef Gmsh < WecOptTool.base.Mesher
             end
             
             meshData.panels = panels;
+            
+            % Add metadata
+            meshData.bodyNum = options.bodyNum;
+            meshData.meshName = options.meshName;
+            meshData.xzSymmetric = options.xzSymmetric;
             
         end
         

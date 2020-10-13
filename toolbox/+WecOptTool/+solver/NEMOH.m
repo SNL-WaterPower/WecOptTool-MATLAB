@@ -122,6 +122,9 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             %    waterDepth (double):
             %        Water depth to simulation. For infinite depth use
             %        zero, which is the default.
+            %    waveDirection (double):
+            %        Direction from which input waves will propagate (in
+            %        degrees). Default is zero, i.e. along the x-axis.
             %
             % Returns:
             %    :mat:class:`+WecOptTool.Hydrodynamics`:
