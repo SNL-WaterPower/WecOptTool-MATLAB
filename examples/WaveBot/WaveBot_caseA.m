@@ -70,7 +70,7 @@ end
 
 %% plot freq. domain results
 
-r.plotFreq('interpreter', 'latex')
+r.plotFreq('Interpreter', 'latex')
 
 fig = gcf;
 fig.Position = fig.Position .* [1 1 1.5 0.5];
@@ -106,7 +106,7 @@ end
 %% plot time domain results
 
 fs = 15;
-r.plotTime(0:0.01:10, 'interpreter', 'latex', 'FontSize', fs);
+r.plotTime(0:0.01:10, 'Interpreter', 'latex', 'FontSize', fs);
 fig = gcf;
 ax = findall(fig, 'type', 'axes');
 
@@ -133,13 +133,13 @@ annotation(fig,                                     ...
            [0.36031746031746 0.288888888888889]);
 
 % Rewrite axis labels
-ylabel(ax(1), '$P$ [W]', 'interpreter', 'latex', 'FontSize', fs)
-ylabel(ax(2), '$F_u$ [N]', 'interpreter', 'latex', 'FontSize', fs)
-ylabel(ax(3), '$u$ [m/s]', 'interpreter', 'latex', 'FontSize', fs)
-ylabel(ax(4), '$z$ [m]', 'interpreter', 'latex', 'FontSize', fs)
-ylabel(ax(5), '$F_e$ [N]', 'interpreter', 'latex', 'FontSize', fs)
-ylabel(ax(6), '$\eta$ [m]' ,'interpreter', 'latex', 'FontSize', fs)
-xlabel(ax(1),'Time [s]' ,'interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(1), '$P$ [W]', 'Interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(2), '$F_u$ [N]', 'Interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(3), '$u$ [m/s]', 'Interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(4), '$z$ [m]', 'Interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(5), '$F_e$ [N]', 'Interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(6), '$\eta$ [m]', 'Interpreter', 'latex', 'FontSize', fs)
+xlabel(ax(1),'Time [s]', 'Interpreter', 'latex', 'FontSize', fs)
 
 % export_fig('WaveBot_caseA_time.pdf','-transparent')
 
