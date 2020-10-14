@@ -85,8 +85,10 @@ set(l1, 'Interpreter', 'latex')
 intf = 1:2:8;
 xt = [0 (1:2:8) * 2 * pi / Tp];
 xtl{1} = 0;
-for ii = 1:length(intf)
-    xtl{ii+1} = sprintf('%i $\\omega_0$',intf(ii));
+xtl{2} = sprintf('$\\omega_0$');
+
+for ii = 1:length(intf) - 1
+    xtl{ii+2} = sprintf('%i $\\omega_0$', intf(ii+1));
 end
 
 for ii = 1:length(ax)
