@@ -61,14 +61,16 @@ clear r
 for ii = 1:length(controlType) 
     disp("Simulation " + (ii) + " of " + length(controlType))
     rng(3) % run same wave phasing for each case
-    r(ii) = simulateDevice(deviceHydro,SS,controlType{ii},...
-        'interpMethod','nearest','Zmax',zmax,'Fmax',fmax);
+    r(ii) = simulateDevice(deviceHydro,SS,controlType{ii},  ...
+                           'interpMethod', 'nearest',       ...
+                           'Zmax', zmax,                    ...
+                           'Fmax', fmax);
     r(ii).name = controlType{ii};
 end
 
 %% plot freq. domain results
 
-r.plotFreq()
+r.plotFreq('interpreter', 'latex')
 
 fig = gcf;
 fig.Position = fig.Position .* [1 1 1.5 0.5];
@@ -76,73 +78,66 @@ delete(findobj(fig, 'Type', 'Legend'))
 
 % LaTex axis labels and legend
 ax = findobj(gcf, 'Type', 'axes');
-l1 = legend(ax(end),'$F_e$','$u$','$F_u$');
-set(l1,'Interpreter','latex')
+l1 = legend(ax(end), '$F_e$', '$u$', '$F_u$');
+set(l1, 'Interpreter', 'latex')
 
 % label x-axis with integer multiples of fundamental freq.
-intf = [1:2:8];
-xt = [0,[1:2:8]*2*pi/Tp];
+intf = 1:2:8;
+xt = [0 (1:2:8) * 2 * pi / Tp];
 xtl{1} = 0;
 for ii = 1:length(intf)
     xtl{ii+1} = sprintf('%i $\\omega_0$',intf(ii));
 end
+
 for ii = 1:length(ax)
-    set(ax(ii),'XTick',xt)
-    set(ax(ii),'XTickLabel',xtl)
-    set(ax(ii),'TickLabelInterpreter', 'latex');
+    set(ax(ii), 'XTick', xt)
+    set(ax(ii), 'XTickLabel', xtl)
+    set(ax(ii), 'TickLabelInterpreter', 'latex');
 end
 
 for ii = [2,4,6]
-    set(ax(ii),'XTickLabel',[])
-    ax(ii).Title.Interpreter = 'latex';
+    set(ax(ii), 'XTickLabel', [])
 end
-
-% update titles
-ax(6).Title.String = 'CC';
-ax(4).Title.String = 'P';
-ax(2).Title.String = 'PS';
 
 % export_fig('WaveBot_caseA_freq.pdf','-transparent')
 
 %% plot time domain results
 
 fs = 15;
-r.plotTime(0:0.01:10);
+r.plotTime(0:0.01:10, 'interpreter', 'latex', 'FontSize', 15);
 fig = gcf;
-ax = findall(fig,'type','axes');
+ax = findall(fig, 'type', 'axes');
 
 % thicker lines
-lh = findobj(fig,'Type','line');
+lh = findobj(fig, 'Type', 'line');
 for ii = 1:numel(lh)
     lh(ii).LineWidth=2;
 end
 
 % plot PTO force limits and add annotations
-hp(1) = plot(ax(2),xlim,fmax*ones(2,1),'k--');
-hp(2) = plot(ax(2),xlim,-1*fmax*ones(2,1),'k--');
+hp(1) = plot(ax(2), xlim, fmax * ones(2,1), 'k--');
+hp(2) = plot(ax(2), xlim, -1 * fmax * ones(2,1), 'k--');
 uistack(hp,'bottom');
-annotation(fig,'textarrow',[0.648214285714286 0.573214285714286],...
-        [0.361904761904762 0.328571428571429],'String','$F_u^{\textrm{{max}}}$',...
-        'Interpreter','latex',...
-        'FontSize',18);
-annotation(fig,'arrow',[0.648214285714286 0.528571428571429],...
-        [0.36031746031746 0.288888888888889]);
-
-% update legend
-l1 = legend(subplot(6,1,1),'CC','P','PS');
-set(l1,'interpreter','latex')
-set(l1,'FontSize',fs)
-set(l1,'NumColumns',3)
-set(l1,'Location','northeast')
+annotation(fig,                                     ...
+           'textarrow',                             ...
+           [0.648214285714286 0.573214285714286],   ...
+           [0.361904761904762 0.328571428571429],   ...
+           'String', '$F_u^{\textrm{{max}}}$',      ...
+           'Interpreter', 'latex',                  ...
+           'FontSize', 18);
+annotation(fig,                                     ...
+           'arrow',                                 ...
+           [0.648214285714286 0.528571428571429],   ...
+           [0.36031746031746 0.288888888888889]);
 
 % LaTex axis labels
-ylabel(ax(1),'$P$ [W]','interpreter','latex','FontSize',fs)
-ylabel(ax(2),'$F_u$ [N]','interpreter','latex','FontSize',fs)
-ylabel(ax(3),'$u$ [m/s]','interpreter','latex','FontSize',fs)
-ylabel(ax(4),'$z$ [m]','interpreter','latex','FontSize',fs)
-ylabel(ax(5),'$F_e$ [N]','interpreter','latex','FontSize',fs)
-ylabel(ax(6),'$\eta$ [m]','interpreter','latex','FontSize',fs)
-xlabel(ax(1),'Time [s]','interpreter','latex','FontSize',fs)
+ylabel(ax(1), '$P$ [W]', 'interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(2), '$F_u$ [N]', 'interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(3), '$u$ [m/s]', 'interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(4), '$z$ [m]', 'interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(5), '$F_e$ [N]', 'interpreter', 'latex', 'FontSize', fs)
+ylabel(ax(6), '$\eta$ [m]' ,'interpreter', 'latex', 'FontSize', fs)
+xlabel(ax(1),'Time [s]' ,'interpreter', 'latex', 'FontSize', fs)
 
 % export_fig('WaveBot_caseA_time.pdf','-transparent')
 
