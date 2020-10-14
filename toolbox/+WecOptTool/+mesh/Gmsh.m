@@ -82,9 +82,8 @@ classdef Gmsh < WecOptTool.base.Mesher
             % ============  ================  ======================================
             %
             % Example:
-            %     The following example uses the
-            %     :mat:func:`+WecOptTool.mesh` as a shortcut to this
-            %     function.
+            %     The following example uses the :mat:func:`+WecOptTool.mesh` 
+            %     function as a shortcut to this method.
             %
             %     >>> meshes = WecOptTool.mesh("Gmsh",              ...
             %     ...                          folder,              ...
