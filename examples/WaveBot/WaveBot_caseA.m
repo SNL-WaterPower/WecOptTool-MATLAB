@@ -76,7 +76,7 @@ fig = gcf;
 fig.Position = fig.Position .* [1 1 1.5 0.5];
 delete(findobj(fig, 'Type', 'Legend'))
 
-% LaTex axis labels and legend
+% Rewrite legend
 ax = findobj(gcf, 'Type', 'axes');
 l1 = legend(ax(end), '$F_e$', '$u$', '$F_u$');
 set(l1, 'Interpreter', 'latex')
@@ -106,7 +106,7 @@ end
 %% plot time domain results
 
 fs = 15;
-r.plotTime(0:0.01:10, 'interpreter', 'latex', 'FontSize', 15);
+r.plotTime(0:0.01:10, 'interpreter', 'latex', 'FontSize', fs);
 fig = gcf;
 ax = findall(fig, 'type', 'axes');
 
@@ -132,7 +132,7 @@ annotation(fig,                                     ...
            [0.648214285714286 0.528571428571429],   ...
            [0.36031746031746 0.288888888888889]);
 
-% LaTex axis labels
+% Rewrite axis labels
 ylabel(ax(1), '$P$ [W]', 'interpreter', 'latex', 'FontSize', fs)
 ylabel(ax(2), '$F_u$ [N]', 'interpreter', 'latex', 'FontSize', fs)
 ylabel(ax(3), '$u$ [m/s]', 'interpreter', 'latex', 'FontSize', fs)
