@@ -2,14 +2,14 @@ function c = bisection(f, a, b, options)
     % Bisection method
     %
     % Args:
-    %   f (float): real valued function
-    %   a (float): search space lower boundary
-    %   b (float): search space upper boundary
-    %   tol (optional, float): solution tolerance, default = 1e-10
+    %   f (double): real valued function
+    %   a (double): search space lower boundary
+    %   b (double): search space upper boundary
+    %   tol (optional, double): solution tolerance, default = 1e-10
     %   nmax (optional, int): maximum number of operations, default = 1e4
     %
     % Returns:
-    %   float: root of f
+    %   double: root of f
     %
     % Note:
     %     The given interval boundaries must satisfy f(a) * f(b) <= 0

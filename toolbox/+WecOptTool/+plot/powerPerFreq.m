@@ -7,8 +7,8 @@ function powerPerFreq(input)
     %
     % ============  ================  =====================================
     % **Variable**  **Format**        **Description**
-    % w             Nx1 float array   N sea-state frequencie
-    % powPerFreq    Nx1 float array   Power production per frequency
+    % w             Nx1 double array  N sea-state frequencie
+    % powPerFreq    Nx1 double array  Power production per frequency
     % ============  ================  =====================================
     %
     

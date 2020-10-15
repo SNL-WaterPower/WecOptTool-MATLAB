@@ -8,9 +8,9 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
     %
     % Attributes:
     %     path (string): path to file storage folder
-    %     verb (bool): use verbose console outputs (default false)
-    %     rho (float): water density (default = 1025 kg/m\ :sup:`3`)
-    %     g (float):
+    %     verb (logical): use verbose console outputs (default false)
+    %     rho (double): water density (default = 1025 kg/m\ :sup:`3`)
+    %     g (double):
     %         gravitational acceleration (default = 9.81 m/s\ :sup:`2`)
     %
     % --
@@ -116,7 +116,7 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             %       represents a different body with body number given by 
             %       the ``bodyNum`` property. See table below for field
             %       definitions.
-            %   w (array of float):
+            %   w (array of double):
             %       The angular wave frequencies to be calculated.
             %       
             % Returns:
@@ -127,11 +127,11 @@ classdef NEMOH < WecOptTool.base.Solver & WecOptTool.base.NEMOH
             %
             % ============  ================  ======================================
             % **Variable**  **Format**        **Description**
-            % bodyNum       int               body number
+            % bodyNum       int32             body number
             % name          char array        name of the mesh
             % nodes         Nx4 table         table of N node positions with columns ID, x, y, z
             % panels        Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs
-            % zG            float             z-coordinate of the bodies centre of gravity
+            % zG            double            z-coordinate of the bodies centre of gravity
             % ============  ================  ======================================
             % 
             % Note:

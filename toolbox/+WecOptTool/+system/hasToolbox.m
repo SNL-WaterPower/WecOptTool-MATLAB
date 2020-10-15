@@ -11,9 +11,9 @@ function [combined, licensed, installed] = hasToolbox(licenseName,  ...
     % Returns:
     %     (): outputs are:
     %     
-    %         combined (bool): true if toolbox is licensed and installed
-    %         licensed (bool): true is toolbox is licensed
-    %         installed (bool): true is toolbox is installed
+    %         combined (logical): true if toolbox is licensed and installed
+    %         licensed (logical): true is toolbox is licensed
+    %         installed (logical): true is toolbox is installed
     %
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 

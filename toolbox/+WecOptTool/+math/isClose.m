@@ -3,13 +3,13 @@ function result = isClose(a, b, varargin)
     % exactly equal).
     %
     % Args:
-    %   a (float): first value to compare
-    %   b (float): second value to compare
-    %   rtol (float, optional): relative tolerence, default = 1e-05
-    %   atol (float, optional): absolute tolerance, default = 1e-08
+    %   a (double): first value to compare
+    %   b (double): second value to compare
+    %   rtol (double, optional): relative tolerence, default = 1e-05
+    %   atol (double, optional): absolute tolerance, default = 1e-08
     %
     % Returns:
-    %   bool: true if a is within given tolerances of b
+    %   logical: true if a is within given tolerances of b
     %
     % Note:
     %   Derived from the similar named `numpy routine

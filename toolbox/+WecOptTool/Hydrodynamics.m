@@ -40,29 +40,29 @@ classdef Hydrodynamics
     % Attributes:
     %    base (struct):
     %        copy of the input struct
-    %    ex (array):
+    %    ex (array of double):
     %        complex excitation force or torque ([6*Nb,Nh,Nf])
-    %    g (float):
+    %    g (double):
     %        gravitational acceleration
-    %    rho (float):
+    %    rho (double):
     %        water density
-    %    w (array):
+    %    w (array of double):
     %        simulated wave frequencies ([1,Nf])
-    %    A (array):
+    %    A (array of double):
     %        radiation added mass ([6*Nb,6*Nb,Nf])
-    %    Ainf (array):
+    %    Ainf (array of double):
     %        infinite frequency added mass ([6*Nb,6*Nb])
-    %    B (array):
+    %    B (array of double):
     %        radiation wave damping ([6*Nb,6*Nb,Nf])
-    %    C (array):
+    %    C (array of double):
     %        hydrostatic restoring stiffness ([6,6,Nb])
-    %    Nb (int):
+    %    Nb (int32):
     %        number of bodies
-    %    Nh (int):
+    %    Nh (int32):
     %        number of wave headings
-    %    Nf (int):
+    %    Nf (int32):
     %        number of wave frequencies
-    %    Vo (array):
+    %    Vo (array of double):
     %        displaced volume ([1,Nb])
     %    solverName (string):
     %        name of solver used to generate hydrodyamic parameters.

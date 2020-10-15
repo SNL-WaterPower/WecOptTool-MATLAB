@@ -27,16 +27,16 @@ classdef SeaState
     %
     % The following options are supported:
     %
-    %    resampleByError (float):
+    %    resampleByError (double):
     %        Resample the given spectra such that the error with respect
     %        to the original spectral density is less than the given
     %        percentage of the maximum spectral density (per spectrum).
-    %    resampleByStep (float):
+    %    resampleByStep (double):
     %        Resample the spectra with the given angular frequency step.
-    %    trimFrequencies (float):
+    %    trimFrequencies (double):
     %        Remove frequencies with spectral density less than the
     %        given percentage of the maximum (per spectrum).
-    %    extendFrequencies (int):
+    %    extendFrequencies (int32):
     %        Add addition frequencies such that the largest value is
     %        extendFrequencies times the maximum (i.e. max(w)).
     %
@@ -59,19 +59,19 @@ classdef SeaState
     %
     %
     % Attributes:
-    %     S (array of float): spectral density [m\ :sup:`2` s/rad]
-    %     w (array of float): angular frequency [rad / s]
-    %     baseS (array of float):
+    %     S (array of double): spectral density [m\ :sup:`2` s/rad]
+    %     w (array of double): angular frequency [rad / s]
+    %     baseS (array of double):
     %         unmodified spectral density [m\ :sup:`2` s/rad]
-    %     basew (array of float): unmodified angular frequency [rad / s]
-    %     dw (float): angular frequency step [rad / s]
-    %     sampleError (float): 
+    %     basew (array of double): unmodified angular frequency [rad / s]
+    %     dw (double): angular frequency step [rad / s]
+    %     sampleError (double): 
     %         maximum sampling error as percentage of max(S) 
-    %     trimLoss (float):
+    %     trimLoss (double):
     %         error due to range trimming as percentage of max(S)
-    %     specificEnergy (float):
+    %     specificEnergy (double):
     %         the specific energy of the spectra [J / m\ :sup:`2`]
-    %     mu (float): spectrum weighting, for arrays only  (defaults to 1)
+    %     mu (double): spectrum weighting, for arrays only  (defaults to 1)
     %     note (string): a description of the spectrum
     %
     % --
@@ -244,7 +244,8 @@ classdef SeaState
             % Returns all unique frequencies over all sea states
             %
             % Returns:
-            %     array: sorted unique angular frequencies [rad / s]
+            %     array of double:
+            %         sorted unique angular frequencies [rad / s]
             
             allFreqs = [];
             
@@ -261,10 +262,10 @@ classdef SeaState
             % at the given step size
             %
             % Arguments:
-            %     dw (float): angular frequency step
+            %     dw (double): angular frequency step
             %
             % Returns:
-            %     array: regular angular frequencies [rad / s]
+            %     array of double: regular angular frequencies [rad / s]
             
             arguments
                 obj
@@ -290,7 +291,7 @@ classdef SeaState
             % Get wave amplitude per angular frequency
             %
             % Returns:
-            %     array: wave amplitudes [m]
+            %     array of double: wave amplitudes [m]
             
             Aw = sqrt(2 * obj.dw * obj.S(:));
             
@@ -567,14 +568,15 @@ classdef SeaState
             %
             % The following options are supported:
             %
-            %    g (optional, float):
+            %    g (optional, double):
             %        Acceleration due to gravity, default = 9.81 
             %        m/s\ :sup:`2`.
-            %    rho (optional, float):
+            %    rho (optional, double):
             %        Water density, default 1028 kg/m\ :sup:`3`.
             %
             % Returns:
-            %     array: specify energy per spectra [J / m\ :sup:`2`]
+            %     array of double:
+            %         specify energy per spectra [J / m\ :sup:`2`]
             %
             % Example:
             %
@@ -616,7 +618,8 @@ classdef SeaState
             %        :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %
             % Returns:
-            %     array: absolute error per spectrum [m\ :sup:`2` s/rad]
+            %     array of double:
+            %         absolute error per spectrum [m\ :sup:`2` s/rad]
             %
             % Example:
             %     Find the maximum absolute error in spectral density
@@ -671,7 +674,7 @@ classdef SeaState
             %        :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
             %
             % Returns:
-            %     array: relative error per spectrum
+            %     array of double: relative error per spectrum
             %
             % Example:
             %     Find the relative error in specific energy of a spectrum 
@@ -711,7 +714,7 @@ classdef SeaState
             %         struct array that satisfies the
             %         :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %         method
-            %     densityTolerence (float):
+            %     densityTolerence (double):
             %         Percentage of maximum spectral density
             %
             % Returns:
@@ -754,7 +757,7 @@ classdef SeaState
             %         struct array that satisfies the
             %         :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %         method
-            %     nRepeats (int):
+            %     nRepeats (int32):
             %         Number of repetitions of max frequency
             %
             % Returns:
@@ -806,16 +809,16 @@ classdef SeaState
             %         struct array that satisfies the
             %         :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %         method
-            %     targetError (float):
+            %     targetError (double):
             %         Target maximum error in normalized spectral density 
-            %     min_dw (optional, float):
+            %     min_dw (optional, double):
             %         Smallest frequency step to test, default = 1e-4
             %
             % Returns:
             %      :
             %     - S (struct): Sea state struct which conforms to 
             %       :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
-            %     - dw (array): Frequency spacings per spectrum
+            %     - dw (array of double): Frequency spacings per spectrum
             %
             % Example:
             %     Resample such that the maximum absolute error in 
@@ -872,15 +875,15 @@ classdef SeaState
             %         struct array that satisfies the
             %         :mat:meth:`+WecOptTool.SeaState.checkSpectrum` 
             %         method
-            %     dw (float):
+            %     dw (double):
             %         Angular frequency step size
             %
             % Returns:
             %      :
             %     - S (struct): Sea state struct which conforms to 
             %       :mat:meth:`+WecOptTool.SeaState.checkSpectrum`
-            %     - errors (array): error in spectral density (normalized 
-            %       by the maximum) per spectrum
+            %     - errors (array of double): error in spectral density 
+            %       (normalized by the maximum) per spectrum
             %
             % Example:
             %     Resample using a fixed angular frequency step of 0.2
@@ -963,8 +966,8 @@ classdef SeaState
             % Returns a regular wave using a WAFO-like struct
             %
             % Arguments:
-            %     w (array): frequency vector
-            %     sdata (array):
+            %     w (array of double): frequency vector
+            %     sdata (array of double):
             %         [A, T], where A is the amplitude and T is the period
             %
             % Returns:
