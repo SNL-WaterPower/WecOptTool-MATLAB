@@ -132,14 +132,13 @@ annotation(fig,                                     ...
            [0.648214285714286 0.528571428571429],   ...
            [0.36031746031746 0.288888888888889]);
 
-% Rewrite axis labels
+% Rewrite y-axis labels
 ylabel(ax(1), '$P$ [W]', 'Interpreter', 'latex', 'FontSize', fs)
 ylabel(ax(2), '$F_u$ [N]', 'Interpreter', 'latex', 'FontSize', fs)
 ylabel(ax(3), '$u$ [m/s]', 'Interpreter', 'latex', 'FontSize', fs)
 ylabel(ax(4), '$z$ [m]', 'Interpreter', 'latex', 'FontSize', fs)
 ylabel(ax(5), '$F_e$ [N]', 'Interpreter', 'latex', 'FontSize', fs)
 ylabel(ax(6), '$\eta$ [m]', 'Interpreter', 'latex', 'FontSize', fs)
-xlabel(ax(1),'Time [s]', 'Interpreter', 'latex', 'FontSize', fs)
 
 % export_fig('WaveBot_caseA_time.pdf','-transparent')
 
