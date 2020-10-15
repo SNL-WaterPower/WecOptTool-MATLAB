@@ -1621,7 +1621,48 @@ Additionally, solver settings such as the linear interpolation method (<code cla
 244
 245
 246
-247</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">classdef</span> <span class="n">Performance</span> <span class="o">&lt;</span> <span class="n">handle</span>
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">classdef</span> <span class="n">Performance</span> <span class="o">&lt;</span> <span class="n">handle</span>
     
     <span class="n">properties</span>
         <span class="s">w</span> <span class="s">(:,:)</span> <span class="s">double</span> <span class="s">{mustBeFinite,mustBeReal,mustBePositive}</span>
@@ -1639,15 +1680,18 @@ Additionally, solver settings such as the linear interpolation method (<code cla
     
     <span class="s">methods</span>
 <span class="k">        </span>
-<span class="k">        function</span><span class="w"> </span><span class="nf">plotTime</span><span class="p">(</span>obj ,t<span class="p">)</span><span class="w"></span>
+<span class="k">        function</span><span class="w"> </span><span class="nf">plotTime</span><span class="p">(</span>obj, t, options<span class="p">)</span><span class="w"></span>
 <span class="w">            </span>
-<span class="w">            </span><span class="k">if</span> <span class="n">nargin</span> <span class="o">&lt;</span> <span class="mi">2</span>
-                <span class="n">trep</span> <span class="p">=</span> <span class="n">obj</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">getRepeatPer</span><span class="p">();</span>
-                <span class="n">t</span> <span class="p">=</span> <span class="mi">0</span><span class="p">:</span><span class="mf">0.05</span><span class="p">:</span><span class="n">trep</span><span class="p">;</span>
+<span class="w">            </span><span class="n">arguments</span>
+                <span class="n">obj</span>
+                <span class="s">t</span> <span class="p">=</span> <span class="mi">0</span><span class="p">:</span><span class="mf">0.05</span><span class="p">:</span><span class="n">obj</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">getRepeatPer</span><span class="p">()</span>
+                <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span> <span class="p">=</span> <span class="s">&#39;none&#39;</span>
+                <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span> <span class="p">=</span> <span class="mi">11</span>
             <span class="n">end</span>
             
             <span class="s">fig</span> <span class="p">=</span> <span class="n">figure</span><span class="p">(</span><span class="s">&#39;Name&#39;</span><span class="p">,</span><span class="s">&#39;Performance.plotTime&#39;</span><span class="p">);</span>
-            <span class="n">fig</span><span class="p">.</span><span class="n">Position</span> <span class="p">=</span> <span class="n">fig</span><span class="p">.</span><span class="n">Position</span><span class="o">.*</span><span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mf">1.5</span><span class="p">];</span>
+            <span class="n">fig</span><span class="p">.</span><span class="n">Position</span> <span class="p">=</span> <span class="n">fig</span><span class="p">.</span><span class="n">Position</span> <span class="o">.*</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mf">1.5</span><span class="p">];</span>
+            <span class="n">movegui</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s">&#39;onscreen&#39;</span><span class="p">);</span>
             
             <span class="c">% fields for plotting</span>
             <span class="n">fns</span> <span class="p">=</span> <span class="p">{</span><span class="s">&#39;eta&#39;</span><span class="p">,</span><span class="s">&#39;F0&#39;</span><span class="p">,</span><span class="s">&#39;pos&#39;</span><span class="p">,</span><span class="s">&#39;u&#39;</span><span class="p">,</span><span class="s">&#39;Fpto&#39;</span><span class="p">,</span><span class="s">&#39;pow&#39;</span><span class="p">};</span>
@@ -1663,28 +1707,45 @@ Additionally, solver settings such as the linear interpolation method (<code cla
                 <span class="n">for</span> <span class="s">ii</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
                     <span class="n">timeRes</span><span class="p">.(</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">})</span> <span class="p">=</span> <span class="n">getTimeRes</span><span class="p">(</span><span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">),</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span> <span class="n">t</span><span class="p">);</span>
                     <span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">ii</span><span class="p">),</span><span class="n">t</span><span class="p">,</span><span class="n">timeRes</span><span class="p">.(</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">}))</span>
-                    <span class="n">ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">ii</span><span class="p">),</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">})</span>
+                    <span class="n">ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">ii</span><span class="p">),</span>                              <span class="k">...</span>
+                           <span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>                             <span class="k">...</span>
+                           <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                           <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
                 <span class="n">end</span>
                 
                 <span class="s">for</span> <span class="s">ii</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
                     <span class="n">set</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">ii</span><span class="p">),</span><span class="s">&#39;XTickLabel&#39;</span><span class="p">,[])</span>
                 <span class="n">end</span>
+                
                 <span class="s">linkaxes(ax,&#39;x&#39;)</span>
-                <span class="n">xlabel</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="k">end</span><span class="p">),</span><span class="s">&#39;Time [s]&#39;</span><span class="p">)</span>
+                <span class="n">xlabel</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="k">end</span><span class="p">),</span>                             <span class="k">...</span>
+                       <span class="s">&#39;Time [s]&#39;</span><span class="p">,</span>                          <span class="k">...</span>
+                       <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                       <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+               
             <span class="n">end</span>
+            
             <span class="s">xlim([t(1),</span> <span class="s">t(end)])</span>
             
             <span class="n">if</span> <span class="s">length(obj)</span> <span class="o">&gt;</span> <span class="mi">1</span>
-                <span class="n">legend</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="mi">1</span><span class="p">),{</span><span class="n">obj</span><span class="p">.</span><span class="n">name</span><span class="p">})</span>
+                <span class="n">l1</span> <span class="p">=</span> <span class="n">legend</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>                               <span class="k">...</span>
+                            <span class="p">{</span><span class="n">obj</span><span class="p">.</span><span class="n">name</span><span class="p">},</span>                          <span class="k">...</span>
+                            <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                            <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">);</span>
+                <span class="n">set</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="s">&#39;NumColumns&#39;</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
             <span class="n">end</span> 
             
         <span class="s">end</span>
 <span class="k">        </span>
-<span class="k">        function</span><span class="w"> </span><span class="nf">plotFreq</span><span class="p">(</span>obj,fig<span class="p">)</span><span class="w"></span>
+<span class="k">        function</span><span class="w"> </span><span class="nf">plotFreq</span><span class="p">(</span>obj, fig, options<span class="p">)</span><span class="w"></span>
 <span class="w">            </span>
-<span class="w">            </span><span class="k">if</span> <span class="n">nargin</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">||</span> <span class="nb">isempty</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-                <span class="n">fig</span> <span class="p">=</span> <span class="n">figure</span><span class="p">;</span>
-            <span class="n">end</span>
+<span class="w">            </span><span class="n">arguments</span>
+                <span class="n">obj</span>
+                <span class="s">fig</span> <span class="p">=</span> <span class="n">figure</span><span class="p">;</span>
+                <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span> <span class="p">=</span> <span class="s">&#39;none&#39;</span>
+                <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span> <span class="p">=</span> <span class="mi">11</span>
+            <span class="n">end</span> 
+            
             <span class="s">set(fig,&#39;Name&#39;,&#39;Performance.plotFreq&#39;)</span><span class="p">;</span>
             
             <span class="n">fns</span> <span class="p">=</span> <span class="p">{</span><span class="s">&#39;F0&#39;</span><span class="p">,</span><span class="s">&#39;u&#39;</span><span class="p">,</span><span class="s">&#39;Fpto&#39;</span><span class="p">};</span>
@@ -1698,36 +1759,57 @@ Additionally, solver settings such as the linear interpolation method (<code cla
                     
                     <span class="c">% mag plot</span>
                     <span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="p">=</span> <span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="nb">sub2ind</span><span class="p">([</span><span class="n">n</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">jj</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span>
-                    <span class="n">title</span><span class="p">(</span><span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).</span><span class="n">name</span><span class="p">,</span><span class="s">&#39;interpreter&#39;</span><span class="p">,</span><span class="s">&#39;none&#39;</span><span class="p">)</span>
+                    <span class="n">title</span><span class="p">(</span><span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).</span><span class="n">name</span><span class="p">,</span>                         <span class="k">...</span>
+                          <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>   <span class="k">...</span>
+                          <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
                     <span class="n">hold</span> <span class="s">on</span>
                     <span class="n">grid</span> <span class="s">on</span>
                     
-                    <span class="n">stem</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).</span><span class="n">w</span><span class="p">,</span> <span class="n">mag2db</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">fv</span><span class="p">))</span><span class="k">...</span>
-                        <span class="p">,</span><span class="n">mrks</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span><span class="k">...</span>
-                        <span class="s">&#39;DisplayName&#39;</span><span class="p">,</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span><span class="k">...</span>
-                        <span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="k">...</span>
-                        <span class="s">&#39;Color&#39;</span><span class="p">,</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+                    <span class="n">stem</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>                  <span class="k">...</span>
+                         <span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).</span><span class="n">w</span><span class="p">,</span>                 <span class="k">...</span>
+                         <span class="n">mag2db</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">fv</span><span class="p">)),</span>           <span class="k">...</span>
+                         <span class="n">mrks</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>                  <span class="k">...</span>
+                         <span class="s">&#39;DisplayName&#39;</span><span class="p">,</span> <span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>    <span class="k">...</span>
+                         <span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span>           <span class="k">...</span>
+                         <span class="s">&#39;Color&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">)</span>
                     
                     <span class="c">% phase plot</span>
                     <span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">=</span> <span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="nb">sub2ind</span><span class="p">([</span><span class="n">n</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">jj</span><span class="p">,</span><span class="mi">2</span><span class="p">));</span>
                     <span class="n">hold</span> <span class="s">on</span>
                     <span class="n">grid</span> <span class="s">on</span>
                     
-                    <span class="n">stem</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).</span><span class="n">w</span><span class="p">,</span> <span class="nb">angle</span><span class="p">(</span><span class="n">fv</span><span class="p">)</span><span class="k">...</span>
-                        <span class="p">,</span><span class="n">mrks</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span><span class="k">...</span>
-                        <span class="s">&#39;DisplayName&#39;</span><span class="p">,</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span><span class="k">...</span>
-                        <span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="k">...</span>
-                        <span class="s">&#39;Color&#39;</span><span class="p">,</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+                    <span class="n">stem</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span>                  <span class="k">...</span>
+                         <span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).</span><span class="n">w</span><span class="p">,</span>                 <span class="k">...</span>
+                         <span class="nb">angle</span><span class="p">(</span><span class="n">fv</span><span class="p">),</span>                 <span class="k">...</span>
+                         <span class="n">mrks</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>                  <span class="k">...</span>
+                         <span class="s">&#39;DisplayName&#39;</span><span class="p">,</span> <span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>    <span class="k">...</span>
+                         <span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span>           <span class="k">...</span>
+                         <span class="s">&#39;Color&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">)</span>
                     
                     <span class="n">ylim</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">2</span><span class="p">),[</span><span class="o">-</span><span class="nb">pi</span><span class="p">,</span><span class="nb">pi</span><span class="p">])</span>
+                    
                 <span class="n">end</span>
-                <span class="s">xlabel(ax(jj,2),&#39;Frequency [rad/s]&#39;)</span>
+                
+                <span class="s">xlabel(ax(jj,2),</span>                            <span class="s">...</span>
+                       <span class="s">&#39;Frequency [rad/s]&#39;</span><span class="p">,</span>                 <span class="k">...</span>
+                       <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                       <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+                
             <span class="n">end</span>
-            <span class="s">ylabel(ax(1,1),&#39;Magnitude [dB]&#39;)</span>
-            <span class="n">ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="s">&#39;Angle [rad]&#39;</span><span class="p">)</span>
-            <span class="n">legend</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-            <span class="n">linkaxes</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span><span class="s">&#39;x&#39;</span><span class="p">)</span>
-            <span class="n">linkaxes</span><span class="p">(</span><span class="n">ax</span><span class="p">(:,</span><span class="mi">1</span><span class="p">),</span><span class="s">&#39;y&#39;</span><span class="p">)</span>
+            
+            <span class="s">ylabel(ax(1,1),</span>                             <span class="s">...</span>
+                   <span class="s">&#39;Magnitude [dB]&#39;</span><span class="p">,</span>                    <span class="k">...</span>
+                   <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                   <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+            <span class="n">ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span>                             <span class="k">...</span>
+                   <span class="s">&#39;Angle [rad]&#39;</span><span class="p">,</span>                       <span class="k">...</span>
+                   <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                   <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+            <span class="n">legend</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>                             <span class="k">...</span>
+                   <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                   <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+            <span class="n">linkaxes</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">)</span>
+            <span class="n">linkaxes</span><span class="p">(</span><span class="n">ax</span><span class="p">(:,</span><span class="mi">1</span><span class="p">),</span> <span class="s">&#39;y&#39;</span><span class="p">)</span>
             
         <span class="n">end</span>
         
