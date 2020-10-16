@@ -418,7 +418,7 @@ classdef SeaState
             %    >>> Hm0 = 5;
             %    >>> Tp = 8;
             %    >>> S = bretschneider([],[Hm0,Tp]);
-            %    >>> WecOptTool.utils.checkSpectrum(S)
+            %    >>> WecOptTool.SeaState.checkSpectrum(S)
             %
             
             arguments
