@@ -36,8 +36,7 @@ function performance = simulateDevice(dynModel, controlType,...
         case 'P'
             performance = dampingControl(dynModel);
         case 'PS'
-            performance = psControl(dynModel,options.Zmax, options.Fmax);
-            
+            performance = psControl(dynModel,options.Zmax, options.Fmax);            
     end
 end
         

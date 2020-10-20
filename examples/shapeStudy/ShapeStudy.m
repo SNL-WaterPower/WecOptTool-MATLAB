@@ -43,8 +43,8 @@ folder = WecOptTool.AutoFolder();
 
 %% Create Devices & Plot Geometries
 
-%AR = [ 0.1, 0.125, 0.15,  0.2, 0.3, 0.4, 0.5, 0.7, 1.0, 2, 3, 6, 10];
-AR = [0.1:0.5:10];
+AR = [ 0.1, 0.125, 0.15,  0.2, 0.3, 0.4, 0.5, 0.7, 1.0, 2, 3, 6, 10];
+%AR = [0.1:0.5:10];
 volume=0.875;
 heights = (volume./(pi * AR.^2)).^(1/3);
 radii = AR.*heights;
@@ -60,10 +60,14 @@ if simulate
                                 SS,       ...
                                 'linear', ...
                                 wdes);                                    
+    perform = simulateDevice(dynModel(1), controlType{1},     ...
+                             'interpMethod','nearest',    ...
+                             'Zmax',zmax, 'Fmax',fmax);       
+                         
     deviceHydro = repmat(deviceHydro, length(AR), 1 );
-    meshes      = repmat(mesh, length(AR), 1 );
+    meshes = repmat(mesh, length(AR), 1 );
     dynModel = repmat(dynModel, length(AR), 1 );
-    
+    perform  = repmat(perform, length(AR), 1 );
     
     for i = 2:length(AR)    
         radius = radii(i);
@@ -76,18 +80,33 @@ if simulate
         dynModel(i) = getDynamicsModel(deviceHydro(i), ...
                                        SS,       ...
                                        'linear', ...
-                                       wdes);                                     
+                                       wdes);       
+        perform(i) = simulateDevice(dynModel(i), controlType{1}, ...
+                                    'interpMethod','nearest',    ...
+                                    'Zmax',zmax, 'Fmax',fmax);
     end
     
-%% Check the parametric meshes
-
-%     %WecOptTool.plot.plotMesh(mesh)
-%     for ii = 1:length(AR)
-%         WecOptTool.plot.plotMesh(meshes(ii))
-%     end    
+% Plot the parametric meshes
+    plotMesh=false;
+    if plotMesh == true
+    %WecOptTool.plot.plotMesh(mesh)
+    for ii = 1:length(AR)
+        WecOptTool.plot.plotMesh(meshes(ii))
+    end    
+    end
     
 
 end
+
+%% Plot mass ratio
+
+figure('position',[0 0 2e3 1e3]*0.25)
+hold on
+grid on
+bar(AR,[dynModel.mass] ./( [deviceHydro.Vo] .* [deviceHydro.rho] ))
+xlabel('Aspect ratio')
+ylabel('Mass ratio, m^\prime/m')
+
 
 %% Plot hydro
 close all
@@ -122,7 +141,8 @@ grid on
 % surf(xp',yp',abs(Ex)./max(max(abs(Ex))))
 Popt = abs([dynModel.Hex].*SS.S).^2./(8*real([dynModel.Zi]));
 Popt(~isfinite(Popt)) = 0;
-surf(xp',yp',Popt./max(max(Popt)))
+%surf(xp',yp',Popt./max(max(Popt)))
+surf(xp',yp',real([perform.pow]))
 rotate3d on
 view([20, 12])
 
@@ -142,7 +162,8 @@ fh(5) = figure('name','Real(Zi)');
 ax(5) = gca;
 hold on
 grid on
-surf(xp',yp',real([dynModel.Zi])/max(max(abs(real([dynModel.Zi])))))
+%surf(xp',yp',real([dynModel.Zi])/max(max(abs(real([dynModel.Zi])))))
+surf(xp',yp',real([perform.Zpto]) ./ max(max(abs((real([perform.Zpto]))))))
 rotate3d on
 view([20, 12])
 
@@ -150,7 +171,8 @@ fh(6) = figure('name','Im(Zi)');
 ax(6) = gca;
 hold on
 grid on
-surf(xp',yp',imag([dynModel.Zi])/max(max(abs(imag([dynModel.Zi])))))
+%surf(xp',yp',imag([dynModel.Zi])/max(max(abs(imag([dynModel.Zi])))))
+surf(xp',yp',imag([perform.Zpto]) ./ max(max(abs((imag([perform.Zpto]))))))
 surf(xp',yp',zeros(size(xp')),'FaceAlpha',0.25,'EdgeColor','none',...
      'FaceColor','blue')
 rotate3d on

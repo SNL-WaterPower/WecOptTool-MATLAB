@@ -2,7 +2,6 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod, wdes)
     
     % Restoring
     K = hydro.C(3,3) * hydro.g * hydro.rho;
-    %   C(ii) = deviceHydro(ii).C(3,3) * rho * g; 
 
     function result = interp_mass(hydro, dof1, dof2, w)
         result = interp1(hydro.w,                           ...
@@ -40,17 +39,18 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod, wdes)
     % Wave height in frequency domain
     eta_fd = waveAmp .* exp(1i * ph);
     eta_fd = eta_fd(:);
+
     % radiation damping FRF
     B = interp_rad(hydro, 3, 3, w) * hydro.rho .* w;
+%   B(:,ii) = squeeze(hydro.B(3,3,:)).*w'*rho;
 
     % added mass FRF
     A = interp_mass(hydro, 3, 3, w) * hydro.rho;
-%   A(:,ii) = squeeze(hydro.A(3,3,:))*rho;
     Ainf = hydro.Ainf(3,3)*hydro.rho;
 
     % friction
     Bf = max(B) * 0.1;      % TODO - make this adjustable 
-%   B(:,ii) = squeeze(hydro.B(3,3,:)).*w'*rho;
+
 
     % Tune device mass to desired natural frequency
     m = hydro.Vo * hydro.rho;
@@ -64,9 +64,6 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod, wdes)
     Hex = interp_ex(hydro, 3, w) * hydro.g * hydro.rho;
     F0 = Hex .* eta_fd;
     
-    % Constant power
-    %F0 = ones(length(F0))*mean(F0);
-
     dynModel.mass = mass;
     dynModel.K = K;
     dynModel.w = w;
