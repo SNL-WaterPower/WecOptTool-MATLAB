@@ -65,7 +65,7 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod, wdes)
     F0 = Hex .* eta_fd;
     
     % Constant power
-    F0 = ones(length(F0))*mean(F0);
+    %F0 = ones(length(F0))*mean(F0);
 
     dynModel.mass = mass;
     dynModel.K = K;

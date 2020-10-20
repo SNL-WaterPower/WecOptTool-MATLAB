@@ -1,4 +1,4 @@
-function performance = simulateDevice(hydro, seastate, controlType,...
+function performance = simulateDevice(dynModel, controlType,...
                                       options)
     % simulateDevice   WEC based on the Sandia "WaveBot" device.
     %
@@ -7,8 +7,7 @@ function performance = simulateDevice(hydro, seastate, controlType,...
     % papers about the WaveBot are available at advweccntrls.sandia.gov.
     %
     % Arguments:
-    %  hydro        structure containing BEM results
-    %  seastate     sea state object
+    %  dynModel      
     %  controlType  controller type:
     %                   complex conjugate:      'CC'
     %                   proportional damping:   'P'
@@ -19,23 +18,18 @@ function performance = simulateDevice(hydro, seastate, controlType,...
     %               displacement
     %  Fmax         (only valid for controlType == 'controlType') maximum
     %               PTO force
-    %  mass         (optional) Mass of the device
     %
     % See also WecOptTool.SeaState, interp1
-    
+    %hydro (1,1) WecOptTool.Hydrodynamics
     arguments
-        hydro (1,1) WecOptTool.Hydrodynamics
-        seastate (1,:) WecOptTool.SeaState
+        dynModel 
         controlType (1,1) string
         options.Zmax (1,:) double  = Inf % TODO - can be assymetric, need to check throughout
         options.Fmax (1,:) double = Inf
         options.interpMethod (1,1) string = 'linear'
-        options.mass (1,1) double = hydro.Vo * hydro.rho
     end
     
-    dynModel = getDynamicsModel(hydro, seastate,...
-        options.interpMethod, options.mass);
-    
+   
     switch controlType
         case 'CC'
             performance = complexCongugateControl(dynModel);

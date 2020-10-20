@@ -43,8 +43,8 @@ folder = WecOptTool.AutoFolder();
 
 %% Create Devices & Plot Geometries
 
-AR = [ 0.1, 0.125, 0.15,  0.2, 0.3, 0.4, 0.5, 0.7, 1.0, 2, 3, 6, 10];
-%AR = [0.1:0.5:10];
+%AR = [ 0.1, 0.125, 0.15,  0.2, 0.3, 0.4, 0.5, 0.7, 1.0, 2, 3, 6, 10];
+AR = [0.1:0.5:10];
 volume=0.875;
 heights = (volume./(pi * AR.^2)).^(1/3);
 radii = AR.*heights;
@@ -92,22 +92,6 @@ end
 %% Plot hydro
 close all
 clear ax
-
-% for ii=1:N
-%     mass(ii)= dynModel.mass;
-%     K= dynModel.K;
-%     eta_fd = dynModel.eta_fd;
-%     waveAmp = dynModel.wave_amp;
-%     ph = dynModel.ph;
-%     B = dynModel.B;
-%     A = dynModel.A;
-%     Ainf = dynModel.Ainf;
-%     Bf = dynModel.Bf;
-%     Zi =dynModel.Zi;
-%     Hex = dynModel.Hex;
-%     F0 = dynModel.F0;
-% end
-
 
 [xp,yp] = meshgrid(w,AR);
 
