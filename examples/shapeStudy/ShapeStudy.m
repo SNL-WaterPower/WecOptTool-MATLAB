@@ -186,215 +186,215 @@ end
 
 %% Simulate Device Performance
 
-if simulate
-clear r
-%r{length(controlType), length(AR)} = {};
-for ii = 1:length(controlType)   
-    for jj = 1:length(AR)       
-        rng(3) % run same wave phasing for each case
-        r(jj,ii) = simulateDevice(deviceHydro(jj), SS, controlType{ii}, ...
-                                  'interpMethod','nearest','Zmax',zmax, ...
-                                  'Fmax',fmax, 'mass', mass(jj));
-        r(jj,ii).name = [controlType{ii}, '_', num2str(AR(jj))];
-    end
-end
-end
+% if simulate
+% clear r
+% %r{length(controlType), length(AR)} = {};
+% for ii = 1:length(controlType)   
+%     for jj = 1:length(AR)       
+%         rng(3) % run same wave phasing for each case
+%         r(jj,ii) = simulateDevice(deviceHydro(jj), SS, controlType{ii}, ...
+%                                   'interpMethod','nearest','Zmax',zmax, ...
+%                                   'Fmax',fmax, 'mass', mass(jj));
+%         r(jj,ii).name = [controlType{ii}, '_', num2str(AR(jj))];
+%     end
+% end
+% end
 
 
 
-%% set up optimization problems
-
-x0 = 2;
-A = [];
-B = [];
-Aeq = [];
-Beq = [];
-LB = min(AR);
-UB = max(AR);
-NONLCON = [];
-opts = optimset('fminbnd');
-opts.UseParallel = true;
-opts.Display = 'iter';
-opts.PlotFcn = {@optimplotx,@optimplotfval};
-
-%% run optimization solver (for each control type)
-
-if simulate
-    clear fval x_opt exitflag output optSimres results
-    results(length(controlType))= struct();
-    for ii = 1:length(controlType)
-        disp("Simulation " + (ii) + " of " + length(controlType))    
-        [xOpt, fVal, exitFlag, output] = ...
-            fminbnd(@(x) myWaveBotObjFun(x,w,SS,controlType{ii},zmax,fmax,...
-            folder.path),LB,UB,opts);
-        [~, optSimRes, optHydro] = ...
-            myWaveBotObjFun(xOpt,w,SS,controlType{ii},zmax,fmax,folder.path);
-
-        results(ii).xOpt = xOpt;
-        results(ii).fVal = fVal;
-        results(ii).exitFlag = exitFlag;
-        results(ii).output = output;
-
-        results(ii).optSimRes = optSimRes;
-        results(ii).optHydro = optHydro;
-
-    end
-end
-
-% %% Plot optimized geometry relative to parametric geo
+% %% set up optimization problems
 % 
-% fig = figure('name','Shape Study');
-% %fig.Position = fig.Position .*[1,1,1.5,0.75];
-% hold on
-% grid on
-% ax = gca;
+% x0 = 2;
+% A = [];
+% B = [];
+% Aeq = [];
+% Beq = [];
+% LB = min(AR);
+% UB = max(AR);
+% NONLCON = [];
+% opts = optimset('fminbnd');
+% opts.UseParallel = true;
+% opts.Display = 'iter';
+% opts.PlotFcn = {@optimplotx,@optimplotfval};
 % 
-% mkrs = {'^','o','s'};
-% % Plot Optimal Solutions
-% for ii = 1:length(controlType)
-%     ARopt= results(ii).xOpt;
-%     height = (volume./(pi * ARopt.^2)).^(1/3);
-%     radius = ARopt.*height;
+% %% run optimization solver (for each control type)
 % 
-%     xCoords =  [0, radius, radius, 0];
-%     yCoords = [0.2, 0.2, -height, -height]; 
-%     p(ii) = plot(ax, xCoords, yCoords, 'Marker', mkrs{ii},...
-%                             'LineWidth',2,'MarkerSize',10);
+% if simulate
+%     clear fval x_opt exitflag output optSimres results
+%     results(length(controlType))= struct();
+%     for ii = 1:length(controlType)
+%         disp("Simulation " + (ii) + " of " + length(controlType))    
+%         [xOpt, fVal, exitFlag, output] = ...
+%             fminbnd(@(x) myWaveBotObjFun(x,w,SS,controlType{ii},zmax,fmax,...
+%             folder.path),LB,UB,opts);
+%         [~, optSimRes, optHydro] = ...
+%             myWaveBotObjFun(xOpt,w,SS,controlType{ii},zmax,fmax,folder.path);
+% 
+%         results(ii).xOpt = xOpt;
+%         results(ii).fVal = fVal;
+%         results(ii).exitFlag = exitFlag;
+%         results(ii).output = output;
+% 
+%         results(ii).optSimRes = optSimRes;
+%         results(ii).optHydro = optHydro;
+% 
+%     end
 % end
 % 
-% for ii = 1:length(AR)
-%     radius = radii(ii);
-%     height = heights(ii);
-%     xCoords =  [0, radius, radius, 0];
-%     yCoords = [0.2, 0.2, -height, -height];
-%     p(length(controlType)+ii) = plot(ax,xCoords, yCoords, 'bo-','DisplayName',num2str(ii));
-% end
+% % %% Plot optimized geometry relative to parametric geo
+% % 
+% % fig = figure('name','Shape Study');
+% % %fig.Position = fig.Position .*[1,1,1.5,0.75];
+% % hold on
+% % grid on
+% % ax = gca;
+% % 
+% % mkrs = {'^','o','s'};
+% % % Plot Optimal Solutions
+% % for ii = 1:length(controlType)
+% %     ARopt= results(ii).xOpt;
+% %     height = (volume./(pi * ARopt.^2)).^(1/3);
+% %     radius = ARopt.*height;
+% % 
+% %     xCoords =  [0, radius, radius, 0];
+% %     yCoords = [0.2, 0.2, -height, -height]; 
+% %     p(ii) = plot(ax, xCoords, yCoords, 'Marker', mkrs{ii},...
+% %                             'LineWidth',2,'MarkerSize',10);
+% % end
+% % 
+% % for ii = 1:length(AR)
+% %     radius = radii(ii);
+% %     height = heights(ii);
+% %     xCoords =  [0, radius, radius, 0];
+% %     yCoords = [0.2, 0.2, -height, -height];
+% %     p(length(controlType)+ii) = plot(ax,xCoords, yCoords, 'bo-','DisplayName',num2str(ii));
+% % end
+% % 
+% % 
+% % 
+% % l1 = legend('CC','P','PS', 'Parametric geometries');
+% % set(l1,'location','southeast')
+% % xlabel('$r$ [m]','interpreter','latex')
+% % ylabel('$z$ [m]','interpreter','latex')
+% % %axis equal
+% % %ylim([-0.6, 0])
+% % %xlim([0, rmax])
+% % %% Plot Paramteric & Optimization Results
+% % 
+% % fig = figure('Name','Shape_study');
+% % mys = {'log','linear','log','log'};
+% % for ii = 1:4
+% %     ax(ii) = subplot(4,1,ii);
+% %     set(ax(ii),'yscale',mys{ii})
+% %     grid on
+% %     hold on
+% % end
+% % 
+% % % Plot the Parametric Results
+% % for ii = 1:size(r,2)
+% %     SMRY = summary(r(:,ii));
+% %     pow = abs(SMRY.AvgPow);
+% %     vol = arrayfun(@(x) deviceHydro(x).Vo, 1:length(AR))';
+% %     
+% %     massRatio = arrayfun(@(x) mass(x)/(deviceHydro(x).Vo * rho),...
+% %                            1:length(AR))';  
+% %     pos = SMRY.MaxPos;
+% %     obfn = pow ./ (0.88 + radii').^3;
+% %     
+% %     semilogy(ax(1), AR, pow, 'Marker', mkrs{ii},'LineWidth',1.5)
+% %     plot(    ax(2), AR, massRatio,'Marker', mkrs{ii},'LineWidth',1.5)
+% %     semilogy(ax(3), AR, pos, 'Marker', mkrs{ii},'LineWidth',1.5)
+% %     semilogy(ax(4), AR, obfn,'Marker', mkrs{ii},'LineWidth',1.5)
+% % end
+% % 
+% % for jj = 1:length(ax)
+% %     set(ax(jj),'ColorOrderIndex',1)
+% % end
+% % 
+% % % Plot Optimal Solutions
+% % for ii = 1:length(controlType)
+% %     xOpt= results(ii).xOpt;
+% %     
+% %     SMRY = summary(results(ii).optSimRes);
+% %     pow = abs(SMRY.AvgPow);
+% %     massRatio = results(ii).optSimRes.mass/(results(ii).optHydro.Vo*rho);
+% %     pos = SMRY.MaxPos;
+% %     obfn = -1*results(ii).fVal;
+% %      
+% %     stem(ax(1), xOpt, pow, 'Marker', mkrs{ii},...
+% %         'LineWidth',2,'MarkerSize',10)
+% %     stem(ax(2), xOpt, massRatio, 'Marker', mkrs{ii},...
+% %         'LineWidth',2,'MarkerSize',10)
+% %     stem(ax(3), xOpt, pos, 'Marker', mkrs{ii},...
+% %         'LineWidth',2,'MarkerSize',10)
+% %     stem(ax(4), xOpt, obfn, 'Marker', mkrs{ii},...
+% %         'LineWidth',2,'MarkerSize',10)
+% % end
+% % 
+% % fs = 15;
+% % ylabel(ax(1),'Avg. pow [W]','interpreter','latex','FontSize',fs)
+% % ylabel(ax(2),'Mass ratio, m$^\prime$/m','interpreter','latex','FontSize',fs)
+% % ylabel(ax(3),'Pos. amp. [m]','interpreter','latex','FontSize',fs)
+% % ylabel(ax(4),'$-1\cdot{}$Obj. fun. [W/m$^3$]','interpreter','latex','FontSize',fs)
+% % 
+% % set(ax(1:3),'XTickLabel',[])
+% % 
+% % l1 = legend(ax(1),'CC','P','PS');
+% % set(l1,'location','southeast')
+% % xlabel('Aspect Ratio, radius:height','interpreter','latex','FontSize',fs)
+% % linkaxes(ax,'x')
+% % %xlim([0.25, max(AR)])
+% % 
+% % annotation(gcf,'textarrow',[0.808928571428571 0.728571428571429],...
+% %         [0.49047619047619 0.434920634920635],'String','$z^{\textrm{{max}}}$',...
+% %         'Interpreter','latex',...
+% %         'FontSize',18);
+% % h = plot(ax(3),[0,1e10],zmax * ones(2,1),'k--');
+% % uistack(h,'bottom');
 % 
 % 
 % 
-% l1 = legend('CC','P','PS', 'Parametric geometries');
-% set(l1,'location','southeast')
-% xlabel('$r$ [m]','interpreter','latex')
-% ylabel('$z$ [m]','interpreter','latex')
-% %axis equal
-% %ylim([-0.6, 0])
-% %xlim([0, rmax])
-% %% Plot Paramteric & Optimization Results
 % 
-% fig = figure('Name','Shape_study');
-% mys = {'log','linear','log','log'};
-% for ii = 1:4
-%     ax(ii) = subplot(4,1,ii);
-%     set(ax(ii),'yscale',mys{ii})
-%     grid on
-%     hold on
-% end
+% %% objective function
 % 
-% % Plot the Parametric Results
-% for ii = 1:size(r,2)
-%     SMRY = summary(r(:,ii));
-%     pow = abs(SMRY.AvgPow);
-%     vol = arrayfun(@(x) deviceHydro(x).Vo, 1:length(AR))';
+% function [fval, simRes, deviceHydro] = myWaveBotObjFun(x,w,SS,controlType,zmax,fmax,folderPath)        
 %     
-%     massRatio = arrayfun(@(x) mass(x)/(deviceHydro(x).Vo * rho),...
-%                            1:length(AR))';  
-%     pos = SMRY.MaxPos;
-%     obfn = pow ./ (0.88 + radii').^3;
+%     % create device and simulate performance the parametric input is 
+%     % [r1, r2, d1, d2] (all positive); here we specify only AR
+%     height = (0.875./(pi * x^2)).^(1/3);
+%     radius = x*height;
 %     
-%     semilogy(ax(1), AR, pow, 'Marker', mkrs{ii},'LineWidth',1.5)
-%     plot(    ax(2), AR, massRatio,'Marker', mkrs{ii},'LineWidth',1.5)
-%     semilogy(ax(3), AR, pos, 'Marker', mkrs{ii},'LineWidth',1.5)
-%     semilogy(ax(4), AR, obfn,'Marker', mkrs{ii},'LineWidth',1.5)
-% end
+%     deviceHydro = designDevice('parametric', folderPath, ...
+%                                radius, height, w);
+%     % Tune the mass to wDesired                       
+%     wdes = 0.625*2*pi;    
+%     m = deviceHydro.Vo * deviceHydro.rho;
+%       
+%     A = squeeze(deviceHydro.A(3,3,:))*deviceHydro.rho;
+%     B = squeeze(deviceHydro.B(3,3,:)).*w'*deviceHydro.rho;
+%     C = deviceHydro.C(3,3)*deviceHydro.rho*deviceHydro.g;
 % 
-% for jj = 1:length(ax)
-%     set(ax(jj),'ColorOrderIndex',1)
-% end
-% 
-% % Plot Optimal Solutions
-% for ii = 1:length(controlType)
-%     xOpt= results(ii).xOpt;
+%     fun = @(m) tune_wdes(wdes,m,C,w,A(:));
+%     mtune = fminsearch(fun,m);
+%                                
+%     % Simulate the device                       
+%     simRes = simulateDevice(deviceHydro,               ...
+%                             SS,                        ...
+%                             controlType,           ...
+%                             'interpMethod','nearest',  ...
+%                             'Zmax',zmax,               ...
+%                             'Fmax',fmax,               ...
+%                             'mass', mtune);
+%     if strcmp(controlType,'PS')
+%         pow =simRes.pow(:,1);
+%     else
+%         pow = simRes.pow;
+%     end
 %     
-%     SMRY = summary(results(ii).optSimRes);
-%     pow = abs(SMRY.AvgPow);
-%     massRatio = results(ii).optSimRes.mass/(results(ii).optHydro.Vo*rho);
-%     pos = SMRY.MaxPos;
-%     obfn = -1*results(ii).fVal;
-%      
-%     stem(ax(1), xOpt, pow, 'Marker', mkrs{ii},...
-%         'LineWidth',2,'MarkerSize',10)
-%     stem(ax(2), xOpt, massRatio, 'Marker', mkrs{ii},...
-%         'LineWidth',2,'MarkerSize',10)
-%     stem(ax(3), xOpt, pos, 'Marker', mkrs{ii},...
-%         'LineWidth',2,'MarkerSize',10)
-%     stem(ax(4), xOpt, obfn, 'Marker', mkrs{ii},...
-%         'LineWidth',2,'MarkerSize',10)
+%     % objective function value
+%     p_bar = sum(real(pow));             % average power
+%     fval = 1 * p_bar ./ (0.88 + radius).^3;  % r1 = 0.88 is as-built WaveBot
 % end
 % 
-% fs = 15;
-% ylabel(ax(1),'Avg. pow [W]','interpreter','latex','FontSize',fs)
-% ylabel(ax(2),'Mass ratio, m$^\prime$/m','interpreter','latex','FontSize',fs)
-% ylabel(ax(3),'Pos. amp. [m]','interpreter','latex','FontSize',fs)
-% ylabel(ax(4),'$-1\cdot{}$Obj. fun. [W/m$^3$]','interpreter','latex','FontSize',fs)
 % 
-% set(ax(1:3),'XTickLabel',[])
 % 
-% l1 = legend(ax(1),'CC','P','PS');
-% set(l1,'location','southeast')
-% xlabel('Aspect Ratio, radius:height','interpreter','latex','FontSize',fs)
-% linkaxes(ax,'x')
-% %xlim([0.25, max(AR)])
-% 
-% annotation(gcf,'textarrow',[0.808928571428571 0.728571428571429],...
-%         [0.49047619047619 0.434920634920635],'String','$z^{\textrm{{max}}}$',...
-%         'Interpreter','latex',...
-%         'FontSize',18);
-% h = plot(ax(3),[0,1e10],zmax * ones(2,1),'k--');
-% uistack(h,'bottom');
-
-
-
-
-%% objective function
-
-function [fval, simRes, deviceHydro] = myWaveBotObjFun(x,w,SS,controlType,zmax,fmax,folderPath)        
-    
-    % create device and simulate performance the parametric input is 
-    % [r1, r2, d1, d2] (all positive); here we specify only AR
-    height = (0.875./(pi * x^2)).^(1/3);
-    radius = x*height;
-    
-    deviceHydro = designDevice('parametric', folderPath, ...
-                               radius, height, w);
-    % Tune the mass to wDesired                       
-    wdes = 0.625*2*pi;    
-    m = deviceHydro.Vo * deviceHydro.rho;
-      
-    A = squeeze(deviceHydro.A(3,3,:))*deviceHydro.rho;
-    B = squeeze(deviceHydro.B(3,3,:)).*w'*deviceHydro.rho;
-    C = deviceHydro.C(3,3)*deviceHydro.rho*deviceHydro.g;
-
-    fun = @(m) tune_wdes(wdes,m,C,w,A(:));
-    mtune = fminsearch(fun,m);
-                               
-    % Simulate the device                       
-    simRes = simulateDevice(deviceHydro,               ...
-                            SS,                        ...
-                            controlType,           ...
-                            'interpMethod','nearest',  ...
-                            'Zmax',zmax,               ...
-                            'Fmax',fmax,               ...
-                            'mass', mtune);
-    if strcmp(controlType,'PS')
-        pow =simRes.pow(:,1);
-    else
-        pow = simRes.pow;
-    end
-    
-    % objective function value
-    p_bar = sum(real(pow));             % average power
-    fval = 1 * p_bar ./ (0.88 + radius).^3;  % r1 = 0.88 is as-built WaveBot
-end
-
-
-
