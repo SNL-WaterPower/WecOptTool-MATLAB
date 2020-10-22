@@ -1,4 +1,6 @@
-function [performance, dynModel] = simulateDevice(hydro,        ...
+function [performance, dynModel] = simulateDevice(length,       ...
+                                                  height,       ...
+                                                  hydro,        ...
                                                   seastate,     ...
                                                   controlType,  ...
                                                   options)
@@ -25,15 +27,25 @@ function [performance, dynModel] = simulateDevice(hydro,        ...
     % See also WecOptTool.SeaState, interp1
     
     arguments
+        length (1, 1) double
+        height (1, 1) double
         hydro (1,1) WecOptTool.Hydrodynamics
         seastate (1,:) WecOptTool.SeaState
         controlType (1,1) string
+        options.mass (1, 1) double = hydro.Vo * hydro.rho
         options.Zmax (1,:) double  = Inf % TODO - can be assymetric, need to check throughout
         options.Fmax (1,:) double = Inf
         options.interpMethod (1,1) string = 'linear'
     end
     
-    dynModel = getDynamicsModel(hydro, seastate, options.interpMethod);
+    
+    
+    dynModel = getDynamicsModel(options.mass,   ...
+                                length,         ...
+                                height,         ...
+                                hydro,          ...
+                                seastate,       ...
+                                options.interpMethod);
     
     switch controlType
         case 'CC'
@@ -46,14 +58,19 @@ function [performance, dynModel] = simulateDevice(hydro,        ...
 
 end
         
-function dynModel = getDynamicsModel(hydro, SS, interpMethod)
+function dynModel = getDynamicsModel(mass,      ...
+                                     length,    ...
+                                     height,    ...
+                                     hydro,     ...
+                                     SS,        ...
+                                     interpMethod)
     
     function result = toVector(matrix)
         result = squeeze(matrix(1, 1, :));
     end
 
-    % Mass
-    mass = hydro.Vo * hydro.rho;
+    % Moment of interia
+    I = mass / 12 * (4 * height ^ 2 + length ^ 2);
 
     % Restoring (in roll)
     K = hydro.C(4,4) * hydro.g * hydro.rho;
@@ -82,13 +99,14 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod)
     Bf = max(B) * 0.1;      % TODO - make this adjustable
 
     % intrinsic impedance
-    Zi = B + Bf + 1i * (w .* (mass + A) - K ./ w);
+    Zi = B + Bf + 1i * (w .* (I + A) - K ./ w);
 
     % Excitation Forces
     Hex = toVector(hydro.ex) * hydro.g * hydro.rho;
     F0 = Hex .* eta_fd;
 
     dynModel.mass = mass;
+    dynModel.I = I;
     dynModel.K = K;
     dynModel.w = w;
     dynModel.eta_fd = eta_fd;
