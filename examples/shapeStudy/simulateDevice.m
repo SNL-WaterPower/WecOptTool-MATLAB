@@ -97,6 +97,7 @@ function myPerf = dampingControl(dynModel,~)
     % power
     myPerf.pow = 0.5 * myPerf.Fpto .* conj(myPerf.u);
     
+    
     myPerf.ph = dynModel.ph;
     myPerf.w = dynModel.w;
     myPerf.eta = dynModel.eta_fd;

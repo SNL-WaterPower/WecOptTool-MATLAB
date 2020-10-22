@@ -80,18 +80,6 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod, wdes)
     dynModel.F0 = F0;
     
     
-%     %% Tune Device Mass to a Natural Frequency
-%     
-
-%         hydro = deviceHydro(ii);
-%         rho = hydro.rho;
-%         g = hydro.g;
-%         
-%         H(:,ii) = (squeeze(real(hydro.ex(3,1,:))) + ...
-%              1i * squeeze(imag(hydro.ex(3,1,:)))) * rho*g;
-%         Z(:,ii) = 1i*w'.*(mass(ii) + A(:,ii)) + B(:,ii) + -1i*C(ii)./w';
-
-    
 end
 
 function [err] = tune_wdes(wdes,m,k,w,A)

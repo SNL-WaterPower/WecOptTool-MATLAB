@@ -15,9 +15,9 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
+%constant='Force';
+constant='Power';
 
-simulate = true; 
-%simulate = false;
 %% define sea state of interest
 dw = 0.3142;
 nf = 50;
@@ -50,53 +50,65 @@ heights = (volume./(pi * AR.^2)).^(1/3);
 radii = AR.*heights;
 
 %% Running hydrodynamics
+
 N = length(AR);
-if simulate
-    [deviceHydro, mesh] = designDevice('parametric', folder.path, ...
-                                       radii(1), heights(1), w);
-    % Tune mass to desired natural frequency
-    wdes = 0.625*2*pi;  
-    dynModel = getDynamicsModel(deviceHydro, ...
-                                SS,       ...
-                                'linear', ...
-                                wdes);                                    
-    perform = simulateDevice(dynModel(1), controlType{1},     ...
-                             'interpMethod','nearest',    ...
-                             'Zmax',zmax, 'Fmax',fmax);       
-                         
-    deviceHydro = repmat(deviceHydro, length(AR), 1 );
-    meshes = repmat(mesh, length(AR), 1 );
-    dynModel = repmat(dynModel, length(AR), 1 );
-    perform  = repmat(perform, length(AR), 1 );
-    
-    for i = 2:length(AR)    
-        radius = radii(i);
-        height = heights(i);
-        [deviceHydro(i), meshes(i)] = designDevice('parametric', ...
-                                          folder.path, radius, height, w);    
 
-        %% Tune Device Mass to a Natural Frequency
-        
-        dynModel(i) = getDynamicsModel(deviceHydro(i), ...
-                                       SS,       ...
-                                       'linear', ...
-                                       wdes);       
-        perform(i) = simulateDevice(dynModel(i), controlType{1}, ...
-                                    'interpMethod','nearest',    ...
-                                    'Zmax',zmax, 'Fmax',fmax);
+[deviceHydro, mesh] = designDevice('parametric', folder.path, ...
+                                   radii(1), heights(1), w);
+% Tune mass to desired natural frequency
+wdes = 0.625*2*pi;  
+dynModel = getDynamicsModel(deviceHydro, ...
+                            SS,       ...
+                            'linear', ...
+                            wdes); 
+% Constant Force? 
+if all(constant == 'Force')
+    Fconstant = ones(length(w),1) * mean(dynModel(1).F0);
+    dynModel.F0 = Fconstant;
+elseif all(constant == 'Power')
+    Fconstant = sqrt(8*real([dynModel.Zi]));
+    for i =1:length(AR)
+        dynModel(i).F0 = Fconstant(:,1);
     end
-    
-% Plot the parametric meshes
-    plotMesh=false;
-    if plotMesh == true
-    %WecOptTool.plot.plotMesh(mesh)
-    for ii = 1:length(AR)
-        WecOptTool.plot.plotMesh(meshes(ii))
-    end    
-    end
-    
-
 end
+perform = simulateDevice(dynModel(1), controlType{1},     ...
+                         'interpMethod','nearest',    ...
+                         'Zmax',zmax, 'Fmax',fmax);       
+
+deviceHydro = repmat(deviceHydro, length(AR), 1 );
+meshes = repmat(mesh, length(AR), 1 );
+dynModel = repmat(dynModel, length(AR), 1 );
+perform  = repmat(perform, length(AR), 1 );
+
+for i = 2:length(AR)    
+    radius = radii(i);
+    height = heights(i);
+    [deviceHydro(i), meshes(i)] = designDevice('parametric', ...
+                                      folder.path, radius, height, w);    
+
+    %% Tune Device Mass to a Natural Frequency
+
+    dynModel(i) = getDynamicsModel(deviceHydro(i), ...
+                                   SS,       ...
+                                   'linear', ...
+                                   wdes);      
+    if constantForce
+        dynModel(i).F0 = Fconstant;
+    end                                   
+    perform(i) = simulateDevice(dynModel(i), controlType{1}, ...
+                                'interpMethod','nearest',    ...
+                                'Zmax',zmax, 'Fmax',fmax);
+end
+
+% Plot the parametric meshes
+plotMesh=false;
+if plotMesh == true
+%WecOptTool.plot.plotMesh(mesh)
+for ii = 1:length(AR)
+    WecOptTool.plot.plotMesh(meshes(ii))
+end    
+end
+    
 
 %% Plot mass ratio
 
@@ -114,8 +126,10 @@ clear ax
 
 [xp,yp] = meshgrid(w,AR);
 
-fh(1) = figure('name','Radiation added mass (A)');
-ax(1) = gca;
+% Figure 1: Normalized Added Mass
+nFig = 1;
+fh(nFig) = figure('name','Radiation added mass (A)');
+ax(nFig) = gca;
 hold on
 grid on
 A = [dynModel.A]-[dynModel.Ainf];
@@ -124,8 +138,10 @@ rotate3d on
 view([20, 12])
 
 
-fh(2) = figure('name','Radiation wave damping (B)');
-ax(2) = gca;
+% Figure 2: Normalized Radiation Damping
+nFig = nFig + 1;
+fh(nFig) = figure('name','Radiation wave damping (B)');
+ax(nFig) = gca;
 hold on
 grid on
 surf(xp',yp',[dynModel.B]./max(max([dynModel.B])))
@@ -133,49 +149,72 @@ rotate3d on
 
 view([20, 12])
 
+% Figure 3: Position
+nFig = nFig + 1;
+fh(nFig) = figure('name','|Position|');
+ax(nFig) = gca;
+hold on
+grid on
+surf(xp',yp', abs([perform.pos]) ./max(max(abs([perform.pos]))))
+rotate3d on
+view([20,12])
 
-fh(3) = figure('name','Power');
-ax(3) = gca;
+
+% Figure 4: Power
+nFig = nFig + 1;
+fh(nFig) = figure('name','Power');
+ax(nFig) = gca;
 hold on
 grid on
 % surf(xp',yp',abs(Ex)./max(max(abs(Ex))))
 Popt = abs([dynModel.Hex].*SS.S).^2./(8*real([dynModel.Zi]));
 Popt(~isfinite(Popt)) = 0;
 %surf(xp',yp',Popt./max(max(Popt)))
-surf(xp',yp',real([perform.pow]))
+surf(xp',yp',abs(real([perform.pow])) ./ max(max(abs(real([perform.pow])))))
 rotate3d on
 view([20, 12])
 
 
-fh(4) = figure('name','Zopt/max(Zopt)');
-ax(4) = gca;
+% Figure 5: Zpto
+nFig = nFig + 1;
+fh(nFig) = figure('name','|Zpto|)');
+ax(nFig) = gca;
 hold on
 grid on
-zopt = abs([dynModel.Hex].*SS.S./(2*real([dynModel.Zi]).*(1i*w*ones(1,N))));
-zopt(~isfinite(zopt)) = 0;
-surf(xp',yp',zopt./max(max(zopt)))
+surf(xp',yp',abs([perform.Zpto])./max(max(abs([perform.Zpto]))))
 rotate3d on
 view([20, 12])
 
 
-fh(5) = figure('name','Real(Zi)');
-ax(5) = gca;
+% Figure 6: Real Zpto
+nFig = nFig + 1;
+fh(nFig) = figure('name','Real(Zpto)');
+ax(nFig) = gca;
 hold on
 grid on
-%surf(xp',yp',real([dynModel.Zi])/max(max(abs(real([dynModel.Zi])))))
-surf(xp',yp',real([perform.Zpto]) ./ max(max(abs((real([perform.Zpto]))))))
+surf(xp',yp',real([perform.Zpto]) ./ max(max((real([perform.Zpto])))))
 rotate3d on
 view([20, 12])
 
-fh(6) = figure('name','Im(Zi)');
-ax(6) = gca;
+
+% Figure 7: Imag Zpto
+nFig = nFig + 1;
+fh(nFig) = figure('name','Im(Zpto)');
+ax(nFig) = gca;
 hold on
 grid on
-%surf(xp',yp',imag([dynModel.Zi])/max(max(abs(imag([dynModel.Zi])))))
-surf(xp',yp',imag([perform.Zpto]) ./ max(max(abs((imag([perform.Zpto]))))))
+surf(xp',yp',imag([perform.Zpto]) ./ max(max((imag([perform.Zpto])))))
 surf(xp',yp',zeros(size(xp')),'FaceAlpha',0.25,'EdgeColor','none',...
      'FaceColor','blue')
 rotate3d on
+
+% Figure 8: Velocity
+nFig = nFig + 1;
+fh(nFig) = figure('name','|Velocity|');
+ax(nFig) = gca;
+hold on
+grid on
+surf(xp',yp',abs([perform.u]) ./ max(max((abs([perform.u])))))
 
 
 Link = linkprop(ax, ...
@@ -184,7 +223,7 @@ setappdata(gcf, 'StoreTheLink', Link);
 view([20, 12])
 
 
-for ii = 1:6
+for ii = 1:nFig
     xlabel(ax(ii),'Freq. [rad/s]')
     ylabel(ax(ii),'Aspect ratio [ ]')
     zlabel(ax(ii),fh(ii).Name)
