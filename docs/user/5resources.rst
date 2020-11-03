@@ -17,5 +17,5 @@ Additional Reading
 The following references specifically focusing on WecOptTool are available:
 
 	* **Optimal control of wave energy converters** :cite:`Bacelli2014` - While written years before the development of WecOptTool, Giorgio Bacelli's doctoral thesis provides much of the framework upon which WecOptTool is based.
-	* **Initial conceptual demonstration of control co-design for WEC optimization** :cite:`Coe2020` - This paper presents the basic framework of WecOptTool along with a series of examples using the Sandia WaveBot.
+	* **Initial conceptual demonstration of control co-design for WEC optimization** :cite:`Coe2020initial` - This paper presents the basic framework of WecOptTool along with a series of examples using the Sandia WaveBot.
     
