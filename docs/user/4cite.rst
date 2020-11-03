@@ -13,8 +13,7 @@ If WecOptTool has been significant in your research, and you would like to ackno
         Doi = {10.36227/techrxiv.12928898},
         Journal = {Journal of Ocean Engineering and Marine Energy (in press)},
         Title = {{Initial conceptual demonstration of control co-design for WEC optimization}},
-        Year = {2020},
-        Bdsk-Url-1 = {https://doi.org/10.36227/techrxiv.12928898}
+        Year = {2020}
       }
 
 .. |nbsp| unicode:: 0xA0 
