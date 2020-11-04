@@ -11,7 +11,7 @@ It is envisioned that the structure of WecOptTool may some day be consolidated b
 Introduction
 ============
 
-The WaveBot example :cite:`Coe2020` will be used to illustrate these concepts in more detail.
+The WaveBot example :cite:`Coe2020initial` will be used to illustrate these concepts in more detail.
 The process for performing a study in WecOptTool can be broken into three distinct steps, which correlate to three files in the WaveBot example:
 
 	* **Designing the device** - |designDevice.m|_ creates the device based on a set of design variables
