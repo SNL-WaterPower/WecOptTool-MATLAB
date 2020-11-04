@@ -1,0 +1,1921 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>6. API &mdash; WecOptTool 1.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/banner.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="7. License" href="7license.html" />
+    <link rel="prev" title="5. Resources" href="5resources.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> WecOptTool
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1setup.html">1. Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2optimization.html">2. Optimizing an Existing WEC Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3model.html">3. WEC Model Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="4cite.html">4. Citing WecOptTool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5resources.html">5. Resources</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">6. API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#wecopttool">6.1. WecOptTool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wecopttool-geometry">6.2. WecOptTool.geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-+WecOptTool.+plot">6.3. WecOptTool.plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-+WecOptTool.+math">6.4. WecOptTool.math</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wecopttool-mesh">6.5. WecOptTool.mesh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wecopttool-solver">6.6. WecOptTool.solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wecopttool-base">6.7. WecOptTool.base</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="7license.html">7. License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8references.html">8. References</a></li>
+</ul>
+<p class="caption"><span class="caption-text">External</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool">GitHub Repository</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WecOptTool</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>6. API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/user/6api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+    
+    
+
+
+
+    <p class="scv-banner scv-sphinx_rtd_theme"><b>Warning:</b> This document is for the development version of WecOptTool.</p>
+<div class="section" id="api">
+<span id="id1"></span><h1>6. API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="wecopttool">
+<h2>6.1. WecOptTool<a class="headerlink" href="#wecopttool" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="+WecOptTool.AutoFolder">
+<em class="property">class </em><code class="descclassname">WecOptTool.</code><code class="descname">AutoFolder</code><a class="headerlink" href="#+WecOptTool.AutoFolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that creates unique temporary folders, which are deleted
+upon object destruction.</p>
+<dl class="attribute">
+<dt id="path">
+<code class="descname">path</code><a class="headerlink" href="#path" title="Permalink to this definition">¶</a></dt>
+<dd><p>path to unique folder for storage</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.AutoFolder.archive">
+<code class="descname">archive</code><span class="sig-paren">(</span><em>targetPath</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.AutoFolder.archive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the folder and contents</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>targetPath</strong> (<em>string</em>) – Path to destination folder</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If there are no files to copy this function will not
+make the destination folder</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.AutoFolder.recoverVar">
+<code class="descname">recoverVar</code><span class="sig-paren">(</span><em>variableName</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.AutoFolder.recoverVar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recover stashed variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variableName</strong> (<em>string</em>) – variable to recover</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">cell array containing all stored version of given
+variable name</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">cell array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.AutoFolder.stashVar">
+<code class="descname">stashVar</code><span class="sig-paren">(</span><em>variable</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.AutoFolder.stashVar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a variable for recovery later.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>variable</strong> – variable to store</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">A new stash is created every time a variable is stored,
+so multiple values may be returned by
+<a class="reference internal" href="#+WecOptTool.AutoFolder.recoverVar" title="+WecOptTool.AutoFolder.recoverVar"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">recoverVar()</span></code></a></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="+WecOptTool.Hydrodynamics">
+<em class="property">class </em><code class="descclassname">WecOptTool.</code><code class="descname">Hydrodynamics</code><span class="sig-paren">(</span><em>hydroData</em>, <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.Hydrodynamics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data type for storage of solver hydrodynamics output.</p>
+<p>This data type defines a set of parameters that are common to the
+description of wave device hydrodynamics parameters, such as in
+<a class="reference external" href="http://wec-sim.github.io/WEC-Sim/advanced_features.html?highlight=bemio#bemio-hydro-data-structure">WEC-Sim’s BEMIO</a>.</p>
+<p>The following parameters must be provided within the input struct,
+which map directly to class attributes (see below):</p>
+<blockquote>
+<div><ul class="simple">
+<li>ex</li>
+<li>g</li>
+<li>rho</li>
+<li>w</li>
+<li>A</li>
+<li>Ainf</li>
+<li>B</li>
+<li>C</li>
+<li>Nb</li>
+<li>Nh</li>
+<li>Nf</li>
+<li>Vo</li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Any negative radiation damping coefficients detected for
+individual bodies will be set to zero, automatically.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hydroData</strong> (<em>struct</em>) – A struct containing the required fields</li>
+<li><strong>options</strong> – name-value pair options. See below.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following options are supported:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>solverName (string):</dt>
+<dd>The name of the solver used to generate the data</dd>
+<dt>runDirectory (string):</dt>
+<dd>Path to the directory containing the solver’s output files</dd>
+</dl>
+</div></blockquote>
+<dl class="attribute">
+<dt id="base">
+<code class="descname">base</code><a class="headerlink" href="#base" title="Permalink to this definition">¶</a></dt>
+<dd><p>copy of the input struct</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">struct</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="ex">
+<code class="descname">ex</code><a class="headerlink" href="#ex" title="Permalink to this definition">¶</a></dt>
+<dd><p>complex excitation force or torque ([6*Nb,Nh,Nf])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="g">
+<code class="descname">g</code><a class="headerlink" href="#g" title="Permalink to this definition">¶</a></dt>
+<dd><p>gravitational acceleration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="rho">
+<code class="descname">rho</code><a class="headerlink" href="#rho" title="Permalink to this definition">¶</a></dt>
+<dd><p>water density</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="w">
+<code class="descname">w</code><a class="headerlink" href="#w" title="Permalink to this definition">¶</a></dt>
+<dd><p>simulated wave frequencies ([1,Nf])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="A">
+<code class="descname">A</code><a class="headerlink" href="#A" title="Permalink to this definition">¶</a></dt>
+<dd><p>radiation added mass ([6*Nb,6*Nb,Nf])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Ainf">
+<code class="descname">Ainf</code><a class="headerlink" href="#Ainf" title="Permalink to this definition">¶</a></dt>
+<dd><p>infinite frequency added mass ([6*Nb,6*Nb])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="B">
+<code class="descname">B</code><a class="headerlink" href="#B" title="Permalink to this definition">¶</a></dt>
+<dd><p>radiation wave damping ([6*Nb,6*Nb,Nf])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="C">
+<code class="descname">C</code><a class="headerlink" href="#C" title="Permalink to this definition">¶</a></dt>
+<dd><p>hydrostatic restoring stiffness ([6,6,Nb])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Nb">
+<code class="descname">Nb</code><a class="headerlink" href="#Nb" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of bodies</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int32</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Nh">
+<code class="descname">Nh</code><a class="headerlink" href="#Nh" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of wave headings</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int32</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Nf">
+<code class="descname">Nf</code><a class="headerlink" href="#Nf" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of wave frequencies</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int32</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Vo">
+<code class="descname">Vo</code><a class="headerlink" href="#Vo" title="Permalink to this definition">¶</a></dt>
+<dd><p>displaced volume ([1,Nb])</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="solverName">
+<code class="descname">solverName</code><a class="headerlink" href="#solverName" title="Permalink to this definition">¶</a></dt>
+<dd><p>name of solver used to generate hydrodyamic parameters.
+Default is “Unknown”.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="runDirectory">
+<code class="descname">runDirectory</code><a class="headerlink" href="#runDirectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>path to folder containing output files of the hydrodynamic
+solver. Defaults to “”.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="+WecOptTool.SeaState">
+<em class="property">class </em><code class="descclassname">WecOptTool.</code><code class="descname">SeaState</code><span class="sig-paren">(</span><em>S</em>, <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data type for storage of sea state information.</p>
+<p>This data type defines a set of parameters that are common to
+description of sea states and is based upon the formats used by
+the <a class="reference external" href="http://www.maths.lth.se/matstat/wafo/">WAFO MATLAB toolbox</a>.</p>
+<p>The following parameters must be provided within the input struct
+(any additional parameters given will also be stored within the
+created object:</p>
+<blockquote>
+<div><ul class="simple">
+<li>S</li>
+<li>w</li>
+</ul>
+</div></blockquote>
+<p>The values of S and w will be validated by the checkSpectrum method
+of this class. The following parameters are optional, and if not
+given will be given a default upon instantiation of the object:</p>
+<blockquote>
+<div><ul class="simple">
+<li>mu</li>
+<li>note</li>
+</ul>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>S</strong> (<em>struct</em>) – A struct containing the required fields, validated by the
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a> method.</li>
+<li><strong>options</strong> – name-value pair options. See below.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following options are supported:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>resampleByError (double):</dt>
+<dd>Resample the given spectra such that the error with respect
+to the original spectral density is less than the given
+percentage of the maximum spectral density (per spectrum).</dd>
+<dt>resampleByStep (double):</dt>
+<dd>Resample the spectra with the given angular frequency step.</dd>
+<dt>trimFrequencies (double):</dt>
+<dd>Remove frequencies with spectral density less than the
+given percentage of the maximum (per spectrum).</dd>
+<dt>extendFrequencies (int32):</dt>
+<dd>Add addition frequencies such that the largest value is
+extendFrequencies times the maximum (i.e. max(w)).</dd>
+</dl>
+</div></blockquote>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The order of operations (if required) is to trim the frequencies
+first, then resample then, finally, extend the frequencies.</p>
+</div>
+<p class="rubric">Example</p>
+<p>Create an array of SeaState objects, with spectra:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>trimmed to include all frequencies containing 99% of the max
+spectral density</li>
+<li>resampled to 5% maximum error in max spectral density</li>
+<li>extended so that the maximum frequency is 4 times the
+trimmed maximum</li>
+</ol>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">WecOptTool</span><span class="o">.</span><span class="n">SeaState</span><span class="o">.</span><span class="n">example8Spectra</span><span class="p">(</span><span class="s2">&quot;resampleByError&quot;</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="o">...</span>
+<span class="gp">... </span>                                        <span class="s2">&quot;trimFrequencies&quot;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="o">...</span>
+<span class="gp">... </span>                                        <span class="s2">&quot;extendFrequencies&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="S">
+<code class="descname">S</code><a class="headerlink" href="#S" title="Permalink to this definition">¶</a></dt>
+<dd><p>spectral density [m<sup>2</sup> s/rad]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">w</code></dt>
+<dd><p>angular frequency [rad / s]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="baseS">
+<code class="descname">baseS</code><a class="headerlink" href="#baseS" title="Permalink to this definition">¶</a></dt>
+<dd><p>unmodified spectral density [m<sup>2</sup> s/rad]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="basew">
+<code class="descname">basew</code><a class="headerlink" href="#basew" title="Permalink to this definition">¶</a></dt>
+<dd><p>unmodified angular frequency [rad / s]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="dw">
+<code class="descname">dw</code><a class="headerlink" href="#dw" title="Permalink to this definition">¶</a></dt>
+<dd><p>angular frequency step [rad / s]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sampleError">
+<code class="descname">sampleError</code><a class="headerlink" href="#sampleError" title="Permalink to this definition">¶</a></dt>
+<dd><p>maximum sampling error as percentage of max(S)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="trimLoss">
+<code class="descname">trimLoss</code><a class="headerlink" href="#trimLoss" title="Permalink to this definition">¶</a></dt>
+<dd><p>error due to range trimming as percentage of max(S)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="specificEnergy">
+<code class="descname">specificEnergy</code><a class="headerlink" href="#specificEnergy" title="Permalink to this definition">¶</a></dt>
+<dd><p>the specific energy of the spectra [J / m<sup>2</sup>]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="mu">
+<code class="descname">mu</code><a class="headerlink" href="#mu" title="Permalink to this definition">¶</a></dt>
+<dd><p>spectrum weighting, for arrays only  (defaults to 1)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="note">
+<code class="descname">note</code><a class="headerlink" href="#note" title="Permalink to this definition">¶</a></dt>
+<dd><p>a description of the spectrum</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.checkSpectrum">
+<em class="property">static </em><code class="descname">checkSpectrum</code><span class="sig-paren">(</span><em>S</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.checkSpectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether the input S is a valid spectrum structure
+(following <a class="reference external" href="https://github.com/wafo-project/wafo">WAFO</a>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>S</strong> (<em>struct</em>) – <p>struct array with the fields:</p>
+<ul class="simple">
+<li>w - column vector of frequencies [rad/s]</li>
+<li>S - column vector of spectral density
+[m<sup>2</sup> s/rad]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>This method makes the following checks:</p>
+<blockquote class="last">
+<div><ol class="arabic simple">
+<li>The struct has fields S and w</li>
+<li>Fields S and w are the same length</li>
+<li>Fields S and w are column vectors</li>
+<li>Field w is positive</li>
+<li>Field w is monotonic</li>
+<li>Field w is regular</li>
+<li>The first entry of field w is an integer multiple of
+the frequency step</li>
+</ol>
+</div></blockquote>
+</div>
+<p class="rubric">Example</p>
+<p>Use WAFO to create a Bretschneider spectrum</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Hm0</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Tp</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">bretschneider</span><span class="p">([],[</span><span class="n">Hm0</span><span class="p">,</span><span class="n">Tp</span><span class="p">]);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">WecOptTool</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">checkSpectrum</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.example8Spectra">
+<em class="property">static </em><code class="descname">example8Spectra</code><span class="sig-paren">(</span><em>varargin</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.example8Spectra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example Bretschneider spectrum with varying HHm0s, Tps,
+Nbins, and range</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.exampleSpectrum">
+<em class="property">static </em><code class="descname">exampleSpectrum</code><span class="sig-paren">(</span><em>varargin</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.exampleSpectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example Bretschneider spectrum with Hm0=8 and Tp=10</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.extendFrequencies">
+<em class="property">static </em><code class="descname">extendFrequencies</code><span class="sig-paren">(</span><em>S</em>, <em>nRepeats</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.extendFrequencies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds multiples of the maximum frequency to a spectra struct
+array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>S</strong> (<em>struct</em>) – struct array that satisfies the
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a>
+method</li>
+<li><strong>nRepeats</strong> (<em>int32</em>) – Number of repetitions of max frequency</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sea state struct which conforms to
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">struct</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Double the frequency range of the given spectrum</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">WecOptTool.SeaState</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">WecOptTool</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">exampleSpectrum</span><span class="p">();</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">disp</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
+<span class="go">    3.2000</span>
+<span class="go">&lt;BLANKLINE&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Snew</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">extendFrequencies</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">disp</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">Snew</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
+<span class="go">    6.4000</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.SeaState.getAllFrequencies">
+<code class="descname">getAllFrequencies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.getAllFrequencies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all unique frequencies over all sea states</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">sorted unique angular frequencies [rad / s]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.SeaState.getAmplitudeSpectrum">
+<code class="descname">getAmplitudeSpectrum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.getAmplitudeSpectrum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get wave amplitude per angular frequency</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">wave amplitudes [m]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.getMaxAbsoluteDensityError">
+<em class="property">static </em><code class="descname">getMaxAbsoluteDensityError</code><span class="sig-paren">(</span><em>trueS</em>, <em>approxS</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.getMaxAbsoluteDensityError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the maximum absolute error in spectral density
+between two spectra struct arrays.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>trueS</strong> (<em>struct</em>) – struct array representing the true value and satisfies
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></li>
+<li><strong>approxS</strong> (<em>struct</em>) – struct array representing the approximate value and
+satisfies
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">absolute error per spectrum [m<sup>2</sup> s/rad]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array of double</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Find the maximum absolute error in spectral density
+in a spectrum after resampling</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">WecOptTool.SeaState</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">WecOptTool</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">exampleSpectrum</span><span class="p">();</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newS</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">resampleByStep</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">getMaxAbsoluteDensityError</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">newS</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">disp</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+<span class="go">    0.9136</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.SeaState.getRegularFrequencies">
+<code class="descname">getRegularFrequencies</code><span class="sig-paren">(</span><em>dw</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.getRegularFrequencies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns regularly spaced frequencies covering all sea states
+at the given step size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dw</strong> (<em>double</em>) – angular frequency step</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">regular angular frequencies [rad / s]</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.getRelativeEnergyError">
+<em class="property">static </em><code class="descname">getRelativeEnergyError</code><span class="sig-paren">(</span><em>trueS</em>, <em>approxS</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.getRelativeEnergyError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the relative error in specific energy between two
+spectra struct arrays</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>trueS</strong> (<em>struct</em>) – struct array representing the true value and satisfies
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></li>
+<li><strong>approxS</strong> (<em>struct</em>) – struct array representing the approximate value and
+satisfies
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">relative error per spectrum</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">array of double</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Find the relative error in specific energy of a spectrum
+after resampling</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">WecOptTool.SeaState</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">WecOptTool</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">exampleSpectrum</span><span class="p">();</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newS</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">resampleByStep</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">getRelativeEnergyError</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">newS</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">disp</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+<span class="go">    0.0010</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.getSpecificEnergy">
+<em class="property">static </em><code class="descname">getSpecificEnergy</code><span class="sig-paren">(</span><em>S</em>, <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.getSpecificEnergy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the specific energy of the given spectra struct
+array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>S</strong> (<em>struct</em>) – struct array that satisfies the
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a>
+method</li>
+<li><strong>options</strong> – name-value pair options. See below.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following options are supported:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>g (optional, double):</dt>
+<dd>Acceleration due to gravity, default = 9.81
+m/s<sup>2</sup>.</dd>
+<dt>rho (optional, double):</dt>
+<dd>Water density, default 1028 kg/m<sup>3</sup>.</dd>
+</dl>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">specify energy per spectra [J / m<sup>2</sup>]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">array of double</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">WecOptTool.SeaState</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">WecOptTool</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">exampleSpectrum</span><span class="p">();</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">getSpecificEnergy</span><span class="p">(</span><span class="n">S</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">disp</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="go">   4.0264e+04</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.SeaState.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot spectra and comparison to base spectra, if different.</p>
+<p>One plot is created per spectrum in the array.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.regularWave">
+<em class="property">static </em><code class="descname">regularWave</code><span class="sig-paren">(</span><em>w</em>, <em>sdata</em>, <em>varargin</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.regularWave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a regular wave using a WAFO-like struct</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>w</strong> (<em>array of double</em>) – frequency vector</li>
+<li><strong>sdata</strong> (<em>array of double</em>) – [A, T], where A is the amplitude and T is the period</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">SeaState object</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#+WecOptTool.SeaState" title="+WecOptTool.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">WecOptTool.SeaState</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>See also jonswap</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.resampleByError">
+<em class="property">static </em><code class="descname">resampleByError</code><span class="sig-paren">(</span><em>S</em>, <em>targetError</em>, <em>min_dw</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.resampleByError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample the given sea state struct based on the error in
+spectral density normalized by the maximum per spectrum.
+a maximum error of the maximum spectral density for a spectra
+struct array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>S</strong> (<em>struct</em>) – struct array that satisfies the
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a>
+method</li>
+<li><strong>targetError</strong> (<em>double</em>) – Target maximum error in normalized spectral density</li>
+<li><strong>min_dw</strong> (<em>optional, double</em>) – Smallest frequency step to test, default = 1e-4</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li>S (struct): Sea state struct which conforms to
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></li>
+<li>dw (array of double): Frequency spacings per spectrum</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Resample such that the maximum absolute error in
+spectral density is less that 5% of it’s original
+maximum</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">WecOptTool.SeaState</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">WecOptTool</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">exampleSpectrum</span><span class="p">();</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newS</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">resampleByError</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">error</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">getMaxAbsoluteDensityError</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">newS</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">disp</span><span class="p">(</span><span class="n">error</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">S</span><span class="o">.</span><span class="n">S</span><span class="p">))</span>
+<span class="go">    0.0500</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.resampleByStep">
+<em class="property">static </em><code class="descname">resampleByStep</code><span class="sig-paren">(</span><em>S</em>, <em>dw</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.resampleByStep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample the given sea state struct using a given frequency
+step</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>S</strong> (<em>struct</em>) – struct array that satisfies the
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a>
+method</li>
+<li><strong>dw</strong> (<em>double</em>) – Angular frequency step size</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li>S (struct): Sea state struct which conforms to
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></li>
+<li>errors (array of double): error in spectral density
+(normalized by the maximum) per spectrum</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Resample using a fixed angular frequency step of 0.2</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">WecOptTool.SeaState</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">WecOptTool</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">exampleSpectrum</span><span class="p">();</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newS</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">resampleByStep</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">);</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dw</span> <span class="o">=</span> <span class="n">uniquetol</span><span class="p">(</span><span class="n">diff</span><span class="p">(</span><span class="n">newS</span><span class="o">.</span><span class="n">w</span><span class="p">),</span> <span class="n">eps</span><span class="p">(</span><span class="s1">&#39;single&#39;</span><span class="p">));</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">disp</span><span class="p">(</span><span class="n">dw</span><span class="p">)</span>
+<span class="go">    0.2000</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="+WecOptTool.SeaState.trimFrequencies">
+<em class="property">static </em><code class="descname">trimFrequencies</code><span class="sig-paren">(</span><em>S</em>, <em>densityTolerence</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.SeaState.trimFrequencies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes frequencies below a threshold of the maximum spectral
+density from the tails, per spectra, of a spectra struct
+array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>S</strong> (<em>struct</em>) – struct array that satisfies the
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a>
+method</li>
+<li><strong>densityTolerence</strong> (<em>double</em>) – Percentage of maximum spectral density</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Sea state struct which conforms to
+<a class="reference internal" href="#+WecOptTool.SeaState.checkSpectrum" title="+WecOptTool.SeaState.checkSpectrum"><code class="xref mat mat-meth docutils literal notranslate"><span class="pre">WecOptTool.SeaState.checkSpectrum()</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">struct</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<p>Remove frequencies containing less than 1% of the maximum
+spectral density</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">WecOptTool.SeaState</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">S</span> <span class="o">=</span> <span class="n">WecOptTool</span><span class="o">.</span><span class="n">tests</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">example8Spectra</span><span class="p">();</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newS</span> <span class="o">=</span> <span class="n">SeaState</span><span class="o">.</span><span class="n">trimFrequencies</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="+WecOptTool.mesh">
+<code class="descclassname">WecOptTool.</code><code class="descname">mesh</code><span class="sig-paren">(</span><em>meshName</em>, <em>folder</em>, <em>varargin</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.mesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a mesh using shortcuts to the <code class="docutils literal notranslate"><span class="pre">makeMesh</span></code> method of the
+defined Mesher concrete classes in the <a class="reference internal" href="#module-+WecOptTool.+mesh" title="+WecOptTool.+mesh"><code class="xref mat mat-mod docutils literal notranslate"><span class="pre">WecOptTool.mesh</span></code></a>
+package.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>meshName</strong> (<em>string</em>) – <p>Meshing routine to use. Current options are:</p>
+<blockquote>
+<div><ul>
+<li>AxiMesh (<a class="reference internal" href="#+WecOptTool.+mesh.AxiMesh" title="+WecOptTool.+mesh.AxiMesh"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">WecOptTool.mesh.AxiMesh</span></code></a>)</li>
+</ul>
+</div></blockquote>
+</li>
+<li><strong>folder</strong> (<em>string</em>) – Path to the folder to store output files</li>
+<li><strong>varargin</strong> – Arguments to pass to the meshing routine. See the
+<code class="docutils literal notranslate"><span class="pre">makeMesh</span></code> method of the chosen mesher class for details.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A mesh description with fields as described below</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">struct</p>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="17%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Variable</strong></td>
+<td><strong>Format</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td>bodyNum</td>
+<td>int32</td>
+<td>body number</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>char array</td>
+<td>name of the mesh</td>
+</tr>
+<tr class="row-even"><td>nodes</td>
+<td>Nx4 table</td>
+<td>table of N node positions with columns ID, x, y, z</td>
+</tr>
+<tr class="row-odd"><td>panels</td>
+<td>Mx4 int32 array</td>
+<td>array of M panels where each row contains the 4 connected node IDs</td>
+</tr>
+<tr class="row-even"><td>xzSymmetric</td>
+<td>logical</td>
+<td>body is symmetric in xz plane (half mesh)</td>
+</tr>
+<tr class="row-odd"><td>zG</td>
+<td>double</td>
+<td>z-coordinate of the bodies centre of gravity</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="+WecOptTool.solver">
+<code class="descclassname">WecOptTool.</code><code class="descname">solver</code><span class="sig-paren">(</span><em>solverName</em>, <em>folder</em>, <em>varargin</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve a mesh using shortcuts to the <code class="docutils literal notranslate"><span class="pre">getHydro</span></code> method of the
+defined Solver concrete classes in the <a class="reference internal" href="#module-+WecOptTool.+solver" title="+WecOptTool.+solver"><code class="xref mat mat-mod docutils literal notranslate"><span class="pre">WecOptTool.solver</span></code></a>
+package.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>solverName</strong> (<em>string</em>) – <p>Solver routine to use. Current options are:</p>
+<blockquote>
+<div><ul>
+<li>NEMOH (<a class="reference internal" href="#+WecOptTool.+solver.NEMOH" title="+WecOptTool.+solver.NEMOH"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">WecOptTool.solver.NEMOH</span></code></a>)</li>
+</ul>
+</div></blockquote>
+</li>
+<li><strong>folder</strong> (<em>string</em>) – Path to the folder to store output files</li>
+<li><strong>varargin</strong> – Arguments to pass to the solver routine. See the <code class="docutils literal notranslate"><span class="pre">getHydro</span></code>
+method of the chosen solver class for details.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Output struct from chosen solver</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">struct</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="wecopttool-geometry">
+<h2>6.2. WecOptTool.geometry<a class="headerlink" href="#wecopttool-geometry" title="Permalink to this headline">¶</a></h2>
+<p>The geometry package provides predefined geometry generation functions.</p>
+<span class="target" id="module-+WecOptTool.+geometry"></span><dl class="function">
+<dt id="+WecOptTool.+geometry.existingNEMOH">
+<code class="descclassname">WecOptTool.geometry.</code><code class="descname">existingNEMOH</code><span class="sig-paren">(</span><em>nemohFolder</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+geometry.existingNEMOH" title="Permalink to this definition">¶</a></dt>
+<dd><p>A predefined geometry callback for reading an existing NEMOH
+solution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nemohFolder</strong> (<em>string</em>) – Path to the folder containing existing NEMOH output files</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Hydrodynamics object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#+WecOptTool.Hydrodynamics" title="+WecOptTool.Hydrodynamics"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">WecOptTool.Hydrodynamics</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-+WecOptTool.+plot">
+<span id="wecopttool-plot"></span><h2>6.3. WecOptTool.plot<a class="headerlink" href="#module-+WecOptTool.+plot" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="+WecOptTool.+plot.plotMesh">
+<code class="descclassname">WecOptTool.plot.</code><code class="descname">plotMesh</code><span class="sig-paren">(</span><em>meshses</em>, <em>newFig</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+plot.plotMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the given meshes on a single 3D axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>meshses</strong> (<em>struct</em>) – Struct array containing mesh description with fields as
+described below</li>
+<li><strong>newFig</strong> (<em>logical</em>) – If true a new figure is created</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The meshes struct must contain the following fields:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="17%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Variable</strong></td>
+<td><strong>Format</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td>bodyNum</td>
+<td>int32</td>
+<td>body number</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>char array</td>
+<td>name of the mesh</td>
+</tr>
+<tr class="row-even"><td>nodes</td>
+<td>Nx4 table</td>
+<td>table of N node positions with columns ID, x, y, z</td>
+</tr>
+<tr class="row-odd"><td>panels</td>
+<td>Mx4 int32 array</td>
+<td>array of M panels where each row contains the 4 connected node IDs</td>
+</tr>
+<tr class="row-even"><td>xzSymmetric</td>
+<td>logical</td>
+<td>body is symmetric in xz plane (half mesh)</td>
+</tr>
+<tr class="row-odd"><td>zG</td>
+<td>double</td>
+<td>z-coordinate of the bodies centre of gravity</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="+WecOptTool.+plot.powerPerFreq">
+<code class="descclassname">WecOptTool.plot.</code><code class="descname">powerPerFreq</code><span class="sig-paren">(</span><em>input</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+plot.powerPerFreq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots power per frequency for a simulated device.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>input</strong> (<em>struct</em>) – A struct array with fields defined in the table below</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="25%" />
+<col width="57%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Variable</strong></td>
+<td><strong>Format</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td>w</td>
+<td>Nx1 double array</td>
+<td>N sea-state frequencie</td>
+</tr>
+<tr class="row-odd"><td>powPerFreq</td>
+<td>Nx1 double array</td>
+<td>Power production per frequency</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-+WecOptTool.+math">
+<span id="wecopttool-math"></span><h2>6.4. WecOptTool.math<a class="headerlink" href="#module-+WecOptTool.+math" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="+WecOptTool.+math.bisection">
+<code class="descclassname">WecOptTool.math.</code><code class="descname">bisection</code><span class="sig-paren">(</span><em>f</em>, <em>a</em>, <em>b</em>, <em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+math.bisection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bisection method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<em>double</em>) – real valued function</li>
+<li><strong>a</strong> (<em>double</em>) – search space lower boundary</li>
+<li><strong>b</strong> (<em>double</em>) – search space upper boundary</li>
+<li><strong>tol</strong> (<em>optional, double</em>) – solution tolerance, default = 1e-10</li>
+<li><strong>nmax</strong> (<em>optional, int</em>) – maximum number of operations, default = 1e4</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">root of f</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">double</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The given interval boundaries must satisfy f(a) * f(b) &lt;= 0</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="+WecOptTool.+math.isClose">
+<code class="descclassname">WecOptTool.math.</code><code class="descname">isClose</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>varargin</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+math.isClose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if two values are numerically close (but perhaps not
+exactly equal).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>a</strong> (<em>double</em>) – first value to compare</li>
+<li><strong>b</strong> (<em>double</em>) – second value to compare</li>
+<li><strong>rtol</strong> (<em>double, optional</em>) – relative tolerence, default = 1e-05</li>
+<li><strong>atol</strong> (<em>double, optional</em>) – absolute tolerance, default = 1e-08</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">true if a is within given tolerances of b</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">logical</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Derived from the similar named <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html">numpy routine</a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="wecopttool-mesh">
+<h2>6.5. WecOptTool.mesh<a class="headerlink" href="#wecopttool-mesh" title="Permalink to this headline">¶</a></h2>
+<p>The mesh subpackage provides mesh generation classes, that provide the standard method <code class="docutils literal notranslate"><span class="pre">makeMesh</span></code>.</p>
+<span class="target" id="module-+WecOptTool.+mesh"></span><dl class="class">
+<dt id="+WecOptTool.+mesh.AxiMesh">
+<em class="property">class </em><code class="descclassname">WecOptTool.mesh.</code><code class="descname">AxiMesh</code><a class="headerlink" href="#+WecOptTool.+mesh.AxiMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for making meshes using the NEMOH aximesh routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>base</strong> (<em>string, optional</em>) – Parent for folder which stores NEMOH input and output files,
+default is tempdir</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descname">path</code></dt>
+<dd><p>path to file storage folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="verb">
+<code class="descname">verb</code><a class="headerlink" href="#verb" title="Permalink to this definition">¶</a></dt>
+<dd><p>use verbose console outputs (default false)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">logical</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">rho</code></dt>
+<dd><p>water density (default = 1025 kg/m<sup>3</sup>)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">g</code></dt>
+<dd><p>gravitational acceleration (default = 9.81 m/s<sup>2</sup>)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.+mesh.AxiMesh.makeMesh">
+<code class="descname">makeMesh</code><span class="sig-paren">(</span><em>r</em>, <em>z</em>, <em>ntheta</em>, <em>nfobj</em>, <em>zG</em>, <em>bodyNum</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+mesh.AxiMesh.makeMesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mesh generation of an axisymmetric body.</p>
+<p>All coordinates are measured from the undisturbed sea
+surface and only the body description below the sea surface
+should be given, thus all z-coordinates should be negative.</p>
+<p>The produced mesh represents half of the body and is
+symmetric in the xz plane.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> (<em>array of double</em>) – radial coordinates</li>
+<li><strong>z</strong> (<em>array of double</em>) – vertical coordinates</li>
+<li><strong>ntheta</strong> (<em>int32</em>) – number of points for discretization in angular
+direction (over pi radians)</li>
+<li><strong>nfobj</strong> (<em>int32</em>) – number of nodes within the resulting half body mesh</li>
+<li><strong>zG</strong> (<em>double</em>) – z-coordinate of the bodies centre of gravity</li>
+<li><strong>bodyNum</strong> (<em>int32</em>) – the number of the body (starting from one)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A mesh description with fields as described below</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">struct</p>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="17%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Variable</strong></td>
+<td><strong>Format</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td>bodyNum</td>
+<td>int32</td>
+<td>body number</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>char array</td>
+<td>name of the mesh</td>
+</tr>
+<tr class="row-even"><td>nodes</td>
+<td>Nx4 table</td>
+<td>table of N node positions with columns ID, x, y, z</td>
+</tr>
+<tr class="row-odd"><td>panels</td>
+<td>Mx4 int32 array</td>
+<td>array of M panels where each row contains the 4 connected node IDs</td>
+</tr>
+<tr class="row-even"><td>xzSymmetric</td>
+<td>logical</td>
+<td>body is symmetric in xz plane (half mesh)</td>
+</tr>
+<tr class="row-odd"><td>zG</td>
+<td>double</td>
+<td>z-coordinate of the bodies centre of gravity</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">z(i) must be greater than or equal to z(i+1)</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The original aximesh function was written by A. Babarit,
+LHEEA Lab, and licensed under the Apache License,
+Version 2.0.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="wecopttool-solver">
+<h2>6.6. WecOptTool.solver<a class="headerlink" href="#wecopttool-solver" title="Permalink to this headline">¶</a></h2>
+<p>The solver subpackage provides hydrodynamic solver classes, that provide the standard method <code class="docutils literal notranslate"><span class="pre">getHydro</span></code>.</p>
+<span class="target" id="module-+WecOptTool.+solver"></span><dl class="class">
+<dt id="+WecOptTool.+solver.NEMOH">
+<em class="property">class </em><code class="descclassname">WecOptTool.solver.</code><code class="descname">NEMOH</code><span class="sig-paren">(</span><em>basePath</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+solver.NEMOH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class for solving meshes using the NEMOH suite.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>base</strong> (<em>string, optional</em>) – Parent for folder which stores NEMOH input and output files,
+default is tempdir</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descname">path</code></dt>
+<dd><p>path to file storage folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">verb</code></dt>
+<dd><p>use verbose console outputs (default false)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">logical</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">rho</code></dt>
+<dd><p>water density (default = 1025 kg/m<sup>3</sup>)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">g</code></dt>
+<dd><p>gravitational acceleration (default = 9.81 m/s<sup>2</sup>)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">double</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="+WecOptTool.+solver.NEMOH.getHydro">
+<code class="descname">getHydro</code><span class="sig-paren">(</span><em>meshes</em>, <em>w</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+solver.NEMOH.getHydro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate floating body hydrodynamic coefficients using
+NEMOH</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>meshes</strong> (<em>struct</em>) – The meshes to be solved. Each object in the array
+represents a different body with body number given by
+the <code class="docutils literal notranslate"><span class="pre">bodyNum</span></code> property. See table below for field
+definitions.</li>
+<li><strong>w</strong> (<em>array of double</em>) – The angular wave frequencies to be calculated.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Hydrodynamics object</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#+WecOptTool.Hydrodynamics" title="+WecOptTool.Hydrodynamics"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">WecOptTool.Hydrodynamics</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>“meshes” Struct Fields</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="17%" />
+<col width="70%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>Variable</strong></td>
+<td><strong>Format</strong></td>
+<td><strong>Description</strong></td>
+</tr>
+<tr class="row-even"><td>bodyNum</td>
+<td>int32</td>
+<td>body number</td>
+</tr>
+<tr class="row-odd"><td>name</td>
+<td>char array</td>
+<td>name of the mesh</td>
+</tr>
+<tr class="row-even"><td>nodes</td>
+<td>Nx4 table</td>
+<td>table of N node positions with columns ID, x, y, z</td>
+</tr>
+<tr class="row-odd"><td>panels</td>
+<td>Mx4 int32 array</td>
+<td>array of M panels where each row contains the 4 connected node IDs</td>
+</tr>
+<tr class="row-even"><td>zG</td>
+<td>double</td>
+<td>z-coordinate of the bodies centre of gravity</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The original aximesh function was written by A. Babarit,
+LHEEA Lab, and licensed under the Apache License,
+Version 2.0.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="wecopttool-base">
+<h2>6.7. WecOptTool.base<a class="headerlink" href="#wecopttool-base" title="Permalink to this headline">¶</a></h2>
+<p>The base subpackage provides base classes used in other classes.</p>
+<span class="target" id="module-+WecOptTool.+base"></span><dl class="class">
+<dt id="+WecOptTool.+base.Mesher">
+<em class="property">class </em><code class="descclassname">WecOptTool.base.</code><code class="descname">Mesher</code><a class="headerlink" href="#+WecOptTool.+base.Mesher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract class for creating new mesher classes</p>
+<p>A single method should be implemented, called <code class="docutils literal notranslate"><span class="pre">makeMesh</span></code> that
+creates a mesh using any particular external tool</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="+WecOptTool.+base.NEMOH">
+<em class="property">class </em><code class="descclassname">WecOptTool.base.</code><code class="descname">NEMOH</code><a class="headerlink" href="#+WecOptTool.+base.NEMOH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class containing NEMOH helpers</p>
+<dl class="staticmethod">
+<dt id="+WecOptTool.+base.NEMOH.isNemohInPath">
+<em class="property">static </em><code class="descname">isNemohInPath</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+base.NEMOH.isNemohInPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine if the NEMOH executables can be found.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">true if executables found, otherwise false.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">logical</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="+WecOptTool.+base.Solver">
+<em class="property">class </em><code class="descclassname">WecOptTool.base.</code><code class="descname">Solver</code><a class="headerlink" href="#+WecOptTool.+base.Solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Abstract class for creating new solver classes</p>
+<p>A single method should be implemented, called <code class="docutils literal notranslate"><span class="pre">getHydro</span></code> that
+solves the hydrodynamics for a given mesh using any particular
+external tool</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="+WecOptTool.+base.TempFolder">
+<em class="property">class </em><code class="descclassname">WecOptTool.base.</code><code class="descname">TempFolder</code><span class="sig-paren">(</span><em>base</em><span class="sig-paren">)</span><a class="headerlink" href="#+WecOptTool.+base.TempFolder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Superclass for classes requiring temporary storage</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>base</strong> (<em>string, optional</em>) – Parent for temporary folder, default is tempdir</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descname">path</code></dt>
+<dd><p>path to temporary folder</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="7license.html" class="btn btn-neutral float-right" title="7. License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="5resources.html" class="btn btn-neutral float-left" title="5. Resources" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020 National Technology and Engineering Solutions of Sandia, LLC
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: master
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../v0.1.0/index.html">v0.1.0</a></dd>
+            <dd><a href="../../v1.0.0/index.html">v1.0.0</a></dd>
+            <dd><a href="../../v1.0.1/index.html">v1.0.1</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="6api.html">master</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

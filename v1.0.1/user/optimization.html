@@ -659,12 +659,12 @@ object array. These inputs are combined and then added as arguments to the
 <p>In the RM3 example, three types of controllers are defined:</p>
 <blockquote>
 <div><ul>
-<li><p class="first"><strong>Proportional Damping</strong> (<code class="docutils literal notranslate"><span class="pre">'P'</span></code>): Resistive damping (i.e., a proportional feedback on velocity) (see, e.g., <a class="reference internal" href="references.html#falnes2002" id="id1">[Falnes2002]</a>). Here, the power take-off (PTO) force is set as</p>
+<li><p class="first"><strong>Proportional Damping</strong> (<code class="docutils literal notranslate"><span class="pre">'P'</span></code>): Resistive damping (i.e., a proportional feedback on velocity) (see, e.g., <a class="reference internal" href="references.html#falnes2002" id="id1">[2]</a>). Here, the power take-off (PTO) force is set as</p>
 <div class="math notranslate nohighlight">
 \[F_u(\omega) = -B_{PTO}(\omega)u(\omega)\]</div>
 <p>where <span class="math notranslate nohighlight">\(B_{PTO}\)</span> is a constant chosen to maximize absorbed power and <span class="math notranslate nohighlight">\(u(\omega)\)</span> is the velocity. <br /> <br /></p>
 </li>
-<li><p class="first"><strong>Complex Conjugate</strong> (<code class="docutils literal notranslate"><span class="pre">'CC'</span></code>): Optimal power absorption through impedance matching (see, e.g., <a class="reference internal" href="references.html#falnes2002" id="id2">[Falnes2002]</a>). The intrinsic impedance is given by</p>
+<li><p class="first"><strong>Complex Conjugate</strong> (<code class="docutils literal notranslate"><span class="pre">'CC'</span></code>): Optimal power absorption through impedance matching (see, e.g., <a class="reference internal" href="references.html#falnes2002" id="id2">[2]</a>). The intrinsic impedance is given by</p>
 <div class="math notranslate nohighlight">
 \[Z_i(\omega) = B(\omega) + i \left( \omega{}(m + A(\omega)) - \frac{K_{HS}}{\omega}\right) ,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\omega\)</span> is the radial frequency, <span class="math notranslate nohighlight">\(B(\omega)\)</span> is the
@@ -677,7 +677,7 @@ that</p>
 <p>where <span class="math notranslate nohighlight">\(u(\omega)\)</span> is the velocity. <br /> <br /></p>
 </li>
 <li><p class="first"><strong>Pseudo Spectral</strong> (<code class="docutils literal notranslate"><span class="pre">'PS'</span></code>): Constrained optimal power absorption
-<a class="reference internal" href="references.html#bacelli2014a" id="id3">[Bacelli2014a]</a>. This is a numerical optimal control algorithm capable of dealing
+<a class="reference internal" href="references.html#bacelli2014a" id="id3">[3]</a>. This is a numerical optimal control algorithm capable of dealing
 with both constraints and nonlinear dynamics. This approach is based on
 <a class="reference external" href="https://en.wikipedia.org/wiki/Pseudospectral_optimal_control">pseudo spectral optimal control</a>.</p>
 </li>
@@ -931,7 +931,7 @@ shown, alongside the simulated meshes.</p>
         </dl>
         <dl>
             <dt>Branches</dt>
-            <dd><a href="../../master/user/optimization.html">master</a></dd>
+            <dd><a href="../../master/index.html">master</a></dd>
         </dl>
     </div>
 </div>
