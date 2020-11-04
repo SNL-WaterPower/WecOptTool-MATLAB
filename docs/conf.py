@@ -43,7 +43,8 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinxcontrib.matlab',
     'sphinx.ext.napoleon',
-    'sphinxcontrib.bibtex'
+    'sphinxcontrib.bibtex',
+    'sphinxcontrib.pdfembed'
 ]
 
 # Figure numbering

@@ -4,9 +4,10 @@ jobs:
   include:
     - stage: pages
       install:
-        - pip install click colorama colorclass future "sphinx==1.8.5" sphinxcontrib-bibtex sphinx_rtd_theme
+        - pip install click colorama colorclass future "sphinx==1.8.5" "sphinxcontrib-bibtex==0.4.2" 
+          sphinx_rtd_theme sphinxcontrib-matlabdomain
+        - pip install git+git://github.com/SuperKogito/sphinxcontrib-pdfembed
         - pip install https://github.com/H0R5E/sphinxcontrib-versioning/archive/v1.8.5_support.zip
-        - pip install git+https://github.com/H0R5E/matlabdomain.git/@function_arguments#egg=matlabdomain
       script:
         - eval "$(ssh-agent -s)"; touch .travis/key; chmod 0600 .travis/key
         - openssl aes-256-cbc -d -K $encrypted_c97e05834f48_key -iv $encrypted_c97e05834f48_iv < .travis/key.enc > .travis/key

@@ -3,12 +3,14 @@
    :numbered:
    :caption: User Guide
 
-   user/setup
-   user/optimization
-   user/model
-   user/api
-   user/license
-   user/references
+   user/1setup
+   user/2optimization
+   user/3model
+   user/4cite
+   user/5resources
+   user/6api
+   user/7license
+   user/8references
 
 .. toctree::
    :hidden:
