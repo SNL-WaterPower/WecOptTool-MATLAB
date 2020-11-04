@@ -14,13 +14,18 @@ w = SS.getRegularFrequencies(0.3);
 width = 2;
 length = 10;
 height = 5;
+depth = 9;
 
 [hydro, meshes] = designDevice('parametric',    ...
                                wkdir.path,      ...
                                length,          ...
                                width,           ...
                                height,          ...
+                               depth,           ...
                                w);
 
-[performance, model] = simulateDevice(length, height, hydro, SS, 'CC');
+mass = hydro.Vo * hydro.rho;
+I = mass / 12 * (4 * height ^ 2 + length ^ 2); 
+                          
+[performance, model] = simulateDevice(I, hydro, SS, 'CC');
 performance.summary()

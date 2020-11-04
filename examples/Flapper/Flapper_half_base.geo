@@ -6,7 +6,7 @@ Mesh.Algorithm = 9;
 //length = 10;
 //width = 4;
 //height = 6;
-depth = 10;
+//depth = 10;
 
 Point(1) = {0, 0, 0, lc};
 Point(2) = {length, 0, 0, lc};
