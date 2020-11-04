@@ -9,7 +9,7 @@ function folderNames = getFolders(baseFolder, varargin)
     %
     % The following options are supported:
     %
-    %   absPath (bool):
+    %   absPath (logical):
     %     If true, the absolute path to the folders is returned. Defaults
     %     to false.
     %

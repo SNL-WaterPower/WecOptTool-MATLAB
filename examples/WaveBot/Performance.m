@@ -16,15 +16,18 @@ classdef Performance < handle
     
     methods
         
-        function plotTime(obj ,t)
+        function plotTime(obj, t, options)
             
-            if nargin < 2
-                trep = obj(1).getRepeatPer();
-                t = 0:0.05:trep;
+            arguments
+                obj
+                t = 0:0.05:obj(1).getRepeatPer()
+                options.Interpreter = 'none'
+                options.FontSize = 11
             end
             
             fig = figure('Name','Performance.plotTime');
-            fig.Position = fig.Position.*[1 1 1 1.5];
+            fig.Position = fig.Position .* [1 1 1 1.5];
+            movegui(fig, 'onscreen');
             
             % fields for plotting
             fns = {'eta','F0','pos','u','Fpto','pow'};
@@ -40,28 +43,45 @@ classdef Performance < handle
                 for ii = 1:length(fns)
                     timeRes.(fns{ii}) = getTimeRes(obj(jj),fns{ii}, t);
                     plot(ax(ii),t,timeRes.(fns{ii}))
-                    ylabel(ax(ii),fns{ii})
+                    ylabel(ax(ii),                              ...
+                           fns{ii},                             ...
+                           'Interpreter', options.Interpreter,  ...
+                           'FontSize', options.FontSize)
                 end
                 
                 for ii = 1:length(ax) - 1
                     set(ax(ii),'XTickLabel',[])
                 end
+                
                 linkaxes(ax,'x')
-                xlabel(ax(end),'Time [s]')
+                xlabel(ax(end),                             ...
+                       'Time [s]',                          ...
+                       'Interpreter', options.Interpreter,  ...
+                       'FontSize', options.FontSize)
+               
             end
+            
             xlim([t(1), t(end)])
             
             if length(obj) > 1
-                legend(ax(1),{obj.name})
+                l1 = legend(ax(1),                               ...
+                            {obj.name},                          ...
+                            'Interpreter', options.Interpreter,  ...
+                            'FontSize', options.FontSize);
+                set(l1, 'NumColumns', length(obj))
             end 
             
         end
         
-        function plotFreq(obj,fig)
+        function plotFreq(obj, fig, options)
             
-            if nargin < 2 || isempty(fig)
+            arguments
+                obj
                 fig = figure;
-            end
+                options.Interpreter = 'none'
+                options.FontSize = 11
+            end 
+            
             set(fig,'Name','Performance.plotFreq');
             
             fns = {'F0','u','Fpto'};
@@ -75,36 +95,57 @@ classdef Performance < handle
                     
                     % mag plot
                     ax(jj,1) = subplot(2,n,sub2ind([n,2],jj,1));
-                    title(obj(jj).name,'interpreter','none')
+                    title(obj(jj).name,                         ...
+                          'Interpreter', options.Interpreter,   ...
+                          'FontSize', options.FontSize)
                     hold on
                     grid on
                     
-                    stem(ax(jj,1),obj(jj).w, mag2db(abs(fv))...
-                        ,mrks{ii},...
-                        'DisplayName',fns{ii},...
-                        'MarkerSize',8,...
-                        'Color','b')
+                    stem(ax(jj,1),                  ...
+                         obj(jj).w,                 ...
+                         mag2db(abs(fv)),           ...
+                         mrks{ii},                  ...
+                         'DisplayName', fns{ii},    ...
+                         'MarkerSize', 8,           ...
+                         'Color', 'b')
                     
                     % phase plot
                     ax(jj,2) = subplot(2,n,sub2ind([n,2],jj,2));
                     hold on
                     grid on
                     
-                    stem(ax(jj,2),obj(jj).w, angle(fv)...
-                        ,mrks{ii},...
-                        'DisplayName',fns{ii},...
-                        'MarkerSize',8,...
-                        'Color','b')
+                    stem(ax(jj,2),                  ...
+                         obj(jj).w,                 ...
+                         angle(fv),                 ...
+                         mrks{ii},                  ...
+                         'DisplayName', fns{ii},    ...
+                         'MarkerSize', 8,           ...
+                         'Color', 'b')
                     
                     ylim(ax(jj,2),[-pi,pi])
+                    
                 end
-                xlabel(ax(jj,2),'Frequency [rad/s]')
+                
+                xlabel(ax(jj,2),                            ...
+                       'Frequency [rad/s]',                 ...
+                       'Interpreter', options.Interpreter,  ...
+                       'FontSize', options.FontSize)
+                
             end
-            ylabel(ax(1,1),'Magnitude [dB]')
-            ylabel(ax(1,2),'Angle [rad]')
-            legend(ax(n,1))
-            linkaxes(ax,'x')
-            linkaxes(ax(:,1),'y')
+            
+            ylabel(ax(1,1),                             ...
+                   'Magnitude [dB]',                    ...
+                   'Interpreter', options.Interpreter,  ...
+                   'FontSize', options.FontSize)
+            ylabel(ax(1,2),                             ...
+                   'Angle [rad]',                       ...
+                   'Interpreter', options.Interpreter,  ...
+                   'FontSize', options.FontSize)
+            legend(ax(n,1),                             ...
+                   'Interpreter', options.Interpreter,  ...
+                   'FontSize', options.FontSize)
+            linkaxes(ax, 'x')
+            linkaxes(ax(:,1), 'y')
             
         end
         

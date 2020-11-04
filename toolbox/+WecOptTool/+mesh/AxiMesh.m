@@ -8,9 +8,9 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
     %
     % Attributes:
     %     path (string): path to file storage folder
-    %     verb (bool): use verbose console outputs (default false)
-    %     rho (float): water density (default = 1025 kg/m\ :sup:`3`)
-    %     g (float):
+    %     verb (logical): use verbose console outputs (default false)
+    %     rho (double): water density (default = 1025 kg/m\ :sup:`3`)
+    %     g (double):
     %         gravitational acceleration (default = 9.81 m/s\ :sup:`2`)
     %
     % --
@@ -64,16 +64,16 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             % symmetric in the xz plane.
             %
             % Arguments:
-            %   r (array of float): radial coordinates
-            %   z (array of float): vertical coordinates
-            %   ntheta (int):
+            %   r (array of double): radial coordinates
+            %   z (array of double): vertical coordinates
+            %   ntheta (int32):
             %       number of points for discretization in angular 
             %       direction (over pi radians)
-            %   nfobj (int):
+            %   nfobj (int32):
             %       number of nodes within the resulting half body mesh
-            %   zG (float):
+            %   zG (double):
             %       z-coordinate of the bodies centre of gravity
-            %   bodyNum (int):
+            %   bodyNum (int32):
             %       the number of the body (starting from one)
             %       
             % Returns:
@@ -82,7 +82,7 @@ classdef AxiMesh < WecOptTool.base.Mesher & WecOptTool.base.NEMOH
             %
             % ============  ================  ======================================
             % **Variable**  **Format**        **Description**
-            % bodyNum       int               body number
+            % bodyNum       int32             body number
             % name          char array        name of the mesh
             % nodes         Nx4 table         table of N node positions with columns ID, x, y, z
             % panels        Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs

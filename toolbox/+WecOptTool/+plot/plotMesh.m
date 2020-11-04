@@ -5,19 +5,19 @@ function plotMesh(meshses, newFig)
     %     meshses (struct):
     %         Struct array containing mesh description with fields as 
     %         described below
-    %     newFig (bool):
+    %     newFig (logical):
     %         If true a new figure is created
     %
     % The meshes struct must contain the following fields:
     %
     % ============  ================  ======================================
     % **Variable**  **Format**        **Description**
-    % bodyNum       int               body number
+    % bodyNum       int32             body number
     % name          char array        name of the mesh
     % nodes         Nx4 table         table of N node positions with columns ID, x, y, z
     % panels        Mx4 int32 array   array of M panels where each row contains the 4 connected node IDs
-    % xzSymmetric   bool              body is symmetric in xz plane (half mesh)
-    % zG            float             z-coordinate of the bodies centre of gravity
+    % xzSymmetric   logical           body is symmetric in xz plane (half mesh)
+    % zG            double            z-coordinate of the bodies centre of gravity
     % ============  ================  ======================================
     %
     
