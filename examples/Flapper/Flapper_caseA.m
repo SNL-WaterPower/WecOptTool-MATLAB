@@ -14,7 +14,7 @@ w = SS.getRegularFrequencies(0.3);
 width = 2;
 length = 10;
 height = 5;
-depth = 9;
+depth = 40;
 
 [hydro, meshes] = designDevice('parametric',    ...
                                wkdir.path,      ...
@@ -25,7 +25,8 @@ depth = 9;
                                w);
 
 mass = hydro.Vo * hydro.rho;
-I = mass / 12 * (4 * height ^ 2 + length ^ 2); 
+I = mass / 12 * (4 * height ^ 2 + length ^ 2);
+scaling = height / 2 / depth;
                           
-[performance, model] = simulateDevice(I, hydro, SS, 'CC');
+[performance, model] = simulateDevice(I, scaling, hydro, SS, 'CC');
 performance.summary()
