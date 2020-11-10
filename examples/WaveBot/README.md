@@ -1,7 +1,6 @@
 # WaveBot
 
-This example was developed in conjuction with the following journal manuscript, which is currently under review.
-A preprint is avaialable at <https://doi.org/10.1007/s40722-020-00181-9>.
+This example was developed in conjuction with the following journal paper, which is avaialable at <https://doi.org/10.1007/s40722-020-00181-9>.
 
 ```
 @Article{WecDesignOptimizationTool,
