@@ -1,4 +1,9 @@
-function results = runTests()
+function results = runTests(options)
+
+    arguments
+        options.reportHTML = true
+        options.reportPDF = true
+    end
 
     import matlab.unittest.TestRunner;
     import matlab.unittest.TestSuite;
@@ -15,14 +20,18 @@ function results = runTests()
     [filepath, ~, ~] = fileparts(p);
     
     % Add HTML plugin
-    htmlFolder = fullfile(filepath,'test_results');
-    plugin = TestReportPlugin.producingHTML(htmlFolder);
-    runner.addPlugin(plugin);
+    if options.reportHTML    
+        htmlFolder = fullfile(filepath,'test_results');
+        plugin = TestReportPlugin.producingHTML(htmlFolder);
+        runner.addPlugin(plugin);
+    end
 
-    % Add PDF
-    pdfFile = fullfile(filepath,'test_results.pdf');
-    plugin = TestReportPlugin.producingPDF(pdfFile);
-    runner.addPlugin(plugin);
+    % Add PDF plugin
+    if options.reportPDF
+        pdfFile = fullfile(filepath,'test_results.pdf');
+        plugin = TestReportPlugin.producingPDF(pdfFile);
+        runner.addPlugin(plugin);
+    end
 
     % Run the tests
     results = runner.run(suite);

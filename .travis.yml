@@ -20,7 +20,7 @@ jobs:
         - matlab -batch "installNemoh('$TRAVIS_BUILD_DIR/NEMOH/bin');"
         - matlab -batch "dependencyCheck;"
       script: 
-        - matlab -batch "results = runTests, assertSuccess(results);"
+        - matlab -batch "results = runTests('reportHTML', false, 'reportPDF', false), assertSuccess(results);"
       if: branch = master
     - stage: pages
       language: python
