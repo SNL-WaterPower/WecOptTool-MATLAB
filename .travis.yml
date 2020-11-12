@@ -17,8 +17,7 @@ jobs:
         - make
         - cd ..
         - matlab -batch "addpath(genpath('toolbox')), savepath pathdef.m;"
-        - matlab -batch "installNemoh('$TRAVIS_BUILD_DIR/NEMOH/bin');"
-        - matlab -batch "dependencyCheck;"
+        - matlab -batch "installNemoh('$TRAVIS_BUILD_DIR/NEMOH/bin'), dependencyCheck;"
       script: 
         - matlab -batch "results = runTests('reportHTML', false, 'reportPDF', false), assertSuccess(results);"
       if: branch = master
