@@ -83,7 +83,7 @@ function dynModel = getDynamicsModel(hydro, SS, interpMethod)
     waveAmp = interp1(SS.w, waveAmpSS, w, interpMethod, 'extrap');
 
     % Row vector of random phases
-    ph = rand(size(waveAmp));
+    ph = rand(size(waveAmp)) * 2 * pi;
 
     % Wave height in frequency domain
     eta_fd = waveAmp .* exp(1i * ph);
@@ -226,7 +226,7 @@ function myPerf = psControl(dynModel,delta_Zmax,delta_Fmax)
     
     % Add phase realizations
     n_ph = 5;
-    ph_mat = [dynModel.ph, rand(length(dynModel.w), n_ph-1)];
+    ph_mat = [dynModel.ph rand(length(dynModel.w), n_ph-1) * 2 * pi];
 
     for ind_ph = 1 : n_ph
         

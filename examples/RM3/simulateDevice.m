@@ -68,7 +68,7 @@ function dynamic = getDynamicModel(static, hydro, S)
     waveAmp = sqrt(2 * dw * s);
 
     % Row vector of random phases?
-    ph = rand(length(s), 1);
+    ph = rand(length(s), 1) * 2 * pi;
 
     % Wave height in frequency domain
     eta_fd = waveAmp .* exp(1i*ph);
