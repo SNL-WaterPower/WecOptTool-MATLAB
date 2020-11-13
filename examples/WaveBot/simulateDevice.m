@@ -226,7 +226,7 @@ function myPerf = psControl(dynModel,delta_Zmax,delta_Fmax)
     
     % Add phase realizations
     n_ph = 5;
-    ph_mat = [dynModel.ph rand(length(dynModel.w), n_ph-1) * 2 * pi];
+    ph_mat = [dynModel.ph, rand(length(dynModel.w), n_ph-1) * 2 * pi];
 
     for ind_ph = 1 : n_ph
         
