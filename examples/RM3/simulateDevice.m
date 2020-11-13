@@ -201,7 +201,7 @@ function out = pseudoSpectralControl(motion,        ...
     
     % Add phase realizations
     n_ph_avg = 5;
-    ph_mat = [dynModel.ph, rand(length(dynModel.w), n_ph_avg-1) * 2 * pi];
+    ph_mat = [motion.ph, rand(length(motion.w), n_ph_avg-1) * 2 * pi];
     n_ph = size(ph_mat, 2);
     
     freq = motion.W;
