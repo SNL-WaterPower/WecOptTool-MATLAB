@@ -1,0 +1,2044 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3. WEC Model Architecture &mdash; WecOptTool 1.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/theme_overrides.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/banner.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4. Citing WecOptTool" href="4cite.html" />
+    <link rel="prev" title="2. Optimizing an Existing WEC Model" href="2optimization.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> WecOptTool
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1setup.html">1. Setup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2optimization.html">2. Optimizing an Existing WEC Model</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. WEC Model Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">3.1. Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#designing-the-device">3.2. Designing the device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulating-device-response">3.3. Simulating device response</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reporting-results">3.4. Reporting results</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="4cite.html">4. Citing WecOptTool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="5resources.html">5. Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="6api.html">6. API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="7license.html">7. License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="8references.html">8. References</a></li>
+</ul>
+<p class="caption"><span class="caption-text">External</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool">GitHub Repository</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">WecOptTool</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>3. WEC Model Architecture</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/user/3model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+
+
+
+
+
+<div class="section" id="wec-model-architecture">
+<span id="model"></span><h1>3. WEC Model Architecture<a class="headerlink" href="#wec-model-architecture" title="Permalink to this headline">¶</a></h1>
+<p>This section provides an overview of how a typical WecOptTool model is programmed.
+WecOptTool is currently structured as a set of examples, all of which follow a similar format and can thus rely on common utilities.
+It is envisioned that the structure of WecOptTool may some day be consolidated based on experience in developing these examples.</p>
+<div class="section" id="introduction">
+<h2>3.1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The WaveBot example <a class="reference internal" href="8references.html#coe2020initial" id="id1">[3]</a> will be used to illustrate these concepts in more detail.
+The process for performing a study in WecOptTool can be broken into three distinct steps, which correlate to three files in the WaveBot example:</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>Designing the device</strong> - <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/designDevice.m"><code class="docutils literal notranslate"><span class="pre">designDevice.m</span></code></a> creates the device based on a set of design variables</li>
+<li><strong>Simulating device response</strong> - <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/simulateDevice.m"><code class="docutils literal notranslate"><span class="pre">simulateDevice.m</span></code></a> simulates device performance</li>
+<li><strong>Reporting results</strong> - <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/Performance.m"><code class="docutils literal notranslate"><span class="pre">Performance.m</span></code></a> a class for storing and plotting performance data</li>
+</ul>
+</div></blockquote>
+<p>The diagram below shows the responsibilities that each of these steps take within the context of the overall work-flow.
+The <strong>Designing the device</strong> step takes user inputs regarding the configuration of the device and calculates the hydrodynamic parameters of that design.
+In the diagram below, the processes bounded by <strong>rectangle 1</strong> are encapsulated by this step.
+<strong>Simulating device response</strong> takes information about the sea state and controller type, and finds the optimal power output for the given hydrodynamic parameters, encapsulating the processes in <strong>rectangle 2</strong>.
+Finally, the processes in <strong>rectangle 3</strong> will use metrics that are calculated in the <strong>Reporting results</strong> step, e.g., to find the average power.</p>
+<img alt="Steps for implementing the WecOptTool functionality" src="../_images/WecOptToolFlowChartCode.svg" /></div>
+<div class="section" id="designing-the-device">
+<h2>3.2. Designing the device<a class="headerlink" href="#designing-the-device" title="Permalink to this headline">¶</a></h2>
+<details><summary><clickme>See the entire file</clickme></summary></br><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>hydro <span class="p">=</span><span class="w"> </span><span class="nf">designDevice</span><span class="p">(</span>type, varargin<span class="p">)</span><span class="w"> </span>
+<span class="w">    </span><span class="c">% WaveBot   WEC based on the Sandia &quot;WaveBot&quot; device.</span>
+    <span class="c">%</span>
+    <span class="c">% The WaveBot is a model-scale wave energy converter (WEC) tested in</span>
+    <span class="c">% the Navy&#39;s Manuevering and Sea Keeping (MASK) basin. Reports and</span>
+    <span class="c">% papers about the WaveBot are available at advweccntrls.sandia.gov.</span>
+    
+    <span class="n">switch</span> <span class="s">type</span>
+        
+        <span class="n">case</span> <span class="s">&#39;existing&#39;</span>
+            <span class="n">hydro</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">geometry</span><span class="p">.</span><span class="n">existingNEMOH</span><span class="p">(</span><span class="n">varargin</span><span class="p">{:});</span>
+        <span class="n">case</span> <span class="s">&#39;scalar&#39;</span>
+            <span class="n">hydro</span> <span class="p">=</span> <span class="n">getHydroScalar</span><span class="p">(</span><span class="n">varargin</span><span class="p">{:});</span>
+        <span class="n">case</span> <span class="s">&#39;parametric&#39;</span>
+            <span class="n">hydro</span> <span class="p">=</span> <span class="n">getHydroParametric</span><span class="p">(</span><span class="n">varargin</span><span class="p">{:});</span>
+        <span class="n">otherwise</span>
+            <span class="s">error(&#39;WecOptTool:UnknownGeometryType&#39;,...</span>
+                <span class="s">&#39;Invalid geometry type&#39;</span><span class="p">)</span>
+    <span class="n">end</span>
+    
+<span class="s">end</span>
+
+<span class="k">function</span><span class="w"> </span>hydro <span class="p">=</span><span class="w"> </span><span class="nf">getHydroScalar</span><span class="p">(</span>folder, lambda, w<span class="p">)</span><span class="w"></span>
+<span class="w">                   </span>
+<span class="w">    </span><span class="k">if</span> <span class="n">w</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">error</span><span class="p">(</span><span class="s">&#39;WecOptTool:UnknownGeometryType&#39;</span><span class="p">,</span><span class="k">...</span>
+                <span class="s">&#39;Invalid frequency vector&#39;</span><span class="p">)</span>     <span class="c">% TODO - more checks</span>
+    <span class="n">end</span>
+    
+    <span class="s">r</span> <span class="p">=</span> <span class="n">lambda</span> <span class="o">*</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span>
+    <span class="n">z</span> <span class="p">=</span> <span class="n">lambda</span> <span class="o">*</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.16</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.53</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.53</span><span class="p">];</span>
+
+    <span class="c">% Mesh</span>
+    <span class="n">ntheta</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>
+    <span class="n">nfobj</span> <span class="p">=</span> <span class="mi">200</span><span class="p">;</span>
+    <span class="n">zG</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span>
+    
+    <span class="n">meshes</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">mesh</span><span class="p">(</span><span class="s">&quot;AxiMesh&quot;</span><span class="p">,</span>    <span class="k">...</span>
+                             <span class="n">folder</span><span class="p">,</span>       <span class="k">...</span>
+                             <span class="n">r</span><span class="p">,</span>            <span class="k">...</span>
+                             <span class="n">z</span><span class="p">,</span>            <span class="k">...</span>
+                             <span class="n">ntheta</span><span class="p">,</span>       <span class="k">...</span>
+                             <span class="n">nfobj</span><span class="p">,</span>        <span class="k">...</span>
+                             <span class="n">zG</span><span class="p">,</span>           <span class="k">...</span>
+                             <span class="mi">1</span><span class="p">);</span>
+    
+    <span class="n">hydro</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">solver</span><span class="p">(</span><span class="s">&quot;NEMOH&quot;</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="n">meshes</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
+           
+<span class="n">end</span>
+
+<span class="s">function</span> <span class="s">hydro</span> <span class="p">=</span> <span class="n">getHydroParametric</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+               
+    <span class="n">if</span> <span class="s">w(1)</span> <span class="p">==</span> <span class="mi">0</span>
+        <span class="n">w</span> <span class="p">=</span> <span class="n">w</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">);</span>
+    <span class="n">end</span>
+    
+    <span class="s">r</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span>
+    <span class="n">z</span> <span class="p">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="n">d1</span><span class="p">,</span> <span class="o">-</span><span class="n">d2</span><span class="p">,</span> <span class="o">-</span><span class="n">d2</span><span class="p">];</span>
+
+    <span class="c">% Mesh</span>
+    <span class="n">ntheta</span> <span class="p">=</span> <span class="mi">20</span><span class="p">;</span>
+    <span class="n">nfobj</span> <span class="p">=</span> <span class="mi">200</span><span class="p">;</span>
+    <span class="n">zG</span> <span class="p">=</span> <span class="mi">0</span><span class="p">;</span>
+    
+    <span class="n">meshes</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">mesh</span><span class="p">(</span><span class="s">&quot;AxiMesh&quot;</span><span class="p">,</span>    <span class="k">...</span>
+                                         <span class="n">folder</span><span class="p">,</span>       <span class="k">...</span>
+                                         <span class="n">r</span><span class="p">,</span>            <span class="k">...</span>
+                                         <span class="n">z</span><span class="p">,</span>            <span class="k">...</span>
+                                         <span class="n">ntheta</span><span class="p">,</span>       <span class="k">...</span>
+                                         <span class="n">nfobj</span><span class="p">,</span>        <span class="k">...</span>
+                                         <span class="n">zG</span><span class="p">,</span>           <span class="k">...</span>
+                                         <span class="mi">1</span><span class="p">);</span>
+    
+    <span class="n">hydro</span> <span class="p">=</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">solver</span><span class="p">(</span><span class="s">&quot;NEMOH&quot;</span><span class="p">,</span> <span class="n">folder</span><span class="p">,</span> <span class="n">meshes</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
+           
+<span class="n">end</span>
+
+
+<span class="s">%</span> <span class="s">Copyright</span> <span class="s">2020</span> <span class="s">National</span> <span class="s">Technology</span> <span class="o">&amp;</span> <span class="n">Engineering</span> <span class="n">Solutions</span> <span class="n">of</span> <span class="n">Sandia</span><span class="p">,</span> 
+<span class="c">% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the </span>
+<span class="c">% U.S. Government retains certain rights in this software.</span>
+<span class="c">%</span>
+<span class="c">% This file is part of WecOptTool.</span>
+<span class="c">% </span>
+<span class="c">%     WecOptTool is free software: you can redistribute it and/or modify</span>
+<span class="c">%     it under the terms of the GNU General Public License as published by</span>
+<span class="c">%     the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">%     (at your option) any later version.</span>
+<span class="c">% </span>
+<span class="c">%     WecOptTool is distributed in the hope that it will be useful,</span>
+<span class="c">%     but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">%     GNU General Public License for more details.</span>
+<span class="c">% </span>
+<span class="c">%     You should have received a copy of the GNU General Public License</span>
+<span class="c">%     along with WecOptTool.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+</pre></div>
+</td></tr></table></div>
+</details></br><p>The <strong>Designing the device</strong> step codifies the user inputs for the <strong>Geometry</strong>, <strong>Power take off</strong>, and <strong>Kinematics</strong> of the WEC.
+With some important caveats, this step can be seen as analogous to building the physical device.
+This step can include <a class="footnote-reference" href="#f1" id="id2">[1]</a> generating a panelized representation of the WEC’s hull and calling a BEM code (e.g., NEMOH) to estimate the hydrodynamic coefficients.
+We can see from the signature of <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/designDevice.m"><code class="docutils literal notranslate"><span class="pre">designDevice.m</span></code></a> that it will return a <a class="reference internal" href="6api.html#+WecOptTool.Hydrodynamics" title="+WecOptTool.Hydrodynamics"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Hydrodynamics</span></code></a> object.</p>
+<div class="code matlab highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hydro</span> <span class="o">=</span> <span class="n">designDevice</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">varargin</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="simulating-device-response">
+<h2>3.3. Simulating device response<a class="headerlink" href="#simulating-device-response" title="Permalink to this headline">¶</a></h2>
+<details><summary><clickme>See the entire file</clickme></summary></br><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span>performance <span class="p">=</span><span class="w"> </span><span class="nf">simulateDevice</span><span class="p">(</span>hydro, seastate, controlType, options<span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c">% simulateDevice   WEC based on the Sandia &quot;WaveBot&quot; device.</span>
+    <span class="c">%</span>
+    <span class="c">% The WaveBot is a model-scale wave energy converter (WEC) tested in</span>
+    <span class="c">% the Navy&#39;s Manuevering and Sea Keeping (MASK) basin. Reports and</span>
+    <span class="c">% papers about the WaveBot are available at advweccntrls.sandia.gov.</span>
+    <span class="c">%</span>
+    <span class="c">% Arguments:</span>
+    <span class="c">%  hydro        structure containing BEM results</span>
+    <span class="c">%  seastate     sea state object</span>
+    <span class="c">%  controlType  controller type:</span>
+    <span class="c">%                   complex conjugate:      &#39;CC&#39;</span>
+    <span class="c">%                   proportional damping:   &#39;P&#39;</span>
+    <span class="c">%                   pseudo-spectral:        &#39;PS&#39;</span>
+    <span class="c">%  name-value pairs</span>
+    <span class="c">%  interpMethod (optional) method to use for linear interpolation</span>
+    <span class="c">%  Zmax         (only valid for controlType == &#39;controlType&#39;) maximum</span>
+    <span class="c">%               displacement</span>
+    <span class="c">%  Fmax         (only valid for controlType == &#39;controlType&#39;) maximum</span>
+    <span class="c">%               PTO force</span>
+    <span class="c">%</span>
+    <span class="c">% See also WecOptTool.SeaState, interp1</span>
+    
+    <span class="n">arguments</span>
+        <span class="s">hydro</span> <span class="s">(1,1)</span> <span class="s">WecOptTool.Hydrodynamics</span>
+        <span class="n">seastate</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">WecOptTool</span><span class="p">.</span><span class="n">SeaState</span>
+        <span class="n">controlType</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="n">string</span>
+        <span class="n">options</span><span class="p">.</span><span class="n">Zmax</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">double</span>  <span class="p">=</span> <span class="n">Inf</span> <span class="c">% TODO - can be assymetric, need to check throughout</span>
+        <span class="n">options</span><span class="p">.</span><span class="n">Fmax</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">double</span> <span class="p">=</span> <span class="n">Inf</span>
+        <span class="n">options</span><span class="p">.</span><span class="n">interpMethod</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="n">string</span> <span class="p">=</span> <span class="s">&#39;linear&#39;</span>
+    <span class="n">end</span>
+    
+    <span class="s">dynModel</span> <span class="p">=</span> <span class="n">getDynamicsModel</span><span class="p">(</span><span class="n">hydro</span><span class="p">,</span> <span class="n">seastate</span><span class="p">,</span><span class="k">...</span>
+        <span class="n">options</span><span class="p">.</span><span class="n">interpMethod</span><span class="p">);</span>
+    
+    <span class="n">switch</span> <span class="s">controlType</span>
+        <span class="n">case</span> <span class="s">&#39;CC&#39;</span>
+            <span class="n">performance</span> <span class="p">=</span> <span class="n">complexCongugateControl</span><span class="p">(</span><span class="n">dynModel</span><span class="p">);</span>
+        <span class="n">case</span> <span class="s">&#39;P&#39;</span>
+            <span class="n">performance</span> <span class="p">=</span> <span class="n">dampingControl</span><span class="p">(</span><span class="n">dynModel</span><span class="p">);</span>
+        <span class="n">case</span> <span class="s">&#39;PS&#39;</span>
+            <span class="n">performance</span> <span class="p">=</span> <span class="n">psControl</span><span class="p">(</span><span class="n">dynModel</span><span class="p">,</span><span class="n">options</span><span class="p">.</span><span class="n">Zmax</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Fmax</span><span class="p">);</span>
+            
+    <span class="n">end</span>
+<span class="s">end</span>
+<span class="k">        </span>
+<span class="k">function</span><span class="w"> </span>dynModel <span class="p">=</span><span class="w"> </span><span class="nf">getDynamicsModel</span><span class="p">(</span>hydro, SS, interpMethod<span class="p">)</span><span class="w"></span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c">% Mass</span>
+    <span class="n">mass</span> <span class="p">=</span> <span class="n">hydro</span><span class="p">.</span><span class="n">Vo</span> <span class="o">*</span> <span class="n">hydro</span><span class="p">.</span><span class="n">rho</span><span class="p">;</span>
+
+    <span class="c">% Restoring</span>
+    <span class="n">K</span> <span class="p">=</span> <span class="n">hydro</span><span class="p">.</span><span class="n">C</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">hydro</span><span class="p">.</span><span class="n">g</span> <span class="o">*</span> <span class="n">hydro</span><span class="p">.</span><span class="n">rho</span><span class="p">;</span>
+
+    <span class="n">function</span> <span class="s">result</span> <span class="p">=</span> <span class="n">interp_mass</span><span class="p">(</span><span class="n">hydro</span><span class="p">,</span> <span class="n">dof1</span><span class="p">,</span> <span class="n">dof2</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+        <span class="n">result</span> <span class="p">=</span> <span class="n">interp1</span><span class="p">(</span><span class="n">hydro</span><span class="p">.</span><span class="n">w</span><span class="p">,</span>                           <span class="k">...</span>
+                         <span class="nb">squeeze</span><span class="p">(</span><span class="n">hydro</span><span class="p">.</span><span class="n">A</span><span class="p">(</span><span class="n">dof1</span><span class="p">,</span> <span class="n">dof2</span><span class="p">,</span> <span class="p">:)),</span>   <span class="k">...</span>
+                         <span class="n">w</span><span class="p">,</span>                                 <span class="k">...</span>
+                         <span class="n">interpMethod</span><span class="p">,</span>                          <span class="k">...</span>
+                         <span class="mi">0</span><span class="p">);</span>
+    <span class="n">end</span>
+
+    <span class="s">function</span> <span class="s">result</span> <span class="p">=</span> <span class="n">interp_rad</span><span class="p">(</span><span class="n">hydro</span><span class="p">,</span> <span class="n">dof1</span><span class="p">,</span> <span class="n">dof2</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+        <span class="n">result</span> <span class="p">=</span> <span class="n">interp1</span><span class="p">(</span><span class="n">hydro</span><span class="p">.</span><span class="n">w</span><span class="p">,</span>                           <span class="k">...</span>
+                         <span class="nb">squeeze</span><span class="p">(</span><span class="n">hydro</span><span class="p">.</span><span class="n">B</span><span class="p">(</span><span class="n">dof1</span><span class="p">,</span> <span class="n">dof2</span><span class="p">,</span> <span class="p">:)),</span>   <span class="k">...</span>
+                         <span class="n">w</span><span class="p">,</span>                                 <span class="k">...</span>
+                         <span class="n">interpMethod</span><span class="p">,</span>                          <span class="k">...</span>
+                         <span class="mi">0</span><span class="p">);</span>
+    <span class="n">end</span>
+
+    <span class="s">function</span> <span class="s">result</span> <span class="p">=</span> <span class="n">interp_ex</span><span class="p">(</span><span class="n">hydro</span><span class="p">,</span> <span class="n">dof</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="p">=</span> <span class="nb">squeeze</span><span class="p">(</span><span class="n">hydro</span><span class="p">.</span><span class="n">ex</span><span class="p">(</span><span class="n">dof</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:));</span>
+        <span class="n">result</span> <span class="p">=</span> <span class="n">interp1</span><span class="p">(</span><span class="n">hydro</span><span class="p">.</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="p">,</span><span class="n">w</span><span class="p">,</span> <span class="n">interpMethod</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+    <span class="n">end</span>
+
+    <span class="s">w</span> <span class="p">=</span> <span class="n">hydro</span><span class="p">.</span><span class="n">w</span><span class="p">(:);</span>
+    <span class="n">dw</span> <span class="p">=</span> <span class="n">w</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">w</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    
+    <span class="c">% Calculate wave amplitude</span>
+    <span class="n">waveAmpSS</span> <span class="p">=</span> <span class="n">SS</span><span class="p">.</span><span class="n">getAmplitudeSpectrum</span><span class="p">();</span>
+    <span class="n">waveAmp</span> <span class="p">=</span> <span class="n">interp1</span><span class="p">(</span><span class="n">SS</span><span class="p">.</span><span class="n">w</span><span class="p">,</span> <span class="n">waveAmpSS</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">interpMethod</span><span class="p">,</span> <span class="s">&#39;extrap&#39;</span><span class="p">);</span>
+
+    <span class="c">% Row vector of random phases</span>
+    <span class="n">ph</span> <span class="p">=</span> <span class="n">rand</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">waveAmp</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span><span class="p">;</span>
+
+    <span class="c">% Wave height in frequency domain</span>
+    <span class="n">eta_fd</span> <span class="p">=</span> <span class="n">waveAmp</span> <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span>1<span class="nb">i</span> <span class="o">*</span> <span class="n">ph</span><span class="p">);</span>
+    <span class="n">eta_fd</span> <span class="p">=</span> <span class="n">eta_fd</span><span class="p">(:);</span>
+    <span class="c">% radiation damping FRF</span>
+    <span class="n">B</span> <span class="p">=</span> <span class="n">interp_rad</span><span class="p">(</span><span class="n">hydro</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">*</span> <span class="n">hydro</span><span class="p">.</span><span class="n">rho</span> <span class="o">.*</span> <span class="n">w</span><span class="p">;</span>
+
+    <span class="c">% added mass FRF</span>
+    <span class="n">A</span> <span class="p">=</span> <span class="n">interp_mass</span><span class="p">(</span><span class="n">hydro</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">*</span> <span class="n">hydro</span><span class="p">.</span><span class="n">rho</span><span class="p">;</span>
+
+    <span class="c">% friction</span>
+    <span class="n">Bf</span> <span class="p">=</span> <span class="n">max</span><span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span><span class="p">;</span>      <span class="c">% TODO - make this adjustable</span>
+
+    <span class="c">% intrinsic impedance</span>
+    <span class="n">Zi</span> <span class="p">=</span> <span class="n">B</span> <span class="o">+</span> <span class="n">Bf</span> <span class="o">+</span> 1<span class="nb">i</span> <span class="o">*</span> <span class="p">(</span><span class="n">w</span> <span class="o">.*</span> <span class="p">(</span><span class="n">mass</span> <span class="o">+</span> <span class="n">A</span><span class="p">)</span> <span class="o">-</span> <span class="n">K</span> <span class="o">./</span> <span class="n">w</span><span class="p">);</span>
+
+    <span class="c">% Excitation Forces</span>
+    <span class="n">Hex</span> <span class="p">=</span> <span class="n">interp_ex</span><span class="p">(</span><span class="n">hydro</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">*</span> <span class="n">hydro</span><span class="p">.</span><span class="n">g</span> <span class="o">*</span> <span class="n">hydro</span><span class="p">.</span><span class="n">rho</span><span class="p">;</span>
+    <span class="n">F0</span> <span class="p">=</span> <span class="n">Hex</span> <span class="o">.*</span> <span class="n">eta_fd</span><span class="p">;</span>
+
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">mass</span> <span class="p">=</span> <span class="n">mass</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">K</span> <span class="p">=</span> <span class="n">K</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">w</span> <span class="p">=</span> <span class="n">w</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">eta_fd</span> <span class="p">=</span> <span class="n">eta_fd</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">dw</span> <span class="p">=</span> <span class="n">dw</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">wave_amp</span> <span class="p">=</span> <span class="n">waveAmp</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">ph</span> <span class="p">=</span> <span class="n">ph</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">B</span> <span class="p">=</span> <span class="n">B</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">A</span> <span class="p">=</span> <span class="n">A</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">Bf</span> <span class="p">=</span> <span class="n">Bf</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">Zi</span> <span class="p">=</span> <span class="n">Zi</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">Hex</span> <span class="p">=</span> <span class="n">Hex</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">F0</span> <span class="p">=</span> <span class="n">F0</span><span class="p">;</span>
+    
+<span class="n">end</span>
+
+<span class="s">function</span> <span class="s">myPerf</span> <span class="p">=</span> <span class="n">complexCongugateControl</span><span class="p">(</span><span class="n">dynModel</span><span class="p">,</span><span class="o">~</span><span class="p">)</span>
+    
+    <span class="n">myPerf</span> <span class="p">=</span> <span class="n">Performance</span><span class="p">();</span>
+            
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">Zpto</span> <span class="p">=</span> <span class="nb">conj</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">Zi</span><span class="p">);</span>
+    
+    <span class="c">% velocity</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">u</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">F0</span> <span class="o">./</span> <span class="p">(</span><span class="n">myPerf</span><span class="p">.</span><span class="n">Zpto</span> <span class="o">+</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">Zi</span><span class="p">);</span>
+    
+    <span class="c">% position</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">pos</span> <span class="p">=</span> <span class="n">myPerf</span><span class="p">.</span><span class="n">u</span> <span class="o">./</span> <span class="p">(</span>1<span class="nb">i</span> <span class="o">*</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">);</span>
+    
+    <span class="c">% PTO force</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">Fpto</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">myPerf</span><span class="p">.</span><span class="n">Zpto</span> <span class="o">.*</span> <span class="n">myPerf</span><span class="p">.</span><span class="n">u</span><span class="p">;</span>
+    
+    <span class="c">% power</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">pow</span> <span class="p">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">myPerf</span><span class="p">.</span><span class="n">Fpto</span> <span class="o">.*</span> <span class="nb">conj</span><span class="p">(</span><span class="n">myPerf</span><span class="p">.</span><span class="n">u</span><span class="p">);</span>
+    
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">ph</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">ph</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">w</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">eta</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">eta_fd</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">F0</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">F0</span><span class="p">;</span>
+
+<span class="n">end</span>
+
+<span class="s">function</span> <span class="s">myPerf</span> <span class="p">=</span> <span class="n">dampingControl</span><span class="p">(</span><span class="n">dynModel</span><span class="p">,</span><span class="o">~</span><span class="p">)</span>
+    
+    <span class="n">myPerf</span> <span class="p">=</span> <span class="n">Performance</span><span class="p">();</span>
+            
+    <span class="n">P_max</span> <span class="p">=</span> <span class="p">@(</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">b</span><span class="o">*</span><span class="n">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">F0</span> <span class="o">./</span> <span class="k">...</span>
+                                <span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">Zi</span> <span class="o">+</span> <span class="n">b</span><span class="p">))</span><span class="o">.^</span><span class="mi">2</span><span class="p">);</span>
+                            
+    <span class="c">% Solve for damping to produce most power (can do analytically for a</span>
+    <span class="c">% single frequency, but must use numerical solution for spectrum). Note</span>
+    <span class="c">% that fval is the sum of power absorbed (negative being &quot;good&quot;) - the</span>
+    <span class="c">% following should be true: -1 * fval = sum(pow), where pow is the</span>
+    <span class="c">% frequency dependent array calculated below.</span>
+    <span class="p">[</span><span class="n">B_opt</span><span class="p">,</span> <span class="o">~</span><span class="p">]</span> <span class="p">=</span> <span class="n">fminsearch</span><span class="p">(</span><span class="n">P_max</span><span class="p">,</span> <span class="n">max</span><span class="p">(</span><span class="nb">real</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">Zi</span><span class="p">)));</span>
+
+    <span class="c">% PTO impedance</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">Zpto</span> <span class="p">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">B_opt</span> <span class="o">*</span> <span class="nb">ones</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">Zi</span><span class="p">)),</span><span class="mi">0</span><span class="p">);</span>
+    
+    <span class="c">% velocity</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">u</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">F0</span> <span class="o">./</span> <span class="p">(</span><span class="n">myPerf</span><span class="p">.</span><span class="n">Zpto</span> <span class="o">+</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">Zi</span><span class="p">);</span>
+    
+    <span class="c">% position</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">pos</span> <span class="p">=</span> <span class="n">myPerf</span><span class="p">.</span><span class="n">u</span> <span class="o">./</span> <span class="p">(</span>1<span class="nb">i</span> <span class="o">*</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">);</span>
+    
+    <span class="c">% PTO force</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">Fpto</span> <span class="p">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">myPerf</span><span class="p">.</span><span class="n">Zpto</span> <span class="o">.*</span> <span class="n">myPerf</span><span class="p">.</span><span class="n">u</span><span class="p">;</span>
+    
+    <span class="c">% power</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">pow</span> <span class="p">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">myPerf</span><span class="p">.</span><span class="n">Fpto</span> <span class="o">.*</span> <span class="nb">conj</span><span class="p">(</span><span class="n">myPerf</span><span class="p">.</span><span class="n">u</span><span class="p">);</span>
+    
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">ph</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">ph</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">w</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">eta</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">eta_fd</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">F0</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">F0</span><span class="p">;</span>
+
+<span class="n">end</span>
+
+<span class="s">function</span> <span class="s">myPerf</span> <span class="p">=</span> <span class="n">psControl</span><span class="p">(</span><span class="n">dynModel</span><span class="p">,</span><span class="n">delta_Zmax</span><span class="p">,</span><span class="n">delta_Fmax</span><span class="p">)</span>
+<span class="c">%     motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);</span>
+<span class="c">%     ps.wave_amp = waveAmp; % TODO</span>
+<span class="c">%     </span>
+<span class="c">%     % Use mutliple phase realizations for PS at the model</span>
+<span class="c">%     % is nonlinear (note that we use the original phasing</span>
+<span class="c">%     % from the other cases)</span>
+<span class="c">%     n_ph = 5;</span>
+<span class="c">%     ph_mat = [ph, rand(length(ps.w), n_ph-1)];</span>
+<span class="c">%     </span>
+<span class="c">%     n_freqs = length(motion.w);</span>
+<span class="c">%     phasePowMat = zeros(n_ph, 1);</span>
+<span class="c">%     powPerFreqMat = zeros(n_freqs, n_ph);</span>
+<span class="c">%     </span>
+<span class="c">%     for ind_ph = 1 : n_ph</span>
+<span class="c">%         </span>
+<span class="c">%         ph = ph_mat(:, ind_ph);</span>
+<span class="c">% %         [powTot, fRes(ind_ph), tRes(ind_ph)] = getPSPhasePower(ps, ph);</span>
+<span class="c">%         [pow, powPerFreq] = getPSPhasePower(motion, ph)</span>
+<span class="c">%         phasePowMat(ind_ph) = powTot;</span>
+<span class="c">%         powPerFreqMat(:, ind_ph) = fRes(ind_ph).pow;</span>
+<span class="c">%         </span>
+<span class="c">%     end</span>
+<span class="c">%     </span>
+<span class="c">%     ph = ph_mat(:,1);</span>
+<span class="c">%     u = fRes(1).vel;</span>
+<span class="c">%     pos = fRes(1).pos;</span>
+<span class="c">%     Zpto = nan(size(motion.hydro.Zi)); % TODO</span>
+<span class="c">%     Fpto = fRes(1).u;</span>
+<span class="c">%     pow = powPerFreqMat(:,1);</span>
+
+    <span class="n">arguments</span>
+        <span class="s">dynModel</span> <span class="s">(1,</span> <span class="s">1)</span> <span class="s">struct</span>
+        <span class="n">delta_Zmax</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">,</span><span class="n">mustBeReal</span><span class="p">,</span><span class="n">mustBePositive</span><span class="p">}</span>
+        <span class="n">delta_Fmax</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">,</span><span class="n">mustBeReal</span><span class="p">,</span><span class="n">mustBePositive</span><span class="p">}</span>
+    <span class="n">end</span>
+        
+    <span class="s">%</span> <span class="s">Fix</span> <span class="s">random</span> <span class="s">seed</span> <span class="o">&lt;-</span> <span class="n">Do</span> <span class="n">we</span> <span class="n">want</span> <span class="n">this</span>???
+    <span class="n">rng</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    
+    <span class="c">% Reformulate equations of motion</span>
+    <span class="n">dynModel</span> <span class="p">=</span> <span class="n">getPSCoefficients</span><span class="p">(</span><span class="n">dynModel</span><span class="p">,</span> <span class="n">delta_Zmax</span><span class="p">,</span> <span class="n">delta_Fmax</span><span class="p">);</span>
+    
+    <span class="c">% Add phase realizations</span>
+    <span class="n">n_ph</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="n">ph_mat</span> <span class="p">=</span> <span class="p">[</span><span class="n">dynModel</span><span class="p">.</span><span class="n">ph</span><span class="p">,</span> <span class="n">rand</span><span class="p">(</span><span class="nb">length</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">),</span> <span class="n">n_ph</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span><span class="p">];</span>
+
+    <span class="n">for</span> <span class="s">ind_ph</span> <span class="p">=</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">n_ph</span>
+        
+        <span class="n">ph</span> <span class="p">=</span> <span class="n">ph_mat</span><span class="p">(:,</span> <span class="n">ind_ph</span><span class="p">);</span>
+        <span class="p">[</span><span class="n">phasePowMat</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">),</span> <span class="n">fRes</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">),</span> <span class="n">tRes</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">)]</span> <span class="p">=</span> <span class="k">...</span>
+            <span class="n">getPSPhasePower</span><span class="p">(</span><span class="n">dynModel</span><span class="p">,</span> <span class="n">ph</span><span class="p">);</span>
+        
+        
+        <span class="n">pos</span><span class="p">(:,</span> <span class="n">ind_ph</span><span class="p">)</span> <span class="p">=</span> <span class="n">fRes</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">).</span><span class="n">pos</span><span class="p">;</span>
+        <span class="n">u</span><span class="p">(:,</span> <span class="n">ind_ph</span><span class="p">)</span> <span class="p">=</span> <span class="n">fRes</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">).</span><span class="n">vel</span><span class="p">;</span>
+        <span class="n">Zpto</span><span class="p">(:,</span> <span class="n">ind_ph</span><span class="p">)</span> <span class="p">=</span> <span class="n">fRes</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">).</span><span class="n">Zpto</span><span class="p">;</span>
+        <span class="n">Fpto</span><span class="p">(:,</span> <span class="n">ind_ph</span><span class="p">)</span> <span class="p">=</span> <span class="n">fRes</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">).</span><span class="n">u</span><span class="p">;</span>
+        <span class="n">pow</span><span class="p">(:,</span> <span class="n">ind_ph</span><span class="p">)</span> <span class="p">=</span> <span class="n">fRes</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">).</span><span class="n">pow</span><span class="p">;</span>
+        <span class="n">eta</span><span class="p">(:,</span> <span class="n">ind_ph</span><span class="p">)</span> <span class="p">=</span> <span class="n">fRes</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">).</span><span class="n">eta</span><span class="p">;</span>
+        <span class="n">F0</span><span class="p">(:,</span> <span class="n">ind_ph</span><span class="p">)</span> <span class="p">=</span> <span class="n">fRes</span><span class="p">(</span><span class="n">ind_ph</span><span class="p">).</span><span class="n">F0</span><span class="p">;</span>
+        
+    <span class="n">end</span>
+    
+    <span class="s">%</span> <span class="s">assemble</span> <span class="s">results</span>
+    <span class="n">myPerf</span> <span class="p">=</span> <span class="n">Performance</span><span class="p">();</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">w</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">eta</span> <span class="p">=</span> <span class="n">eta</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">F0</span> <span class="p">=</span> <span class="n">F0</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">ph</span> <span class="p">=</span> <span class="n">ph_mat</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">u</span> <span class="p">=</span> <span class="n">u</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">pos</span> <span class="p">=</span> <span class="n">pos</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">Zpto</span> <span class="p">=</span> <span class="n">Zpto</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">Fpto</span> <span class="p">=</span> <span class="n">Fpto</span><span class="p">;</span>
+    <span class="n">myPerf</span><span class="p">.</span><span class="n">pow</span> <span class="p">=</span> <span class="n">pow</span><span class="p">;</span>
+    
+<span class="n">end</span>
+
+<span class="s">function</span> <span class="s">dynModel</span> <span class="p">=</span> <span class="n">getPSCoefficients</span><span class="p">(</span><span class="n">dynModel</span><span class="p">,</span> <span class="n">delta_Zmax</span><span class="p">,</span> <span class="n">delta_Fmax</span><span class="p">)</span>
+    <span class="c">% getPSCoefficients   constructs the necessary coefficients and</span>
+    <span class="c">% matrices used in the pseudospectral control optimization</span>
+    <span class="c">% problem</span>
+    <span class="c">%</span>
+    <span class="c">% Note that these coefficients are not sea state dependent,</span>
+    <span class="c">% thus it is beneficial to find them once only when doing a</span>
+    <span class="c">% study involving multiple sea states.</span>
+    <span class="c">%</span>
+    <span class="c">% Bacelli 2014: Background Chapter 4.1, 4.2; RM3 in section 6.1</span>
+    
+    <span class="c">% Number of frequency - half the number of Fourier coefficients</span>
+    <span class="n">Nf</span> <span class="p">=</span> <span class="nb">length</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">);</span>
+    
+    <span class="c">% Collocation points uniformly distributed between 0 and T</span>
+    <span class="c">% note that we have 2*Nf collocation points since we will have</span>
+    <span class="c">% two Fourier coefficients for each frequency</span>
+    <span class="n">Nc</span> <span class="p">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nf</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>
+    
+    <span class="c">% Rebuild frequency vector to ensure monotonically increasing</span>
+    <span class="c">% with w(1) = w0</span>
+    <span class="n">w0</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">dw</span><span class="p">;</span>                    <span class="c">% fundamental frequency</span>
+    <span class="n">T</span> <span class="p">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span><span class="o">/</span><span class="n">w0</span><span class="p">;</span>                  <span class="c">% &#39;&#39; period</span>
+    
+    <span class="c">% Building cost function component</span>
+    <span class="c">% we will form the cost function as transpose(x) * H x, where x</span>
+    <span class="c">% is a vector of [vel, u]; we want the product above to result</span>
+    <span class="c">% in power (u*vel)</span>
+    <span class="n">H</span> <span class="p">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">;</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">];</span>
+    <span class="n">H_mat</span> <span class="p">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">kron</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="nb">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nf</span><span class="p">));</span>
+    
+    <span class="c">% Building matrices B33 and A33</span>
+    <span class="n">Adiag33</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nf</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">Bdiag33</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nf</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    
+    <span class="n">Adiag33</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">)</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="o">.*</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">A</span><span class="p">;</span>
+    <span class="n">Bdiag33</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">)</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">B</span><span class="p">;</span>
+    <span class="n">Bdiag33</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">)</span> <span class="p">=</span> <span class="n">Bdiag33</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">);</span>
+    
+    <span class="n">Bmat</span> <span class="p">=</span> <span class="nb">diag</span><span class="p">(</span><span class="n">Bdiag33</span><span class="p">);</span>
+    <span class="n">Amat</span> <span class="p">=</span> <span class="nb">diag</span><span class="p">(</span><span class="n">Adiag33</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">Amat</span> <span class="p">=</span> <span class="n">Amat</span> <span class="o">-</span> <span class="n">Amat</span><span class="o">&#39;</span><span class="p">;</span>
+    
+    <span class="n">G</span> <span class="p">=</span> <span class="n">Amat</span> <span class="o">+</span> <span class="n">Bmat</span><span class="p">;</span>
+    
+    <span class="n">B</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">Bf</span> <span class="o">*</span> <span class="nb">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nf</span><span class="p">);</span>
+    <span class="n">C</span> <span class="p">=</span> <span class="nb">blkdiag</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">K</span> <span class="o">*</span> <span class="nb">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nf</span><span class="p">));</span>
+    <span class="n">M</span> <span class="p">=</span> <span class="nb">blkdiag</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">mass</span> <span class="o">*</span> <span class="nb">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nf</span><span class="p">));</span>
+    
+    <span class="c">% Building derivative matrix</span>
+    <span class="n">d</span> <span class="p">=</span> <span class="p">[</span><span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">(:)</span><span class="o">&#39;</span><span class="p">;</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">))];</span>
+    <span class="n">Dphi1</span> <span class="p">=</span> <span class="nb">diag</span><span class="p">(</span><span class="n">d</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">Dphi1</span> <span class="p">=</span> <span class="p">(</span><span class="n">Dphi1</span> <span class="o">-</span> <span class="n">Dphi1</span><span class="o">&#39;</span><span class="p">);</span>
+    <span class="n">Dphi</span> <span class="p">=</span> <span class="nb">blkdiag</span><span class="p">(</span><span class="n">Dphi1</span><span class="p">);</span>
+    
+    <span class="c">% scaling factor to improve optimization performance</span>
+    <span class="n">m_scale</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">mass</span><span class="p">;</span>
+    
+    <span class="c">% equality constraints for EOM</span>
+    <span class="n">P</span> <span class="p">=</span>  <span class="p">(</span><span class="n">M</span><span class="o">*</span><span class="n">Dphi</span> <span class="o">+</span> <span class="n">B</span> <span class="o">+</span> <span class="n">G</span> <span class="o">+</span> <span class="p">(</span><span class="n">C</span> <span class="o">/</span> <span class="n">Dphi</span><span class="p">))</span> <span class="o">/</span> <span class="n">m_scale</span><span class="p">;</span>
+    <span class="n">Aeq</span> <span class="p">=</span> <span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="o">-</span><span class="nb">eye</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nf</span><span class="p">)</span> <span class="p">];</span>
+    <span class="n">Aeq</span> <span class="p">=</span> <span class="p">[</span><span class="n">Aeq</span><span class="p">,</span>            <span class="nb">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">Nf</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+        <span class="nb">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="o">*</span><span class="n">Nf</span><span class="p">),</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">K</span> <span class="o">/</span> <span class="n">m_scale</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+    
+    <span class="c">% Calculating collocation points for constraints</span>
+    <span class="n">tkp</span> <span class="p">=</span> <span class="nb">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="p">(</span><span class="n">Nc</span><span class="p">));</span>
+    <span class="n">tkp</span> <span class="p">=</span> <span class="n">tkp</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="k">end</span><span class="p">);</span>
+    <span class="n">Wtkp</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="o">*</span><span class="n">tkp</span><span class="p">;</span>
+    <span class="n">Phip1</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="nb">size</span><span class="p">(</span><span class="n">Wtkp</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="nb">size</span><span class="p">(</span><span class="n">Wtkp</span><span class="p">,</span><span class="mi">2</span><span class="p">));</span>
+    <span class="n">Phip1</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">,:)</span> <span class="p">=</span> <span class="nb">cos</span><span class="p">(</span><span class="n">Wtkp</span><span class="p">);</span>
+    <span class="n">Phip1</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">,:)</span> <span class="p">=</span> <span class="nb">sin</span><span class="p">(</span><span class="n">Wtkp</span><span class="p">);</span>
+    
+    <span class="n">Phip</span> <span class="p">=</span> <span class="nb">blkdiag</span><span class="p">(</span><span class="n">Phip1</span><span class="p">);</span>
+    
+    <span class="n">A_ineq</span> <span class="p">=</span>  <span class="p">[</span><span class="n">kron</span><span class="p">([</span><span class="mi">1</span> <span class="mi">0</span><span class="p">],</span> <span class="n">Phip1</span><span class="o">&#39;</span> <span class="o">/</span> <span class="n">Dphi1</span><span class="p">),</span> <span class="nb">ones</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">Nc</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">Nc</span><span class="p">,</span><span class="mi">1</span><span class="p">)];</span>
+    <span class="n">A_ineq</span> <span class="p">=</span> <span class="p">[</span><span class="n">A_ineq</span><span class="p">;</span> <span class="o">-</span><span class="n">A_ineq</span><span class="p">];</span>
+    
+    <span class="c">% position constraints</span>
+    <span class="n">if</span> <span class="s">length(delta_Zmax)==1</span>
+        <span class="n">B_ineq</span> <span class="p">=</span> <span class="p">[</span><span class="nb">ones</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">A_ineq</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta_Zmax</span><span class="p">];</span>
+    <span class="n">else</span>
+        <span class="s">B_ineq</span> <span class="p">=</span> <span class="p">[</span><span class="nb">ones</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">A_ineq</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">max</span><span class="p">(</span><span class="n">delta_Zmax</span><span class="p">);</span>
+            <span class="o">-</span><span class="nb">ones</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">A_ineq</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">min</span><span class="p">(</span><span class="n">delta_Zmax</span><span class="p">)];</span>
+    <span class="n">end</span>
+    
+    <span class="s">%</span> <span class="s">force</span> <span class="s">constraints</span>
+    <span class="n">siz</span> <span class="p">=</span> <span class="nb">size</span><span class="p">(</span><span class="n">A_ineq</span><span class="p">);</span>
+    <span class="n">forc</span> <span class="p">=</span>  <span class="p">[</span><span class="n">kron</span><span class="p">([</span><span class="mi">0</span> <span class="mi">1</span><span class="p">],</span> <span class="n">Phip</span><span class="o">&#39;</span><span class="p">),</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">Nc</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="nb">ones</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">Nc</span><span class="p">,</span><span class="mi">1</span><span class="p">)];</span>
+    <span class="n">if</span> <span class="s">length(delta_Fmax)==1</span>
+        <span class="n">B_ineq</span> <span class="p">=</span> <span class="p">[</span><span class="n">B_ineq</span><span class="p">;</span> <span class="nb">ones</span><span class="p">(</span><span class="n">siz</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta_Fmax</span><span class="o">/</span><span class="n">m_scale</span><span class="p">];</span>
+    <span class="n">else</span>
+        <span class="s">B_ineq</span> <span class="p">=</span> <span class="p">[</span><span class="n">B_ineq</span><span class="p">;</span> <span class="nb">ones</span><span class="p">(</span><span class="n">siz</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">max</span><span class="p">(</span><span class="n">delta_Fmax</span><span class="p">)</span><span class="o">/</span><span class="n">m_scale</span><span class="p">;</span>
+            <span class="o">-</span><span class="nb">ones</span><span class="p">(</span><span class="n">siz</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">min</span><span class="p">(</span><span class="n">delta_Fmax</span><span class="p">)</span><span class="o">/</span><span class="n">m_scale</span><span class="p">];</span>
+    <span class="n">end</span>
+    <span class="s">A_ineq</span> <span class="p">=</span> <span class="p">[</span><span class="n">A_ineq</span><span class="p">;</span> <span class="n">forc</span><span class="p">;</span> <span class="o">-</span><span class="n">forc</span><span class="p">];</span>
+    
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">Nf</span> <span class="p">=</span> <span class="n">Nf</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">T</span> <span class="p">=</span> <span class="n">T</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">H_mat</span> <span class="p">=</span> <span class="n">H_mat</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">tkp</span> <span class="p">=</span> <span class="n">tkp</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">Aeq</span> <span class="p">=</span> <span class="n">Aeq</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">A_ineq</span> <span class="p">=</span> <span class="n">A_ineq</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">B_ineq</span> <span class="p">=</span> <span class="n">B_ineq</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">Phip</span> <span class="p">=</span> <span class="n">Phip</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">Phip1</span> <span class="p">=</span> <span class="n">Phip1</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">Dphi</span> <span class="p">=</span> <span class="n">Dphi</span><span class="p">;</span>
+    <span class="n">dynModel</span><span class="p">.</span><span class="n">mass_scale</span> <span class="p">=</span> <span class="n">m_scale</span><span class="p">;</span>
+<span class="n">end</span>
+
+<span class="s">function</span> <span class="s">[powTot,</span> <span class="s">fRes,</span> <span class="s">tRes]</span> <span class="p">=</span> <span class="n">getPSPhasePower</span><span class="p">(</span><span class="n">dynModel</span><span class="p">,</span> <span class="n">ph</span><span class="p">)</span>
+    <span class="c">% getPSPhasePower   calculates power using the pseudospectral</span>
+    <span class="c">% method given a phase and a descrption of the body movement.</span>
+    <span class="c">% Returns total phase power and power per frequency</span>
+
+    <span class="n">eta_fd</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">wave_amp</span> <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span>1<span class="nb">i</span><span class="o">*</span><span class="n">ph</span><span class="p">);</span>
+    <span class="n">E3</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">Hex</span> <span class="o">.*</span> <span class="n">eta_fd</span><span class="p">;</span>
+    
+    <span class="n">fef3</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">dynModel</span><span class="p">.</span><span class="n">Nf</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+    
+    <span class="n">fef3</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">)</span> <span class="p">=</span>  <span class="nb">real</span><span class="p">(</span><span class="n">E3</span><span class="p">);</span>
+    <span class="n">fef3</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">)</span> <span class="p">=</span> <span class="o">-</span><span class="nb">imag</span><span class="p">(</span><span class="n">E3</span><span class="p">);</span>
+    
+    <span class="n">Beq</span> <span class="p">=</span> <span class="p">[</span><span class="n">fef3</span><span class="p">;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">mass_scale</span><span class="p">;</span>
+    
+    <span class="c">% constrained optimization settings</span>
+    <span class="n">qp_options</span> <span class="p">=</span> <span class="n">optimoptions</span><span class="p">(</span><span class="s">&#39;fmincon&#39;</span><span class="p">,</span>  <span class="k">...</span>
+        <span class="s">&#39;Algorithm&#39;</span><span class="p">,</span> <span class="s">&#39;sqp&#39;</span><span class="p">,</span>               <span class="k">...</span>
+        <span class="s">&#39;Display&#39;</span><span class="p">,</span> <span class="s">&#39;off&#39;</span><span class="p">,</span>                 <span class="k">...</span>
+        <span class="s">&#39;MaxIterations&#39;</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">,</span>             <span class="k">...</span>
+        <span class="s">&#39;MaxFunctionEvaluations&#39;</span><span class="p">,</span> <span class="mf">1e5</span><span class="p">,</span>    <span class="k">...</span>
+        <span class="s">&#39;OptimalityTolerance&#39;</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">,</span>      <span class="k">...</span>
+        <span class="s">&#39;StepTolerance&#39;</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">);</span>
+    
+    <span class="n">siz</span> <span class="p">=</span> <span class="nb">size</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">A_ineq</span><span class="p">);</span>
+    <span class="n">X0</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="n">siz</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">fval</span><span class="p">,</span> <span class="n">exitflag</span><span class="p">,</span> <span class="n">output</span><span class="p">]</span> <span class="p">=</span> <span class="n">fmincon</span><span class="p">(@</span><span class="n">pow_calc</span><span class="p">,</span><span class="k">...</span>
+        <span class="n">X0</span><span class="p">,</span><span class="k">...</span>
+        <span class="n">dynModel</span><span class="p">.</span><span class="n">A_ineq</span><span class="p">,</span><span class="k">...</span>
+        <span class="n">dynModel</span><span class="p">.</span><span class="n">B_ineq</span><span class="p">,</span><span class="k">...</span>
+        <span class="n">dynModel</span><span class="p">.</span><span class="n">Aeq</span><span class="p">,</span><span class="k">...</span><span class="c">         % Aeq and Beq are the hydrodynamic model</span>
+        <span class="n">Beq</span><span class="p">,</span><span class="k">...</span>
+        <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span><span class="k">...</span>
+        <span class="n">qp_options</span><span class="p">);</span>
+    
+    <span class="c">%     if exitflag ~= 1      % for debugging</span>
+    <span class="c">%         disp(exitflag)</span>
+    <span class="c">%         disp(output)</span>
+    <span class="c">%     end</span>
+    
+    <span class="c">% y is a column vector containing [vel; u] of the</span>
+    <span class="c">% pseudospectral coefficients</span>
+    <span class="n">tmp</span> <span class="p">=</span> <span class="nb">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="k">end</span><span class="o">-</span><span class="mi">2</span><span class="p">),[],</span><span class="mi">2</span><span class="p">);</span>
+    <span class="n">x1hat</span> <span class="p">=</span> <span class="n">tmp</span><span class="p">(:,</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">uhat</span> <span class="p">=</span> <span class="n">tmp</span><span class="p">(:,</span><span class="mi">2</span><span class="p">);</span>
+    
+    <span class="c">% find the spectra</span>
+    <span class="n">ps2spec</span> <span class="p">=</span> <span class="p">@(</span><span class="n">x</span><span class="p">)</span> <span class="p">(</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">)</span> <span class="o">-</span> 1<span class="nb">i</span> <span class="o">*</span> <span class="n">x</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="mi">2</span><span class="p">:</span><span class="k">end</span><span class="p">));</span>  <span class="c">% TODO - probably make this a global function</span>
+    <span class="n">velFreq</span> <span class="p">=</span> <span class="n">ps2spec</span><span class="p">(</span><span class="n">x1hat</span><span class="p">);</span>
+    <span class="n">posFreq</span> <span class="p">=</span> <span class="n">velFreq</span> <span class="o">./</span> <span class="p">(</span>1<span class="nb">i</span> <span class="o">*</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">);</span>
+    <span class="n">uFreq</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">mass_scale</span> <span class="o">*</span> <span class="n">ps2spec</span><span class="p">(</span><span class="n">uhat</span><span class="p">);</span>
+    <span class="n">powFreq</span> <span class="p">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">uFreq</span> <span class="o">.*</span> <span class="nb">conj</span><span class="p">(</span><span class="n">velFreq</span><span class="p">);</span>
+    <span class="n">zFreq</span> <span class="p">=</span> <span class="n">uFreq</span> <span class="o">./</span> <span class="n">velFreq</span><span class="p">;</span>
+    
+    <span class="c">% find time histories</span>
+    <span class="n">spec2time</span> <span class="p">=</span> <span class="p">@(</span><span class="n">x</span><span class="p">)</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">Phip</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">x</span><span class="p">;</span>              <span class="c">% TODO - probably make this a global function</span>
+    <span class="n">velT</span> <span class="p">=</span> <span class="n">spec2time</span><span class="p">(</span><span class="n">x1hat</span><span class="p">);</span>
+    <span class="n">posT</span> <span class="p">=</span> <span class="n">y</span><span class="p">(</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">Phip</span><span class="o">&#39;</span> <span class="o">/</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">Dphi</span><span class="p">)</span> <span class="o">*</span> <span class="n">x1hat</span><span class="p">;</span>
+    <span class="n">uT</span> <span class="p">=</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">mass_scale</span> <span class="o">*</span> <span class="p">(</span><span class="n">y</span><span class="p">(</span><span class="k">end</span><span class="p">)</span> <span class="o">+</span> <span class="n">spec2time</span><span class="p">(</span><span class="n">uhat</span><span class="p">));</span>
+    <span class="n">powT</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">*</span> <span class="n">velT</span> <span class="o">.*</span> <span class="n">uT</span><span class="p">;</span>
+    
+    <span class="n">powTot</span> <span class="p">=</span> <span class="n">trapz</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">tkp</span><span class="p">,</span> <span class="n">powT</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">tkp</span><span class="p">(</span><span class="k">end</span><span class="p">)</span> <span class="o">-</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">tkp</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">WecOptTool</span><span class="p">.</span><span class="n">math</span><span class="p">.</span><span class="n">isClose</span><span class="p">(</span><span class="n">powTot</span><span class="p">,</span> <span class="n">sum</span><span class="p">(</span><span class="nb">real</span><span class="p">(</span><span class="n">powFreq</span><span class="p">)),</span><span class="k">...</span>
+        <span class="s">&#39;rtol&#39;</span><span class="p">,</span> <span class="nb">eps</span><span class="o">*</span><span class="mf">1e2</span><span class="p">),</span><span class="k">...</span>
+        <span class="n">sprintf</span><span class="p">(</span><span class="s">&#39;Mismatch in PS results\n\tpowTot: %.3e\n\tpowFreq: %.3e&#39;</span><span class="p">,</span><span class="k">...</span>
+        <span class="n">powTot</span><span class="p">,</span><span class="n">sum</span><span class="p">(</span><span class="nb">real</span><span class="p">(</span><span class="n">powFreq</span><span class="p">))))</span>
+    
+    <span class="c">% assemble outputs</span>
+    <span class="n">fRes</span><span class="p">.</span><span class="n">pos</span> <span class="p">=</span> <span class="n">posFreq</span><span class="p">;</span>
+    <span class="n">fRes</span><span class="p">.</span><span class="n">vel</span> <span class="p">=</span> <span class="n">velFreq</span><span class="p">;</span>
+    <span class="n">fRes</span><span class="p">.</span><span class="n">u</span> <span class="p">=</span> <span class="n">uFreq</span><span class="p">;</span>
+    <span class="n">fRes</span><span class="p">.</span><span class="n">pow</span> <span class="p">=</span> <span class="n">powFreq</span><span class="p">;</span>
+    <span class="n">fRes</span><span class="p">.</span><span class="n">Zpto</span> <span class="p">=</span> <span class="n">zFreq</span><span class="p">;</span>
+    <span class="n">fRes</span><span class="p">.</span><span class="n">eta</span> <span class="p">=</span> <span class="n">eta_fd</span><span class="p">;</span>
+    <span class="n">fRes</span><span class="p">.</span><span class="n">F0</span> <span class="p">=</span> <span class="n">E3</span><span class="p">;</span>
+    
+    <span class="n">tRes</span><span class="p">.</span><span class="n">pos</span> <span class="p">=</span> <span class="n">posT</span><span class="p">;</span>
+    <span class="n">tRes</span><span class="p">.</span><span class="n">vel</span> <span class="p">=</span> <span class="n">velT</span><span class="p">;</span>
+    <span class="n">tRes</span><span class="p">.</span><span class="n">u</span> <span class="p">=</span> <span class="n">uT</span><span class="p">;</span>
+    <span class="n">tRes</span><span class="p">.</span><span class="n">pow</span> <span class="p">=</span> <span class="n">powT</span><span class="p">;</span>
+    
+    <span class="n">function</span> <span class="s">P</span> <span class="p">=</span> <span class="n">pow_calc</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">P</span> <span class="p">=</span> <span class="n">X</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="k">end</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">dynModel</span><span class="p">.</span><span class="n">H_mat</span> <span class="o">*</span> <span class="n">X</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="k">end</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="c">% 1/2 factor dropped for simplicity</span>
+    <span class="n">end</span>
+<span class="s">end</span>
+
+<span class="c">% Copyright 2020 National Technology &amp; Engineering Solutions of Sandia, </span>
+<span class="c">% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the </span>
+<span class="c">% U.S. Government retains certain rights in this software.</span>
+<span class="c">%</span>
+<span class="c">% This file is part of WecOptTool.</span>
+<span class="c">% </span>
+<span class="c">%     WecOptTool is free software: you can redistribute it and/or modify</span>
+<span class="c">%     it under the terms of the GNU General Public License as published by</span>
+<span class="c">%     the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c">%     (at your option) any later version.</span>
+<span class="c">% </span>
+<span class="c">%     WecOptTool is distributed in the hope that it will be useful,</span>
+<span class="c">%     but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">%     GNU General Public License for more details.</span>
+<span class="c">% </span>
+<span class="c">%     You should have received a copy of the GNU General Public License</span>
+<span class="c">%     along with WecOptTool.  If not, see &lt;https://www.gnu.org/licenses/&gt;.</span>
+</pre></div>
+</td></tr></table></div>
+</details></br><p>To find the performance of a device, a separate step (<strong>Simulating device response</strong>) is used.
+For WaveBot, this is codified in the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/simulateDevice.m"><code class="docutils literal notranslate"><span class="pre">simulateDevice.m</span></code></a>, function, which has the following signature:</p>
+<div class="code matlab highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">performance</span> <span class="o">=</span> <span class="n">simulateDevice</span><span class="p">(</span><span class="n">hydro</span><span class="p">,</span> <span class="n">seastate</span><span class="p">,</span> <span class="n">controlType</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The arguments for <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/simulateDevice.m"><code class="docutils literal notranslate"><span class="pre">simulateDevice.m</span></code></a> are:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">hydro</span></code> - a <a class="reference internal" href="6api.html#+WecOptTool.Hydrodynamics" title="+WecOptTool.Hydrodynamics"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">Hydrodynamics</span></code></a> object containing hydrodynamic coefficients produced by <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/designDevice.m"><code class="docutils literal notranslate"><span class="pre">designDevice.m</span></code></a></li>
+<li><code class="docutils literal notranslate"><span class="pre">seastate</span></code> - a <a class="reference internal" href="6api.html#+WecOptTool.SeaState" title="+WecOptTool.SeaState"><code class="xref mat mat-class docutils literal notranslate"><span class="pre">SeaState</span></code></a> object (see <a class="reference internal" href="2optimization.html#seastate"><span class="std std-ref">Define a sea state</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">controlType</span></code> - string specifying the control type (see <a class="reference internal" href="2optimization.html#controlledperformance"><span class="std std-ref">Calculate controlled device performance</span></a>)</li>
+<li><code class="docutils literal notranslate"><span class="pre">options</span></code> - name-value pair arguments for additional settings</li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">options</span></code> argument can be used to define device properties that are not directly related to the hydrodynamics.
+For example, in the WaveBot example the user can set the maximum displacement (<code class="docutils literal notranslate"><span class="pre">Zmax</span></code>) and maximum PTO force (<code class="docutils literal notranslate"><span class="pre">Fmax</span></code>) at this point.
+Additionally, solver settings such as the linear interpolation method (<code class="docutils literal notranslate"><span class="pre">interMethod</span></code>) can be defined.</p>
+</div>
+<div class="section" id="reporting-results">
+<h2>3.4. Reporting results<a class="headerlink" href="#reporting-results" title="Permalink to this headline">¶</a></h2>
+<details><summary><clickme>See the entire file</clickme></summary></br><div class="highlight-matlab notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">classdef</span> <span class="n">Performance</span> <span class="o">&lt;</span> <span class="n">handle</span>
+    
+    <span class="n">properties</span>
+        <span class="s">w</span> <span class="s">(:,:)</span> <span class="s">double</span> <span class="s">{mustBeFinite,mustBeReal,mustBePositive}</span>
+        <span class="n">ph</span> <span class="p">(:,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">,</span><span class="n">mustBeReal</span><span class="p">}</span>
+        <span class="n">eta</span> <span class="p">(:,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">}</span>
+        <span class="n">F0</span> <span class="p">(:,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">}</span>
+        <span class="n">u</span> <span class="p">(:,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">}</span>
+        <span class="n">pos</span> <span class="p">(:,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">}</span>
+        <span class="n">Zpto</span> <span class="p">(:,:)</span> <span class="n">double</span> <span class="p">{}</span>
+        <span class="n">Fpto</span> <span class="p">(:,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">}</span>
+        <span class="n">pow</span> <span class="p">(:,:)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">}</span>
+        <span class="n">name</span> <span class="p">(</span><span class="mi">1</span><span class="p">,:)</span> <span class="n">char</span> <span class="p">=</span> <span class="s">&#39;tmp&#39;</span>
+        <span class="n">date</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="n">double</span> <span class="p">{</span><span class="n">mustBeFinite</span><span class="p">,</span><span class="n">mustBePositive</span><span class="p">}</span> <span class="p">=</span> <span class="n">now</span>
+    <span class="n">end</span>
+    
+    <span class="s">methods</span>
+<span class="k">        </span>
+<span class="k">        function</span><span class="w"> </span><span class="nf">plotTime</span><span class="p">(</span>obj, t, options<span class="p">)</span><span class="w"></span>
+<span class="w">            </span>
+<span class="w">            </span><span class="n">arguments</span>
+                <span class="n">obj</span>
+                <span class="s">t</span> <span class="p">=</span> <span class="mi">0</span><span class="p">:</span><span class="mf">0.05</span><span class="p">:</span><span class="n">obj</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">getRepeatPer</span><span class="p">()</span>
+                <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span> <span class="p">=</span> <span class="s">&#39;none&#39;</span>
+                <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span> <span class="p">=</span> <span class="mi">11</span>
+            <span class="n">end</span>
+            
+            <span class="s">fig</span> <span class="p">=</span> <span class="n">figure</span><span class="p">(</span><span class="s">&#39;Name&#39;</span><span class="p">,</span><span class="s">&#39;Performance.plotTime&#39;</span><span class="p">);</span>
+            <span class="n">fig</span><span class="p">.</span><span class="n">Position</span> <span class="p">=</span> <span class="n">fig</span><span class="p">.</span><span class="n">Position</span> <span class="o">.*</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mf">1.5</span><span class="p">];</span>
+            <span class="n">movegui</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="s">&#39;onscreen&#39;</span><span class="p">);</span>
+            
+            <span class="c">% fields for plotting</span>
+            <span class="n">fns</span> <span class="p">=</span> <span class="p">{</span><span class="s">&#39;eta&#39;</span><span class="p">,</span><span class="s">&#39;F0&#39;</span><span class="p">,</span><span class="s">&#39;pos&#39;</span><span class="p">,</span><span class="s">&#39;u&#39;</span><span class="p">,</span><span class="s">&#39;Fpto&#39;</span><span class="p">,</span><span class="s">&#39;pow&#39;</span><span class="p">};</span>
+            
+            <span class="n">for</span> <span class="s">ii</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
+                <span class="n">ax</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="p">=</span> <span class="n">subplot</span><span class="p">(</span><span class="nb">length</span><span class="p">(</span><span class="n">fns</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ii</span><span class="p">);</span>
+                <span class="n">hold</span> <span class="s">on</span>
+                <span class="n">grid</span> <span class="s">on</span>
+            <span class="n">end</span>
+            
+            <span class="s">for</span> <span class="s">jj</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                
+                <span class="n">for</span> <span class="s">ii</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
+                    <span class="n">timeRes</span><span class="p">.(</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">})</span> <span class="p">=</span> <span class="n">getTimeRes</span><span class="p">(</span><span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">),</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span> <span class="n">t</span><span class="p">);</span>
+                    <span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">ii</span><span class="p">),</span><span class="n">t</span><span class="p">,</span><span class="n">timeRes</span><span class="p">.(</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">}))</span>
+                    <span class="n">ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">ii</span><span class="p">),</span>                              <span class="k">...</span>
+                           <span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>                             <span class="k">...</span>
+                           <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                           <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+                <span class="n">end</span>
+                
+                <span class="s">for</span> <span class="s">ii</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="n">set</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">ii</span><span class="p">),</span><span class="s">&#39;XTickLabel&#39;</span><span class="p">,[])</span>
+                <span class="n">end</span>
+                
+                <span class="s">linkaxes(ax,&#39;x&#39;)</span>
+                <span class="n">xlabel</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="k">end</span><span class="p">),</span>                             <span class="k">...</span>
+                       <span class="s">&#39;Time [s]&#39;</span><span class="p">,</span>                          <span class="k">...</span>
+                       <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                       <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+               
+            <span class="n">end</span>
+            
+            <span class="s">xlim([t(1),</span> <span class="s">t(end)])</span>
+            
+            <span class="n">if</span> <span class="s">length(obj)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                <span class="n">l1</span> <span class="p">=</span> <span class="n">legend</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>                               <span class="k">...</span>
+                            <span class="p">{</span><span class="n">obj</span><span class="p">.</span><span class="n">name</span><span class="p">},</span>                          <span class="k">...</span>
+                            <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                            <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">);</span>
+                <span class="n">set</span><span class="p">(</span><span class="n">l1</span><span class="p">,</span> <span class="s">&#39;NumColumns&#39;</span><span class="p">,</span> <span class="nb">length</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+            <span class="n">end</span> 
+            
+        <span class="s">end</span>
+<span class="k">        </span>
+<span class="k">        function</span><span class="w"> </span><span class="nf">plotFreq</span><span class="p">(</span>obj, fig, options<span class="p">)</span><span class="w"></span>
+<span class="w">            </span>
+<span class="w">            </span><span class="n">arguments</span>
+                <span class="n">obj</span>
+                <span class="s">fig</span> <span class="p">=</span> <span class="n">figure</span><span class="p">;</span>
+                <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span> <span class="p">=</span> <span class="s">&#39;none&#39;</span>
+                <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span> <span class="p">=</span> <span class="mi">11</span>
+            <span class="n">end</span> 
+            
+            <span class="s">set(fig,&#39;Name&#39;,&#39;Performance.plotFreq&#39;)</span><span class="p">;</span>
+            
+            <span class="n">fns</span> <span class="p">=</span> <span class="p">{</span><span class="s">&#39;F0&#39;</span><span class="p">,</span><span class="s">&#39;u&#39;</span><span class="p">,</span><span class="s">&#39;Fpto&#39;</span><span class="p">};</span>
+            <span class="n">mrks</span> <span class="p">=</span> <span class="p">{</span><span class="s">&#39;o&#39;</span><span class="p">,</span><span class="s">&#39;.&#39;</span><span class="p">,</span><span class="s">&#39;+&#39;</span><span class="p">,</span><span class="s">&#39;s&#39;</span><span class="p">};</span>
+            
+            <span class="n">n</span> <span class="p">=</span> <span class="nb">length</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+            <span class="n">for</span> <span class="s">jj</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="n">n</span>
+                <span class="n">for</span> <span class="s">ii</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
+                    
+                    <span class="n">fv</span> <span class="p">=</span> <span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).(</span><span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">})(:,</span><span class="mi">1</span><span class="p">);</span> <span class="c">% use the first column if this is PS</span>
+                    
+                    <span class="c">% mag plot</span>
+                    <span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span> <span class="p">=</span> <span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="nb">sub2ind</span><span class="p">([</span><span class="n">n</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">jj</span><span class="p">,</span><span class="mi">1</span><span class="p">));</span>
+                    <span class="n">title</span><span class="p">(</span><span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).</span><span class="n">name</span><span class="p">,</span>                         <span class="k">...</span>
+                          <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>   <span class="k">...</span>
+                          <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+                    <span class="n">hold</span> <span class="s">on</span>
+                    <span class="n">grid</span> <span class="s">on</span>
+                    
+                    <span class="n">stem</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>                  <span class="k">...</span>
+                         <span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).</span><span class="n">w</span><span class="p">,</span>                 <span class="k">...</span>
+                         <span class="n">mag2db</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">fv</span><span class="p">)),</span>           <span class="k">...</span>
+                         <span class="n">mrks</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>                  <span class="k">...</span>
+                         <span class="s">&#39;DisplayName&#39;</span><span class="p">,</span> <span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>    <span class="k">...</span>
+                         <span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span>           <span class="k">...</span>
+                         <span class="s">&#39;Color&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">)</span>
+                    
+                    <span class="c">% phase plot</span>
+                    <span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">=</span> <span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="nb">sub2ind</span><span class="p">([</span><span class="n">n</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">jj</span><span class="p">,</span><span class="mi">2</span><span class="p">));</span>
+                    <span class="n">hold</span> <span class="s">on</span>
+                    <span class="n">grid</span> <span class="s">on</span>
+                    
+                    <span class="n">stem</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span>                  <span class="k">...</span>
+                         <span class="n">obj</span><span class="p">(</span><span class="n">jj</span><span class="p">).</span><span class="n">w</span><span class="p">,</span>                 <span class="k">...</span>
+                         <span class="nb">angle</span><span class="p">(</span><span class="n">fv</span><span class="p">),</span>                 <span class="k">...</span>
+                         <span class="n">mrks</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>                  <span class="k">...</span>
+                         <span class="s">&#39;DisplayName&#39;</span><span class="p">,</span> <span class="n">fns</span><span class="p">{</span><span class="n">ii</span><span class="p">},</span>    <span class="k">...</span>
+                         <span class="s">&#39;MarkerSize&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span>           <span class="k">...</span>
+                         <span class="s">&#39;Color&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">)</span>
+                    
+                    <span class="n">ylim</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">jj</span><span class="p">,</span><span class="mi">2</span><span class="p">),[</span><span class="o">-</span><span class="nb">pi</span><span class="p">,</span><span class="nb">pi</span><span class="p">])</span>
+                    
+                <span class="n">end</span>
+                
+                <span class="s">xlabel(ax(jj,2),</span>                            <span class="s">...</span>
+                       <span class="s">&#39;Frequency [rad/s]&#39;</span><span class="p">,</span>                 <span class="k">...</span>
+                       <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                       <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+                
+            <span class="n">end</span>
+            
+            <span class="s">ylabel(ax(1,1),</span>                             <span class="s">...</span>
+                   <span class="s">&#39;Magnitude [dB]&#39;</span><span class="p">,</span>                    <span class="k">...</span>
+                   <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                   <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+            <span class="n">ylabel</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span>                             <span class="k">...</span>
+                   <span class="s">&#39;Angle [rad]&#39;</span><span class="p">,</span>                       <span class="k">...</span>
+                   <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                   <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+            <span class="n">legend</span><span class="p">(</span><span class="n">ax</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>                             <span class="k">...</span>
+                   <span class="s">&#39;Interpreter&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">Interpreter</span><span class="p">,</span>  <span class="k">...</span>
+                   <span class="s">&#39;FontSize&#39;</span><span class="p">,</span> <span class="n">options</span><span class="p">.</span><span class="n">FontSize</span><span class="p">)</span>
+            <span class="n">linkaxes</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s">&#39;x&#39;</span><span class="p">)</span>
+            <span class="n">linkaxes</span><span class="p">(</span><span class="n">ax</span><span class="p">(:,</span><span class="mi">1</span><span class="p">),</span> <span class="s">&#39;y&#39;</span><span class="p">)</span>
+            
+        <span class="n">end</span>
+        
+        <span class="s">function</span> <span class="s">T</span> <span class="p">=</span> <span class="n">summary</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            
+            <span class="n">if</span> <span class="s">length(obj)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+                <span class="n">for</span> <span class="s">ii</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                    <span class="n">Tr</span><span class="p">(</span><span class="n">ii</span><span class="p">,:)</span> <span class="p">=</span> <span class="n">summary</span><span class="p">(</span><span class="n">obj</span><span class="p">(</span><span class="n">ii</span><span class="p">));</span>
+                <span class="n">end</span>
+                
+                <span class="s">%</span> <span class="s">augment</span> <span class="s">names</span> <span class="s">if</span> <span class="s">they</span> <span class="s">are</span> <span class="s">the</span> <span class="s">same</span>
+                <span class="n">if</span> <span class="s">any(strcmp(obj(1).name,</span> <span class="s">{obj(2:end).name}))</span>
+                    <span class="n">for</span> <span class="s">ii</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                        <span class="n">rnames</span><span class="p">{</span><span class="n">ii</span><span class="p">}</span> <span class="p">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">(</span><span class="n">ii</span><span class="p">).</span><span class="n">name</span><span class="p">,</span> <span class="s">&#39;_&#39;</span><span class="p">,</span> <span class="n">num2str</span><span class="p">(</span><span class="n">ii</span><span class="p">)];</span>
+                    <span class="n">end</span>
+                <span class="s">else</span>
+                    <span class="n">rnames</span> <span class="p">=</span> <span class="p">{</span><span class="n">obj</span><span class="p">.</span><span class="n">name</span><span class="p">};</span>
+                <span class="n">end</span>
+                
+                <span class="s">Tr.Properties.RowNames</span> <span class="p">=</span> <span class="n">rnames</span><span class="p">;</span>
+                <span class="n">mT</span> <span class="p">=</span> <span class="n">Tr</span><span class="p">;</span>
+                
+                <span class="n">if</span> <span class="s">nargout</span>
+                    <span class="n">T</span> <span class="p">=</span> <span class="n">mT</span><span class="p">;</span>
+                <span class="n">else</span>
+                    <span class="s">disp(mT)</span>
+                <span class="n">end</span>
+                
+                <span class="s">return</span>
+                
+            <span class="n">else</span>
+                <span class="s">rnames</span> <span class="p">=</span> <span class="p">{</span><span class="n">obj</span><span class="p">.</span><span class="n">name</span><span class="p">};</span>
+            <span class="n">end</span>
+            
+            <span class="s">trep</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">getRepeatPer</span><span class="p">();</span>
+            <span class="n">t</span> <span class="p">=</span> <span class="nb">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">trep</span><span class="p">,</span><span class="mf">1e3</span><span class="p">);</span>
+
+            <span class="n">for</span> <span class="s">jj</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">size</span><span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">ph</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="c">% for each phase in PS cases</span>
+
+                <span class="n">tmp</span><span class="p">.</span><span class="n">pow_avg</span><span class="p">(</span><span class="n">jj</span><span class="p">)</span> <span class="p">=</span> <span class="n">sum</span><span class="p">(</span><span class="nb">real</span><span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">pow</span><span class="p">(:,</span><span class="n">jj</span><span class="p">)));</span>
+
+                <span class="n">pow_t</span> <span class="p">=</span> <span class="n">getTimeRes</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">&#39;pow&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">jj</span><span class="p">);</span>
+                <span class="n">tmp</span><span class="p">.</span><span class="n">pow_max</span><span class="p">(</span><span class="n">jj</span><span class="p">)</span> <span class="p">=</span> <span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">pow_t</span><span class="p">));</span>
+
+                <span class="n">try</span>
+                    <span class="s">tmp.pow_thd(jj)</span> <span class="p">=</span> <span class="n">thd</span><span class="p">(</span><span class="n">pow_t</span><span class="p">);</span>
+                <span class="n">catch</span> <span class="s">ME</span>
+                    <span class="n">warning</span><span class="p">(</span><span class="n">ME</span><span class="p">.</span><span class="n">message</span><span class="p">)</span>
+                    <span class="n">tmp</span><span class="p">.</span><span class="n">pow_thd</span><span class="p">(</span><span class="n">jj</span><span class="p">)</span> <span class="p">=</span> <span class="n">NaN</span><span class="p">;</span>
+                <span class="n">end</span>
+
+                <span class="s">pos_t</span> <span class="p">=</span> <span class="n">getTimeRes</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">&#39;pos&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">jj</span><span class="p">);</span>
+                <span class="n">tmp</span><span class="p">.</span><span class="n">pos_max</span><span class="p">(</span><span class="n">jj</span><span class="p">)</span> <span class="p">=</span> <span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">pos_t</span><span class="p">));</span>
+
+                <span class="n">vel_t</span> <span class="p">=</span> <span class="n">getTimeRes</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">&#39;u&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">jj</span><span class="p">);</span>
+                <span class="n">tmp</span><span class="p">.</span><span class="n">vel_max</span><span class="p">(</span><span class="n">jj</span><span class="p">)</span> <span class="p">=</span> <span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">vel_t</span><span class="p">));</span>
+
+                <span class="n">Fpto_t</span> <span class="p">=</span> <span class="n">getTimeRes</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">&#39;Fpto&#39;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">jj</span><span class="p">);</span>
+                <span class="n">tmp</span><span class="p">.</span><span class="n">Fpto_max</span><span class="p">(</span><span class="n">jj</span><span class="p">)</span> <span class="p">=</span> <span class="n">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">Fpto_t</span><span class="p">));</span>
+            <span class="n">end</span>
+
+            <span class="s">fn</span> <span class="p">=</span> <span class="n">fieldnames</span><span class="p">(</span><span class="n">tmp</span><span class="p">);</span>
+            <span class="n">for</span> <span class="s">kk</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+                <span class="n">out</span><span class="p">.(</span><span class="n">fn</span><span class="p">{</span><span class="n">kk</span><span class="p">})</span> <span class="p">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">tmp</span><span class="p">.(</span><span class="n">fn</span><span class="p">{</span><span class="n">kk</span><span class="p">}),</span> <span class="mi">2</span><span class="p">);</span>
+            <span class="n">end</span>
+                
+            <span class="s">rnames</span> <span class="p">=</span> <span class="nb">reshape</span><span class="p">(</span><span class="n">rnames</span><span class="p">,[],</span><span class="mi">1</span><span class="p">);</span>
+            
+            <span class="n">mT</span> <span class="p">=</span> <span class="n">table</span><span class="p">(</span><span class="n">out</span><span class="p">.</span><span class="n">pow_avg</span><span class="p">(:),</span><span class="n">out</span><span class="p">.</span><span class="n">pow_max</span><span class="p">(:),</span><span class="n">out</span><span class="p">.</span><span class="n">pow_thd</span><span class="p">(:),</span><span class="k">...</span>
+                <span class="n">out</span><span class="p">.</span><span class="n">pos_max</span><span class="p">(:),</span><span class="n">out</span><span class="p">.</span><span class="n">vel_max</span><span class="p">(:),</span><span class="n">out</span><span class="p">.</span><span class="n">Fpto_max</span><span class="p">(:),</span><span class="k">...</span>
+                <span class="s">&#39;VariableNames&#39;</span><span class="p">,</span><span class="k">...</span>
+                <span class="p">{</span><span class="s">&#39;AvgPow&#39;</span><span class="p">,</span><span class="s">&#39;|MaxPow|&#39;</span><span class="p">,</span><span class="s">&#39;PowTHD_dBc&#39;</span><span class="p">,</span><span class="s">&#39;MaxPos&#39;</span><span class="p">,</span><span class="s">&#39;MaxVel&#39;</span><span class="p">,</span><span class="s">&#39;MaxPTO&#39;</span><span class="p">},</span><span class="k">...</span>
+                <span class="s">&#39;RowNames&#39;</span><span class="p">,</span><span class="n">rnames</span><span class="p">);</span>
+            
+            <span class="n">if</span> <span class="s">nargout</span>
+                <span class="n">T</span> <span class="p">=</span> <span class="n">mT</span><span class="p">;</span>
+            <span class="n">else</span>
+                <span class="s">disp(mT)</span>
+            <span class="n">end</span>
+            
+        <span class="s">end</span>
+        
+    <span class="n">end</span>
+    
+    <span class="s">methods</span> <span class="s">(Access=protected)</span>
+<span class="k">        </span>
+<span class="k">        function</span><span class="w"> </span>[tRep] <span class="p">=</span><span class="w"> </span><span class="nf">getRepeatPer</span><span class="p">(</span>obj<span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">tRep</span> <span class="p">=</span> <span class="mi">2</span><span class="o">*</span><span class="nb">pi</span><span class="o">/</span><span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">w</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">obj</span><span class="p">.</span><span class="n">w</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+        <span class="n">end</span>
+        
+        <span class="s">function</span> <span class="s">[timeRes]</span> <span class="p">=</span> <span class="n">getTimeRes</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">t_vec</span><span class="p">,</span> <span class="n">ph_idx</span><span class="p">)</span>
+            <span class="n">if</span> <span class="s">nargin</span> <span class="o">&lt;</span> <span class="mi">4</span>
+                <span class="n">ph_idx</span> <span class="p">=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="n">end</span>
+            
+            <span class="s">if</span> <span class="s">strcmp(fn,&#39;pow&#39;)</span>
+                <span class="n">vel</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">getTimeRes</span><span class="p">(</span><span class="s">&#39;u&#39;</span><span class="p">,</span><span class="n">t_vec</span><span class="p">);</span>
+                <span class="n">f</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.</span><span class="n">getTimeRes</span><span class="p">(</span><span class="s">&#39;Fpto&#39;</span><span class="p">,</span><span class="n">t_vec</span><span class="p">);</span>
+                <span class="n">timeRes</span> <span class="p">=</span> <span class="n">vel</span> <span class="o">.*</span> <span class="n">f</span><span class="p">;</span>
+            <span class="n">else</span>
+                <span class="s">timeRes</span> <span class="p">=</span> <span class="nb">zeros</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">t_vec</span><span class="p">));</span>
+                <span class="n">fv</span> <span class="p">=</span> <span class="n">obj</span><span class="p">.(</span><span class="n">fn</span><span class="p">)(:,</span><span class="n">ph_idx</span><span class="p">);</span> <span class="c">% use the first column if this is PS</span>
+                <span class="n">for</span> <span class="s">ii</span> <span class="p">=</span> <span class="mi">1</span><span class="p">:</span><span class="nb">length</span><span class="p">(</span><span class="n">obj</span><span class="p">.</span><span class="n">w</span><span class="p">)</span> <span class="c">% for each freq. TODO - use IFFT</span>
+                    <span class="n">timeRes</span> <span class="p">=</span> <span class="n">timeRes</span> <span class="k">...</span>
+                        <span class="o">+</span> <span class="nb">real</span><span class="p">(</span><span class="n">fv</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="o">*</span> <span class="nb">exp</span><span class="p">(</span>1<span class="nb">i</span> <span class="o">*</span> <span class="n">obj</span><span class="p">.</span><span class="n">w</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="o">*</span> <span class="n">t_vec</span><span class="p">));</span>
+                <span class="n">end</span>
+            <span class="s">end</span>
+        <span class="n">end</span>
+        
+<span class="s">%</span>         <span class="s">function</span> <span class="s">checkSizes(varargin)</span> <span class="s">%</span> <span class="s">TODO</span>
+<span class="c">%             n = length(varargin);</span>
+<span class="c">%             for ii = 1:n</span>
+<span class="c">%                 if ~isequal(varargin(varargin{ii}),size(varargin{1}))</span>
+<span class="c">%                     error(&#39;Frequency vectors must have same size&#39;)</span>
+<span class="c">%                 end</span>
+<span class="c">%             end</span>
+<span class="c">%         end</span>
+        
+    <span class="n">end</span>
+<span class="s">end</span>
+
+<span class="c">% Copyright 2020 National Technology &amp; Engineering Solutions of Sandia,</span>
+<span class="c">% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the</span>
+<span class="c">% U.S. Government retains certain rights in this software.</span>
+<span class="c">%</span>
+<span class="c">% This file is part of WecOptTool.</span>
+<span class="c">%</span>
+<span class="c">%     WecOptTool is free software: you can redistribute it and/or</span>
+<span class="c">%     modify it under the terms of the GNU General Public License as</span>
+<span class="c">%     published by the Free Software Foundation, either version 3 of</span>
+<span class="c">%     the License, or (at your option) any later version.</span>
+<span class="c">%</span>
+<span class="c">%     WecOptTool is distributed in the hope that it will be useful,</span>
+<span class="c">%     but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c">%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c">%     GNU General Public License for more details.</span>
+<span class="c">%</span>
+<span class="c">%     You should have received a copy of the GNU General Public</span>
+<span class="c">%     License along with WecOptTool.  If not, see</span>
+<span class="c">%     &lt;https://www.gnu.org/licenses/&gt;.</span>
+</pre></div>
+</td></tr></table></div>
+</details></br><p>The WaveBot example includes the <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/Performance.m"><code class="docutils literal notranslate"><span class="pre">Performance.m</span></code></a> class for storing and reporting results.
+As a final step after simulations are completed, <a class="reference external" href="https://github.com/SNL-WaterPower/WecOptTool/blob/master/examples/WaveBot/simulateDevice.m"><code class="docutils literal notranslate"><span class="pre">simulateDevice.m</span></code></a> populates the fields of this object for return to the user.
+In addition to storing the results in a systematic structure, this class also provides some basic plotting functionality.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[1]</a></td><td>Note that since the hydrodynamics are linear, global scalings of the device can be analyzed without rerunning a BEM calculation.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="4cite.html" class="btn btn-neutral float-right" title="4. Citing WecOptTool" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="2optimization.html" class="btn btn-neutral float-left" title="2. Optimizing an Existing WEC Model" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020 National Technology and Engineering Solutions of Sandia, LLC
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: v1.0.2
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../v0.1.0/index.html">v0.1.0</a></dd>
+            <dd><a href="../../v1.0.0/index.html">v1.0.0</a></dd>
+            <dd><a href="../../v1.0.1/index.html">v1.0.1</a></dd>
+            <dd><a href="3model.html">v1.0.2</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../../master/user/3model.html">master</a></dd>
+        </dl>
+    </div>
+</div>
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
