@@ -54,6 +54,9 @@ function [hydro, meshes] = getHydroParametric(folder,   ...
                               "waterDepth", depth,  ...
                               "waveDirection", 90);
     
+    scaling = height / 2 / depth;
+    hydro.ex = hydro.ex * scaling;
+                          
 end
 
 

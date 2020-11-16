@@ -26,7 +26,6 @@ depth = 40;
 
 mass = hydro.Vo * hydro.rho;
 I = mass / 12 * (4 * height ^ 2 + length ^ 2);
-scaling = height / 2 / depth;
                           
-[performance, model] = simulateDevice(I, scaling, hydro, SS, 'CC');
+[performance, model] = simulateDevice(I, hydro, SS, 'CC');
 performance.summary()
