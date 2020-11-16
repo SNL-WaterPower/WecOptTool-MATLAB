@@ -968,7 +968,7 @@ We can see from the signature of <a class="reference external" href="https://git
     <span class="n">waveAmp</span> <span class="p">=</span> <span class="n">interp1</span><span class="p">(</span><span class="n">SS</span><span class="p">.</span><span class="n">w</span><span class="p">,</span> <span class="n">waveAmpSS</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">interpMethod</span><span class="p">,</span> <span class="s">&#39;extrap&#39;</span><span class="p">);</span>
 
     <span class="c">% Row vector of random phases</span>
-    <span class="n">ph</span> <span class="p">=</span> <span class="n">rand</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">waveAmp</span><span class="p">));</span>
+    <span class="n">ph</span> <span class="p">=</span> <span class="n">rand</span><span class="p">(</span><span class="nb">size</span><span class="p">(</span><span class="n">waveAmp</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span><span class="p">;</span>
 
     <span class="c">% Wave height in frequency domain</span>
     <span class="n">eta_fd</span> <span class="p">=</span> <span class="n">waveAmp</span> <span class="o">.*</span> <span class="nb">exp</span><span class="p">(</span>1<span class="nb">i</span> <span class="o">*</span> <span class="n">ph</span><span class="p">);</span>
@@ -1111,7 +1111,7 @@ We can see from the signature of <a class="reference external" href="https://git
     
     <span class="c">% Add phase realizations</span>
     <span class="n">n_ph</span> <span class="p">=</span> <span class="mi">5</span><span class="p">;</span>
-    <span class="n">ph_mat</span> <span class="p">=</span> <span class="p">[</span><span class="n">dynModel</span><span class="p">.</span><span class="n">ph</span><span class="p">,</span> <span class="n">rand</span><span class="p">(</span><span class="nb">length</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">),</span> <span class="n">n_ph</span><span class="o">-</span><span class="mi">1</span><span class="p">)];</span>
+    <span class="n">ph_mat</span> <span class="p">=</span> <span class="p">[</span><span class="n">dynModel</span><span class="p">.</span><span class="n">ph</span><span class="p">,</span> <span class="n">rand</span><span class="p">(</span><span class="nb">length</span><span class="p">(</span><span class="n">dynModel</span><span class="p">.</span><span class="n">w</span><span class="p">),</span> <span class="n">n_ph</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">pi</span><span class="p">];</span>
 
     <span class="n">for</span> <span class="s">ind_ph</span> <span class="p">=</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">n_ph</span>
         
