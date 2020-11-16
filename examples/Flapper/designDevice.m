@@ -54,6 +54,7 @@ function [hydro, meshes] = getHydroParametric(folder,   ...
                               "waterDepth", depth,  ...
                               "waveDirection", 90);
     
+    % Move torque application from free surface to CoM
     scaling = height / 2 / depth;
     hydro.ex = hydro.ex * scaling;
                           
