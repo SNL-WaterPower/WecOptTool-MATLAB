@@ -11,7 +11,7 @@ function [performance, motion] = simulateDevice(hydro, seastate, controlType, va
             performance = dampingControl(motion, varargin{:});
         case 'PS'
             performance = pseudoSpectralControl(motion, varargin{:});
-            
+        
     end
         
 end
@@ -163,6 +163,7 @@ function out = complexCongugateControl(motion)
     % Maximum absorbed power
     % Note: Re{Zi} = Radiation Damping Coeffcient
     out.powPerFreq = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
+    out.stdErr = 0;
     
 end
 
@@ -171,12 +172,14 @@ function out = dampingControl(motion)
     % Power per frequency at optimial damping
     out.powPerFreq = 0.25 * abs(motion.F0) .^ 2 ./     ...
                             (real(motion.Zi) + abs(motion.Zi));
+    out.stdErr = 0;
     
 end
 
 function out = pseudoSpectralControl(motion,        ...
                                      delta_Zmax,    ...
                                      delta_Fmax,    ...
+                                     N,             ...
                                      display,       ...
                                      OptimalityTolerance)
                                  
@@ -184,6 +187,7 @@ function out = pseudoSpectralControl(motion,        ...
         motion
         delta_Zmax
         delta_Fmax
+        N = 5
         display = "off"
         OptimalityTolerance = 1e-5
     end
@@ -192,37 +196,24 @@ function out = pseudoSpectralControl(motion,        ...
     %   Returns power per frequency and frequency bins
     
     motion = struct(motion);
-        
-    % Fix random seed <- Do we want this???
-    rng(1);
     
     % Reformulate equations of motion
     motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);
     
-    % Add phase realizations
-    n_ph_avg = 5;
-    ph_mat = [motion.ph, rand(length(motion.w), n_ph_avg-1) * 2 * pi];
-    n_ph = size(ph_mat, 2);
+    funHandle = @() getPSPhasePower(motion,  ...
+                                    display, ...
+                                    OptimalityTolerance);
     
     freq = motion.W;
     n_freqs = length(freq);
-    powPerFreqMat = zeros(n_ph, n_freqs);
     
-    for ind_ph = 1 : n_ph
-        
-        ph = ph_mat(:, ind_ph);
-        [~, phasePowPerFreq] = getPSPhasePower(motion,  ...
-                                               ph,      ...
-                                               display, ...
-                                               OptimalityTolerance);
-        
-        for ind_freq = 1 : n_freqs
-            powPerFreqMat(ind_ph, ind_freq) = phasePowPerFreq(ind_freq);
-        end
-        
-    end
+    [powPerFreqMat,     ...
+     stdErr] = WecOptTool.math.standardErrorMeasure(funHandle,  ...
+                                                    n_freqs,    ...
+                                                    N);
     
     out.powPerFreq = mean(powPerFreqMat);
+    out.stdErr = stdErr;
     
 end
 
@@ -340,10 +331,9 @@ function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     
 end
 
-function [pow, powPerFreq] = getPSPhasePower(motion,    ...
-                                             ph,        ...
-                                             display,   ...
-                                             OptimalityTolerance)
+function powPerFreq = getPSPhasePower(motion,    ...
+                                      display,   ...
+                                      OptimalityTolerance)
     %Calculates power using the pseudospectral method given a phase and
     % a descrption of the body movement. Returns total phase power and 
     % power per frequency 
@@ -352,6 +342,7 @@ function [pow, powPerFreq] = getPSPhasePower(motion,    ...
         P = X' * motion.H_mat * X;
     end
     
+    ph = 2 * pi * rand(length(motion.w), 1);
     eta_fd = motion.wave_amp .* exp(1i*ph);
     %             eta_fd = eta_fd(start:end);
     
