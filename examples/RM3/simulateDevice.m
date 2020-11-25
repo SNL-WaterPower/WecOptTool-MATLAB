@@ -254,17 +254,26 @@ function out = pseudoSpectralIterator(motion,        ...
     idx_ph = 0;
     change_in_avg = Inf;
     
-    while abs(change_in_avg) > tolerance
+    while change_in_avg > tolerance
+        
         idx_ph = idx_ph + 1;
         resultArray(idx_ph, :) = funHandle();
         results(idx_ph) = sum(resultArray(idx_ph, :));
+        
+        if idx_ph == 1
+            avg(idx_ph) = results(idx_ph);
+            continue
+        end
+        
         avg(idx_ph) = avg(idx_ph-1) +   ...
                         (1 / idx_ph) * (results(idx_ph) - avg(idx_ph-1));
-        change_in_avg = (avg(idx_ph) - avg(idx_ph-1)) / avg(idx_ph-1);
+        change_in_avg = abs(avg(idx_ph) - avg(idx_ph-1)) / avg(idx_ph-1);
+        disp([avg(idx_ph) change_in_avg])
+        
     end
     
     out.powPerFreq = mean(resultArray);
-    out.stdErr = 0;
+    out.n_ph = idx_ph;
     
 end
 
