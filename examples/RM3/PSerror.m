@@ -3,14 +3,14 @@ clear r stdErr
 
 SS = WecOptTool.SeaState.exampleSpectrum("resampleByError", 0.1);
 stroke = 0.5:0.5:5;
-N = 5;
+error = 0.01;
 
 deviceHydro = designDevice('scalar', 1);
 
 for i = 1:length(stroke)
     
     disp("Simulation " + (i) + " of " + length(stroke))
-    params = {stroke(i) 1e9 N};
+    params = {stroke(i) 1e9 error};
     
     for j = 1:length(SS)
         performances(j) = simulateDevice(deviceHydro,   ...
@@ -20,20 +20,20 @@ for i = 1:length(stroke)
     end
     
     r(i) = sum(aggregateSeaStates(SS, performances));
-    stdErr(i) = max(performances.stdErr);
+    N(i) = max(performances.N);
     
 end
 
 yyaxis left
-plot(stroke, stdErr)
-ylabel("standard error [% of mean]")
+plot(stroke, N)
+ylabel("Number of samples required")
 
 yyaxis right
 plot(stroke, r)
 ylabel("power [W]")
 
 xlabel("stroke [m]")
-titleStr = sprintf('RM3 PS using %d samples', N);
+titleStr = sprintf('RM3 PS with standard error %3.2f%% of mean', error);
 title(titleStr);
 
 clear i j params performances
