@@ -11,6 +11,8 @@ function [performance, motion] = simulateDevice(hydro, seastate, controlType, va
             performance = dampingControl(motion, varargin{:});
         case 'PS'
             performance = pseudoSpectralControl(motion, varargin{:});
+        case 'PSI'
+            performance = pseudoSpectralIterator(motion, varargin{:});
         
     end
         
@@ -216,6 +218,57 @@ function out = pseudoSpectralControl(motion,        ...
     out.stdErr = stdErr;
     
 end
+
+function out = pseudoSpectralIterator(motion,        ...
+                                      delta_Zmax,    ...
+                                      delta_Fmax,    ...
+                                      tolerance,             ...
+                                      display,       ...
+                                      OptimalityTolerance)
+                                 
+    arguments
+        motion
+        delta_Zmax
+        delta_Fmax
+        tolerance
+        display = "off"
+        OptimalityTolerance = 1e-5
+    end
+
+    % PSEUDOSPECTRAL Pseudo spectral control
+    %   Returns power per frequency and frequency bins
+    
+    motion = struct(motion);
+    
+    % Reformulate equations of motion
+    motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);
+    
+    funHandle = @() getPSPhasePower(motion,  ...
+                                    display, ...
+                                    OptimalityTolerance);
+    
+    freq = motion.W;
+    n_freqs = length(freq);
+    resultArray = zeros(1, n_freqs);
+    
+    idx_ph = 0;
+    change_in_avg = Inf;
+    
+    while abs(change_in_avg) > tolerance
+        idx_ph = idx_ph + 1;
+        resultArray(idx_ph, :) = funHandle();
+        results(idx_ph) = sum(resultArray(idx_ph, :));
+        avg(idx_ph) = avg(idx_ph-1) +   ...
+                        (1 / idx_ph) * (results(idx_ph) - avg(idx_ph-1));
+        change_in_avg = (avg(idx_ph) - avg(idx_ph-1)) / avg(idx_ph-1);
+    end
+    
+    out.powPerFreq = mean(resultArray);
+    out.stdErr = 0;
+    
+end
+
+
 
 function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     %PSCOEFFICIENTS

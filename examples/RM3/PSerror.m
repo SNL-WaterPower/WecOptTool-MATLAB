@@ -18,7 +18,7 @@ for i = 1:length(stroke)
                                          'PS',          ...
                                          params{:});
     end
-        
+    
     r(i) = sum(aggregateSeaStates(SS, performances));
     stdErr(i) = max(performances.stdErr);
     
