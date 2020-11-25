@@ -33,7 +33,8 @@ plot(stroke, r)
 ylabel("power [W]")
 
 xlabel("stroke [m]")
-titleStr = sprintf('RM3 PS with standard error %3.2f%% of mean', error);
+titleStr = sprintf('RM3 PS with standard error %3.2f%% of mean',    ...
+                   100 * error);
 title(titleStr);
 
 clear i j params performances

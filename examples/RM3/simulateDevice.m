@@ -165,7 +165,7 @@ function out = complexCongugateControl(motion)
     % Maximum absorbed power
     % Note: Re{Zi} = Radiation Damping Coeffcient
     out.powPerFreq = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
-    out.stdErr = 0;
+    out.N = 1;
     
 end
 
@@ -174,7 +174,7 @@ function out = dampingControl(motion)
     % Power per frequency at optimial damping
     out.powPerFreq = 0.25 * abs(motion.F0) .^ 2 ./     ...
                             (real(motion.Zi) + abs(motion.Zi));
-    out.stdErr = 0;
+    out.N = 1;
     
 end
 
@@ -273,7 +273,7 @@ function out = pseudoSpectralIterator(motion,        ...
     end
     
     out.powPerFreq = mean(resultArray);
-    out.n_ph = avg;
+    out.N = avg;
     
 end
 
