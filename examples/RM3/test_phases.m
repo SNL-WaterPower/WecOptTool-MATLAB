@@ -2,7 +2,7 @@
 % Create an example SeaState object
 SS = WecOptTool.SeaState.exampleSpectrum("resampleByError", 0.1);
 deviceHydro = designDevice('scalar', 1);
-performance = simulateDevice(deviceHydro, SS, 'PSI', 3, 1e9, 1e-4);
+performance = simulateDevice(deviceHydro, SS, 'PSI', 3, 1e9, 1e-6);
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
 % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 

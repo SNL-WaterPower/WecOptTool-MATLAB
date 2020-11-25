@@ -212,7 +212,8 @@ function out = pseudoSpectralControl(motion,        ...
     [powPerFreqMat,     ...
      stdErr] = WecOptTool.math.standardErrorMeasure(funHandle,  ...
                                                     n_freqs,    ...
-                                                    N);
+                                                    N,          ...
+                                                    "metric", "summean");
     
     out.powPerFreq = mean(powPerFreqMat);
     out.stdErr = stdErr;
@@ -268,12 +269,11 @@ function out = pseudoSpectralIterator(motion,        ...
         avg(idx_ph) = avg(idx_ph-1) +   ...
                         (1 / idx_ph) * (results(idx_ph) - avg(idx_ph-1));
         change_in_avg = abs(avg(idx_ph) - avg(idx_ph-1)) / avg(idx_ph-1);
-        disp([avg(idx_ph) change_in_avg])
         
     end
     
     out.powPerFreq = mean(resultArray);
-    out.n_ph = idx_ph;
+    out.n_ph = avg;
     
 end
 

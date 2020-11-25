@@ -14,9 +14,11 @@ function [resultArray, extra] = standardError(resultType,       ...
     
     switch options.metric
         case 'sum' 
-            errorFun = @sum;
+            errorFun = @ (x, y) sum(x);
         case 'max'
-            errorFun = @max;
+            errorFun = @ (x, y) max(x);
+        case 'summean' 
+            errorFun = @ (x, y) sum(x) / sum(mean(y));
     end
     
     n = 0;
@@ -42,7 +44,7 @@ function [resultArray, extra] = standardError(resultType,       ...
         end
         
         resultError = c4 * std(resultArray) / sqrt(n);
-        errorMetric = errorFun(resultError);
+        errorMetric = errorFun(resultError, resultArray);
         
         % Exit on different strategies
         switch resultType
@@ -81,7 +83,7 @@ end
 
 function checkMetric(input)
     
-    validModes = {'sum' 'max'};
+    validModes = {'sum' 'max' 'summean'};
     
     if ~matches(validModes, input)
         modeStr = sprintf(' "%s"', validModes{:});

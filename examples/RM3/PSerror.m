@@ -26,7 +26,7 @@ end
 
 yyaxis left
 plot(stroke, stdErr)
-ylabel("standard error [W]")
+ylabel("standard error [% of mean]")
 
 yyaxis right
 plot(stroke, r)
