@@ -10,14 +10,16 @@ jobs:
     - stage: test
       language: matlab
       before_install:
-        - sudo apt-get -y install gfortran gmsh
+        - sudo apt-get -y install gfortran
+        - wget http://geuz.org/gmsh/bin/Linux/gmsh-stable-Linux64.tgz
+        - tar -xzvf gmsh-stable-Linux64
       install: 
         - git clone --depth 1 https://github.com/LHEEA/Nemoh.git NEMOH
         - cd NEMOH
         - make
         - cd ..
         - matlab -batch "addpath(genpath('toolbox')), savepath pathdef.m;"
-        - matlab -batch "installNemoh('$TRAVIS_BUILD_DIR/NEMOH/bin'), dependencyCheck;"
+        - matlab -batch "installNemoh('$TRAVIS_BUILD_DIR/NEMOH/bin'), installGmsh('$TRAVIS_BUILD_DIR/gmsh-stable-Linux64/bin'), dependencyCheck;"
       script: 
         - matlab -batch "results = runTests('reportHTML', false, 'reportPDF', false), assertSuccess(results);"
       if: branch = master
