@@ -68,7 +68,7 @@ function dynamic = getDynamicModel(static, hydro, S)
     waveAmp = sqrt(2 * dw * s);
 
     % Row vector of random phases?
-    ph = rand(length(s), 1);
+    ph = rand(length(s), 1) * 2 * pi;
 
     % Wave height in frequency domain
     eta_fd = waveAmp .* exp(1i*ph);
@@ -201,7 +201,7 @@ function out = pseudoSpectralControl(motion,        ...
     
     % Add phase realizations
     n_ph_avg = 5;
-    ph_mat = 2 * pi * rand(length(motion.w), n_ph_avg); 
+    ph_mat = [motion.ph, rand(length(motion.w), n_ph_avg-1) * 2 * pi];
     n_ph = size(ph_mat, 2);
     
     freq = motion.W;

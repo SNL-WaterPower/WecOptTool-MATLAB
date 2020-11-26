@@ -1,8 +1,28 @@
-language: python
+
+language: minimal
+
+stages:
+  - test
+  - pages
 
 jobs:
   include:
+    - stage: test
+      language: matlab
+      before_install:
+        - sudo apt-get -y install gfortran
+      install: 
+        - git clone --depth 1 https://github.com/LHEEA/Nemoh.git NEMOH
+        - cd NEMOH
+        - make
+        - cd ..
+        - matlab -batch "addpath(genpath('toolbox')), savepath pathdef.m;"
+        - matlab -batch "installNemoh('$TRAVIS_BUILD_DIR/NEMOH/bin'), dependencyCheck;"
+      script: 
+        - matlab -batch "results = runTests('reportHTML', false, 'reportPDF', false), assertSuccess(results);"
+      if: branch = master
     - stage: pages
+      language: python
       install:
         - pip install click colorama colorclass future "sphinx==1.8.5" "sphinxcontrib-bibtex==0.4.2" 
           sphinx_rtd_theme sphinxcontrib-matlabdomain
