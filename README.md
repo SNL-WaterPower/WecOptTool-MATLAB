@@ -11,6 +11,7 @@ Dependency                          | Website                                   
 MATLAB                              | https://www.mathworks.com/products/matlab.html                  | yes<sup>1</sup>
 MATLAB Optimization Toolbox         | https://www.mathworks.com/products/optimization.html            | yes
 NEMOH                               | https://github.com/LHEEA/Nemoh                                  | yes
+Gmsh                                | https://gmsh.info                                               | optional
 WAFO                                | https://github.com/wafo-project/wafo                            | optional
 MATLAB Parallel Computing Toolbox   | https://www.mathworks.com/products/parallel-computing.html      | optional
 MATLAB Global Optimization Toolbox  | https://www.mathworks.com/products/global-optimization.html     | optional
@@ -96,6 +97,20 @@ version is not broken, bugs or unexpected behavior may occur, so please beware.
     ```matlab
     >> cd /path/to/WecOptTool
     >> installNemoh('/path/to/NEMOH/bin');
+    ```
+
+1. **(optional) Set up [Gmsh](https://gmsh.info):**
+
+    If you would like to use Gmsh to define the geometry of your device (as
+    demonstrated in the Flapper example) download and unzip the latest 
+    executables from the [Gmsh home page](https://gmsh.info). Next, pass the 
+    path to the folder containing the Gmsh executable into WecOptTool using the 
+    `installGmsh.m` MATLAB script, run in the MATLAB command window from the
+    WecOptTool root directory: 
+    
+    ```matlab
+    >> cd /path/to/WecOptTool
+    >> installGmsh('/path/to/Gmsh/folder');
     ```
 
 1. **Verify dependencies installation:** You can verify that the dependencies 
