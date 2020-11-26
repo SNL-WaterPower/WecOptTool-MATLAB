@@ -10,7 +10,7 @@ jobs:
     - stage: test
       language: matlab
       before_install:
-        - sudo apt-get -y install gfortran
+        - sudo apt-get -y install gfortran gmsh
       install: 
         - git clone --depth 1 https://github.com/LHEEA/Nemoh.git NEMOH
         - cd NEMOH
