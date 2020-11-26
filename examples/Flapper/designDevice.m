@@ -21,8 +21,6 @@ function [hydro, meshes] = getHydroParametric(folder,   ...
                                               height,   ...
                                               depth,    ...
                                               w)
-                                          
-          
     
     arguments
         folder
@@ -59,7 +57,6 @@ function [hydro, meshes] = getHydroParametric(folder,   ...
     hydro.ex = hydro.ex * scaling;
                           
 end
-
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
 % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
