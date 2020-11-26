@@ -12,7 +12,7 @@ jobs:
       before_install:
         - sudo apt-get -y install gfortran
         - wget http://geuz.org/gmsh/bin/Linux/gmsh-stable-Linux64.tgz
-        - tar -xzvf gmsh-stable-Linux64
+        - tar -xzvf gmsh-stable-Linux64.tgz
       install: 
         - git clone --depth 1 https://github.com/LHEEA/Nemoh.git NEMOH
         - cd NEMOH
