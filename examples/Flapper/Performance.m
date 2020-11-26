@@ -5,10 +5,10 @@ classdef Performance < handle
         ph (:,:) double {mustBeFinite,mustBeReal}
         eta (:,:) double {mustBeFinite}
         F0 (:,:) double {mustBeFinite}
-        u (:,:) double {mustBeFinite}
-        pos (:,:) double {mustBeFinite}
-        Zpto (:,:) double {}
-        Fpto (:,:) double {mustBeFinite}
+        omega (:,:) double {mustBeFinite}
+        theta (:,:) double {mustBeFinite}
+        thetaPTO (:,:) double {}
+        tauPTO (:,:) double {mustBeFinite}
         pow (:,:) double {mustBeFinite}
         name (1,:) char = 'tmp'
         date (1,1) double {mustBeFinite,mustBePositive} = now
@@ -24,10 +24,11 @@ classdef Performance < handle
             end
             
             fig = figure('Name','Performance.plotTime');
-            fig.Position = fig.Position.*[1 1 1 1.5];
+            fig.Position = fig.Position .* [1 1 1 1.5];
+            movegui(fig, 'onscreen');
             
             % fields for plotting
-            fns = {'eta','F0','pos','u','Fpto','pow'};
+            fns = {'eta','F0','theta','omega','tauPTO','pow'};
             
             for ii = 1:length(fns)
                 ax(ii) = subplot(length(fns), 1, ii);
@@ -64,7 +65,7 @@ classdef Performance < handle
             end
             set(fig,'Name','Performance.plotFreq');
             
-            fns = {'F0','u','Fpto'};
+            fns = {'F0','omega','tauPTO'};
             mrks = {'o','.','+','s'};
             
             n = length(obj);
@@ -152,17 +153,17 @@ classdef Performance < handle
                 try
                     tmp.pow_thd(jj) = thd(pow_t);
                 catch ME
-                    warning(ME.message)
+                    %warning(ME.message)
                     tmp.pow_thd(jj) = NaN;
                 end
 
-                pos_t = getTimeRes(obj, 'pos', t, jj);
+                pos_t = getTimeRes(obj, 'theta', t, jj);
                 tmp.pos_max(jj) = max(abs(pos_t));
 
-                vel_t = getTimeRes(obj, 'u', t, jj);
+                vel_t = getTimeRes(obj, 'omega', t, jj);
                 tmp.vel_max(jj) = max(abs(vel_t));
 
-                Fpto_t = getTimeRes(obj, 'Fpto', t, jj);
+                Fpto_t = getTimeRes(obj, 'tauPTO', t, jj);
                 tmp.Fpto_max(jj) = max(abs(Fpto_t));
             end
 
@@ -176,7 +177,7 @@ classdef Performance < handle
             mT = table(out.pow_avg(:),out.pow_max(:),out.pow_thd(:),...
                 out.pos_max(:),out.vel_max(:),out.Fpto_max(:),...
                 'VariableNames',...
-                {'AvgPow','|MaxPow|','PowTHD_dBc','MaxPos','MaxVel','MaxPTO'},...
+                {'AvgPow','|MaxPow|','PowTHD_dBc','MaxTheta','MaxOmega','MaxTauPTO'},...
                 'RowNames',rnames);
             
             if nargout
@@ -201,8 +202,8 @@ classdef Performance < handle
             end
             
             if strcmp(fn,'pow')
-                vel = obj.getTimeRes('u',t_vec);
-                f = obj.getTimeRes('Fpto',t_vec);
+                vel = obj.getTimeRes('omega',t_vec);
+                f = obj.getTimeRes('tauPTO',t_vec);
                 timeRes = vel .* f;
             else
                 timeRes = zeros(size(t_vec));
