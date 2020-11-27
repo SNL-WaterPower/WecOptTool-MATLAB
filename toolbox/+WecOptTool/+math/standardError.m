@@ -3,6 +3,75 @@ function [resultArray, extra] = standardError(resultType,       ...
                                               vectorLength,     ...
                                               resultStop,       ...
                                               options)
+    % Calculates the standard error of the mean of a given function.
+    %
+    % This function can either be used to reduce the standard error to
+    % a certain level or calculate the standard error given a fixed number
+    % of samples.
+    %
+    % Args:
+    %   resultType (char):
+    %       solution mode. Use ``'measure'`` to measure the standard error
+    %       or ``'reduce'`` to reduce it.
+    %   funHandle (function handle):
+    %       function to evaluate. Should return a vector or a struct (of
+    %       vectors). The ``'targetField'`` optional argument must be given
+    %       if the function returns a struct.
+    %   vectorLength (int32):
+    %       length of the vector (or vector fields) returned by funHandle
+    %   resultStop (double):
+    %       termination criteria. If resultType is ``'measure'`` then this
+    %       argument represents the number of samples to be used. If 
+    %       resultType is ``'reduce'`` then this is the value returned by
+    %       the metric selected using the ``'metric'`` optional argument.
+    %   options: name-value pair options. See below.
+    %
+    % The following options are supported:
+    %
+    %    metric (string):
+    %        the name of the metric used to calculate the standard error.
+    %        The options are ``'sum'`` which sums the error over the result 
+    %        vector, ``'max'`` which returns the greatest error in the 
+    %        vector, or ``'summean'`` which returns the sum of the errors 
+    %        divided by the sum of the mean of the result vector.
+    %    targetField (string):
+    %        if funHandle returns a struct then this option indicates the
+    %        field in the struct to use for the error calculation.
+    %
+    % Returns:
+    %      :
+    %     - resultArray: array or struct containin the results of
+    %       funHandle for each sample
+    %     - extra: the error metric vector if resultType is ``'measure'`` 
+    %       or the number of samples required if resultType is ``'reduce'``
+    %
+    %
+    % Note:
+    %     The standard error is calculated on each element of the vector
+    %     (or vector field) returned by funHandle. The 'metric' option
+    %     indicates how these values should be combined into a single
+    %     metric
+    %
+
+    % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
+    % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
+    % U.S. Government retains certain rights in this software.
+    %
+    % This file is part of WecOptTool.
+    % 
+    %     WecOptTool is free software: you can redistribute it and/or 
+    %     modify it under the terms of the GNU General Public License as 
+    %     published by the Free Software Foundation, either version 3 of 
+    %     the License, or (at your option) any later version.
+    % 
+    %     WecOptTool is distributed in the hope that it will be useful,
+    %     but WITHOUT ANY WARRANTY; without even the implied warranty of
+    %     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    %     GNU General Public License for more details.
+    % 
+    %     You should have received a copy of the GNU General Public 
+    %     License along with WecOptTool.  If not, see 
+    %     <https://www.gnu.org/licenses/>.
     
     arguments
         resultType (1, :) char {checkType}
@@ -82,11 +151,11 @@ end
 
 function checkType(input)
     
-    validModes = {'reduce', 'measure'};
+    validModes = {'reduce' 'measure'};
     
     if ~matches(validModes, input)
         modeStr = sprintf(' "%s"', validModes{:});
-        errStr = ['Error mode not regonised. Must be one of' modeStr];
+        errStr = ['Result type not regonised. Must be one of' modeStr];
         error('WecOptTool:math:standardError', errStr)
     end
     
@@ -114,22 +183,3 @@ function result = getc4(n)
     result = a * b;
     
 end
-
-% Copyright 2020 National Technology & Engineering Solutions of Sandia, 
-% LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
-% U.S. Government retains certain rights in this software.
-%
-% This file is part of WecOptTool.
-% 
-%     WecOptTool is free software: you can redistribute it and/or modify
-%     it under the terms of the GNU General Public License as published by
-%     the Free Software Foundation, either version 3 of the License, or
-%     (at your option) any later version.
-% 
-%     WecOptTool is distributed in the hope that it will be useful,
-%     but WITHOUT ANY WARRANTY; without even the implied warranty of
-%     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-%     GNU General Public License for more details.
-% 
-%     You should have received a copy of the GNU General Public License
-%     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
