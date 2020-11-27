@@ -7,7 +7,7 @@ SS = WecOptTool.SeaState.exampleSpectrum("resampleByError", 0.1);
 controlParams.type = 'CC';
 controlParams(2).type = 'P';
 controlParams(3).type = 'PS';
-controlParams(3).params = {10 1e9};
+controlParams(3).params = {3 1e9};
 
 deviceHydro = designDevice('scalar', 1);
 

@@ -165,7 +165,7 @@ function out = complexCongugateControl(motion)
     % Maximum absorbed power
     % Note: Re{Zi} = Radiation Damping Coeffcient
     out.powPerFreq = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
-    out.N = 1;
+    out.errorVal = NaN;
     
 end
 
@@ -174,24 +174,24 @@ function out = dampingControl(motion)
     % Power per frequency at optimial damping
     out.powPerFreq = 0.25 * abs(motion.F0) .^ 2 ./     ...
                             (real(motion.Zi) + abs(motion.Zi));
-    out.N = 1;
+    out.errorVal = NaN;
     
 end
 
 function out = pseudoSpectralControl(motion,        ...
                                      delta_Zmax,    ...
                                      delta_Fmax,    ...
-                                     error,             ...
-                                     display,       ...
-                                     OptimalityTolerance)
+                                     options)
                                  
     arguments
         motion
         delta_Zmax
         delta_Fmax
-        error = 0.01
-        display = "off"
-        OptimalityTolerance = 1e-5
+        options.errorMode = 'reduce'
+        options.errorStop = 0.01
+        options.errorMetric = 'summean'
+        options.display = "off"
+        options.OptimalityTolerance = 1e-5
     end
 
     % PSEUDOSPECTRAL Pseudo spectral control
@@ -202,82 +202,24 @@ function out = pseudoSpectralControl(motion,        ...
     % Reformulate equations of motion
     motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);
     
-    funHandle = @() getPSPhasePower(motion,  ...
-                                    display, ...
-                                    OptimalityTolerance);
+    funHandle = @() getPSPhasePower(motion,             ...
+                                    options.display,    ...
+                                    options.OptimalityTolerance);
     
     freq = motion.W;
     n_freqs = length(freq);
     
-    [powPerFreqMat,     ...
-     N] = WecOptTool.math.standardErrorReduce(funHandle,  ...
-                                              n_freqs,    ...
-                                              error,          ...
-                                              "metric", "summean");
+    [powPerFreqMat, errorVal] = WecOptTool.math.standardError(  ...
+                                        options.errorMode,      ...
+                                        funHandle,              ...
+                                        n_freqs,                ...
+                                        options.errorStop,      ...
+                                        "metric", options.errorMetric);
     
     out.powPerFreq = mean(powPerFreqMat);
-    out.N = N;
+    out.errorVal = errorVal;
     
 end
-
-function out = pseudoSpectralIterator(motion,        ...
-                                      delta_Zmax,    ...
-                                      delta_Fmax,    ...
-                                      tolerance,             ...
-                                      display,       ...
-                                      OptimalityTolerance)
-                                 
-    arguments
-        motion
-        delta_Zmax
-        delta_Fmax
-        tolerance
-        display = "off"
-        OptimalityTolerance = 1e-5
-    end
-
-    % PSEUDOSPECTRAL Pseudo spectral control
-    %   Returns power per frequency and frequency bins
-    
-    motion = struct(motion);
-    
-    % Reformulate equations of motion
-    motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);
-    
-    funHandle = @() getPSPhasePower(motion,  ...
-                                    display, ...
-                                    OptimalityTolerance);
-    
-    freq = motion.W;
-    n_freqs = length(freq);
-    resultArray = zeros(1, n_freqs);
-    
-    idx_ph = 0;
-    change_in_avg = Inf;
-    
-    while change_in_avg > tolerance
-        
-        idx_ph = idx_ph + 1;
-        resultArray(idx_ph, :) = funHandle();
-        results(idx_ph) = sum(resultArray(idx_ph, :));
-        
-        if idx_ph == 1
-            avg(idx_ph) = results(idx_ph);
-            continue
-        end
-        
-        avg(idx_ph) = avg(idx_ph-1) +   ...
-                        (1 / idx_ph) * (results(idx_ph) - avg(idx_ph-1));
-        change_in_avg = abs(avg(idx_ph) - avg(idx_ph-1)) / avg(idx_ph-1);
-        
-    end
-    
-    out.powPerFreq = mean(resultArray);
-    out.N = avg;
-    
-end
-
-
 
 function motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax)
     %PSCOEFFICIENTS
