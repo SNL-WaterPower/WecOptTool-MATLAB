@@ -8,6 +8,10 @@ This example was developed in conjuction with the following journal paper, which
   	title  = {Initial conceptual demonstration of control co-design for {WEC} optimization},
   	year   = {2020},
   	journal= {Journal of Ocean Engineering and Marine Energy},
+	month  = {November},
+	volume = {6},
+	number = {4},
+	pages  = {441-449},
   	doi    = {10.1007/s40722-020-00181-9}
 }
 ```
