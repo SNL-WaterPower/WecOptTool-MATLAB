@@ -10,6 +10,7 @@ function [resultArray, extra] = standardError(resultType,       ...
         vectorLength (1, 1) int32 {mustBePositive}
         resultStop (1, 1) double {mustBePositive}
         options.metric (1, :) char {checkMetric} = 'sum';
+        options.targetField (1, :) char;
     end
     
     switch options.metric
@@ -28,7 +29,13 @@ function [resultArray, extra] = standardError(resultType,       ...
     while true
         
         n = n + 1;
-        resultArray(n, :) = funHandle();
+        
+        if isfield(options, 'targetField')
+            structArray(n) = funHandle();
+            resultArray(n, :) = structArray(n).(options.targetField);
+        else
+            resultArray(n, :) = funHandle();
+        end
         
         if n < 2
             continue
@@ -65,6 +72,10 @@ function [resultArray, extra] = standardError(resultType,       ...
                 
         end
         
+    end
+    
+    if isfield(options, 'targetField')
+        resultArray = structArray;
     end
     
 end
