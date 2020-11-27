@@ -24,6 +24,8 @@
 %     You should have received a copy of the GNU General Public License
 %     along with WecOptTool.  If not, see <https://www.gnu.org/licenses/>.
 
+clear ax
+
 %% define sea state of interest
 
 dw = 0.3142;
@@ -112,6 +114,7 @@ end
 
 fig = figure('Name','WaveBot_caseB');
 fig.Position = fig.Position .* [1, 1, 1, 1.5];
+movegui(fig, 'onscreen');
 
 mys = {'log','linear','log','log'};
 for ii = 1:4
