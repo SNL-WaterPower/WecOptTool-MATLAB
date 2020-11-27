@@ -21,6 +21,8 @@ WecOptTool.
     +----------------------+-------------------------------------------------------------+--------------+
     | NEMOH                | https://github.com/LHEEA/Nemoh                              | yes          |
     +----------------------+-------------------------------------------------------------+--------------+
+    | Gmsh                 | https://gmsh.info                                           | optional     |
+    +----------------------+-------------------------------------------------------------+--------------+
     | WAFO                 | https://github.com/wafo-project/wafo                        | optional     |
     +----------------------+-------------------------------------------------------------+--------------+
     | MATLAB Parallel      | https://www.mathworks.com/products/parallel-computing.html  | optional     |
@@ -125,6 +127,16 @@ Install
    .. raw:: html
 
        </details></br>
+
+#. **(optional) Set up Gmsh:**
+
+    If you would like to use Gmsh to define the geometry of your device (as demonstrated in the Flapper example) download and unzip the latest executables from the `Gmsh home page <https://gmsh.info>`__.
+    Next, pass the  path to the folder containing the Gmsh executable (gmsh.exe on Windows and gmsh on Linux) into WecOptTool using the `installGmsh.m` MATLAB script, run in the MATLAB command window from the WecOptTool root directory: 
+    
+   .. code:: matlab
+   
+    >> cd /path/to/WecOptTool
+    >> installGmsh('/path/to/Gmsh/folder');
 
 #. **Verify dependencies installation:** You can verify that the dependencies have been installed correctly by running the
    ``dependencyCheck.m`` script provided in the root directory of the WecOptTool source code.

@@ -104,9 +104,9 @@ version is not broken, bugs or unexpected behavior may occur, so please beware.
     If you would like to use Gmsh to define the geometry of your device (as
     demonstrated in the Flapper example) download and unzip the latest 
     executables from the [Gmsh home page](https://gmsh.info). Next, pass the 
-    path to the folder containing the Gmsh executable into WecOptTool using the 
-    `installGmsh.m` MATLAB script, run in the MATLAB command window from the
-    WecOptTool root directory: 
+    path to the folder containing the Gmsh executable (gmsh.exe on Windows and
+    gmsh on Linux) into WecOptTool using the `installGmsh.m` MATLAB script, run 
+    in the MATLAB command window from the WecOptTool root directory: 
     
     ```matlab
     >> cd /path/to/WecOptTool
