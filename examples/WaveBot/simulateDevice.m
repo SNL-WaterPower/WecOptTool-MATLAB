@@ -142,6 +142,7 @@ function myPerf = complexCongugateControl(dynModel,~)
     myPerf.w = dynModel.w;
     myPerf.eta = dynModel.eta_fd;
     myPerf.F0 = dynModel.F0;
+    myPerf.N = 1;
 
 end
 
@@ -178,84 +179,49 @@ function myPerf = dampingControl(dynModel,~)
     myPerf.w = dynModel.w;
     myPerf.eta = dynModel.eta_fd;
     myPerf.F0 = dynModel.F0;
-
+    myPerf.N = 1;
+    
 end
 
-function myPerf = psControl(dynModel,delta_Zmax,delta_Fmax)
-%     motion = getPSCoefficients(motion, delta_Zmax, delta_Fmax);
-%     ps.wave_amp = waveAmp; % TODO
-%     
-%     % Use mutliple phase realizations for PS at the model
-%     % is nonlinear (note that we use the original phasing
-%     % from the other cases)
-%     n_ph = 5;
-%     ph_mat = [ph, rand(length(ps.w), n_ph-1)];
-%     
-%     n_freqs = length(motion.w);
-%     phasePowMat = zeros(n_ph, 1);
-%     powPerFreqMat = zeros(n_freqs, n_ph);
-%     
-%     for ind_ph = 1 : n_ph
-%         
-%         ph = ph_mat(:, ind_ph);
-% %         [powTot, fRes(ind_ph), tRes(ind_ph)] = getPSPhasePower(ps, ph);
-%         [pow, powPerFreq] = getPSPhasePower(motion, ph)
-%         phasePowMat(ind_ph) = powTot;
-%         powPerFreqMat(:, ind_ph) = fRes(ind_ph).pow;
-%         
-%     end
-%     
-%     ph = ph_mat(:,1);
-%     u = fRes(1).vel;
-%     pos = fRes(1).pos;
-%     Zpto = nan(size(motion.hydro.Zi)); % TODO
-%     Fpto = fRes(1).u;
-%     pow = powPerFreqMat(:,1);
-
+function myPerf = psControl(dynModel, delta_Zmax, delta_Fmax)
+                                 
     arguments
         dynModel (1, 1) struct
         delta_Zmax (1,:) double {mustBeFinite,mustBeReal,mustBePositive}
         delta_Fmax (1,:) double {mustBeFinite,mustBeReal,mustBePositive}
     end
-        
-    % Fix random seed <- Do we want this???
-    rng(1);
+
+    % PSEUDOSPECTRAL Pseudo spectral control
+    %   Returns power per frequency and frequency bins
     
     % Reformulate equations of motion
     dynModel = getPSCoefficients(dynModel, delta_Zmax, delta_Fmax);
     
-    % Add phase realizations
-    n_ph = 5;
-    ph_mat = [dynModel.ph, rand(length(dynModel.w), n_ph-1) * 2 * pi];
-
-    for ind_ph = 1 : n_ph
-        
-        ph = ph_mat(:, ind_ph);
-        [phasePowMat(ind_ph), fRes(ind_ph), tRes(ind_ph)] = ...
-            getPSPhasePower(dynModel, ph);
-        
-        
-        pos(:, ind_ph) = fRes(ind_ph).pos;
-        u(:, ind_ph) = fRes(ind_ph).vel;
-        Zpto(:, ind_ph) = fRes(ind_ph).Zpto;
-        Fpto(:, ind_ph) = fRes(ind_ph).u;
-        pow(:, ind_ph) = fRes(ind_ph).pow;
-        eta(:, ind_ph) = fRes(ind_ph).eta;
-        F0(:, ind_ph) = fRes(ind_ph).F0;
-        
-    end
+    funHandle = @() getPSPhasePower(dynModel);
     
-    % assemble results
+    freq = dynModel.w;
+    n_freqs = length(freq);
+    
+    results = getPSPhasePower(dynModel, "ph", dynModel.ph);
+    [resultsX, N] = WecOptTool.math.standardError('reduce',             ...
+                                                  funHandle,            ...
+                                                  n_freqs,              ...
+                                                  0.01,                 ...
+                                                  "metric", 'summean',  ...
+                                                  'targetField', 'realpow');
+    results = [results resultsX];
+                                         
     myPerf = Performance();
     myPerf.w = dynModel.w;
-    myPerf.eta = eta;
-    myPerf.F0 = F0;
-    myPerf.ph = ph_mat;
-    myPerf.u = u;
-    myPerf.pos = pos;
-    myPerf.Zpto = Zpto;
-    myPerf.Fpto = Fpto;
-    myPerf.pow = pow;
+    myPerf.eta = [results.eta];
+    myPerf.F0 = [results.F0];
+    myPerf.ph = [results.ph];
+    myPerf.u = [results.vel];
+    myPerf.pos = [results.pos];
+    myPerf.Zpto = [results.Zpto];
+    myPerf.Fpto = [results.u];
+    myPerf.pow = [results.pow];
+    myPerf.N = 1 + N;
     
 end
 
@@ -368,10 +334,22 @@ function dynModel = getPSCoefficients(dynModel, delta_Zmax, delta_Fmax)
     dynModel.mass_scale = m_scale;
 end
 
-function [powTot, fRes, tRes] = getPSPhasePower(dynModel, ph)
+function [fRes, tRes] = getPSPhasePower(dynModel,   ...
+                                        options)
     % getPSPhasePower   calculates power using the pseudospectral
     % method given a phase and a descrption of the body movement.
     % Returns total phase power and power per frequency
+    
+    arguments
+        dynModel
+        options.ph
+    end
+    
+    if isfield(options, "ph")
+        ph = options.ph;
+    else
+        ph = 2 * pi * rand(length(dynModel.w), 1);
+    end
 
     eta_fd = dynModel.wave_amp .* exp(1i*ph);
     E3 = dynModel.Hex .* eta_fd;
@@ -436,9 +414,11 @@ function [powTot, fRes, tRes] = getPSPhasePower(dynModel, ph)
         powTot,sum(real(powFreq))))
     
     % assemble outputs
+    fRes.ph = ph;
     fRes.pos = posFreq;
     fRes.vel = velFreq;
     fRes.u = uFreq;
+    fRes.realpow = real(powFreq);
     fRes.pow = powFreq;
     fRes.Zpto = zFreq;
     fRes.eta = eta_fd;

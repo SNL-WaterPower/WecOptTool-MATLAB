@@ -10,6 +10,7 @@ classdef Performance < handle
         Zpto (:,:) double {}
         Fpto (:,:) double {mustBeFinite}
         pow (:,:) double {mustBeFinite}
+        N (1,:) double {mustBeFinite}
         name (1,:) char = 'tmp'
         date (1,1) double {mustBeFinite,mustBePositive} = now
     end
