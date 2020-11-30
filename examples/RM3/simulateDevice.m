@@ -11,8 +11,6 @@ function [performance, motion] = simulateDevice(hydro, seastate, controlType, va
             performance = dampingControl(motion, varargin{:});
         case 'PS'
             performance = pseudoSpectralControl(motion, varargin{:});
-        case 'PSI'
-            performance = pseudoSpectralIterator(motion, varargin{:});
         
     end
         
