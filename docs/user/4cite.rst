@@ -14,7 +14,11 @@ If WecOptTool has been significant in your research, and you would like to ackno
                      and Mathew B. R. Topper},
      doi          = {10.1007/s40722-020-00181-9},
      journal      = {Journal of Ocean Engineering and Marine Energy},
+     month        = {November},
+     number       = {4},
+     pages        = {441-449},
      title        = {Initial conceptual demonstration of control co-design for {WEC} optimization},
+     volume       = {6},
      year         = {2020}
     }
 

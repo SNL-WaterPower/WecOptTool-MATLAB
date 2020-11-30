@@ -9,7 +9,7 @@ Webinar
 
 A one hour webinar :cite:`coe2020webinar` was presented on September 29th 2020. This webinar provides interested users with a tutorial and background.
 
-:pdfembed:`src:../_static/WecOptTool_webinar_2020_09_29.pdf#view=fitH&zoom=scale&toolbar=1, height:450, width:700, align:middle`
+:pdfembed:`src:../_static/WecOptTool_webinar_2020_09_29.pdf#view=fitH&zoom=scale&toolbar=1, height:450, width:100%, align:middle`
 
 Additional Reading
 ==================
