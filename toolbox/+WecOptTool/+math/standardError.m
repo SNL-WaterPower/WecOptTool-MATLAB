@@ -18,12 +18,14 @@ function [resultArray, extra] = standardError(resultType,       ...
     %       vectors). The ``'targetField'`` optional argument must be given
     %       if the function returns a struct.
     %   vectorLength (int32):
-    %       length of the vector (or vector fields) returned by funHandle
+    %       length of the vector (or vector field) returned by 
+    %       :attr:`funHandle`
     %   resultStop (double):
-    %       termination criteria. If resultType is ``'measure'`` then this
-    %       argument represents the number of samples to be used. If 
-    %       resultType is ``'reduce'`` then this is the value returned by
-    %       the metric selected using the ``'metric'`` optional argument.
+    %       termination criteria. If :attr:`resultType` is ``'measure'`` 
+    %       then this argument represents the number of samples to be used. 
+    %       If :attr:`resultType` is ``'reduce'`` then this is the value 
+    %       returned by the metric selected using the ``'metric'`` optional
+    %       argument.
     %   options: name-value pair options. See below.
     %
     % The following options are supported:
@@ -35,22 +37,23 @@ function [resultArray, extra] = standardError(resultType,       ...
     %        vector, or ``'summean'`` which returns the sum of the errors 
     %        divided by the sum of the mean of the result vector.
     %    targetField (string):
-    %        if funHandle returns a struct then this option indicates the
-    %        field in the struct to use for the error calculation.
+    %        if :attr:`funHandle` returns a struct then this option 
+    %        indicates the field in the struct to use for the error 
+    %        calculation.
     %
     % Returns:
     %      :
-    %     - resultArray: array or struct containin the results of
-    %       funHandle for each sample
-    %     - extra: the error metric vector if resultType is ``'measure'`` 
-    %       or the number of samples required if resultType is ``'reduce'``
-    %
+    %     - resultArray: array or struct containing the results of
+    %       :attr:`funHandle` for each sample
+    %     - extra: the error metric vector if :attr:`resultType` is 
+    %       ``'measure'`` or the number of samples required if 
+    %       :attr:`resultType` is ``'reduce'``
     %
     % Note:
     %     The standard error is calculated on each element of the vector
-    %     (or vector field) returned by funHandle. The 'metric' option
-    %     indicates how these values should be combined into a single
-    %     metric
+    %     (or vector field) returned by :attr:`funHandle`. The ``'metric'`` 
+    %     option indicates how these values should be combined into a 
+    %     single metric
     %
 
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
