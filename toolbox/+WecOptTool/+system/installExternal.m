@@ -53,8 +53,18 @@ function installExternal(name, key, path, validation, options)
         configDir = WecOptTool.system.getUserPath();
     end
     
+    % Check if the a current path is set
+    try
+        oldPath = WecOptTool.system.readConfig(key,     ...
+                                               'configDir', configDir);
+    catch
+        oldPath = "";
+    end
+    
+    % Update the config file
+    WecOptTool.system.writeConfig(key, path, 'configDir', configDir);
+        
     if isempty(validation)
-        WecOptTool.system.writeConfig(key, path, 'configDir', configDir);
         return
     end
     
@@ -63,7 +73,6 @@ function installExternal(name, key, path, validation, options)
     
     if progExistFlag
         
-        WecOptTool.system.writeConfig(key, path, 'configDir', configDir);
         fprintf('Successfully installed %s\n', name);
         
     else
@@ -71,6 +80,11 @@ function installExternal(name, key, path, validation, options)
         msg = ['%s not found. Please check the specified path ' ...
                'and try again.\n'];
         fprintf(msg, name);
+        
+        % Revert back to the old config
+        WecOptTool.system.writeConfig(key,      ...
+                                      oldPath,  ...
+                                      'configDir', configDir);
         
     end
 

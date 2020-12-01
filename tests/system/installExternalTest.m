@@ -5,56 +5,39 @@ end
 function testInstallDummy(testCase)
     
     import matlab.unittest.fixtures.TemporaryFolderFixture
-    import matlab.unittest.constraints.IsFile
-    import matlab.unittest.constraints.IsEqualTo
     
     tempFixture = testCase.applyFixture(                            ...
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
                                     'WithSuffix', 'testInstallDummy'));
     
-    f = @() true;
+    f = @() fakeRun("Basil", tempFixture.Folder);
     
     WecOptTool.system.installExternal("Test",       ...
                                       "Basil",      ...
-                                      "Brush",      ...
+                                      "true",       ...
                                       f,            ...
                                       'configDir', tempFixture.Folder);
-    
-    filePath = fullfile(tempFixture.Folder, 'config.json');
-    testCase.verifyThat(filePath, IsFile)
-    
-    fileID = fopen(filePath);
-    tline = fgetl(fileID);
-    fclose(fileID);
-    
-    expVal = '{"Basil":"Brush"}';
-    testCase.verifyThat(tline, IsEqualTo(expVal))
     
 end
 
 function testInstallDummyFail(testCase)
     
     import matlab.unittest.fixtures.TemporaryFolderFixture
-    import matlab.unittest.constraints.IsFile
-    import matlab.unittest.constraints.IsEqualTo
     
     tempFixture = testCase.applyFixture(                            ...
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
                                     'WithSuffix', 'testInstallDummyFail'));
     
-    f = @() false;
+    f = @() fakeRun("Basil", tempFixture.Folder);
     catchFile = fullfile(tempFixture.Folder, "output.txt");
     
     diary(catchFile)
     WecOptTool.system.installExternal("Test",       ...
                                       "Basil",      ...
-                                      "Brush",      ...
+                                      "false",      ...
                                       f,            ...
                                       'configDir', tempFixture.Folder);
     diary off
-    
-    filePath = fullfile(tempFixture.Folder, 'config.json');
-    testCase.verifyThat(filePath, ~IsFile)
     
     s = dir(catchFile);         
     filesize = s.bytes;
@@ -66,43 +49,26 @@ end
 function testInstallDummyReWrite(testCase)
     
     import matlab.unittest.fixtures.TemporaryFolderFixture
-    import matlab.unittest.constraints.IsFile
-    import matlab.unittest.constraints.IsEqualTo
     
     tempFixture = testCase.applyFixture(                            ...
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
                                     'WithSuffix', 'testInstallDummyFail'));
     
-    f = @() true;
+    f = @() fakeRun("Basil", tempFixture.Folder);
     
     WecOptTool.system.installExternal("Test",       ...
                                       "Basil",      ...
-                                      "Brush",      ...
+                                      "true",       ...
                                       f,            ...
                                       'configDir', tempFixture.Folder);
-    
-    filePath = fullfile(tempFixture.Folder, 'config.json');
-    testCase.verifyThat(filePath, IsFile)
-    
-    fileID = fopen(filePath);
-    tline = fgetl(fileID);
-    fclose(fileID);
-    
-    expVal = '{"Basil":"Brush"}';
-    testCase.verifyThat(tline, IsEqualTo(expVal))
+                                  
+    g = @() fakeRun2("Basil", "Faulty", tempFixture.Folder);
     
     WecOptTool.system.installExternal("Test",       ...
                                       "Basil",      ...
-                                      "Faulty",      ...
-                                      f,            ...
+                                      "Faulty",     ...
+                                      g,            ...
                                       'configDir', tempFixture.Folder);
-    
-    fileID = fopen(filePath);
-    tline = fgetl(fileID);
-    fclose(fileID);
-    
-    expVal = '{"Basil":"Faulty"}';
-    testCase.verifyThat(tline, IsEqualTo(expVal))
     
 end
 
@@ -116,38 +82,49 @@ function testInstallDummyFailReWrite(testCase)
              TemporaryFolderFixture('PreservingOnFailure',  true,   ...
                                     'WithSuffix', 'testInstallDummyFail'));
     
-    f = @() true;
+    f = @() fakeRun("Basil", tempFixture.Folder);
     
     WecOptTool.system.installExternal("Test",       ...
                                       "Basil",      ...
-                                      "Brush",      ...
+                                      "true",       ...
                                       f,            ...
                                       'configDir', tempFixture.Folder);
     
-    filePath = fullfile(tempFixture.Folder, 'config.json');
-    testCase.verifyThat(filePath, IsFile)
-    
-    fileID = fopen(filePath);
-    tline = fgetl(fileID);
-    fclose(fileID);
-    
-    expVal = '{"Basil":"Brush"}';
-    testCase.verifyThat(tline, IsEqualTo(expVal))
     
     f = @() false;
     
     WecOptTool.system.installExternal("Test",       ...
                                       "Basil",      ...
-                                      "Faulty",      ...
+                                      "Faulty",     ...
                                       f,            ...
                                       'configDir', tempFixture.Folder);
     
+    filePath = fullfile(tempFixture.Folder, 'config.json');
     fileID = fopen(filePath);
     tline = fgetl(fileID);
     fclose(fileID);
     
-    expVal = '{"Basil":"Brush"}';
+    expVal = '{"Basil":"true"}';
     testCase.verifyThat(tline, IsEqualTo(expVal))
+    
+end
+
+function result = fakeRun(key, configDir)
+
+    value = WecOptTool.system.readConfig(key, 'configDir', configDir);
+    result = eval(value);
+    
+end
+
+function result = fakeRun2(key, expected, configDir)
+
+    value = WecOptTool.system.readConfig(key, 'configDir', configDir);
+    
+    if strcmp(value, expected)
+        result = true;
+    else
+        result = false;
+    end
     
 end
 
