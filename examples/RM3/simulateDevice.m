@@ -186,8 +186,8 @@ function out = pseudoSpectralControl(motion,        ...
         delta_Zmax
         delta_Fmax
         options.errorMode = 'reduce'
-        options.errorStop = 0.01
-        options.errorMetric = 'summean'
+        options.errorStop = 0.005
+        options.errorMetric = 'normmean'
         options.display = "off"
         options.OptimalityTolerance = 1e-5
     end

@@ -14,7 +14,7 @@ stroke = 0.5:0.5:5;
 
 % Run a study to find the number of samples required for a given 
 % accuracy as the stroke constraint changes.
-errorStop = 0.01;
+errorStop = 0.005;
 
 fprintf("\nCalculating number of samples required per given error:\n\n")
 
@@ -70,7 +70,7 @@ for i = 1:length(stroke)
     disp("Simulation " + (i) + " of " + length(stroke))
     params = {stroke(i) 1e9         ...
               'errorMode' 'measure' ...
-              'errorMetric' 'sum'   ...
+              'errorMetric' 'norm'  ...
               'errorStop' NStop};
     
     for j = 1:length(SS)

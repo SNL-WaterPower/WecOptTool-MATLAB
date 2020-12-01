@@ -32,10 +32,10 @@ function [resultArray, extra] = standardError(resultType,       ...
     %
     %    metric (string):
     %        the name of the metric used to calculate the standard error.
-    %        The options are ``'sum'`` which sums the error over the result 
-    %        vector, ``'max'`` which returns the greatest error in the 
-    %        vector, or ``'summean'`` which returns the sum of the errors 
-    %        divided by the sum of the mean of the result vector.
+    %        The options are ``'norm'`` which norms the error over the 
+    %        result vector, ``'max'`` which returns the greatest error in 
+    %        the vector, or ``'normmean'`` which returns the norm of the 
+    %        errors divided by the sum of the mean of the result vector.
     %    targetField (string):
     %        if :attr:`funHandle` returns a struct then this option 
     %        indicates the field in the struct to use for the error 
@@ -81,17 +81,17 @@ function [resultArray, extra] = standardError(resultType,       ...
         funHandle (1, 1) {WecOptTool.validation.mustBeFunctionHandle}
         vectorLength (1, 1) int32 {mustBePositive}
         resultStop (1, 1) double {mustBePositive}
-        options.metric (1, :) char {checkMetric} = 'sum';
+        options.metric (1, :) char {checkMetric} = 'norm';
         options.targetField (1, :) char;
     end
     
     switch options.metric
-        case 'sum' 
-            errorFun = @ (x, y) sum(x);
+        case 'norm' 
+            errorFun = @ (x, y) norm(x);
         case 'max'
             errorFun = @ (x, y) max(x);
-        case 'summean' 
-            errorFun = @ (x, y) sum(x) / sum(mean(y));
+        case 'normmean' 
+            errorFun = @ (x, y) norm(x) / sum(mean(y));
     end
     
     n = 0;
@@ -166,7 +166,7 @@ end
 
 function checkMetric(input)
     
-    validModes = {'sum' 'max' 'summean'};
+    validModes = {'norm' 'max' 'normmean'};
     
     if ~matches(validModes, input)
         modeStr = sprintf(' "%s"', validModes{:});
