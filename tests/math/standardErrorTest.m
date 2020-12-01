@@ -3,64 +3,90 @@ function tests = standardErrorTest()
 end
 
 function testMeasureSum(testCase)
-
+    
     f = @() randn(5, 1) + 1;
-    [results, stdError] = WecOptTool.math.standardError('measure', f, 5, 5);
+    n_tests = 1000;
+    test = boolean(zeros(n_tests, 1));
     
-    % Check that the expected value is within 95% interval
-    actual = sum(mean(results));
-    expected = 5;
-    test = (actual - 1.96 * stdError < expected) &&    ...
-           (expected < actual + 1.96 * stdError);
-    
-    assertTrue(testCase, test)
-    
-end
-
-function testMeasureMax(testCase)
-
-    f = @() randn(5, 1) + 1;
-    [results, stdError] = WecOptTool.math.standardError('measure',  ...
-                                                        f,          ...
-                                                        5,          ...
-                                                        5,          ...
-                                                        'metric', 'max');
-    
-    % Check that the expected value is within 95% interval
-    actual = mean(results);
-    expected = 1;
-    
-    test = and(actual - 1.96 * stdError < expected, ...
-               expected < actual + 1.96 * stdError);
+    for i = 1:n_tests
+        
+        [results, stdError] = WecOptTool.math.standardError(    ...
+                                                    'measure', f, 5, 5);
+        
+        % Check that the expected value is within 99% interval
+        actual = sum(mean(results));
+        expected = 5;
+        test(i) = (actual - 2.58 * stdError < expected) &&    ...
+                  (expected < actual + 2.58 * stdError);
+        
+    end
     
     assertTrue(testCase, all(test))
     
 end
 
-function testReduceSumMean(testCase)
-
+function testMeasureMax(testCase)
+    
     f = @() randn(5, 1) + 1;
-    tolerance = 0.01;
+    n_tests = 1000;
+    testi = boolean(zeros(n_tests, 1));
+    
+    for i = 1:n_tests
+        
+        [results, stdError] = WecOptTool.math.standardError(        ...
+                                                        'measure',  ...
+                                                        f,          ...
+                                                        5,          ...
+                                                        5,          ...
+                                                        'metric', 'max');
+        
+        % Check that the expected value is within 99% interval
+        actual = mean(results);
+        expected = 1;
+        
+        test = and(actual - 2.58 * stdError < expected, ...
+                   expected < actual + 2.58 * stdError);
+        testi = all(test);
+        
+    end
+    
+    assertTrue(testCase, all(testi))
+    
+end
 
-    [results, ~] = WecOptTool.math.standardError('reduce',   ...
-                                                 f,          ...
-                                                 5,          ...
-                                                 tolerance,  ...
-                                                 'metric', 'summean');
+function testReduceSumMean(testCase)
     
-    actual = sum(mean(results));
+    f = @() randn(5, 1) + 1;
     expected = 5;
+    tolerance = 0.01;
+    n_tests = 10;
+    test = boolean(zeros(n_tests, 1));
     
-    assertEqual(testCase, actual, expected, 'RelTol', tolerance)
+    for i = 1:n_tests
+        
+        [results, ~] = WecOptTool.math.standardError('reduce',   ...
+                                                     f,          ...
+                                                     5,          ...
+                                                     tolerance,  ...
+                                                     'metric', 'summean');
+        
+        actual = sum(mean(results));
+        test(i) = WecOptTool.math.isClose(actual,   ...
+                                          expected, ...
+                                          'rtol', tolerance);
+        
+    end
+    
+    assertTrue(testCase, all(test))
     
 end
 
 function testMeasureSumStruct(testCase)
-
+    
     function s = f()
         s.f = randn(5, 1) + 1;
     end
-        
+    
     [S, stdError] = WecOptTool.math.standardError('measure',  ...
                                                   @f,         ...
                                                   5,          ...
