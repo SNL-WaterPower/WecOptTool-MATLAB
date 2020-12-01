@@ -1,4 +1,4 @@
-function installExternal(name, key, path, validation)
+function installExternal(name, key, path, validation, options)
     % Add an external program path to WecOptTool
     %
     % Args:
@@ -11,6 +11,11 @@ function installExternal(name, key, path, validation)
     %     validation (function handle):
     %         callback to validate installation. Should return true if
     %         installed.
+    %     options: name-value pair options. See below.
+    %
+    % The following options are supported:
+    %
+    %   configDir (string): Alternative path for config directory
     %
     
     % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
@@ -34,31 +39,31 @@ function installExternal(name, key, path, validation)
     %     <https://www.gnu.org/licenses/>.
     
     arguments
-        name
-        key
-        path
-        validation = []
+        name (1, 1) string
+        key (1, 1) string
+        path (1, 1) string
+        validation {WecOptTool.validation.mustBeFunctionHandle} = []
+        options.configDir (1, 1) string
     end
     
-    % Check if the a current path is set
-    try
-        oldPath = WecOptTool.system.readConfig(key);
-    catch
-        oldPath = "";
+    % Get the config path
+    if isfield(options, "configDir")
+        configDir = options.configDir;
+    else
+        configDir = WecOptTool.system.getUserPath();
     end
     
-    % Update the config file
-    WecOptTool.system.writeConfig(key, path)
-        
     if isempty(validation)
+        WecOptTool.system.writeConfig(key, path, 'configDir', configDir);
         return
     end
     
     % Check installation
     progExistFlag = validation();
-
+    
     if progExistFlag
         
+        WecOptTool.system.writeConfig(key, path, 'configDir', configDir);
         fprintf('Successfully installed %s\n', name);
         
     else
@@ -66,9 +71,6 @@ function installExternal(name, key, path, validation)
         msg = ['%s not found. Please check the specified path ' ...
                'and try again.\n'];
         fprintf(msg, name);
-        
-        % Revert back to the old config
-        WecOptTool.system.writeConfig(key, oldPath)
         
     end
 
