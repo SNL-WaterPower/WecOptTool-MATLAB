@@ -18,10 +18,9 @@ function [performance, dynModel] = simulateDevice(I,            ...
     %                   pseudo-spectral:        'PS'
     %  name-value pairs
     %  interpMethod (optional) method to use for linear interpolation
-    %  thetaMax     (only valid for controlType == 'controlType') maximum
-    %               angular displacement
-    %  tauMax       (only valid for controlType == 'controlType') maximum
-    %               PTO torque
+    %  thetaMax     (only valid for controlType == 'PS') maximum angular 
+    %               displacement
+    %  tauMax       (only valid for controlType == 'PS') maximum PTO torque
     %
     % See also WecOptTool.SeaState, interp1
     

@@ -14,10 +14,8 @@ function performance = simulateDevice(hydro, seastate, controlType, options)
     %                   pseudo-spectral:        'PS'
     %  name-value pairs
     %  interpMethod (optional) method to use for linear interpolation
-    %  Zmax         (only valid for controlType == 'controlType') maximum
-    %               displacement
-    %  Fmax         (only valid for controlType == 'controlType') maximum
-    %               PTO force
+    %  Zmax         (only valid for controlType == 'PS') maximum displacement
+    %  Fmax         (only valid for controlType == 'PS') maximum PTO force
     %
     % See also WecOptTool.SeaState, interp1
     
