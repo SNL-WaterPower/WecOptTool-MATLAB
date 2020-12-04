@@ -2,6 +2,41 @@ function tests = standardErrorTest()
    tests = functiontests(localfunctions);
 end
 
+function testBadResultType(testCase)
+    
+    f = @() randn(5, 1) + 1;
+    helper = @() WecOptTool.math.standardError('bad', f, 5, 1);
+    errCode = 'WecOptTool:standardError:badResultType';
+    verifyError(testCase, helper, errCode);
+    
+end
+
+function testBadMetric(testCase)
+    
+    f = @() randn(5, 1) + 1;
+    helper = @() WecOptTool.math.standardError('measure',   ...
+                                               f,           ...
+                                               5,           ...
+                                               1,           ...
+                                               'metric', 'bad');
+    errCode = 'WecOptTool:standardError:badMetric';
+    verifyError(testCase, helper, errCode);
+    
+end
+
+function testBadErrorMode(testCase)
+    
+    f = @() randn(5, 1) + 1;
+    helper = @() WecOptTool.math.standardError('measure',   ...
+                                               f,           ...
+                                               5,           ...
+                                               1,           ...
+                                               'onError', 'bad');
+    errCode = 'WecOptTool:standardError:badErrorMode';
+    verifyError(testCase, helper, errCode);
+    
+end
+
 function testMeasureNorm(testCase)
 
     f = @() randn(5, 1) + 1;
@@ -13,7 +48,7 @@ function testMeasureNorm(testCase)
     
     for i = 1:n_tests
         
-        [results, stdError] = WecOptTool.math.standardError(    ...
+        [results, stdError, ~] = WecOptTool.math.standardError(    ...
                                                     'measure', f, 5, 5);
         
         % Check that the expected value is within interval
@@ -41,11 +76,11 @@ function testMeasureMax(testCase)
     
     for i = 1:n_tests
         
-        [results, stdError] = WecOptTool.math.standardError(        ...
+        [results, stdError, ~] = WecOptTool.math.standardError(     ...
                                                         'measure',  ...
                                                         f,          ...
                                                         5,          ...
-                                                        10,          ...
+                                                        10,         ...
                                                         'metric', 'max');
         
         % Check that the expected value is within interval
@@ -57,39 +92,6 @@ function testMeasureMax(testCase)
     end
     
     tpct = sum(testi) / n_tests * 100;
-    
-    % Add some slack!
-    assertGreaterThan(testCase, tpct, 96)
-    
-end
-
-function testReduceNormMean(testCase)
-    
-    f = @() randn(5, 1) + 1;
-    expected = 5;
-    tolerance = 0.01;
-    confidence = 2.576; % 99% interval
-    
-    n_tests = 100;
-    test = boolean(zeros(n_tests, 1));
-    
-    for i = 1:n_tests
-        
-        [results, ~] = WecOptTool.math.standardError('reduce',   ...
-                                                     f,          ...
-                                                     5,          ...
-                                                     tolerance,  ...
-                                                     'metric', 'normmean');
-        
-        actual = sum(mean(results));
-        checktol = expected * tolerance * confidence;
-        test(i) = WecOptTool.math.isClose(actual,   ...
-                                          expected, ...
-                                          'atol', checktol);
-        
-    end
-    
-    tpct = sum(test) / n_tests * 100;
     
     % Add some slack!
     assertGreaterThan(testCase, tpct, 96)
@@ -109,11 +111,12 @@ function testMeasureNormStruct(testCase)
     
     for i = 1:n_tests
     
-        [S, stdError] = WecOptTool.math.standardError('measure',  ...
-                                                      @f,         ...
-                                                      5,          ...
-                                                      5,          ...
-                                                      'targetField', 'f');
+        [S, stdError, ~] = WecOptTool.math.standardError(       ...
+                                                    'measure',  ...
+                                                    @f,         ...
+                                                    5,          ...
+                                                    5,          ...
+                                                    'targetField', 'f');
 
         % Check that the expected value is within interval
         actual = sum(mean([S.f]));
@@ -128,6 +131,83 @@ function testMeasureNormStruct(testCase)
     % Add some slack!
     assertGreaterThan(testCase, tpct, 96)
     
+end
+
+function testReduceNormMean(testCase)
+    
+    f = @() randn(5, 1) + 1;
+    expected = 5;
+    tolerance = 0.01;
+    confidence = 2.576; % 99% interval
+    
+    n_tests = 100;
+    test = boolean(zeros(n_tests, 1));
+    
+    for i = 1:n_tests
+        
+        [results, ~, ~] = WecOptTool.math.standardError(        ...
+                                                    'reduce',   ...
+                                                    f,          ...
+                                                    5,          ...
+                                                    tolerance,  ...
+                                                    'metric', 'normmean');
+        
+        actual = sum(mean(results));
+        checktol = expected * tolerance * confidence;
+        test(i) = WecOptTool.math.isClose(actual,   ...
+                                          expected, ...
+                                          'atol', checktol);
+        
+    end
+    
+    tpct = sum(test) / n_tests * 100;
+    
+    % Add some slack!
+    assertGreaterThan(testCase, tpct, 96)
+    
+end
+
+function testReduceNormMeanMaxWarn(testCase)
+    
+    f = @() randn(5, 1) + 1;
+    tolerance = 1e-9;
+    maxN = 5;
+    errCode = 'WecOptTool:standardError:maxNReached';
+    
+    function varargout = helper()
+        [~, stdError, N] = WecOptTool.math.standardError(               ...
+                                                'reduce',               ...
+                                                f,                      ...
+                                                5,                      ...
+                                                tolerance,              ...
+                                                'metric', 'normmean',   ...
+                                                'maxN', maxN);
+        varargout = {stdError, N};
+    end
+    
+    [stdError, N] = verifyWarning(testCase, @helper, errCode);
+    verifyEqual(testCase, maxN, N)
+    verifyGreaterThan(testCase, stdError, tolerance)
+    
+end
+
+function testReduceNormMeanMaxError(testCase)
+    
+    f = @() randn(5, 1) + 1;
+    tolerance = 1e-9;
+    maxN = 5;
+    errCode = 'WecOptTool:standardError:maxNReached';
+    
+    helper = @() WecOptTool.math.standardError('reduce',                ...
+                                               f,                       ...
+                                               5,                       ...
+                                               tolerance,               ...
+                                               'metric', 'normmean',    ...
+                                               'maxN', maxN,            ...
+                                               'onError', 'raise');
+    
+    verifyError(testCase, helper, errCode);
+
 end
 
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 

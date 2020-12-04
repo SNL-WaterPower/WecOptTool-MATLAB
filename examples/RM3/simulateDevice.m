@@ -163,7 +163,8 @@ function out = complexCongugateControl(motion)
     % Maximum absorbed power
     % Note: Re{Zi} = Radiation Damping Coeffcient
     out.powPerFreq = abs(motion.F0) .^ 2 ./ (8 * real(motion.Zi));
-    out.errorVal = NaN;
+    out.stdErr = NaN;
+    out.N = 1;
     
 end
 
@@ -172,7 +173,8 @@ function out = dampingControl(motion)
     % Power per frequency at optimial damping
     out.powPerFreq = 0.25 * abs(motion.F0) .^ 2 ./     ...
                             (real(motion.Zi) + abs(motion.Zi));
-    out.errorVal = NaN;
+    out.stdErr = NaN;
+    out.N = 1;
     
 end
 
@@ -188,6 +190,7 @@ function out = pseudoSpectralControl(motion,        ...
         options.errorMode = 'reduce'
         options.errorStop = 0.005
         options.errorMetric = 'normmean'
+        options.maxN = 100
         options.display = "off"
         options.OptimalityTolerance = 1e-5
     end
@@ -207,15 +210,17 @@ function out = pseudoSpectralControl(motion,        ...
     freq = motion.W;
     n_freqs = length(freq);
     
-    [powPerFreqMat, errorVal] = WecOptTool.math.standardError(  ...
-                                        options.errorMode,      ...
-                                        funHandle,              ...
-                                        n_freqs,                ...
-                                        options.errorStop,      ...
-                                        "metric", options.errorMetric);
+    [powPerFreqMat, stdErr, N] = WecOptTool.math.standardError(         ...
+                                        options.errorMode,              ...
+                                        funHandle,                      ...
+                                        n_freqs,                        ...
+                                        options.errorStop,              ...
+                                        "metric", options.errorMetric,  ...
+                                        "maxN", options.maxN);
     
     out.powPerFreq = mean(powPerFreqMat);
-    out.errorVal = errorVal;
+    out.stdErr = stdErr;
+    out.N = N;
     
 end
 

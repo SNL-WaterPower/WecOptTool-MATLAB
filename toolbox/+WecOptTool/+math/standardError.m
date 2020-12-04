@@ -1,8 +1,8 @@
-function [resultArray, extra] = standardError(resultType,       ...
-                                              funHandle,        ...
-                                              vectorLength,     ...
-                                              resultStop,       ...
-                                              options)
+function [resultArray, stdEerror, N] = standardError(resultType,    ...
+                                                     funHandle,     ...
+                                                     vectorLength,  ...
+                                                     resultStop,    ...
+                                                     options)
     % Calculates the standard error of the mean of a given function.
     %
     % This function can either be used to reduce the standard error to
@@ -25,7 +25,8 @@ function [resultArray, extra] = standardError(resultType,       ...
     %       then this argument represents the number of samples to be used. 
     %       If :attr:`resultType` is ``'reduce'`` then this is the value 
     %       returned by the metric selected using the ``'metric'`` optional
-    %       argument.
+    %       argument. The ``'maxN'`` optional argument provides the maximum 
+    %       number of samples allowed when in ``'reduce'`` mode.
     %   options: name-value pair options. See below.
     %
     % The following options are supported:
@@ -36,18 +37,25 @@ function [resultArray, extra] = standardError(resultType,       ...
     %        result vector, ``'max'`` which returns the greatest error in 
     %        the vector, or ``'normmean'`` which returns the norm of the 
     %        errors divided by the sum of the mean of the result vector.
+    %        Default is ``'norm'``.
     %    targetField (string):
     %        if :attr:`funHandle` returns a struct then this option 
     %        indicates the field in the struct to use for the error 
     %        calculation.
+    %    maxN (int32): 
+    %        the maximum number of samples allowed when :attr:`resultType` 
+    %        is ``'reduce'``. Triggers an error if exceeded.
+    %    onError (string):
+    %        action to take on error. If ``'warn'`` a warning will be
+    %        issued, if ``'raise'`` an error will be raised. Default is
+    %        ``'warn'``.
     %
     % Returns:
     %      :
     %     - resultArray: array or struct containing the results of
     %       :attr:`funHandle` for each sample
-    %     - extra: the error metric vector if :attr:`resultType` is 
-    %       ``'measure'`` or the number of samples required if 
-    %       :attr:`resultType` is ``'reduce'``
+    %     - stdEerror: the standard error metric vector
+    %     - N: the number of samples evaluated
     %
     % Note:
     %     The standard error is calculated on each element of the vector
@@ -81,8 +89,10 @@ function [resultArray, extra] = standardError(resultType,       ...
         funHandle (1, 1) {WecOptTool.validation.mustBeFunctionHandle}
         vectorLength (1, 1) int32 {mustBePositive}
         resultStop (1, 1) double {mustBePositive}
-        options.metric (1, :) char {checkMetric} = 'norm';
-        options.targetField (1, :) char;
+        options.metric (1, :) char {checkMetric} = 'norm'
+        options.targetField (1, :) char
+        options.maxN (1, 1) int32 {mustBePositive}
+        options.onError  (1, :) char {checkError} = 'warn'
     end
     
     switch options.metric
@@ -97,6 +107,12 @@ function [resultArray, extra] = standardError(resultType,       ...
     n = 0;
     calculatec4 = true;
     resultArray = zeros(1, vectorLength);
+    
+    if isfield(options, 'maxN') && strcmp(resultType, 'reduce')
+        stopN = options.maxN;
+    else
+        stopN = Inf;
+    end
     
     while true
         
@@ -131,17 +147,32 @@ function [resultArray, extra] = standardError(resultType,       ...
             case 'reduce'
                 
                 if errorMetric <= resultStop
-                    extra = n;
                     break
                 end
                 
             case 'measure'
                 
                 if n >= resultStop
-                    extra = errorMetric;
                     break
                 end
                 
+        end
+        
+        if n == stopN
+            
+            errStr = ['Target accuracy not reached before max '   ...
+                        'samples. Final standard error is %f'];
+            errCode = 'WecOptTool:standardError:maxNReached';
+            
+            switch options.onError
+                case 'warn'
+                    warning(errCode, errStr, errorMetric)
+                case 'raise'
+                    error(errCode, errStr, errorMetric)
+            end
+            
+            break
+            
         end
         
     end
@@ -149,6 +180,9 @@ function [resultArray, extra] = standardError(resultType,       ...
     if isfield(options, 'targetField')
         resultArray = structArray;
     end
+    
+    stdEerror = errorMetric;
+    N = n;
     
 end
 
@@ -159,7 +193,7 @@ function checkType(input)
     if ~matches(validModes, input)
         modeStr = sprintf(' "%s"', validModes{:});
         errStr = ['Result type not regonised. Must be one of' modeStr];
-        error('WecOptTool:math:standardError', errStr)
+        error('WecOptTool:standardError:badResultType', errStr)
     end
     
 end
@@ -170,8 +204,20 @@ function checkMetric(input)
     
     if ~matches(validModes, input)
         modeStr = sprintf(' "%s"', validModes{:});
+        errStr = ['Metric type regonised. Must be one of' modeStr];
+        error('WecOptTool:standardError:badMetric', errStr)
+    end
+    
+end
+
+function checkError(input)
+    
+    validModes = {'warn' 'raise'};
+    
+    if ~matches(validModes, input)
+        modeStr = sprintf(' "%s"', validModes{:});
         errStr = ['Error mode not regonised. Must be one of' modeStr];
-        error('WecOptTool:math:standardError', errStr)
+        error('WecOptTool:standardError:badErrorMode', errStr)
     end
     
 end

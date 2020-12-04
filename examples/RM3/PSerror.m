@@ -31,7 +31,7 @@ for i = 1:length(stroke)
     end
     
     r1(i) = sum(aggregateSeaStates(SS, performances));
-    N(i) = max(performances.errorVal);
+    N(i) = max(performances.N);
     
 end
 
@@ -81,7 +81,7 @@ for i = 1:length(stroke)
     end
     
     r2(i) = sum(aggregateSeaStates(SS, performances));
-    stdErr(i) = max(performances.errorVal);
+    stdErr(i) = max(performances.stdErr);
     
 end
 
