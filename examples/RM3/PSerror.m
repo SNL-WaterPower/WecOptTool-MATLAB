@@ -44,13 +44,13 @@ subplot(1,2,1);
 
 yyaxis left
 plot(stroke, N)
-ylabel("Number of samples required")
+ylabel("number of samples required")
 
 yyaxis right
 plot(stroke, r1)
 ylabel("power [W]")
 
-xlabel("stroke [m]")
+xlabel("max PTO stroke [m]")
 titleStr = sprintf('RM3 PS with standard error %3.2f%% of mean',    ...
                    100 * errorStop);
 title(titleStr);
@@ -89,13 +89,13 @@ subplot(1,2,2);
 
 yyaxis left
 plot(stroke, stdErr)
-ylabel("Standard Error [W]")
+ylabel("standard error [W]")
 
 yyaxis right
 plot(stroke, r2)
 ylabel("power [W]")
 
-xlabel("stroke [m]")
+xlabel("max PTO stroke [m]")
 titleStr = sprintf('RM3 PS with %d samples', NStop);
 title(titleStr);
 
