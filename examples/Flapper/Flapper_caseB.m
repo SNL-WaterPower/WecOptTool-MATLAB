@@ -1,30 +1,41 @@
-% Case A
-% 
-% This case study shows a comparison between the different controllers
-% currently available in WecOptTool. This is NOT an optimization study.
-% Instead, a single device design is simulated in a sea state using each of
-% the three controllers. The purpose of this study is to demonstrate some
-% of the basic differences between these three controller types:
+% Case B
 %
-% CC    complex conjugate control
-% P     proportional damping
-% PS    pseudo-spectral numerical optimal control
+% Giorgio B (~750kW)
 
 clear performance
 
 wkdir = WecOptTool.AutoFolder();
 
-% Make a regular wave on the edge of validity
-w = (0.25:0.25:3)';
-SS = WecOptTool.SeaState.regularWave(w, [0.2, 10]);
+% Load a predefined elevation record
+wave = load('wave_elev');
+init_wave = 2000;
+len_wave = 180;
+eta = wave.wave(init_wave:(init_wave + len_wave - 1));
+eta = eta-mean(eta);
+dt = 1;
+Nwave = length(eta);
+T = Nwave * dt;
+eta_f = fft(eta) / Nwave;
+
+% Frequency vector
+Nf = 20;
+w0 = 2 * pi / T;
+w = w0 * (1:Nf)';
+
+% Expand and trim eta_f as required
+if Nwave <= Nf
+    eta_f = [eta_f; zeros(Nf - Nwave + 1, 1)];
+end
+
+eta_f = eta_f(2:Nf+1);
 
 % Set flap dimensions (length is long axis)
-flap_width = 2;
-flap_length = 10;
-flap_height = 5;
+flap_width = 1;
+flap_length = 60;
+flap_height = 15;
 
 % Set the water depth (should not exceed device height)
-depth = 10;
+depth = 15;
 
 % Calculate hydrodynamic properties
 [hydro, meshes] = designDevice('parametric',    ...
@@ -33,21 +44,24 @@ depth = 10;
                                flap_width,      ...
                                flap_height,     ...
                                depth,           ...
-                               w);
+                               w,               ...
+                               "panelSize", 2);
+                           
+WecOptTool.plot.plotMesh(meshes);
 
 % Calculate moment of inertia
-mass = hydro.Vo * hydro.rho;
+mass = hydro.Vo * hydro.rho / 8;
 I = mass / 12 * (4 * flap_height ^ 2 + flap_length ^ 2);
 
-% Simulate device subject to sea state and different controllers
-[performance(1), modelCC] = simulateDevice(I, hydro, SS, 'CC');
-[performance(2), modelP] = simulateDevice(I, hydro, SS, 'P');
-[performance(3), modelPS] = simulateDevice(I,               ...
+% Dummy sea state
+SS = WecOptTool.SeaState();
+
+% Simulate device subject to sea state and PS controller
+[performance(1), modelPS] = simulateDevice(I,               ...
                                            hydro,           ...
                                            SS,              ...
-                                           'PS',            ...
-                                           'thetaMax', 0.2, ...
-                                           'tauMax', 5e5);
+                                           'PSEta',         ...
+                                           'forceEta', eta_f);
 
 % Print and plot comparison
 performance.summary()

@@ -51,22 +51,32 @@ function [performance, dynModel] = simulateDevice(I,            ...
         options.thetaMax (1,:) double  = 1e9 % TODO - can be assymetric, need to check throughout
         options.tauMax (1,:) double = 1e9
         options.interpMethod (1,1) string = 'linear'
+        options.forceEta (:,1) double = 0
     end
     
-    dynModel = getDynamicsModel(I,              ...
-                                hydro,          ...
-                                seastate,       ...
-                                options.interpMethod);
+    if strcmp(controlType, 'PSEta')
+        dynModel = getDynamicsModelNoEta(I, hydro);
+    else
+        dynModel = getDynamicsModel(I,              ...
+                                    hydro,          ...
+                                    seastate,       ...
+                                    options.interpMethod);
+    end
     
     switch controlType
         case 'CC'
             performance = complexCongugateControl(dynModel);
-         case 'P'
-             performance = dampingControl(dynModel);
-         case 'PS'
-             performance = psControl(dynModel,          ...
-                                     options.thetaMax,  ...
-                                     options.tauMax);
+        case 'P'
+            performance = dampingControl(dynModel);
+        case 'PS'
+            performance = psControl(dynModel,          ...
+                                    options.thetaMax,  ...
+                                    options.tauMax);
+        case 'PSEta'
+            performance = psControlEta(dynModel,          ...
+                                       options.forceEta,  ...
+                                       options.thetaMax,  ...
+                                       options.tauMax);
     end
 
 end
@@ -75,7 +85,7 @@ function dynModel = getDynamicsModel(I,         ...
                                      hydro,     ...
                                      SS,        ...
                                      interpMethod)
-    
+                                 
     function result = toVector(matrix)
         result = squeeze(matrix(1, 1, :));
     end
@@ -126,6 +136,46 @@ function dynModel = getDynamicsModel(I,         ...
     dynModel.Zi = Zi;
     dynModel.Hex = Hex;
     dynModel.F0 = F0;
+    
+end
+
+function dynModel = getDynamicsModelNoEta(I,         ...
+                                          hydro)
+                                 
+    function result = toVector(matrix)
+        result = squeeze(matrix(1, 1, :));
+    end
+
+    % Restoring (in roll)
+    K = hydro.C(4,4) * hydro.g * hydro.rho;
+
+    w = hydro.w(:);
+    dw = w(2) - w(1);
+    
+    % radiation damping FRF
+    B = toVector(hydro.B) * hydro.rho .* w;
+
+    % added mass FRF
+    A = toVector(hydro.A) * hydro.rho;
+
+    % friction
+    Bf = max(B) * 0.1;      % TODO - make this adjustable
+
+    % intrinsic impedance
+    Zi = B + Bf + 1i * (w .* (I + A) - K ./ w);
+
+    % Excitation Forces
+    Hex = toVector(hydro.ex) * hydro.g * hydro.rho;
+
+    dynModel.I = I;
+    dynModel.K = K;
+    dynModel.w = w;
+    dynModel.dw = dw;
+    dynModel.B = B;
+    dynModel.A = A;
+    dynModel.Bf = Bf;
+    dynModel.Zi = Zi;
+    dynModel.Hex = Hex;
     
 end
 
@@ -242,6 +292,52 @@ function myPerf = psControl(dynModel, delta_thetaMax, delta_tauMax)
     
 end
 
+function myPerf = psControlEta(dynModel,        ...
+                               eta_f,           ...
+                               delta_thetaMax,  ...
+                               delta_tauMax)
+
+    arguments
+        dynModel (1, 1) struct
+        eta_f
+        delta_thetaMax (1,:) double {mustBeReal,mustBePositive}
+        delta_tauMax (1,:) double {mustBeReal,mustBePositive}
+    end
+        
+    % Fix random seed <- Do we want this???
+    rng(1);
+    
+    % Reformulate equations of motion
+    dynModel = getPSCoefficients(dynModel, delta_thetaMax, delta_tauMax);
+    ind_ph = 1;
+        
+    [phasePowMat(ind_ph), fRes(ind_ph), tRes(ind_ph)] = ...
+        getPSPhasePower(dynModel, eta_f, "forceEta", true);
+
+    theta(:, ind_ph) = fRes(ind_ph).pos;
+    omega(:, ind_ph) = fRes(ind_ph).vel;
+    thetaPTO(:, ind_ph) = fRes(ind_ph).thetaPTO;
+    tauPTO(:, ind_ph) = fRes(ind_ph).u;
+    pow(:, ind_ph) = fRes(ind_ph).pow;
+    eta(:, ind_ph) = fRes(ind_ph).eta;
+    F0(:, ind_ph) = fRes(ind_ph).F0;
+        
+    % assemble results
+    myPerf = Performance();
+    myPerf.name = "PS";
+    myPerf.w = dynModel.w;
+    myPerf.eta = eta;
+    myPerf.F0 = F0;
+    myPerf.ph = 0;
+    myPerf.omega = omega;
+    myPerf.theta = theta;
+    myPerf.thetaPTO = thetaPTO;
+    myPerf.tauPTO = tauPTO;
+    myPerf.pow = pow;
+    
+end
+
+
 function dynModel = getPSCoefficients(dynModel,         ...
                                       delta_thetaMax,   ...
                                       delta_tauMax)
@@ -356,16 +452,28 @@ function dynModel = getPSCoefficients(dynModel,         ...
     
 end
 
-function [powTot, fRes, tRes] = getPSPhasePower(dynModel, ph)
+function [powTot, fRes, tRes] = getPSPhasePower(dynModel,   ...
+                                                value,      ...
+                                                options)
     % getPSPhasePower   calculates power using the pseudospectral
     % method given a phase and a descrption of the body movement.
     % Returns total phase power and power per frequency
-
-    eta_fd = dynModel.wave_amp .* exp(1i*ph);
+    
+    arguments
+        dynModel
+        value
+        options.forceEta logical = false
+    end
+    
+    if options.forceEta
+        eta_fd = value;
+    else
+        eta_fd = dynModel.wave_amp .* exp(1i * value);
+    end
+    
     E3 = dynModel.Hex .* eta_fd;
-    
+
     fef3 = zeros(2 * dynModel.Nf, 1);
-    
     fef3(1:2:end) =  real(E3);
     fef3(2:2:end) = -imag(E3);
     
@@ -419,9 +527,11 @@ function [powTot, fRes, tRes] = getPSPhasePower(dynModel, ph)
     
     powTot = trapz(dynModel.tkp, powT) / (dynModel.tkp(end) - dynModel.tkp(1));
     assert(WecOptTool.math.isClose(powTot, sum(real(powFreq)),...
-        'rtol', eps*1e2),...
-        sprintf('Mismatch in PS results\n\tpowTot: %.3e\n\tpowFreq: %.3e',...
-        powTot,sum(real(powFreq))))
+        'rtol', 1e-3),...
+        sprintf('Mismatch in PS results\n\tpowTot: %.3e\n\tpowFreq: %.3e\nError: %.3e',...
+        powTot, ...
+        sum(real(powFreq)),  ...
+        abs((powTot - sum(real(powFreq))) / powTot)))
     
     % assemble outputs
     fRes.pos = posFreq;
