@@ -4,8 +4,6 @@
 
 clear performance
 
-wkdir = WecOptTool.AutoFolder();
-
 % Load a predefined elevation record
 wave = load('wave_elev');
 init_wave = 2000;
@@ -29,44 +27,64 @@ end
 
 eta_f = eta_f(2:Nf+1);
 
-% Set flap dimensions (length is long axis)
-flap_width = 1;
-flap_length = 60;
-flap_height = 15;
+out = flapper_mwe([30, 15], eta_f, w);
 
-% Set the water depth (should not exceed device height)
-depth = 15;
+function out = flapper_mwe(depth, eta_f, w)
 
-% Calculate hydrodynamic properties
-[hydro, meshes] = designDevice('parametric',    ...
-                               wkdir.path,      ...
-                               flap_length,     ...
-                               flap_width,      ...
-                               flap_height,     ...
-                               depth,           ...
-                               w,               ...
-                               "panelSize", 2);
-                           
-WecOptTool.plot.plotMesh(meshes);
+    % Set flap dimensions (length is long axis)
+    flap_width = 1;
+    flap_length = 60;
+    flap_height = 15;
+    
+    out = struct();
+    
+    for i = 1 : length(depth)
+        
+        name = sprintf('%3.1f m', depth(i));
 
-% Calculate moment of inertia
-mass = hydro.Vo * hydro.rho / 8;
-I = mass / 12 * (4 * flap_height ^ 2 + flap_length ^ 2);
+        % Calculate hydrodynamic properties
+        wkdir = WecOptTool.AutoFolder();
+        [hydro, meshes] = designDevice('parametric',    ...
+                                       wkdir.path,      ...
+                                       flap_length,     ...
+                                       flap_width,      ...
+                                       flap_height,     ...
+                                       depth(i),        ...
+                                       w,               ...
+                                       "panelSize", 2);
 
-% Dummy sea state
-SS = WecOptTool.SeaState();
+        % WecOptTool.plot.plotMesh(meshes);
 
-% Simulate device subject to sea state and PS controller
-[performance(1), modelPS] = simulateDevice(I,               ...
-                                           hydro,           ...
-                                           SS,              ...
-                                           'PSEta',         ...
-                                           'forceEta', eta_f);
+        % Calculate moment of inertia
+        mass = hydro.Vo * hydro.rho / 8;
+        I = mass / 12 * (4 * flap_height ^ 2 + flap_length ^ 2);
 
-% Print and plot comparison
-performance.summary()
-performance.plotTime()
+        % Dummy sea state
+        SS = WecOptTool.SeaState();
 
+        % Simulate device subject to sea state and PS controller
+        [performance(i), modelPS] = simulateDevice(I,               ...
+                                                   hydro,           ...
+                                                   SS,              ...
+                                                   'PSEta',         ...
+                                                   'forceEta', eta_f);
+        performance(i).name = name;
+        
+        % Outputs
+        out(i).name = name;
+        out(i).A = squeeze(hydro.A);
+        out(i).B = squeeze(hydro.B);
+        out(i).ex = squeeze(hydro.ex);
+        out(i).pow = performance(i).pow;
+                                               
+    end
+
+    % Print and plot comparison
+    performance.summary()
+    performance.plotTime()
+    
+end
+    
 % Copyright 2020 National Technology & Engineering Solutions of Sandia, 
 % LLC (NTESS). Under the terms of Contract DE-NA0003525 with NTESS, the 
 % U.S. Government retains certain rights in this software.
