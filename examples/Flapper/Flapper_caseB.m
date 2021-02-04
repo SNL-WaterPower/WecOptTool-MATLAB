@@ -26,8 +26,36 @@ if Nwave <= Nf
 end
 
 eta_f = eta_f(2:Nf+1);
+out = flapper_mwe([15, 20, 25, 30], eta_f, w);
 
-out = flapper_mwe([30, 15], eta_f, w);
+%% PLOTS
+
+% Added mass plot
+figure
+plot(w, [out.A])
+legend({out(:).name}, 'Location', 'Best')
+ylabel("Added Mass (kg)")
+xlabel("Angular Frequency (rad/s)")
+
+% Damping plot
+figure
+plot(w, [out.B])
+legend({out(:).name}, 'Location', 'Best')
+ylabel("Radiation Wave Damping (N/m/s)")
+xlabel("Angular Frequency (rad/s)")
+
+% Excitation torque (N.m)
+figure('Renderer', 'painters', 'Position', [100 100 1200 400])
+subplot(1,2,1);
+plot(w, real([out.ex]))
+legend({out(:).name}, 'Location', 'Best')
+ylabel("Real Excitation Torque (N.m)")
+xlabel("Angular Frequency (rad/s)")
+
+subplot(1,2,2);
+plot(w, imag([out.ex]))
+ylabel("Imaginary Excitation Torque (N.m)")
+xlabel("Angular Frequency (rad/s)")
 
 function out = flapper_mwe(depth, eta_f, w)
 
