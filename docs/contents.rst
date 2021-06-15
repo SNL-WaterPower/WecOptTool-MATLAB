@@ -16,4 +16,4 @@
    :hidden:
    :caption: External
 
-   GitHub Repository <https://github.com/SNL-WaterPower/WecOptTool>
+   GitHub Repository <https://github.com/SNL-WaterPower/WecOptTool-MATLAB>
